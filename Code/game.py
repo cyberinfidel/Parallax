@@ -19,7 +19,7 @@ def log(msg, new_line=True):
 
 class Game(object):
 
-	def __init__(self):
+	def __init__(self, title, res_x, res_y, zoom, fullscreen):
 		# Initialize the video system - this implicitly initializes some
 		# necessary parts within the SDL2 DLL used by the video module.
 		#
@@ -30,7 +30,10 @@ class Game(object):
 		# Create a new window (like your browser window or editor window,
 		# etc.) and give it a meaningful title and size. We definitely need
 		# this, if we want to present something to the user.
-		self.window = sdl2.ext.Window("Feed the Duck", size=(1280, 800))  # ,flags=sdl2.SDL_WINDOW_FULLSCREEN)
+		if(fullscreen):
+			self.window = sdl2.ext.Window(title, size=(res_x*zoom, res_y*zoom), flags=sdl2.SDL_WINDOW_FULLSCREEN)
+		else:
+			self.window = sdl2.ext.Window(title, size=(res_x*zoom, res_y*zoom))  # ,flags=sdl2.SDL_WINDOW_FULLSCREEN)
 
 		# By default, every Window is hidden, not shown on the screen right
 		# after creation. Thus we need to tell it to be shown now.

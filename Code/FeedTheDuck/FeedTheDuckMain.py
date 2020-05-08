@@ -27,7 +27,7 @@ def log(msg, new_line=True):
 
 class Prototype(game.Game):
 	def __init__(self):
-		super(Prototype, self).__init__()
+		super(Prototype, self).__init__(title = "Feed the Duck", res_x= 320, res_y= 200, zoom = 3, fullscreen= False)
 
 		self.collision_manager = collision.CollisionManager() # TODO: should this be a ComponentManager() like the others?
 

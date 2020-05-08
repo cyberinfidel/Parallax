@@ -26,7 +26,7 @@ def log(msg, new_line=True):
 
 class KnightFight(game.Game):
 	def __init__(self):
-		super(KnightFight, self).__init__()
+		super(KnightFight, self).__init__("Knight Fight", res_x= 320, res_y= 200, zoom = 4, fullscreen= False)
 
 		self.collision_manager = collision.CollisionManager() # TODO: should this be a ComponentManager() like the others?
 
