@@ -54,7 +54,6 @@ class Image(object):
 			self.width = width
 			self.height = height
 
-#		self.src = sdl2.SDL_Rect(0, 0, self.width, self.height)
 		self.src = sdl2.SDL_Rect(0, 0, self.width, self.height)
 
 		self.origin_x = origin_x
@@ -134,7 +133,7 @@ class RenderLayer(object):
 		try:
 			self.images.append(Image(self.ren, filepath, origin_x, origin_y))
 		except Exception as e:
-			log("Problem loading image for frame: "+str(e))
+			log("Problem loading image for frame: "+str(e)+" file:"+filepath)
 		return len(self.images) - 1
 
 	def clear(self):

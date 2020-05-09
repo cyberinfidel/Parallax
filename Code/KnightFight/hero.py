@@ -206,6 +206,26 @@ def heroGraphics(renlayer):
 						["Graphics/Hero/HeroBigAttackL11.png", 48, 47, 0.1],
 					],
 			},
+			{
+				"Name": "Hero Fall Left",
+				"AnimType": AnimNoLoop,
+				"State": eStates.fallLeft,
+				"Frames":
+					[
+						["Graphics/Hero/HeroFallL 1.png", 48, 47, 0.3],
+						["Graphics/Hero/HeroFallL 2.png", 48, 47, 1.0],
+					],
+			},
+			{
+				"Name": "Hero Fall Right",
+				"AnimType": AnimNoLoop,
+				"State": eStates.fallRight,
+				"Frames":
+					[
+						["Graphics/Hero/HeroFallR 1.png", 48, 47, 0.3],
+						["Graphics/Hero/HeroFallR 2.png", 48, 47, 1.0],
+					],
+			},
 		]
 
 	}
@@ -258,7 +278,6 @@ class HeroController(Controller):
 		# things that can interrupt other actions happen here e.g. landing
 
 		if data.health<0:
-			log("Dead!")
 			data.health = -1
 			return
 
