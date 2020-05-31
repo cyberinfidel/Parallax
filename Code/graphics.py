@@ -29,7 +29,8 @@ def log(msg, new_line=True):
 
 glob_debug = False
 
-
+# Individual images for use as frames for animations or as part of the background etc.
+# Based on SDL images for the moment with no atlassing etc.
 class Image(object):
 	def __init__(self, ren, file, origin_x=0, origin_y=0, width=False, height=False):
 		self.renderer = ren
@@ -41,7 +42,7 @@ class Image(object):
 
 		self.file = file
 
-		# get image (don't need to keep this though)
+		# get image into surface (don't need to keep this though)
 		surface = sdl_image.IMG_Load(file.encode("ascii"))
 
 		# make a texture from the apple surface (for HW rendering)
@@ -64,6 +65,7 @@ class Image(object):
 												sdl2.SDL_Rect(int(round(x))-self.origin_x, self.screen_height-int(round(y))-self.origin_y, self.width, self.height))
 
 		if debug:
+			# draw the outline of the image for debugging purposes
 			sdl2.SDL_SetRenderDrawColor(self.renderer.renderer,255,255,255,50)
 			sdl2.SDL_SetRenderDrawBlendMode(self.renderer.renderer,sdl2.SDL_BLENDMODE_ADD)
 
@@ -113,6 +115,7 @@ class RenderShape(Drawable):
 	def draw(self, origin):
 		self.shape.draw(self.x - origin.x, self.y - origin.y + origin.z + self.z)
 
+# a collection of images that can be added to a list of drawables that will be drawn when told to render
 class RenderLayer(object):
 	def __init__(self, ren):
 		self.ren = ren
@@ -122,6 +125,7 @@ class RenderLayer(object):
 
 		self.origin = Vec3(0,0,0)
 
+	# add to the store of images available in this render layer
 	def addImage(self, file, origin_x=0, origin_y=0):
 		# find if this file has been loaded before and return that if so
 		filepath = os.path.abspath(file)
@@ -136,10 +140,11 @@ class RenderLayer(object):
 			log("Problem loading image for frame: "+str(e)+" file:"+filepath)
 		return len(self.images) - 1
 
+	# empty the list of drawables for this layer so nothing is set to be drawn on a render event
 	def clear(self):
 		self.drawables = []  # note this replaces list with empty list and doesn't delete any of the contents of list
 
-
+	# add an image to the list of drawables to be drawn on a render
 	def queueImage(self, image, x, y, z):
 		self.drawables.append(RenderImage(self.images[image], x, y, z))
 
@@ -149,35 +154,44 @@ class RenderLayer(object):
 			d.draw(self.origin)
 		self.drawables = []
 
+	# renders the drawables queue, but in an order: lower Y last (illusion of front to back)
+	# TODO: pass in comparison and allow different orders - not as easy as first thought
 	def renderSorted(self):
 		for d in sorted(self.drawables, key = Drawable.getY, reverse=True):
 			d.draw(self.origin)
 		self.drawables = []
 
+	# sets the origin of where the renderlayer draws from i.e. position of layer
 	def setOriginX(self, x):
-		self.origin_x = x
-
+		self.origin.x = x
 	def setOriginZ(self, z):
-		self.origin_z = z
+		self.origin.z = z
+	def setOriginY(self, y):
+		self.origin.y = y
+	def setOrigin(self, x, y, z):
+		self.origin.x = x
+		self.origin.y = y
+		self.origin.z = z
+
 
 	def getOriginX(self):
-		return self.origin_x
-
+		return self.origin.x
+	def getOriginY(self):
+		return self.origin.y
 	def getOriginZ(self):
-		return self.origin_z
+		return self.origin.z
+	def getOrigin(self):
+		return self.origin
 
 
+# Types of graphics components available
 class GraphicsTypes(enum.IntEnum):
 	single_image = 0,
 	single_anim = 1,
 	multi_anim = 2,
 	num_graphics_types = 3
 
-
-
-
-
-
+# graphics component for a single static image
 class SingleImage(Component):
 
 	def __init__(self, data):
@@ -192,7 +206,7 @@ class SingleImage(Component):
 		return self.rl.queueImage(self.image, common_data.pos.x, common_data.pos.y, common_data.pos.z)
 
 
-
+# graphics component for a single animation only
 class SingleAnim(Component):
 	class Data(object):
 		def __init__(self, common_data):
@@ -215,7 +229,7 @@ class SingleAnim(Component):
 		return self.rl.queueImage(self.anim.getCurrentImage(data), common_data.pos.x, common_data.pos.y, common_data.pos.z)
 
 
-
+# graphics component for multiple animations
 class MultiAnim(Component):
 	class Data(object):
 		def __init__(self, common_data, init=False):
@@ -325,7 +339,7 @@ class AnimRandom(Anim):
 			anim_instance.current_time -= self.frames[anim_instance.current_frame].time
 			anim_instance.current_frame = rand_num(len(self.frames))
 
-
+# container for a single frame of animation
 class AnimFrame:
 	def __init__(self, image, time):
 		self.image = image

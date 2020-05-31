@@ -261,7 +261,7 @@ class HeroController(Controller):
 
 	def update(self, data, common_data, dt):
 		# get input
-		hero_speed = 1.0
+		hero_speed = 1.5
 		hero_jump_speed = 3.0
 		hero_stop = 0.05
 		hero_friction_ground = 0.1
