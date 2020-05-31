@@ -2,7 +2,6 @@ from controller import *
 from collision import *
 from graphics import *
 
-from KnightFight.reaper import *
 
 def heroGraphics(renlayer):
 	return {
@@ -212,8 +211,8 @@ def heroGraphics(renlayer):
 				"State": eStates.fallLeft,
 				"Frames":
 					[
-						["Graphics/Hero/HeroFallL 1.png", 48, 47, 0.3],
-						["Graphics/Hero/HeroFallL 2.png", 48, 47, 1.0],
+						["Graphics/Hero/HeroFallL 1.png", 18, 47, 0.3],
+						["Graphics/Hero/HeroFallL 2.png", 18, 47, 1.0],
 					],
 			},
 			{
@@ -222,8 +221,8 @@ def heroGraphics(renlayer):
 				"State": eStates.fallRight,
 				"Frames":
 					[
-						["Graphics/Hero/HeroFallR 1.png", 48, 47, 0.3],
-						["Graphics/Hero/HeroFallR 2.png", 48, 47, 1.0],
+						["Graphics/Hero/HeroFallR 1.png", 18, 47, 0.3],
+						["Graphics/Hero/HeroFallR 2.png", 18, 47, 1.0],
 					],
 			},
 		]
@@ -231,8 +230,12 @@ def heroGraphics(renlayer):
 	}
 
 
-
 class HeroController(Controller):
+	def __init__(self, data):
+		super(HeroController, self).__init__()
+		# values global to all heroes
+		self.invincible_states = (eStates.dead, eStates.fallLeft, eStates.fallRight, eStates.dead)
+
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -245,19 +248,10 @@ class HeroController(Controller):
 			self.jump = False
 			self.attack = False
 			self.facing = Directions.down
-			self.health = 200
+			self.health = 5
 			common_data.state = eStates.standDown
-
-
-	def __init__(self, data):
-		super(HeroController, self).__init__()
-
-	def receiveCollision(self, data, common_data, collide_message):
-		pass
-
-	def getCollisionMessage(self, data, common_data):
-		pass
-
+			self.invincible_cooldown = 2
+			self.invincible = self.invincible_cooldown
 
 	def update(self, data, common_data, dt):
 		# get input
@@ -279,6 +273,7 @@ class HeroController(Controller):
 
 		if data.health<0:
 			data.health = -1
+			log("Dead!")
 			return
 
 		# ground vs in the air
@@ -296,6 +291,9 @@ class HeroController(Controller):
 			# cooling down so can't do anything new
 			pass
 		else:
+			if data.invincible > 0:
+				data.invincible -= dt
+				log("invincible")
 			# not doing anything that's cooling down so can do something else
 			if data.vel.magsqhoriz() < hero_stop:
 				# stopped so react automatically - most likely idle, but only if stationary
@@ -403,6 +401,19 @@ class HeroController(Controller):
 
 		restrictToArena(common_data.pos, data.vel)
 
+	def receiveCollision(self, data, common_data, message=False):
+		hero_fall_cool = 2
+		log("Hero hit: "+common_data.name)
+		if message:
+			if(message["damage_hero"]>0
+				and common_data.state not in self.invincible_states
+				and not data.invincible>0):
+				if data.facing == Directions.left:
+					self.updateState(data, common_data, eStates.fallLeft, hero_fall_cool)
+				else:
+					self.updateState(data, common_data, eStates.fallRight, hero_fall_cool)
+				data.invincible = data.invincible_cooldown
+
 
 
 class HeroCollider(Collider):
@@ -424,7 +435,8 @@ class HeroCollider(Collider):
 		return self.radius
 
 	def getCollisionMessage(self, data, common_data):
-		pass
+		message={"collider":"hero", "damage":0}
+		return(message)
 
 
 

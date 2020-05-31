@@ -117,8 +117,11 @@ class ReaperController(Controller):
 
 		friction(data.vel)
 
-	def receiveCollision(self, data, common_data, collision_message):
-		pass
+	def receiveCollision(self, data, common_data, message=False):
+		log("Reaper hit " +common_data.name)
+		if message:
+			data.health -= message["damage"]
+
 
 class ReaperCollider(Collider):
 	class Data(object):
@@ -132,11 +135,12 @@ class ReaperCollider(Collider):
 		super(ReaperCollider, self).__init__()
 		# global static data to all of ReaperCollider components
 		self.radius = 10.0
-		self.damage = 1.0
+		self.damage = 1
 
 	def getRadius(self):
 		return self.radius
 
 	def getCollisionMessage(self, data, common_data):
-		pass
+		message={"collider":"reaper","damage":0, "damage_hero":self.damage}
+		return(message)
 
