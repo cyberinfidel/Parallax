@@ -26,7 +26,7 @@ def log(msg, new_line=True):
 
 class KnightFight(game.Game):
 	def __init__(self):
-		super(KnightFight, self).__init__("Knight Fight", res_x= 320, res_y= 200, zoom = 4, fullscreen= False)
+		super(KnightFight, self).__init__("Knight Fight", res_x= 320, res_y= 200, zoom = 3, fullscreen= False)
 
 		self.collision_manager = collision.CollisionManager() # TODO: should this be a ComponentManager() like the others?
 
@@ -39,7 +39,6 @@ class KnightFight(game.Game):
 		bat_graphics = self.graphics_manager.makeTemplate(batGraphics(self.renlayer))
 		reaper_graphics = self.graphics_manager.makeTemplate(reaperGraphics(self.renlayer))
 		reaper_controller = self.controller_manager.makeTemplate({"Template": ReaperController})
-		reaper_collider =self.collision_manager.makeTemplate({"Template": ReaperCollider})
 		raingraphics = self.graphics_manager.makeTemplate(rainGraphics(self.renlayer))
 		herographics = self.graphics_manager.makeTemplate( heroGraphics(self.renlayer))
 
@@ -62,6 +61,7 @@ class KnightFight(game.Game):
 		# Collider Templates
 		hero_collider = self.collision_manager.makeTemplate({"Template": HeroCollider})
 		bat_collider =self.collision_manager.makeTemplate({"Template": BatCollider})
+		reaper_collider =self.collision_manager.makeTemplate({"Template": ReaperCollider})
 
 		# make some entities with all the components that have been defined
 		back_t = self.entity_manager.makeTemplate(graphics=backgraphics, controller=backcontroller)
@@ -72,7 +72,7 @@ class KnightFight(game.Game):
 
 		# make bats
 		self.singlebats = []
-		self.numbats = 6
+		self.numbats = 0
 		singlebat_t = self.entity_manager.makeTemplate(graphics=bat_graphics, controller = bat_controller, collider=bat_collider)
 		for n in range(0, self.numbats):
 			singlebat = self.entity_manager.makeEntity(singlebat_t, "Bat")
@@ -88,7 +88,7 @@ class KnightFight(game.Game):
 
 		# make reapers
 		self.singlereapers = []
-		self.numreapers = 6
+		self.numreapers = 10
 		singlereaper_t = self.entity_manager.makeTemplate(graphics=reaper_graphics, controller = reaper_controller, collider=reaper_collider)
 		for n in range(0, self.numreapers):
 			singlereaper = self.entity_manager.makeEntity(singlereaper_t, "Reaper")
@@ -96,8 +96,10 @@ class KnightFight(game.Game):
 				singlereaper.setPos(Vec3(rand_num(20), rand_num(64), 0))
 			else:
 				singlereaper.setPos(Vec3(rand_num(20) + 250, rand_num(64), 0))
-			self.singlebats.append(singlebat)
-			singlebat.update(rand_num(200) / 200.0)
+
+
+			self.singlebats.append(singlereaper)
+			singlereaper.update(rand_num(200) / 200.0)
 			self.drawables.append(singlereaper)
 			self.updatables.append(singlereaper)
 			self.collision_manager.append(singlereaper)
@@ -164,7 +166,8 @@ class KnightFight(game.Game):
 
 	def draw(self):
 		for drawable in self.drawables:
-			drawable.draw()
+			if not drawable.common_data.blink:
+				drawable.draw()
 
 		self.renlayer.renderSorted()
 

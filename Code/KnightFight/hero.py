@@ -292,8 +292,10 @@ class HeroController(Controller):
 			pass
 		else:
 			if data.invincible > 0:
+				common_data.blink = (int(data.invincible*16)%2)==0
 				data.invincible -= dt
-				log("invincible")
+			else:
+				common_data.blink=False
 			# not doing anything that's cooling down so can do something else
 			if data.vel.magsqhoriz() < hero_stop:
 				# stopped so react automatically - most likely idle, but only if stationary
@@ -403,7 +405,7 @@ class HeroController(Controller):
 
 	def receiveCollision(self, data, common_data, message=False):
 		hero_fall_cool = 2
-		log("Hero hit: "+common_data.name)
+		# log("Hero hit: "+message["name"])
 		if message:
 			if(message["damage_hero"]>0
 				and common_data.state not in self.invincible_states
@@ -435,7 +437,7 @@ class HeroCollider(Collider):
 		return self.radius
 
 	def getCollisionMessage(self, data, common_data):
-		message={"collider":"hero", "damage":0}
+		message={"name":"hero", "damage":0}
 		return(message)
 
 

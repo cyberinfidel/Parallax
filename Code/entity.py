@@ -102,6 +102,7 @@ class Entity(object):
 		self.common_data.pos = Vec3(0, 0, 0)
 		self.common_data.state = eStates.stationary
 		self.common_data.new_state = True
+		self.common_data.blink = False
 
 		self.graphics = graphics
 		if self.graphics:

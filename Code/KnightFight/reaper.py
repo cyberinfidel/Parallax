@@ -118,7 +118,7 @@ class ReaperController(Controller):
 		friction(data.vel)
 
 	def receiveCollision(self, data, common_data, message=False):
-		log("Reaper hit " +common_data.name)
+#		log("Reaper hit " +common_data.name)
 		if message:
 			data.health -= message["damage"]
 
@@ -141,6 +141,6 @@ class ReaperCollider(Collider):
 		return self.radius
 
 	def getCollisionMessage(self, data, common_data):
-		message={"collider":"reaper","damage":0, "damage_hero":self.damage}
+		message={"name":"reaper","damage":0, "damage_hero":self.damage}
 		return(message)
 

@@ -16,7 +16,7 @@ class CollisionManager(ComponentManager):
 	def doCollisions(self):
 		for indexA, colliderA in enumerate(self.collidables):
 			for indexB, colliderB in enumerate(self.collidables):
-				if indexB!=indexA:
+				if indexB>indexA:
 					self.checkCollide(colliderA, colliderB)
 
 	def cleanUpDead(self):
