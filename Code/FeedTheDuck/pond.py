@@ -29,9 +29,10 @@ class RockCollider(Collider):
 	def getRadius(self):
 		return self.radius
 
-	def getCollisionList:
+	def getCollisionList(self):
 		# return a list of the shapes that need to be tested against
 		# in this case two circles = 2x position from origin and radii
+		pass
 
 	def getCollisionMessage(self, data, common_data):
 		pass
