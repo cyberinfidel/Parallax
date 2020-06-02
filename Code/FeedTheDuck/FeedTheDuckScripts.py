@@ -114,9 +114,9 @@ class DuckController(Controller):
 		friction(data.vel)
 
 	def receiveCollision(self,data, common_data, collision_message):
-		common_data.pos.x -= data.vel.x *2
-		common_data.pos.y -= data.vel.y *2
-		common_data.pos.z -= data.vel.z *2
+		common_data.pos.x -= data.vel.x *1.1
+		common_data.pos.y -= data.vel.y *1.1
+		common_data.pos.z -= data.vel.z *1.1
 		data.vel = Vec3(0,0,0)
 
 class DuckCollider(Collider):

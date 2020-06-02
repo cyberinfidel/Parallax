@@ -22,12 +22,16 @@ class RockCollider(Collider):
 
 	def __init__(self, data):
 		super(RockCollider, self).__init__()
-		# global static data to all of HeroCollider components
-		self.radius = 20.0
+		# global static data to all of this class's components
+		self.radius = 15.0
 		self.mass = 10.0
 
 	def getRadius(self):
 		return self.radius
+
+	def getCollisionList:
+		# return a list of the shapes that need to be tested against
+		# in this case two circles = 2x position from origin and radii
 
 	def getCollisionMessage(self, data, common_data):
 		pass

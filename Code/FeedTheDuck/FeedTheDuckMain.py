@@ -25,6 +25,7 @@ def log(msg, new_line=True):
 		print(msg, end='')
 
 
+
 class Prototype(game.Game):
 	def __init__(self):
 		super(Prototype, self).__init__(title = "Feed the Duck", res_x= 320, res_y= 200, zoom = 3, fullscreen= False)
@@ -73,15 +74,20 @@ class Prototype(game.Game):
 		back.setPos(Vec3(0,135,0))
 
 		rock_t = self.entity_manager.makeTemplate(graphics=rockgraphics, collider = rockcollider)
-		rock = self.entity_manager.makeEntity(rock_t, "Rock")
-		self.drawables.append(rock)
-		rock.setPos(Vec3(180.0,50.0,0.0))
-		self.collision_manager.append(rock)
+
+		for rock_pos in (Vec3(150,20,0), Vec3(180,20,0), Vec3(120,25,0), Vec3(90,20,0)
+		 , Vec3(60,20,0), Vec3(30,25,0), Vec3(35,50,0), Vec3(32,76,0)
+		 , Vec3(58,100,0), Vec3(91,114,0), Vec3(123,122,0), Vec3(156,120,0)
+		 , Vec3(180,110,0), Vec3(213,116,0), Vec3(242,113,0), Vec3(271,114,0)
+			, Vec3(274, 101, 0), Vec3(273, 82, 0), Vec3(277, 60, 0), Vec3(262, 34, 0)
+										 , Vec3(244, 32, 0), Vec3(223, 26, 0), Vec3(217, 30, 0), 										 ):
+			self.addObstacle(rock_pos, rock_t, self.collision_manager, self.drawables)
+
 
 		duck_t = self.entity_manager.makeTemplate(graphics=duckgraphics, controller=duckcontroller, collider=duckcollider)
 		duck = self.entity_manager.makeEntity(duck_t, "Duck")
 
-		duck.setPos(Vec3(160.0, 100.0, 0.0))
+		duck.setPos(Vec3(160.0, 80.0, 0.0))
 		duck.setGamePad(self.input.getGamePad(0))
 		self.drawables.append(duck)
 		self.updatables.append(duck)
@@ -124,6 +130,12 @@ class Prototype(game.Game):
 			drawable.draw()
 
 		self.renlayer.renderSorted()
+
+	def addObstacle(self, pos, template, collision_manager, drawables):
+		rock = self.entity_manager.makeEntity(template, "Rock")
+		drawables.append(rock)
+		rock.setPos(pos)
+		collision_manager.append(rock)
 
 
 def run():
