@@ -432,6 +432,8 @@ class HeroCollider(Collider):
 		# global static data to all of HeroCollider components
 		self.radius = 10.0
 		self.mass = 10.0
+		self.dim = Vec3(20,8,16)
+		self.orig = Vec3(10,4,0)
 
 	def getRadius(self):
 		return self.radius

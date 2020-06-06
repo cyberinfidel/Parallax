@@ -117,13 +117,12 @@ class KnightFight(game.Game):
 
 		hero_t = self.entity_manager.makeTemplate(graphics=herographics, controller=herocontroller, collider=hero_collider)
 
-		hero = self.entity_manager.makeEntity(hero_t, "Knight")
+		self.hero = self.entity_manager.makeEntity(hero_t, "Knight")
 
-		hero.setPos(Vec3(160.0, 60.0, 0.0))
-		hero.setGamePad(self.input.getGamePad(0))
-		self.drawables.append(hero)
-		self.updatables.append(hero)
-		self.collision_manager.append(hero)
+		self.hero.setPos(Vec3(160.0, 60.0, 0.0))
+		self.hero.setGamePad(self.input.getGamePad(0))
+		self.drawables.append(self.hero)
+		self.updatables.append(self.hero)
 
 	###########
 	#  update #
@@ -141,7 +140,8 @@ class KnightFight(game.Game):
 		for index, updatable in reversed(list(enumerate(self.updatables))):
 			updatable.update(dt)
 
-		self.collision_manager.doCollisions()
+		self.collision_manager.doCollisions() # collisions between monsters
+		self.collision_manager.doCollisionsWithSingleEntity(self.hero) # collisions with hero
 
 		for index, updatable in reversed(list(enumerate(self.updatables))):
 			if updatable.getState() == entity.eStates.dead:
