@@ -272,11 +272,17 @@ class HeroController(Controller):
 
 		# cool downs in seconds
 		hero_big_attack_cool = 0.8
+		hero_big_attack_delay = 0.5	# note delays are when strike happens
 		hero_small_attack_cool = 0.3
+		hero_small_attack_delay = 0.2
 		hero_block_cool = 0.3
+		hero_block_delay = 0.2
 		hero_run_cool = 0
 		hero_jump_cool = -1
 		hero_stand_cool = 0
+
+		# flags
+		hero_struck = False
 
 		# things that can interrupt other actions happen here e.g. landing
 
@@ -298,8 +304,36 @@ class HeroController(Controller):
 
 		if self.coolDown(data, dt):
 			# cooling down so can't do anything new
-			pass
+			if data.cooldown<hero_big_attack_delay:
+				if not data.hero_struck:
+					if common_data.state == eStates.attackBigLeft:
+						log("Thwack! (left)")
+						data.hero_struck = True
+					elif common_data.state==eStates.attackBigRight:
+						log("Thwack! (right)")
+						data.hero_struck = True
+
+			if data.cooldown < hero_small_attack_delay:
+				if not data.hero_struck:
+					if common_data.state == eStates.attackSmallLeft:
+						log("small thwack! (left)")
+						data.hero_struck = True
+					elif common_data.state == eStates.attackSmallRight:
+						log("small thwack! (right)")
+						data.hero_struck = True
+
+			if data.cooldown < hero_block_delay:
+				if not data.hero_struck:
+					if common_data.state == eStates.blockLeft:
+						log("block! (left)")
+						data.hero_struck = True
+					elif common_data.state == eStates.blockRight:
+						log("block! (right)")
+						data.hero_struck = True
+
+
 		else:
+			data.hero_struck=False
 			if data.invincible > 0:
 				common_data.blink = (int(data.invincible*16)%2)==0
 				data.invincible -= dt
@@ -452,6 +486,37 @@ class HeroCollider(Collider):
 		return(Message(source=common_data.entity))
 
 
+###########
+# Strikes #
+###########
 
+class BigHitController(Controller):
+	def __init__(self, data):
+		super(BigHitController, self).__init__()
 
+class BigHitCollider(Collider):
+	class Data(object):
+		def __init__(self, common_data, init=False):
+			if init:
+				pass
+			else:
+				pass
+
+			self.cooldown = 0.5
+
+	def update(self, data, common_data, dt):
+
+		if not self.coolDown(data, dt):
+			# finished big hit - otherwise just hang around
+			common_data.state = eStates.dead
+
+	def __init__(self, data):
+		super(BigHitCollider, self).__init__()
+		# global static data to all of components
+		self.mass = 10.0
+		self.dim = Vec3(20,8,16)
+		self.orig = Vec3(10,4,0)
+
+	def getCollisionMessage(self, data, common_data):
+		return(Message(source=common_data.entity, damage=10))
 
