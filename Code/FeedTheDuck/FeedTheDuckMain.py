@@ -68,12 +68,12 @@ class Prototype(game.Game):
 		)
 
 		# make some entities with components
-		back_t = self.entity_manager.makeTemplate(graphics=backgraphics)
+		back_t = self.entity_manager.makeEntityTemplate(game=self, graphics=backgraphics)
 		back = self.entity_manager.makeEntity(back_t)
 		self.drawables.append(back)
 		back.setPos(Vec3(0,135,0))
 
-		rock_t = self.entity_manager.makeTemplate(graphics=rockgraphics, collider = rockcollider)
+		rock_t = self.entity_manager.makeEntityTemplate(game=self,graphics=rockgraphics, collider = rockcollider)
 
 		#for rock_pos in [Vec3(100,50,0)]:#,Vec3(0,0,0)):
 		for rock_pos in (Vec3(150,20,0), Vec3(180,20,0), Vec3(120,25,0), Vec3(90,20,0)
@@ -85,7 +85,7 @@ class Prototype(game.Game):
 			self.addObstacle(rock_pos, rock_t, self.collision_manager, self.drawables)
 
 
-		duck_t = self.entity_manager.makeTemplate(graphics=duckgraphics, controller=duckcontroller, collider=duckcollider)
+		duck_t = self.entity_manager.makeEntityTemplate(game=self,graphics=duckgraphics, controller=duckcontroller, collider=duckcollider)
 		self.duck = self.entity_manager.makeEntity(duck_t, "Duck")
 
 		self.duck.setPos(Vec3(160.0, 80.0, 0.0))
