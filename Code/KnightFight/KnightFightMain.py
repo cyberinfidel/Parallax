@@ -72,14 +72,14 @@ class KnightFight(game.Game):
 
 		# make bats
 		self.singlebats = []
-		self.numbats = 0
+		self.numbats = 5
 		singlebat_t = self.entity_manager.makeTemplate(graphics=bat_graphics, controller = bat_controller, collider=bat_collider)
 		for n in range(0, self.numbats):
 			singlebat = self.entity_manager.makeEntity(singlebat_t, "Bat")
 			if n % 2 == 0:
-				singlebat.setPos(Vec3(rand_num(20), rand_num(64), rand_num(20)))
+				singlebat.setPos(Vec3(rand_num(20), rand_num(64), rand_num(20)+40))
 			else:
-				singlebat.setPos(Vec3(rand_num(20) + 250, rand_num(64), rand_num(20)))
+				singlebat.setPos(Vec3(rand_num(20) + 250, rand_num(64), rand_num(20)+40))
 			self.singlebats.append(singlebat)
 			singlebat.update(rand_num(200) / 200.0)
 			self.drawables.append(singlebat)
@@ -88,7 +88,7 @@ class KnightFight(game.Game):
 
 		# make reapers
 		self.singlereapers = []
-		self.numreapers = 10
+		self.numreapers = 5
 		singlereaper_t = self.entity_manager.makeTemplate(graphics=reaper_graphics, controller = reaper_controller, collider=reaper_collider)
 		for n in range(0, self.numreapers):
 			singlereaper = self.entity_manager.makeEntity(singlereaper_t, "Reaper")

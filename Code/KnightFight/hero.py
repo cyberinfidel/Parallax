@@ -407,14 +407,15 @@ class HeroController(Controller):
 		hero_fall_cool = 2
 		# log("Hero hit: "+message["name"])
 		if message:
-			if(message["damage_hero"]>0
-				and common_data.state not in self.invincible_states
-				and not data.invincible>0):
-				if data.facing == Directions.left:
-					self.updateState(data, common_data, eStates.fallLeft, hero_fall_cool)
-				else:
-					self.updateState(data, common_data, eStates.fallRight, hero_fall_cool)
-				data.invincible = data.invincible_cooldown
+			if(message.damage_hero):
+				if (message.damage_hero>0
+					and common_data.state not in self.invincible_states
+					and not data.invincible>0):
+					if data.facing == Directions.left:
+						self.updateState(data, common_data, eStates.fallLeft, hero_fall_cool)
+					else:
+						self.updateState(data, common_data, eStates.fallRight, hero_fall_cool)
+					data.invincible = data.invincible_cooldown
 
 
 
@@ -439,8 +440,7 @@ class HeroCollider(Collider):
 		return self.radius
 
 	def getCollisionMessage(self, data, common_data):
-		message={"name":"hero", "damage":0}
-		return(message)
+		return(Message(source=common_data.entity))
 
 
 

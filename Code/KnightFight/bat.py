@@ -57,12 +57,14 @@ class BatCollider(Collider):
 		# global static data to all of BatCollider components
 		self.radius = 10.0
 		self.damage = 1.0
+		self.dim = Vec3(20,8,16)
+		self.orig = Vec3(10,4,0)
 
 	def getRadius(self):
 		return self.radius
 
 	def getCollisionMessage(self, data, common_data):
-		pass
+		return(Message(source=common_data.entity, damage=0, damage_hero=1))
 
 
 

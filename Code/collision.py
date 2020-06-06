@@ -57,12 +57,9 @@ class CollisionManager(ComponentManager):
 
 
 		if (Apos.x - Aorig.x + Adim.x)> (Bpos.x -Borig.x): # Aright > Bleft
-#			log("1 "+A.common_data.name+str(Apos.x - Aorig.x + Adim.x)+ B.common_data.name +str(Bpos.x -Borig.x))
 			if (Bpos.x - Borig.x + Bdim.x) > (Apos.x - Aorig.x): # Bright < Aleft
-	#			log("2 " + A.common_data.name + str(Apos.x - Aorig.x) + B.common_data.name + str(Bpos.x - Borig.x + Bdim.x))
 				if (Apos.y - Aorig.y + Adim.y) > (Bpos.y - Borig.y):
 					if (Bpos.y - Borig.y + Bdim.y) > (Apos.y - Aorig.y):
-
 						if (Apos.z - Aorig.z + Adim.z) > (Bpos.z - Borig.z):
 							if (Bpos.z - Borig.z + Bdim.z) > (Apos.z - Aorig.z):
 								# we have a collision
@@ -87,3 +84,13 @@ class Collider(Component):
 
 	def getOrig(self):
 		return self.orig
+
+class Message():
+	def __init__(self, source, damage=0, damage_hero=0):
+		self.source = source
+		self.damage = damage
+		self.damage_hero = damage_hero
+
+	def getCollisionMessage(self,data, common_data):
+		return Message(source=False)
+

@@ -96,8 +96,9 @@ class Entity(object):
 		def __init__(self):
 			pass
 
-	def __init__(self, name, graphics, controller, collider):
+	def __init__(self, name, graphics=False, controller=False, collider=False):
 		self.common_data = self.Data()
+		self.common_data.entity = self
 		self.common_data.name = name
 		self.common_data.pos = Vec3(0, 0, 0)
 		self.common_data.state = eStates.stationary
