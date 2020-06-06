@@ -124,7 +124,7 @@ def heroGraphics(renlayer):
 				"Frames":
 					[
 						["Graphics/Hero/HeroStandR.png", 48, 47, 0.1],
-						["Graphics/Hero/HeroBlockR 1.png", 16, 39, 0.1],
+						["Graphics/Hero/HeroBlockR 1.png", 24, 39, 0.1],
 					],
 			},
 			{
@@ -134,7 +134,7 @@ def heroGraphics(renlayer):
 				"Frames":
 					[
 						["Graphics/Hero/HeroStandL.png", 48, 47, 0.1],
-						["Graphics/Hero/HeroBlockL 1.png", 16, 39, 0.1],
+						["Graphics/Hero/HeroBlockL 1.png", 24, 39, 0.1],
 					],
 			},
 			{
@@ -212,7 +212,7 @@ def heroGraphics(renlayer):
 				"Frames":
 					[
 						["Graphics/Hero/HeroFallL 1.png", 18, 47, 0.3],
-						["Graphics/Hero/HeroFallL 2.png", 18, 47, 1.0],
+						["Graphics/Hero/HeroFallL 2.png", 20, 40, 1.0],
 					],
 			},
 			{
@@ -222,7 +222,7 @@ def heroGraphics(renlayer):
 				"Frames":
 					[
 						["Graphics/Hero/HeroFallR 1.png", 18, 47, 0.3],
-						["Graphics/Hero/HeroFallR 2.png", 18, 47, 1.0],
+						["Graphics/Hero/HeroFallR 2.png", 20, 40, 1.0],
 					],
 			},
 			{
@@ -231,7 +231,7 @@ def heroGraphics(renlayer):
 				"State": eStates.shadow,
 				"Frames":
 					[
-						["Graphics/shadow.png", 18, 47, 0.3],
+						["Graphics/shadow.png", 16, 4, 0.3],
 					],
 			},
 		]

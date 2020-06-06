@@ -283,7 +283,7 @@ class MultiAnim(Component):
 		try:
 			# todo: work out why z=0 doesn't work
 			# todo: shrink shadow the higher z is
-			return self.rl.queueImage(self.anims[eStates.shadow].getImage(0), common_data.pos.x, common_data.pos.y, -40)
+			return self.rl.queueImage(self.anims[eStates.shadow].getImage(0), common_data.pos.x, common_data.pos.y, 0)
 		except Exception as e:
 			log(e)
 			exit(1)

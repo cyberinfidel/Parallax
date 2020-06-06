@@ -171,7 +171,7 @@ class KnightFight(game.Game):
 				drawable.graphics.drawShadow(drawable.graphics_data, drawable.common_data)
 			# draw actual things
 			if not drawable.common_data.blink:
-				drawable.draw()
+				drawable.graphics.draw(drawable.graphics_data, drawable.common_data)
 
 		self.renlayer.renderSorted()
 

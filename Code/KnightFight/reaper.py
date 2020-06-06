@@ -64,7 +64,7 @@ def reaperGraphics(renlayer):
 					"State": eStates.shadow,
 					"Frames":
 						[
-							["Graphics/shadow.png", 18, 47, 0.3],
+							["Graphics/shadow.png", 16, 4, 0.3],
 						],
 				},
 			]

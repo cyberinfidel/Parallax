@@ -134,10 +134,6 @@ class Entity(object):
 		return self.common_data.state
 
 
-	def draw(self):
-#		if self.graphics:
-		self.graphics.draw(self.graphics_data,self.common_data)
-
 # basic update method. Override for fancier behaviour
 	def update(self, dt):
 		if self.controller:
