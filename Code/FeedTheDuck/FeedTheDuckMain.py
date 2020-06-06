@@ -128,7 +128,7 @@ class Prototype(game.Game):
 	def draw(self):
 		for drawable in self.drawables:
 			if not drawable.common_data.blink:
-				drawable.draw()
+				drawable.graphics.draw(drawable.graphics_data, drawable.common_data)
 
 		self.renlayer.renderSorted()
 
