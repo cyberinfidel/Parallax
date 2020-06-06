@@ -1,5 +1,13 @@
 from entity import *
 
+# globals
+collision_debug = False
+
+class eShapes(enum.IntEnum):
+	sphere = 0
+	cuboid = 1
+
+
 class CollisionManager(ComponentManager):
 
 	def __init__(self):
@@ -14,10 +22,22 @@ class CollisionManager(ComponentManager):
 		return pop(index)
 
 	def doCollisions(self):
+		for A in self.collidables:
+			A.common_data.blink = False
+
 		for indexA, colliderA in enumerate(self.collidables):
 			for indexB, colliderB in enumerate(self.collidables):
 				if indexB>indexA:
 					self.checkCollide(colliderA, colliderB)
+
+	def doCollisionsWithSingleEntity(self, entity):
+		if collision_debug:
+			for A in self.collidables:
+				A.common_data.blink = False
+
+		for colliderA in self.collidables:
+					self.checkCollide(colliderA, entity)
+
 
 	def cleanUpDead(self):
 		for index, collider in enumerate(self.collidables):
@@ -25,19 +45,45 @@ class CollisionManager(ComponentManager):
 				self.collidables.pop(index)
 
 	def checkCollide(self,A,B):
-		# hack in simple 2D circle logic atm?
-		# hack in 3D sphere logic atm?
-		distSq = A.getPos().distSq(B.getPos())
-#		log("Collision? %s : %s" % (A.getName(), B.getName()))
-		if distSq<((A.collider.getRadius()+B.collider.getRadius())*(A.collider.getRadius()+B.collider.getRadius())):
-			# only entities with controllers can react to a collision
-			if A.controller:
-				A.controller.receiveCollision(A.controller_data, A.common_data, B.collider.getCollisionMessage(A.collider_data, A.common_data))
-			if B.controller:
-				B.controller.receiveCollision(B.controller_data, B.common_data,A.collider.getCollisionMessage(B.controller_data,B.common_data))
+
+		# progressive bounding box
+		# check x first
+		Apos = A.getPos()
+		Adim = A.collider.getDim()
+		Aorig = A.collider.getOrig()
+		Bpos = B.getPos()
+		Bdim = B.collider.getDim()
+		Borig = B.collider.getOrig()
+
+
+		if (Apos.x - Aorig.x + Adim.x)> (Bpos.x -Borig.x): # Aright > Bleft
+#			log("1 "+A.common_data.name+str(Apos.x - Aorig.x + Adim.x)+ B.common_data.name +str(Bpos.x -Borig.x))
+			if (Bpos.x - Borig.x + Bdim.x) > (Apos.x - Aorig.x): # Bright < Aleft
+	#			log("2 " + A.common_data.name + str(Apos.x - Aorig.x) + B.common_data.name + str(Bpos.x - Borig.x + Bdim.x))
+				if (Apos.y - Aorig.y + Adim.y) > (Bpos.y - Borig.y):
+					if (Bpos.y - Borig.y + Bdim.y) > (Apos.y - Aorig.y):
+
+						if (Apos.z - Aorig.z + Adim.z) > (Bpos.z - Borig.z):
+							if (Bpos.z - Borig.z + Bdim.z) > (Apos.z - Aorig.z):
+								# we have a collision
+								if collision_debug:
+									log("Collide!")
+									# only entities with controllers can react to a collision
+									A.common_data.blink = True
+									B.common_data.blink = True
+								if A.controller:
+									A.controller.receiveCollision(A.controller_data, A.common_data, B.collider.getCollisionMessage(A.collider_data, A.common_data))
+								if B.controller:
+									B.controller.receiveCollision(B.controller_data, B.common_data,A.collider.getCollisionMessage(B.controller_data,B.common_data))
 
 
 
 class Collider(Component):
 	def __init__(self):
 		super(Collider, self).__init__()
+
+	def getDim(self):
+		return self.dim
+
+	def getOrig(self):
+		return self.orig

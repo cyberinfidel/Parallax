@@ -26,8 +26,7 @@ def log(msg, new_line=True):
 		print(msg, end='')
 
 # globals
-
-glob_debug = False
+graphics_debug = False
 
 # Individual images for use as frames for animations or as part of the background etc.
 # Based on SDL images for the moment with no atlassing etc.
@@ -60,7 +59,7 @@ class Image(object):
 		self.origin_x = origin_x
 		self.origin_y = origin_y
 
-	def draw(self, x, y, debug=glob_debug):
+	def draw(self, x, y, debug=graphics_debug):
 		sdl2.SDL_RenderCopy(self.renderer.renderer, self.texture, self.src,
 												sdl2.SDL_Rect(int(round(x))-self.origin_x, self.screen_height-int(round(y))-self.origin_y, self.width, self.height))
 
@@ -72,7 +71,7 @@ class Image(object):
 			sdl2.SDL_RenderDrawRect(self.renderer.renderer,sdl2.SDL_Rect(int(round(x))-self.origin_x, self.screen_height-int(round(y))-self.origin_y, self.width, self.height))
 
 			# collision debugging - TODO: get collision radii into here
-			sdl_gfx.filledCircleRGBA(self.renderer.renderer, int(round(x)), self.screen_height-int(round(y)), 10, 255,255,1,100 )
+			# sdl_gfx.filledCircleRGBA(self.renderer.renderer, int(round(x)), self.screen_height-int(round(y)), 10, 255,255,1,100 )
 
 
 class Shape(object):

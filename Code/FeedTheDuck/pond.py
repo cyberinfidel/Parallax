@@ -3,6 +3,7 @@ from collision import *
 from graphics import *
 
 
+
 def RockGraphics(renlayer):
 	return {
 			"Name": "Background",
@@ -25,14 +26,17 @@ class RockCollider(Collider):
 		# global static data to all of this class's components
 		self.radius = 15.0
 		self.mass = 10.0
+		self.orig = Vec3(12,4,16)
+		self.dim = Vec3(24,12,32)
 
 	def getRadius(self):
 		return self.radius
 
-	def getCollisionList(self):
+	def getCollisionShapesList(self):
 		# return a list of the shapes that need to be tested against
 		# in this case two circles = 2x position from origin and radii
-		pass
+		# these approximate the shape of the rock
+		return ((eShapes.sphere,Vec3(16,16,16),16),(eShapes.sphere,vec3(32,16,16),16))
 
 	def getCollisionMessage(self, data, common_data):
 		pass

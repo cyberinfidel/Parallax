@@ -75,6 +75,7 @@ class Prototype(game.Game):
 
 		rock_t = self.entity_manager.makeTemplate(graphics=rockgraphics, collider = rockcollider)
 
+		#for rock_pos in [Vec3(100,50,0)]:#,Vec3(0,0,0)):
 		for rock_pos in (Vec3(150,20,0), Vec3(180,20,0), Vec3(120,25,0), Vec3(90,20,0)
 		 , Vec3(60,20,0), Vec3(30,25,0), Vec3(35,50,0), Vec3(32,76,0)
 		 , Vec3(58,100,0), Vec3(91,114,0), Vec3(123,122,0), Vec3(156,120,0)
@@ -85,13 +86,12 @@ class Prototype(game.Game):
 
 
 		duck_t = self.entity_manager.makeTemplate(graphics=duckgraphics, controller=duckcontroller, collider=duckcollider)
-		duck = self.entity_manager.makeEntity(duck_t, "Duck")
+		self.duck = self.entity_manager.makeEntity(duck_t, "Duck")
 
-		duck.setPos(Vec3(160.0, 80.0, 0.0))
-		duck.setGamePad(self.input.getGamePad(0))
-		self.drawables.append(duck)
-		self.updatables.append(duck)
-		self.collision_manager.append(duck)
+		self.duck.setPos(Vec3(160.0, 80.0, 0.0))
+		self.duck.setGamePad(self.input.getGamePad(0))
+		self.drawables.append(self.duck)
+		self.updatables.append(self.duck)
 
 	###########
 	#  update #
@@ -106,7 +106,7 @@ class Prototype(game.Game):
 			if updatable.getState() == entity.eStates.dead:
 				self.updatables.pop(index)
 
-		self.collision_manager.doCollisions()
+		self.collision_manager.doCollisionsWithSingleEntity(self.duck)
 		self.collision_manager.cleanUpDead()
 
 
@@ -127,7 +127,8 @@ class Prototype(game.Game):
 
 	def draw(self):
 		for drawable in self.drawables:
-			drawable.draw()
+			if not drawable.common_data.blink:
+				drawable.draw()
 
 		self.renlayer.renderSorted()
 
