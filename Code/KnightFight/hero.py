@@ -225,6 +225,15 @@ def heroGraphics(renlayer):
 						["Graphics/Hero/HeroFallR 2.png", 18, 47, 1.0],
 					],
 			},
+			{
+				"Name": "Hero Shadow",
+				"AnimType": AnimSingle,
+				"State": eStates.shadow,
+				"Frames":
+					[
+						["Graphics/shadow.png", 18, 47, 0.3],
+					],
+			},
 		]
 
 	}

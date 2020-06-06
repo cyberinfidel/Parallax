@@ -41,7 +41,8 @@ class eStates(enum.IntEnum):
 	standLeft = 23
 	standUp = 24
 	standRight = 25
-	numStates = 26
+	shadow = 26
+	numStates = 27
 
 class Directions(enum.IntEnum):
 	down = 0

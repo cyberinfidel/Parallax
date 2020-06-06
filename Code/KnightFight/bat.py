@@ -5,11 +5,12 @@ from graphics import *
 def batGraphics(renlayer):
 	return {
 			"Name": "Simple Bat Flapping",
-			"Template": SingleAnim,
+			"Template": MultiAnim,
 			"RenderLayer": renlayer,
 			"Anims": [{
 				"Name": "Simple Bat Flapping",
 				"AnimType": AnimLoop,
+				"State": eStates.stationary,
 				"Frames":
 					[
 						["Graphics/Bat/Bat1.png", 24, 30, 0.5],
@@ -19,7 +20,17 @@ def batGraphics(renlayer):
 						["Graphics/Bat/Bat3.png", 24, 30, 0.1],
 						["Graphics/Bat/Bat2.png", 24, 30, 0.1],
 					],
-			}]
+			},
+			{
+				"Name": "Bat Shadow",
+				"AnimType": AnimSingle,
+				"State": eStates.shadow,
+				"Frames":
+					[
+						["Graphics/shadow.png", 18, 47, 0.3],
+					],
+			},
+			]
 		}
 
 class BatController(Controller):
@@ -32,6 +43,7 @@ class BatController(Controller):
 				pass
 			self.cooldown = 0
 			self.health = 50
+			self.vel = Vec3(0,0,0)
 
 	def __init__(self, data):
 		super(BatController, self).__init__()
@@ -40,6 +52,13 @@ class BatController(Controller):
 		# if doing something that can't be interrupted then countdown to end of it
 		if not self.coolDown(data, dt):
 			pass
+
+		basic_physics(common_data.pos,data.vel)
+
+		restrictToArena(common_data.pos, data.vel)
+
+		friction(data.vel)
+
 
 	def receiveCollision(self, data, common_data, collision_message):
 		pass

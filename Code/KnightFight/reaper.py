@@ -58,6 +58,15 @@ def reaperGraphics(renlayer):
 							["Graphics/Reaper/ReaperRunR12.png", 16, 38, 0.1],
 						],
 				},
+				{
+					"Name": "Reaper Shadow",
+					"AnimType": AnimSingle,
+					"State": eStates.shadow,
+					"Frames":
+						[
+							["Graphics/shadow.png", 18, 47, 0.3],
+						],
+				},
 			]
 		}
 

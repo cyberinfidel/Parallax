@@ -166,6 +166,10 @@ class KnightFight(game.Game):
 
 	def draw(self):
 		for drawable in self.drawables:
+			# draw shadows first
+			if drawable.graphics.hasShadow():
+				drawable.graphics.drawShadow(drawable.graphics_data, drawable.common_data)
+			# draw actual things
 			if not drawable.common_data.blink:
 				drawable.draw()
 

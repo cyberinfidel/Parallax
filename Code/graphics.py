@@ -98,6 +98,7 @@ class Drawable(object):
 	def getY(self):
 		return self.y
 
+
 class RenderImage(Drawable):
 	def __init__(self, image, x, y, z):
 		super(RenderImage, self).__init__(x,y,z)
@@ -204,6 +205,9 @@ class SingleImage(Component):
 	def draw(self, data, common_data):
 		return self.rl.queueImage(self.image, common_data.pos.x, common_data.pos.y, common_data.pos.z)
 
+	def hasShadow(self):
+		return False
+
 
 # graphics component for a single animation only
 class SingleAnim(Component):
@@ -226,6 +230,9 @@ class SingleAnim(Component):
 
 	def draw(self, data, common_data):
 		return self.rl.queueImage(self.anim.getCurrentImage(data), common_data.pos.x, common_data.pos.y, common_data.pos.z)
+
+	def hasShadow(self):
+		return False
 
 
 # graphics component for multiple animations
@@ -269,6 +276,18 @@ class MultiAnim(Component):
 			log(e)
 			exit(1)
 
+	def hasShadow(self):
+		return eStates.shadow in self.anims
+
+	def drawShadow(self, data, common_data):
+		try:
+			# todo: work out why z=0 doesn't work
+			# todo: shrink shadow the higher z is
+			return self.rl.queueImage(self.anims[eStates.shadow].getImage(0), common_data.pos.x, common_data.pos.y, -40)
+		except Exception as e:
+			log(e)
+			exit(1)
+
 
 
 #####################################################################
@@ -289,11 +308,15 @@ class Anim(object):
 	def getCurrentImage(self, data):
 		return self.frames[data.current_frame].image
 
+	def getImage(self, frame=0):
+		return self.frames[frame].image
+
 
 # trivial, single frame animation
 class AnimSingle(Anim):
-	def __init__(self):
+	def __init__(self, rl, frames):
 		super(AnimSingle, self).__init__()
+		self.addFrames(rl, frames)
 
 	def advanceAnim(self, time):
 		pass
