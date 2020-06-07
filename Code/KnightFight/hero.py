@@ -264,6 +264,18 @@ class HeroController(Controller):
 			self.invincible_cooldown = 2
 			self.invincible = self.invincible_cooldown
 
+	def strike(self, data, common_data,
+						 range,
+						 force,
+							damage,
+						 name
+							):
+		strike = common_data.game.requestNewEntity(entity_template=self.state_spawns[common_data.state],
+																							 pos=common_data.pos +Vec3(range,0,0), parent=common_data.entity,
+																							 name=name)
+		strike.collider_data.force = Vec3(force,0,0)
+		strike.collider_data.damage = damage
+		data.hero_struck = True
 
 	def update(self, data, common_data, dt):
 		# get input
@@ -276,10 +288,19 @@ class HeroController(Controller):
 		# cool downs in seconds
 		hero_big_attack_cool = 0.8
 		hero_big_attack_delay = 0.2	# note delays are when strike happens
+		hero_big_attack_force = 5
+		hero_big_attack_damage = 1
+		hero_big_attack_range = 24
 		hero_small_attack_cool = 0.3
 		hero_small_attack_delay = 0.1
+		hero_small_attack_force = 1
+		hero_small_attack_damage = 0.3
+		hero_small_attack_range = 12
 		hero_block_cool = 0.3
 		hero_block_delay = 0.2
+		hero_block_force = 4
+		hero_block_damage = 0
+		hero_block_range = 10
 		hero_run_cool = 0
 		hero_jump_cool = -1
 
@@ -310,33 +331,53 @@ class HeroController(Controller):
 			if data.cooldown<hero_big_attack_delay:
 				if not data.hero_struck:
 					if common_data.state == eStates.attackBigLeft:
-						#log("Thwack! (left)")
-						strike = common_data.game.requestNewEntity(entity_template=self.state_spawns[eStates.attackBigLeft], pos=common_data.pos-Vec3(20,0,0), parent = common_data.entity, name="Big Hit Left")
-						strike.collider_data.force = Vec3(-5,0,0)
-						data.hero_struck = True
+						self.strike(data, common_data,
+												range=-hero_big_attack_range,
+												force=-hero_big_attack_force,
+												damage=hero_big_attack_damage,
+												name="Big Hit Left"
+												)
 					elif common_data.state==eStates.attackBigRight:
-#						log("Thwack! (right)")
-						strike = common_data.game.requestNewEntity(entity_template=self.state_spawns[eStates.attackBigRight], pos=common_data.pos+Vec3(20,0,0), parent = common_data.entity, name="Big Hit Right")
-						strike.collider_data.force = Vec3(5,0,0)
-						data.hero_struck = True
+						self.strike(data, common_data,
+												range=hero_big_attack_range,
+												force=hero_big_attack_force,
+												damage=hero_big_attack_damage,
+												name="Big Hit Right"
+												)
 
 			if data.cooldown < hero_small_attack_delay:
 				if not data.hero_struck:
 					if common_data.state == eStates.attackSmallLeft:
-						log("small thwack! (left)")
-						data.hero_struck = True
+						self.strike(data, common_data,
+												range=-hero_small_attack_range,
+												force=-hero_small_attack_force,
+												damage=hero_small_attack_damage,
+												name="Small Hit Left"
+												)
 					elif common_data.state == eStates.attackSmallRight:
-						log("small thwack! (right)")
-						data.hero_struck = True
+						self.strike(data, common_data,
+												range=hero_small_attack_range,
+												force=hero_small_attack_force,
+												damage=hero_small_attack_damage,
+												name="Small Hit Right"
+												)
 
 			if data.cooldown < hero_block_delay:
 				if not data.hero_struck:
 					if common_data.state == eStates.blockLeft:
-						log("block! (left)")
-						data.hero_struck = True
+						self.strike(data, common_data,
+												range=-hero_block_range,
+												force=-hero_block_force,
+												damage=hero_block_damage,
+												name="Block Left"
+												)
 					elif common_data.state == eStates.blockRight:
-						log("block! (right)")
-						data.hero_struck = True
+						self.strike(data, common_data,
+												range=hero_block_range,
+												force=hero_block_force,
+												damage=hero_block_damage,
+												name="Block Right"
+												)
 
 
 		else:
@@ -498,7 +539,7 @@ class HeroCollider(Collider):
 # Strikes #
 ###########
 
-class BigHitController(Controller):
+class HitController(Controller):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -509,7 +550,7 @@ class BigHitController(Controller):
 			self.cooldown = 0.5
 
 	def __init__(self, data):
-		super(BigHitController, self).__init__()
+		super(HitController, self).__init__()
 
 	def update(self, data, common_data, dt):
 
@@ -527,7 +568,7 @@ class BigHitController(Controller):
 		# if you just tickle it, then you don't do much damageb
 		pass
 
-class BigHitCollider(Collider):
+class HitCollider(Collider):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -536,13 +577,12 @@ class BigHitCollider(Collider):
 				pass
 
 	def __init__(self, data):
-		super(BigHitCollider, self).__init__()
+		super(HitCollider, self).__init__()
 		# global static data to all of components
 		self.mass = 10.0
 		self.dim = Vec3(20,8,16)
 		self.orig = Vec3(10,4,0)
-		self.damage = 1
 
 	def getCollisionMessage(self, data, common_data):
-		return(Message(source=common_data.entity, damage=self.damage, force=data.force))
+		return(Message(source=common_data.entity, damage=data.damage, force=data.force))
 

@@ -57,13 +57,13 @@ class KnightFight(game.Game):
 		raincontroller = self.controller_manager.makeTemplate({"Template": RainController})
 		herocontroller = self.controller_manager.makeTemplate({"Template": HeroController})
 		bat_controller = self.controller_manager.makeTemplate({"Template": BatController})
-		big_hit_controller = self.controller_manager.makeTemplate({"Template":BigHitController})
+		hit_controller = self.controller_manager.makeTemplate({"Template":HitController})
 
 		# Collider Templates
 		hero_collider = self.collision_manager.makeTemplate({"Template": HeroCollider})
 		bat_collider =self.collision_manager.makeTemplate({"Template": BatCollider})
 		reaper_collider =self.collision_manager.makeTemplate({"Template": ReaperCollider})
-		big_hit_collider =self.collision_manager.makeTemplate({"Template": BigHitCollider})
+		hit_collider =self.collision_manager.makeTemplate({"Template": HitCollider})
 
 		#########################################
 		# Make entity templates from components #
@@ -73,9 +73,10 @@ class KnightFight(game.Game):
 		reaper_t = self.entity_manager.makeEntityTemplate(graphics=reaper_graphics, controller = reaper_controller, collider=reaper_collider)
 		self.rain_t = self.entity_manager.makeEntityTemplate( graphics=raingraphics, controller=raincontroller)
 		hero_t = self.entity_manager.makeEntityTemplate(graphics=herographics, controller=herocontroller, collider=hero_collider)
-		self.big_hit_t = self.entity_manager.makeEntityTemplate(graphics=False, controller=big_hit_controller, collider=big_hit_collider )
-		herocontroller.setStateSpawnTemplate(state= eStates.attackBigLeft, template = self.big_hit_t)
-		herocontroller.setStateSpawnTemplate(state= eStates.attackBigRight, template = self.big_hit_t)
+		# set up hero's attacks
+		self.hit_t = self.entity_manager.makeEntityTemplate(graphics=False, controller=hit_controller, collider=hit_collider )
+		for hit in (eStates.attackBigLeft,eStates.attackBigRight, eStates.attackSmallLeft, eStates.attackSmallRight, eStates.blockLeft, eStates.blockRight):
+			herocontroller.setStateSpawnTemplate(state= hit, template = self.hit_t)
 
 		####################################################################
 		# make some entities with all the templates that have been defined #
