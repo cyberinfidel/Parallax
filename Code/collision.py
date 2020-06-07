@@ -71,7 +71,7 @@ class CollisionManager(ComponentManager):
 								if A.controller:
 									A.controller.receiveCollision(A.controller_data, A.common_data, B.collider.getCollisionMessage(B.collider_data, B.common_data))
 								if B.controller:
-									B.controller.receiveCollision(B.controller_data, B.common_data,A.collider.getCollisionMessage(A.controller_data,A.common_data))
+									B.controller.receiveCollision(B.controller_data, B.common_data,A.collider.getCollisionMessage(A.collider_data,A.common_data))
 
 
 
