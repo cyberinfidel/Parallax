@@ -28,7 +28,7 @@ class KnightFight(game.Game):
 	def __init__(self):
 		super(KnightFight, self).__init__("Knight Fight", res_x= 320, res_y= 200, zoom = 3, fullscreen= False)
 
-		self.collision_manager = collision.CollisionManager() # TODO: should this be a ComponentManager() like the others?
+		self.collision_manager = collision.CollisionManager(self) # TODO: should this be a ComponentManager() like the others?
 
 		###################
 		# make components #
@@ -57,56 +57,64 @@ class KnightFight(game.Game):
 		raincontroller = self.controller_manager.makeTemplate({"Template": RainController})
 		herocontroller = self.controller_manager.makeTemplate({"Template": HeroController})
 		bat_controller = self.controller_manager.makeTemplate({"Template": BatController})
-#		strikecontroller = self.controller_manager.makeTemplate({"Template":StrikeController})
+		big_hit_controller = self.controller_manager.makeTemplate({"Template":BigHitController})
 
 		# Collider Templates
 		hero_collider = self.collision_manager.makeTemplate({"Template": HeroCollider})
 		bat_collider =self.collision_manager.makeTemplate({"Template": BatCollider})
 		reaper_collider =self.collision_manager.makeTemplate({"Template": ReaperCollider})
+		big_hit_collider =self.collision_manager.makeTemplate({"Template": BigHitCollider})
 
-		# make some entities with all the components that have been defined
-		back_t = self.entity_manager.makeEntityTemplate(game = self, graphics=backgraphics, controller=backcontroller)
+		#########################################
+		# Make entity templates from components #
+		#########################################
+		back_t = self.entity_manager.makeEntityTemplate(graphics=backgraphics, controller=backcontroller)
+		bat_t = self.entity_manager.makeEntityTemplate(graphics=bat_graphics, controller = bat_controller, collider=bat_collider)
+		reaper_t = self.entity_manager.makeEntityTemplate(graphics=reaper_graphics, controller = reaper_controller, collider=reaper_collider)
+		self.rain_t = self.entity_manager.makeEntityTemplate( graphics=raingraphics, controller=raincontroller)
+		hero_t = self.entity_manager.makeEntityTemplate(graphics=herographics, controller=herocontroller, collider=hero_collider)
+		self.big_hit_t = self.entity_manager.makeEntityTemplate(graphics=False, controller=big_hit_controller, collider=big_hit_collider )
+		herocontroller.setStateSpawnTemplate(state= eStates.attackBigLeft, template = self.big_hit_t)
+		herocontroller.setStateSpawnTemplate(state= eStates.attackBigRight, template = self.big_hit_t)
+
+		####################################################################
+		# make some entities with all the templates that have been defined #
+		####################################################################
 		back = self.entity_manager.makeEntity(back_t)
 		back.setPos(Vec3(0.0, 64.0, 0.0))
 
 		self.drawables.append(back)
 
 		# make bats
-		self.singlebats = []
+		self.bats = []
 		self.numbats = 5
-		singlebat_t = self.entity_manager.makeEntityTemplate(game= self,graphics=bat_graphics, controller = bat_controller, collider=bat_collider)
 		for n in range(0, self.numbats):
-			singlebat = self.entity_manager.makeEntity(singlebat_t, "Bat")
+			bat = self.entity_manager.makeEntity(bat_t, "Bat")
 			if n % 2 == 0:
-				singlebat.setPos(Vec3(rand_num(20), rand_num(64), rand_num(20)+40))
+				bat.setPos(Vec3(rand_num(20), rand_num(64), rand_num(20)+40))
 			else:
-				singlebat.setPos(Vec3(rand_num(20) + 250, rand_num(64), rand_num(20)+40))
-			self.singlebats.append(singlebat)
-			self.drawables.append(singlebat)
-			self.updatables.append(singlebat)
-			self.collision_manager.append(singlebat)
+				bat.setPos(Vec3(rand_num(20) + 250, rand_num(64), rand_num(20)+40))
+			self.drawables.append(bat)
+			self.updatables.append(bat)
+			self.collision_manager.append(bat)
 
 		# make reapers
-		self.singlereapers = []
+		self.reapers = []
 		self.numreapers = 5
-		singlereaper_t = self.entity_manager.makeEntityTemplate(game= self, graphics=reaper_graphics, controller = reaper_controller, collider=reaper_collider)
 		for n in range(0, self.numreapers):
-			singlereaper = self.entity_manager.makeEntity(singlereaper_t, "Reaper")
+			reaper = self.entity_manager.makeEntity(reaper_t, "Reaper")
 			if n % 2 == 0:
-				singlereaper.setPos(Vec3(rand_num(20), rand_num(64), 0))
+				reaper.setPos(Vec3(rand_num(20), rand_num(64), 0))
 			else:
-				singlereaper.setPos(Vec3(rand_num(20) + 250, rand_num(64), 0))
+				reaper.setPos(Vec3(rand_num(20) + 250, rand_num(64), 0))
 
-
-			self.singlebats.append(singlereaper)
-			self.drawables.append(singlereaper)
-			self.updatables.append(singlereaper)
-			self.collision_manager.append(singlereaper)
+			self.drawables.append(reaper)
+			self.updatables.append(reaper)
+			self.collision_manager.append(reaper)
 
 
 		# make rain
 		self.numrain = 0
-		self.rain_t = self.entity_manager.makeEntityTemplate(game= self, graphics=raingraphics, controller=raincontroller)
 		for n in range(0, self.numrain):
 			rain = self.entity_manager.makeEntity(self.rain_t, "Rain Drop")
 			rain.setState(RainController.state_fall)
@@ -114,14 +122,9 @@ class KnightFight(game.Game):
 			self.drawables.append(rain)
 			self.updatables.append(rain)
 
-		hero_t = self.entity_manager.makeEntityTemplate(game= self,graphics=herographics, controller=herocontroller, collider=hero_collider)
-
-		self.hero = self.entity_manager.makeEntity(hero_t, "Knight")
-
-		self.hero.setPos(Vec3(160.0, 60.0, 0.0))
+		# make hero
+		self.hero = self.requestNewEntity(entity_template=hero_t,pos=Vec3(160,60,0),parent=False, name="Hero")
 		self.hero.setGamePad(self.input.getGamePad(0))
-		self.drawables.append(self.hero)
-		self.updatables.append(self.hero)
 
 	###########
 	#  update #
@@ -151,6 +154,24 @@ class KnightFight(game.Game):
 		for index, drawable in reversed(list(enumerate(self.drawables))):
 			if drawable.getState() == entity.eStates.dead:
 				self.drawables.pop(index)
+
+	def requestNewEntity(self, entity_template, pos, parent, name=False):
+		new_entity = self.entity_manager.makeEntity(entity_template, name)
+		new_entity.setPos(pos)
+		new_entity.setParent(parent)
+		#	TODO: add generic names to entity templates
+		# if name:
+		# 	new_entity.name=name
+#		else:
+#			new_entity.name=entity_template.getName()
+
+		if new_entity.graphics:
+			self.drawables.append(new_entity)
+		if new_entity.controller:
+			self.updatables.append(new_entity)
+		if new_entity.collider:
+			self.collision_manager.append(new_entity)
+		return new_entity
 
 	###########
 	#  interp #

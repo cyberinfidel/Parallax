@@ -80,12 +80,13 @@ class Component(object):
 
 
 class EntityManager(object):
-	def __init__(self):
+	def __init__(self, game):
 		self.templates = []
 		self.entities = []
+		self.game = game
 
-	def makeEntityTemplate(self, game, graphics=False, controller=False, collider=False):
-		self.templates.append(EntityTemplate(game,graphics,controller, collider))
+	def makeEntityTemplate(self, graphics=False, controller=False, collider=False):
+		self.templates.append(EntityTemplate(self.game, graphics,controller, collider))
 		return len(self.templates)-1
 
 	def makeEntity(self, entity_t_index, name = False):
@@ -106,6 +107,7 @@ class Entity(object):
 		self.common_data.state = eStates.stationary
 		self.common_data.new_state = True
 		self.common_data.blink = False
+		self.common_data.parent = False
 
 		self.graphics = graphics
 		if self.graphics:
@@ -127,6 +129,12 @@ class Entity(object):
 
 	def getPos(self):
 		return self.common_data.pos
+
+	def setParent(self,parent):
+		self.common_data.parent = parent
+
+	def getParent(self):
+		return self.common_data.parent
 
 	def setState(self,state):
 		self.common_data.state = state
@@ -169,9 +177,10 @@ class EntityTemplate(object):
 
 
 class ComponentManager(object):
-	def __init__(self):
+	def __init__(self, game):
 		self.templates = []
 		self.data = []
+		self.game = game
 
 	def makeTemplate(self, template_data):
 		template = template_data['Template'](template_data)

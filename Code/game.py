@@ -57,9 +57,9 @@ class Game(object):
 		self.drawables = []
 		self.updatables = []
 
-		self.graphics_manager = entity.ComponentManager()
-		self.controller_manager = entity.ComponentManager()
-		self.entity_manager = entity.EntityManager()
+		self.graphics_manager = entity.ComponentManager(game=self)
+		self.controller_manager = entity.ComponentManager(game=self)
+		self.entity_manager = entity.EntityManager(game=self)
 
 
 

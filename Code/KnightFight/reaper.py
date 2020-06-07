@@ -80,7 +80,7 @@ class ReaperController(Controller):
 				pass
 
 			self.cooldown = -1
-			self.health = 50
+			self.health = 10
 			self.vel = Vec3(0,0,0)
 
 			common_data.state = eStates.stationary
@@ -92,6 +92,8 @@ class ReaperController(Controller):
 	def update(self, data, common_data, dt):
 		speed = 0.2
 		# if doing something that can't be interrupted then countdown to end of it
+		if data.health<=0:
+			self.setState(data, common_data, eStates.dead)
 		if not self.coolDown(data, dt):
 			if rand_num(10)==0:
 				self.setState(data, common_data, eStates.stationary)
@@ -129,8 +131,10 @@ class ReaperController(Controller):
 	def receiveCollision(self, data, common_data, message=False):
 #		log("Reaper hit " +common_data.name)
 		if message:
-			if message.source.common_data.name=="reaper":
-				log("Reaper hit reaper")
+			if message.source.common_data.name !="Reaper":
+				log("Reaper hit by " + message.source.common_data.name)
+			if message.damage:
+				data.health -=message.damage
 
 
 class ReaperCollider(Collider):

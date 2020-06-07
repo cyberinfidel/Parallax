@@ -245,6 +245,8 @@ class HeroController(Controller):
 		# values global to all heroes
 		self.invincible_states = (eStates.dead, eStates.fallLeft, eStates.fallRight, eStates.dead)
 
+		self.state_spawns = {}	# holds the templates that can be spawned from different hero states e.g. eStates.attackBigLeft makes the big attack entity
+
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -262,6 +264,7 @@ class HeroController(Controller):
 			self.invincible_cooldown = 2
 			self.invincible = self.invincible_cooldown
 
+
 	def update(self, data, common_data, dt):
 		# get input
 		hero_speed = 1.5
@@ -272,17 +275,15 @@ class HeroController(Controller):
 
 		# cool downs in seconds
 		hero_big_attack_cool = 0.8
-		hero_big_attack_delay = 0.5	# note delays are when strike happens
+		hero_big_attack_delay = 0.2	# note delays are when strike happens
 		hero_small_attack_cool = 0.3
-		hero_small_attack_delay = 0.2
+		hero_small_attack_delay = 0.1
 		hero_block_cool = 0.3
 		hero_block_delay = 0.2
 		hero_run_cool = 0
 		hero_jump_cool = -1
-		hero_stand_cool = 0
 
 		# flags
-		hero_struck = False
 
 		# things that can interrupt other actions happen here e.g. landing
 
@@ -307,10 +308,12 @@ class HeroController(Controller):
 			if data.cooldown<hero_big_attack_delay:
 				if not data.hero_struck:
 					if common_data.state == eStates.attackBigLeft:
-						log("Thwack! (left)")
+						#log("Thwack! (left)")
+						common_data.game.requestNewEntity(entity_template=self.state_spawns[eStates.attackBigLeft], pos=common_data.pos-Vec3(20,0,0), parent = common_data.entity, name="Big Hit Left")
 						data.hero_struck = True
 					elif common_data.state==eStates.attackBigRight:
-						log("Thwack! (right)")
+#						log("Thwack! (right)")
+						common_data.game.requestNewEntity(entity_template=self.state_spawns[eStates.attackBigRight], pos=common_data.pos+Vec3(20,0,0), parent = common_data.entity, name="Big Hit Right")
 						data.hero_struck = True
 
 			if data.cooldown < hero_small_attack_delay:
@@ -460,7 +463,8 @@ class HeroController(Controller):
 						self.updateState(data, common_data, eStates.fallRight, hero_fall_cool)
 					data.invincible = data.invincible_cooldown
 
-
+	def setStateSpawnTemplate(self, state, template):
+		self.state_spawns[state]=template
 
 class HeroCollider(Collider):
 
@@ -491,10 +495,6 @@ class HeroCollider(Collider):
 ###########
 
 class BigHitController(Controller):
-	def __init__(self, data):
-		super(BigHitController, self).__init__()
-
-class BigHitCollider(Collider):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -504,11 +504,27 @@ class BigHitCollider(Collider):
 
 			self.cooldown = 0.5
 
+	def __init__(self, data):
+		super(BigHitController, self).__init__()
+
 	def update(self, data, common_data, dt):
 
 		if not self.coolDown(data, dt):
 			# finished big hit - otherwise just hang around
 			common_data.state = eStates.dead
+
+	def receiveCollision(self, data, common_data, message=False):
+		# nothing actually affects a hit - it affects other things
+		pass
+
+
+class BigHitCollider(Collider):
+	class Data(object):
+		def __init__(self, common_data, init=False):
+			if init:
+				pass
+			else:
+				pass
 
 	def __init__(self, data):
 		super(BigHitCollider, self).__init__()

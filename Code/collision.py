@@ -10,8 +10,8 @@ class eShapes(enum.IntEnum):
 
 class CollisionManager(ComponentManager):
 
-	def __init__(self):
-		super(CollisionManager, self).__init__()
+	def __init__(self, game):
+		super(CollisionManager, self).__init__(game)
 		self.collidables = []
 
 	def append(self, item):
