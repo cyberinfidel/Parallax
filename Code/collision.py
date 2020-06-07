@@ -69,9 +69,9 @@ class CollisionManager(ComponentManager):
 									A.common_data.blink = True
 									B.common_data.blink = True
 								if A.controller:
-									A.controller.receiveCollision(A.controller_data, A.common_data, B.collider.getCollisionMessage(A.collider_data, A.common_data))
+									A.controller.receiveCollision(A.controller_data, A.common_data, B.collider.getCollisionMessage(B.collider_data, B.common_data))
 								if B.controller:
-									B.controller.receiveCollision(B.controller_data, B.common_data,A.collider.getCollisionMessage(B.controller_data,B.common_data))
+									B.controller.receiveCollision(B.controller_data, B.common_data,A.collider.getCollisionMessage(A.controller_data,A.common_data))
 
 
 
@@ -86,10 +86,11 @@ class Collider(Component):
 		return self.orig
 
 class Message():
-	def __init__(self, source, damage=0, damage_hero=0):
+	def __init__(self, source, damage=0, damage_hero=0, force=Vec3(0,0,0)):
 		self.source = source
 		self.damage = damage
 		self.damage_hero = damage_hero
+		self.force = force
 
 	def getCollisionMessage(self,data, common_data):
 		return Message(source=False)

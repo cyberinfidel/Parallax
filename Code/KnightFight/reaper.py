@@ -82,6 +82,7 @@ class ReaperController(Controller):
 			self.cooldown = -1
 			self.health = 10
 			self.vel = Vec3(0,0,0)
+			self.mass = 3
 
 			common_data.state = eStates.stationary
 			common_data.new_state = False
@@ -131,10 +132,12 @@ class ReaperController(Controller):
 	def receiveCollision(self, data, common_data, message=False):
 #		log("Reaper hit " +common_data.name)
 		if message:
-			if message.source.common_data.name !="Reaper":
-				log("Reaper hit by " + message.source.common_data.name)
-			if message.damage:
-				data.health -=message.damage
+			# if message.source.common_data.name !="Reaper":
+			# 	log("Reaper hit by " + message.source.common_data.name)
+#			if message.damage:
+			data.health -=message.damage
+#			if message.force:
+			data.vel += message.force/data.mass
 
 
 class ReaperCollider(Collider):

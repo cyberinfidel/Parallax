@@ -305,15 +305,19 @@ class HeroController(Controller):
 
 		if self.coolDown(data, dt):
 			# cooling down so can't do anything new
+
+			# check if something needs to happen during an action
 			if data.cooldown<hero_big_attack_delay:
 				if not data.hero_struck:
 					if common_data.state == eStates.attackBigLeft:
 						#log("Thwack! (left)")
-						common_data.game.requestNewEntity(entity_template=self.state_spawns[eStates.attackBigLeft], pos=common_data.pos-Vec3(20,0,0), parent = common_data.entity, name="Big Hit Left")
+						strike = common_data.game.requestNewEntity(entity_template=self.state_spawns[eStates.attackBigLeft], pos=common_data.pos-Vec3(20,0,0), parent = common_data.entity, name="Big Hit Left")
+						strike.collider_data.force = Vec3(-5,0,0)
 						data.hero_struck = True
 					elif common_data.state==eStates.attackBigRight:
 #						log("Thwack! (right)")
-						common_data.game.requestNewEntity(entity_template=self.state_spawns[eStates.attackBigRight], pos=common_data.pos+Vec3(20,0,0), parent = common_data.entity, name="Big Hit Right")
+						strike = common_data.game.requestNewEntity(entity_template=self.state_spawns[eStates.attackBigRight], pos=common_data.pos+Vec3(20,0,0), parent = common_data.entity, name="Big Hit Right")
+						strike.collider_data.force = Vec3(5,0,0)
 						data.hero_struck = True
 
 			if data.cooldown < hero_small_attack_delay:
@@ -514,9 +518,14 @@ class BigHitController(Controller):
 			common_data.state = eStates.dead
 
 	def receiveCollision(self, data, common_data, message=False):
-		# nothing actually affects a hit - it affects other things
-		pass
+		# if a hit hits then it lasts only for the remainder of that tick
+		# this avoids hitting the same thing multiple times
+		# common_data.state = eStates.dead
 
+		# otherwise the damage would need to be spread over multiple ticks
+		# The more ticks that the hit collides with an object th emore damage
+		# if you just tickle it, then you don't do much damageb
+		pass
 
 class BigHitCollider(Collider):
 	class Data(object):
@@ -532,7 +541,8 @@ class BigHitCollider(Collider):
 		self.mass = 10.0
 		self.dim = Vec3(20,8,16)
 		self.orig = Vec3(10,4,0)
+		self.damage = 1
 
 	def getCollisionMessage(self, data, common_data):
-		return(Message(source=common_data.entity, damage=10))
+		return(Message(source=common_data.entity, damage=self.damage, force=data.force))
 

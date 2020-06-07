@@ -41,6 +41,12 @@ class Vec3:
 		self.z -= addvector.z
 		return self
 
+	def __truediv__(self, div):
+		self.x /= div
+		self.y /= div
+		self.z /= div
+		return self
+
 	def __eq__(self, other):
 		return self.x==other.x and self.y==other.y and self.z==other.z
 
