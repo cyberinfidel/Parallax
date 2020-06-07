@@ -28,7 +28,7 @@ class KnightFight(game.Game):
 	def __init__(self):
 		super(KnightFight, self).__init__("Knight Fight", res_x= 320, res_y= 200, zoom = 3, fullscreen= False)
 
-		self.collision_manager = collision.CollisionManager(self) # TODO: should this be a ComponentManager() like the others?
+		self.collision_manager = collision.CollisionManager(game=self) # TODO: should this be a ComponentManager() like the others?
 
 		###################
 		# make components #

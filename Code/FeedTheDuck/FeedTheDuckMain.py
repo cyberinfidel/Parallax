@@ -26,11 +26,11 @@ def log(msg, new_line=True):
 
 
 
-class Prototype(game.Game):
+class FeedTheDuck(game.Game):
 	def __init__(self):
-		super(Prototype, self).__init__(title = "Feed the Duck", res_x= 320, res_y= 200, zoom = 3, fullscreen= False)
+		super(FeedTheDuck, self).__init__(title = "Feed the Duck", res_x= 320, res_y= 200, zoom = 3, fullscreen= False)
 
-		self.collision_manager = collision.CollisionManager() # TODO: should this be a ComponentManager() like the others?
+		self.collision_manager = collision.CollisionManager(game=self) # TODO: should this be a ComponentManager() like the others?
 
 		###################
 		# make components #
@@ -68,12 +68,12 @@ class Prototype(game.Game):
 		)
 
 		# make some entities with components
-		back_t = self.entity_manager.makeEntityTemplate(game=self, graphics=backgraphics)
+		back_t = self.entity_manager.makeEntityTemplate(graphics=backgraphics)
 		back = self.entity_manager.makeEntity(back_t)
 		self.drawables.append(back)
 		back.setPos(Vec3(0,135,0))
 
-		rock_t = self.entity_manager.makeEntityTemplate(game=self,graphics=rockgraphics, collider = rockcollider)
+		rock_t = self.entity_manager.makeEntityTemplate(graphics=rockgraphics, collider = rockcollider)
 
 		#for rock_pos in [Vec3(100,50,0)]:#,Vec3(0,0,0)):
 		for rock_pos in (Vec3(150,20,0), Vec3(180,20,0), Vec3(120,25,0), Vec3(90,20,0)
@@ -85,7 +85,7 @@ class Prototype(game.Game):
 			self.addObstacle(rock_pos, rock_t, self.collision_manager, self.drawables)
 
 
-		duck_t = self.entity_manager.makeEntityTemplate(game=self,graphics=duckgraphics, controller=duckcontroller, collider=duckcollider)
+		duck_t = self.entity_manager.makeEntityTemplate(graphics=duckgraphics, controller=duckcontroller, collider=duckcollider)
 		self.duck = self.entity_manager.makeEntity(duck_t, "Duck")
 
 		self.duck.setPos(Vec3(160.0, 80.0, 0.0))
@@ -140,7 +140,7 @@ class Prototype(game.Game):
 
 
 def run():
-	game = Prototype()
+	game = FeedTheDuck()
 	game.run()
 	return 0
 
