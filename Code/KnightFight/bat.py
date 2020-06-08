@@ -97,6 +97,7 @@ class BatController(Controller):
 			if data.health <= 0:
 				self.setState(data, common_data, eStates.dead)
 				return
+			self.setState(data, common_data, eStates.stationary)
 			if rand_num(10)==0:
 #				self.setState(data, common_data, eStates.stationary)
 				data.vel = Vec3(0,0,0)

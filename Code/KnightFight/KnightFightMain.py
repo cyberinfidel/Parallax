@@ -88,7 +88,7 @@ class KnightFight(game.Game):
 
 		# make bats
 		self.bats = []
-		self.numbats = 10
+		self.numbats = 1
 		for n in range(0, self.numbats):
 			bat = self.entity_manager.makeEntity(bat_t, "Bat")
 			if n % 2 == 0:
@@ -101,7 +101,7 @@ class KnightFight(game.Game):
 
 		# make reapers
 		self.reapers = []
-		self.numreapers = 10
+		self.numreapers = 0
 		for n in range(0, self.numreapers):
 			reaper = self.entity_manager.makeEntity(reaper_t, "Reaper")
 			if n % 2 == 0:
