@@ -153,12 +153,12 @@ class ReaperCollider(Collider):
 		# global static data to all of ReaperCollider components
 		self.radius = 10.0
 		self.damage = 1
-		self.dim = Vec3(20,8,16)
-		self.orig = Vec3(10,4,0)
+		self.dim = Vec3(20,10,16)
+		self.orig = Vec3(10,2,0)
 
 	def getRadius(self):
 		return self.radius
 
 	def getCollisionMessage(self, data, common_data):
-		return(Message(source=common_data.entity,damage=0,damage_hero=1))
+		return(Message(source=common_data.entity,damage=0,damage_hero=1, force=Vec3(0,0,0)))
 

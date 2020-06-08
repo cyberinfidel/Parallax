@@ -22,19 +22,12 @@ class CollisionManager(ComponentManager):
 		return pop(index)
 
 	def doCollisions(self):
-		for A in self.collidables:
-			A.common_data.blink = False
-
 		for indexA, colliderA in enumerate(self.collidables):
 			for indexB, colliderB in enumerate(self.collidables):
 				if indexB>indexA:
 					self.checkCollide(colliderA, colliderB)
 
 	def doCollisionsWithSingleEntity(self, entity):
-		if collision_debug:
-			for A in self.collidables:
-				A.common_data.blink = False
-
 		for colliderA in self.collidables:
 					self.checkCollide(colliderA, entity)
 
@@ -63,11 +56,6 @@ class CollisionManager(ComponentManager):
 						if (Apos.z - Aorig.z + Adim.z) > (Bpos.z - Borig.z):
 							if (Bpos.z - Borig.z + Bdim.z) > (Apos.z - Aorig.z):
 								# we have a collision
-								if collision_debug:
-									log("Collide!")
-									# only entities with controllers can react to a collision
-									A.common_data.blink = True
-									B.common_data.blink = True
 								if A.controller:
 									A.controller.receiveCollision(A.controller_data, A.common_data, B.collider.getCollisionMessage(B.collider_data, B.common_data))
 								if B.controller:

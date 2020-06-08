@@ -146,12 +146,11 @@ class KnightFight(game.Game):
 		self.collision_manager.doCollisions() # collisions between monsters
 		#self.collision_manager.doCollisionsWithSingleEntity(self.hero) # collisions with hero
 
+		# clean up dead entities
 		for index, updatable in reversed(list(enumerate(self.updatables))):
 			if updatable.getState() == entity.eStates.dead:
 				self.updatables.pop(index)
-
 		self.collision_manager.cleanUpDead()
-
 		for index, drawable in reversed(list(enumerate(self.drawables))):
 			if drawable.getState() == entity.eStates.dead:
 				self.drawables.pop(index)

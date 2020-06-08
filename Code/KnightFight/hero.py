@@ -234,6 +234,28 @@ def heroGraphics(renlayer):
 						["Graphics/shadow.png", 16, 4, 0.3],
 					],
 			},
+			{
+				"Name": "Hero hurt Left",
+				"AnimType": AnimNoLoop,
+				"State": eStates.hurtLeft,
+				"Frames":
+					[
+						["Graphics/Hero/HeroStandL.png", 48, 47, 0.1],
+						["Graphics/Hero/HeroFallL 1.png", 18, 47, 0.3],
+						["Graphics/Hero/HeroBlockL 1.png", 24, 39, 0.1],
+					],
+			},
+			{
+				"Name": "Hero hurt Right",
+				"AnimType": AnimNoLoop,
+				"State": eStates.hurtRight,
+				"Frames":
+					[
+						["Graphics/Hero/HeroStandR.png", 48, 47, 0.1],
+						["Graphics/Hero/HeroFallR 1.png", 18, 47, 0.3],
+						["Graphics/Hero/HeroBlockR 1.png", 24, 39, 0.1],
+					],
+			},
 		]
 
 	}
@@ -259,7 +281,7 @@ class HeroController(Controller):
 			self.jump = False
 			self.attack = False
 			self.facing = Directions.down
-			self.health = 5
+			self.health = 3
 			common_data.state = eStates.standDown
 			self.invincible_cooldown = 2
 			self.invincible = self.invincible_cooldown
@@ -312,6 +334,12 @@ class HeroController(Controller):
 			data.health = -1
 			log("Dead!")
 			return
+
+		if data.invincible > 0:
+			common_data.blink = (int(data.invincible*8)%2)==0
+			data.invincible -= dt
+		else:
+			common_data.blink=False
 
 		# ground vs in the air
 		if common_data.pos.z < 0.0 + global_tolerance:
@@ -382,11 +410,6 @@ class HeroController(Controller):
 
 		else:
 			data.hero_struck=False
-			if data.invincible > 0:
-				common_data.blink = (int(data.invincible*16)%2)==0
-				data.invincible -= dt
-			else:
-				common_data.blink=False
 			# not doing anything that's cooling down so can do something else
 			if data.vel.magsqhoriz() < hero_stop:
 				# stopped so react automatically - most likely idle, but only if stationary
@@ -495,6 +518,7 @@ class HeroController(Controller):
 		restrictToArena(common_data.pos, data.vel)
 
 	def receiveCollision(self, data, common_data, message=False):
+		hero_hurt_cool = 1
 		hero_fall_cool = 2
 		# log("Hero hit: "+message["name"])
 		if message:
@@ -503,10 +527,20 @@ class HeroController(Controller):
 					and common_data.state not in self.invincible_states
 					and not data.invincible>0):
 					if data.facing == Directions.left:
-						self.updateState(data, common_data, eStates.fallLeft, hero_fall_cool)
+						data.vel += Vec3(3,0,0)
+						if data.health <= 0:
+							self.updateState(data, common_data, eStates.fallLeft, hero_fall_cool)
+						else:
+							self.updateState(data, common_data, eStates.hurtLeft, hero_hurt_cool)
+
 					else:
-						self.updateState(data, common_data, eStates.fallRight, hero_fall_cool)
+						data.vel += Vec3(-3,0,0)
+						if data.health <= 0:
+							self.updateState(data, common_data, eStates.fallRight, hero_fall_cool)
+						else:
+							self.updateState(data, common_data, eStates.hurtRight, hero_hurt_cool)
 					data.invincible = data.invincible_cooldown
+					data.health-=message.damage_hero
 
 	def setStateSpawnTemplate(self, state, template):
 		self.state_spawns[state]=template
@@ -579,7 +613,6 @@ class HitCollider(Collider):
 	def __init__(self, data):
 		super(HitCollider, self).__init__()
 		# global static data to all of components
-		self.mass = 10.0
 		self.dim = Vec3(20,8,16)
 		self.orig = Vec3(10,4,0)
 
