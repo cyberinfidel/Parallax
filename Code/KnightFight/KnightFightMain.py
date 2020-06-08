@@ -88,7 +88,7 @@ class KnightFight(game.Game):
 
 		# make bats
 		self.bats = []
-		self.numbats = 5
+		self.numbats = 10
 		for n in range(0, self.numbats):
 			bat = self.entity_manager.makeEntity(bat_t, "Bat")
 			if n % 2 == 0:
@@ -101,13 +101,13 @@ class KnightFight(game.Game):
 
 		# make reapers
 		self.reapers = []
-		self.numreapers = 5
+		self.numreapers = 10
 		for n in range(0, self.numreapers):
 			reaper = self.entity_manager.makeEntity(reaper_t, "Reaper")
 			if n % 2 == 0:
-				reaper.setPos(Vec3(rand_num(20), rand_num(64), 0))
+				reaper.setPos(Vec3(rand_num(40), rand_num(100), 0))
 			else:
-				reaper.setPos(Vec3(rand_num(20) + 250, rand_num(64), 0))
+				reaper.setPos(Vec3(rand_num(40) + 250, rand_num(100), 0))
 
 			self.drawables.append(reaper)
 			self.updatables.append(reaper)
@@ -172,6 +172,9 @@ class KnightFight(game.Game):
 		if new_entity.collider:
 			self.collision_manager.append(new_entity)
 		return new_entity
+
+	def requestTarget(self,pos):
+		return self.hero.common_data.pos
 
 	###########
 	#  interp #

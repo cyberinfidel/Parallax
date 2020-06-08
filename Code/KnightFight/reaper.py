@@ -59,6 +59,42 @@ def reaperGraphics(renlayer):
 						],
 				},
 				{
+					"Name": "Reaper Hurt L",
+					"AnimType": AnimLoop,
+					"State": eStates.hurtLeft,
+					"Frames":
+						[
+							["Graphics/Reaper/ReaperL3.png", 16, 38, 0.3],
+						],
+				},
+				{
+					"Name": "Reaper Hurt R",
+					"AnimType": AnimLoop,
+					"State": eStates.hurtRight,
+					"Frames":
+						[
+							["Graphics/Reaper/ReaperR3.png", 16, 38, 0.3],
+						],
+				},
+				{
+					"Name": "Reaper Fall L",
+					"AnimType": AnimLoop,
+					"State": eStates.fallLeft,
+					"Frames":
+						[
+							["Graphics/Reaper/ReaperFallL.png", 24, 24, 0.3],
+						],
+				},
+				{
+					"Name": "Reaper Fall R",
+					"AnimType": AnimLoop,
+					"State": eStates.fallRight,
+					"Frames":
+						[
+							["Graphics/Reaper/ReaperFallR.png", 24, 24, 0.3],
+						],
+				},
+				{
 					"Name": "Reaper Shadow",
 					"AnimType": AnimSingle,
 					"State": eStates.shadow,
@@ -83,6 +119,7 @@ class ReaperController(Controller):
 			self.health = 10
 			self.vel = Vec3(0,0,0)
 			self.mass = 3
+			self.facing = Directions.right
 
 			common_data.state = eStates.stationary
 			common_data.new_state = False
@@ -91,37 +128,37 @@ class ReaperController(Controller):
 		super(ReaperController, self).__init__()
 
 	def update(self, data, common_data, dt):
-		speed = 0.2
+		speed = 0.3
 		# if doing something that can't be interrupted then countdown to end of it
-		if data.health<=0:
-			self.setState(data, common_data, eStates.dead)
-		if not self.coolDown(data, dt):
+
+		if self.coolDown(data, dt):
+			pass
+		else:
+			if data.health <= 0:
+				self.setState(data, common_data, eStates.dead)
+				return
 			if rand_num(10)==0:
 				self.setState(data, common_data, eStates.stationary)
 				data.vel = Vec3(0,0,0)
 				data.cooldown = rand_num(1) + 2
-			elif common_data.state==eStates.stationary:
-				if rand_num(1)==0:
-					self.setState(data,common_data, eStates.runLeft)
-				else:
-					self.setState(data,common_data, eStates.runRight)
-
-			if common_data.state==eStates.runRight:
-				if rand_num(10)==0:
-					# turn
+			else:
+				# chase hero
+				target = common_data.game.requestTarget(common_data.pos)
+				if(target.x<common_data.pos.x):
 					self.setState(data, common_data, eStates.runLeft)
 					data.vel = Vec3(-speed, 0, 0)
+					data.facing = Directions.left
 				else:
-					data.vel = Vec3(speed, 0, 0)
-				data.cooldown = 0.5
-			elif common_data.state == eStates.runLeft:
-				if rand_num(10) == 0:
-					# turn
 					self.setState(data, common_data, eStates.runRight)
 					data.vel = Vec3(speed, 0, 0)
+					data.facing = Directions.right
+				if(target.y<common_data.pos.y):
+					data.vel.y = -speed
 				else:
-					data.vel = Vec3(-speed, 0, 0)
+					data.vel.y = speed
+
 				data.cooldown = 0.5
+
 
 		basic_physics(common_data.pos,data.vel)
 
@@ -134,10 +171,21 @@ class ReaperController(Controller):
 		if message:
 			# if message.source.common_data.name !="Reaper":
 			# 	log("Reaper hit by " + message.source.common_data.name)
-#			if message.damage:
-			data.health -=message.damage
-#			if message.force:
 			data.vel += message.force/data.mass
+			if message.damage>0:
+				hurt_cool = 1
+				fall_cool = 2
+				data.health -= message.damage
+				if data.facing == Directions.left:
+					if data.health <= 0:
+						self.setState(data, common_data, eStates.fallLeft, fall_cool)
+					else:
+						self.setState(data, common_data, eStates.hurtLeft, hurt_cool)
+				else:
+					if data.health <= 0:
+						self.setState(data, common_data, eStates.fallRight, fall_cool)
+					else:
+						self.setState(data, common_data, eStates.hurtRight, hurt_cool)
 
 
 class ReaperCollider(Collider):
@@ -160,5 +208,9 @@ class ReaperCollider(Collider):
 		return self.radius
 
 	def getCollisionMessage(self, data, common_data):
-		return(Message(source=common_data.entity,damage=0,damage_hero=1, force=Vec3(0,0,0)))
+		if common_data.entity.controller_data.health>0:
+			return(Message(source=common_data.entity,damage=0,damage_hero=1, force=Vec3(0,0,0)))
+		else:
+		 	return(Message(source=common_data.entity))
+
 

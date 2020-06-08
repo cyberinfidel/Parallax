@@ -278,6 +278,7 @@ class HeroController(Controller):
 
 			self.cooldown = -1
 			self.vel = Vec3(0.0,0.0,0.0)
+			self.mass = 1
 			self.jump = False
 			self.attack = False
 			self.facing = Directions.down
@@ -330,10 +331,6 @@ class HeroController(Controller):
 
 		# things that can interrupt other actions happen here e.g. landing
 
-		if data.health<0:
-			data.health = -1
-			log("Dead!")
-			return
 
 		if data.invincible > 0:
 			common_data.blink = (int(data.invincible*8)%2)==0
@@ -354,6 +351,9 @@ class HeroController(Controller):
 
 		if self.coolDown(data, dt):
 			# cooling down so can't do anything new
+			if data.health < 0:
+				self.setState(data, common_data, eStates.dead)
+				return
 
 			# check if something needs to happen during an action
 			if data.cooldown<hero_big_attack_delay:
@@ -518,29 +518,30 @@ class HeroController(Controller):
 		restrictToArena(common_data.pos, data.vel)
 
 	def receiveCollision(self, data, common_data, message=False):
-		hero_hurt_cool = 1
-		hero_fall_cool = 2
 		# log("Hero hit: "+message["name"])
 		if message:
-			if(message.damage_hero):
-				if (message.damage_hero>0
-					and common_data.state not in self.invincible_states
+			if(message.damage_hero>0):
+				data.vel += message.force / data.mass
+				if (common_data.state not in self.invincible_states
 					and not data.invincible>0):
+					# hero has been hit
+					data.health-=message.damage_hero
+					hurt_cool = 1
+					fall_cool = 5
 					if data.facing == Directions.left:
 						data.vel += Vec3(3,0,0)
 						if data.health <= 0:
-							self.updateState(data, common_data, eStates.fallLeft, hero_fall_cool)
+							self.setState(data, common_data, eStates.fallLeft, fall_cool)
 						else:
-							self.updateState(data, common_data, eStates.hurtLeft, hero_hurt_cool)
+							self.setState(data, common_data, eStates.hurtLeft, hurt_cool)
 
 					else:
 						data.vel += Vec3(-3,0,0)
 						if data.health <= 0:
-							self.updateState(data, common_data, eStates.fallRight, hero_fall_cool)
+							self.setState(data, common_data, eStates.fallRight, fall_cool)
 						else:
-							self.updateState(data, common_data, eStates.hurtRight, hero_hurt_cool)
+							self.setState(data, common_data, eStates.hurtRight, hurt_cool)
 					data.invincible = data.invincible_cooldown
-					data.health-=message.damage_hero
 
 	def setStateSpawnTemplate(self, state, template):
 		self.state_spawns[state]=template
