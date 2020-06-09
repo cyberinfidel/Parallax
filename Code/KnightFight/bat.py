@@ -4,13 +4,13 @@ from graphics import *
 
 def batGraphics(renlayer):
 	return {
-			"Name": "Simple Bat Flapping",
+			"Name": "Bat",
 			"Template": MultiAnim,
 			"RenderLayer": renlayer,
 			"Anims":
 				[
 			{
-				"Name": "Simple Bat Flapping",
+				"Name": "Bat Flapping",
 				"AnimType": AnimLoop,
 				"State": eStates.stationary,
 				"Frames":
