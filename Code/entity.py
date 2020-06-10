@@ -44,7 +44,9 @@ class eStates(enum.IntEnum):
 	hurtLeft = 26
 	hurtRight = 27
 	shadow = 28
-	numStates = 29
+	appear = 29
+	fade = 30
+	numStates = 31
 
 class Directions(enum.IntEnum):
 	down = 0

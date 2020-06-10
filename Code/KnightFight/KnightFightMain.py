@@ -10,7 +10,6 @@ import entity
 import controller
 import collision
 import graphics
-import game
 from vector import *
 
 #import Knight Fight files
@@ -34,13 +33,13 @@ class KnightFight(game.Game):
 		# make components #
 		###################
 		# Graphics Templates
-
 		backgraphics = self.graphics_manager.makeTemplate(backGraphics(self.renlayer))
 		bat_graphics = self.graphics_manager.makeTemplate(batGraphics(self.renlayer))
 		reaper_graphics = self.graphics_manager.makeTemplate(reaperGraphics(self.renlayer))
 		reaper_controller = self.controller_manager.makeTemplate({"Template": ReaperController})
 		raingraphics = self.graphics_manager.makeTemplate(rainGraphics(self.renlayer))
 		herographics = self.graphics_manager.makeTemplate( heroGraphics(self.renlayer))
+		heartgraphics = self.graphics_manager.makeTemplate( heartGraphics(self.renlayer))
 
 		# Controller Templates
 		backcontroller = self.controller_manager.makeTemplate(
@@ -58,6 +57,7 @@ class KnightFight(game.Game):
 		herocontroller = self.controller_manager.makeTemplate({"Template": HeroController})
 		bat_controller = self.controller_manager.makeTemplate({"Template": BatController})
 		hit_controller = self.controller_manager.makeTemplate({"Template":HitController})
+		heart_controller = self.controller_manager.makeTemplate({"Template":HeartController})
 
 		# Collider Templates
 		hero_collider = self.collision_manager.makeTemplate({"Template": HeroCollider})
@@ -77,6 +77,9 @@ class KnightFight(game.Game):
 		self.hit_t = self.entity_manager.makeEntityTemplate(graphics=False, controller=hit_controller, collider=hit_collider )
 		for hit in (eStates.attackBigLeft,eStates.attackBigRight, eStates.attackSmallLeft, eStates.attackSmallRight, eStates.blockLeft, eStates.blockRight):
 			herocontroller.setStateSpawnTemplate(state= hit, template = self.hit_t)
+
+		# info bar
+		self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heartgraphics, controller=heart_controller)
 
 		####################################################################
 		# make some entities with all the templates that have been defined #
@@ -127,13 +130,23 @@ class KnightFight(game.Game):
 		self.hero = self.requestNewEntity(entity_template=hero_t,pos=Vec3(160,60,0),parent=False, name="Hero")
 		self.hero.setGamePad(self.input.getGamePad(0))
 
+		# set up life indicator in top left
+		for n in range(1,6):
+			heart = self.entity_manager.makeEntity(self.heart_t, "Heart")
+			heart.setPos(Vec3(10*n,0,190))
+			self.drawables.append(heart)
+			self.updatables.append(heart)
+			heart.common_data.parent = self.hero
+			heart.common_data.state = eStates.fade
+			heart.controller_data.health_num = n
+
 	###########
 	#  update #
 	###########
 
 	def update(self, dt):
 		# rain
-		if (rand_num(10)==0):
+		if (rand_num(10)==0) and False:
 			rain = self.entity_manager.makeEntity(self.rain_t)
 			rain.setState(RainController.state_fall)
 			rain.setPos(Vec3(rand_num(320), rand_num(64), 200))
@@ -155,7 +168,11 @@ class KnightFight(game.Game):
 			if drawable.getState() == entity.eStates.dead:
 				self.drawables.pop(index)
 
-	def requestNewEntity(self, entity_template, pos, parent, name=False):
+	def requestNewEntity(self,
+											 entity_template,
+											 pos,
+											 parent,
+											 name=False):
 		new_entity = self.entity_manager.makeEntity(entity_template, name)
 		new_entity.setPos(pos)
 		new_entity.setParent(parent)

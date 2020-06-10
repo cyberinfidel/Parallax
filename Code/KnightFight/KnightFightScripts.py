@@ -7,6 +7,7 @@ from KnightFight.hero import *
 from KnightFight.bat import *
 from KnightFight.rain import *
 from KnightFight.reaper import *
+from KnightFight.heart import *
 
 
 

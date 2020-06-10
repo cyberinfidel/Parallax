@@ -318,7 +318,7 @@ class AnimSingle(Anim):
 		super(AnimSingle, self).__init__()
 		self.addFrames(rl, frames)
 
-	def advanceAnim(self, time):
+	def advanceAnim(self,anim_instance, time):
 		pass
 
 
@@ -352,8 +352,9 @@ class AnimNoLoop(Anim):
 
 # simple choose a frame at random animation
 class AnimRandom(Anim):
-	def __init__(self):
+	def __init__(self, rl, frames):
 		super(AnimRandom, self).__init__()
+		self.addFrames(rl, frames)
 
 	def advanceAnim(self, anim_instance, time):
 		anim_instance.current_time += time

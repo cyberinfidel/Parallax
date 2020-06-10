@@ -352,7 +352,8 @@ class HeroController(Controller):
 		if self.coolDown(data, dt):
 			# cooling down so can't do anything new
 			if data.health < 0:
-				self.setState(data, common_data, eStates.dead)
+				# self.setState(data, common_data, eStates.dead)
+				data.health = 5
 				return
 
 			# check if something needs to happen during an action
