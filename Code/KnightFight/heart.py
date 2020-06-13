@@ -1,6 +1,6 @@
-from controller import *
-from collision import *
-from graphics import *
+from entity import eStates
+from controller import Controller
+from graphics import MultiAnim, AnimRandom, AnimNoLoop
 
 def heartGraphics(renlayer):
 	return{
@@ -53,7 +53,7 @@ def heartGraphics(renlayer):
 				]
 	}
 
-class HeartController(Controller):
+class HeartIndicatorController(Controller):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -65,10 +65,9 @@ class HeartController(Controller):
 			self.health_num = 0
 
 	def __init__(self, data):
-		super(HeartController, self).__init__()
+		super(HeartIndicatorController, self).__init__()
 
 	def update(self, data, common_data, dt):
-		speed = 0.3
 		if not self.coolDown(data, dt):
 			# cooling down so can't do anything new
 			# if hero health is greater or equal to this heart's number

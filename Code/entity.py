@@ -5,7 +5,7 @@ import enum
 import sdl2
 
 # my file import
-from vector import *
+from vector import Vec3
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -48,7 +48,7 @@ class eStates(enum.IntEnum):
 	fade = 30
 	numStates = 31
 
-class Directions(enum.IntEnum):
+class eDirections(enum.IntEnum):
 	down = 0
 	left = 1
 	up = 2

@@ -6,7 +6,7 @@ import ctypes
 # import sdl libs
 import sdl2.ext
 import sdl2.sdlimage as sdl_image
-import sdl2.sdlgfx as sdl_gfx
+# import sdl2.sdlgfx as sdl_gfx
 
 
 # initialise for loading PNGs and JPGs
@@ -14,8 +14,8 @@ sdl_image.IMG_Init(sdl_image.IMG_INIT_PNG)
 sdl_image.IMG_Init(sdl_image.IMG_INIT_JPG)
 
 # import my files
-from entity import *
-from vector import *
+from entity import eStates, Component
+from vector import Vec3, rand_num
 
 
 # disable to remove logging

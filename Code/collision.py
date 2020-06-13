@@ -1,4 +1,6 @@
-from entity import *
+import enum
+from entity import ComponentManager, Component, eStates
+from vector import Vec3
 
 # globals
 collision_debug = False

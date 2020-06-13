@@ -1,6 +1,5 @@
-from controller import *
-from collision import *
-from graphics import *
+from controller import Controller
+from graphics import SingleImage
 
 
 class BackgroundController(Controller):
@@ -15,7 +14,7 @@ class BackgroundController(Controller):
 
 		return collision
 
-def backGraphics(renlayer):
+def backgroundGraphics(renlayer):
 	return {
 			"Name": "Background",
 			"Template": SingleImage,

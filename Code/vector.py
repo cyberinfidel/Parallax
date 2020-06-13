@@ -145,33 +145,33 @@ def rand_num(stop):
 def runTests():
 	a = Vec3(1,1,1)
 	b = Vec3(1,2,3)
-	z = Vec3(0,0,0)
+	# z = Vec3(0,0,0)
 
-	result=0
+	fails=[]
 
 	# test 1
 	if not (a+b)==Vec3(2,3,4):
 		log("Fail in test 1: a+b")
-		result +=1
+		fails.append(1)
 
 	# test 2
 	if not (b-a)==Vec3(0,1,2):
 		log("Fail in test 2: b-a")
-		result +=1
+		fails.append(2)
 
 	# test 3
 	b+=a
 	if not (b==Vec3(2,3,4)):
 		log("Fail in test 3: b+=a")
-		result +=1
+		fails.append(3)
 
 	# test 4
 	b-=Vec3(1,1,1)
 	if not (b==Vec3(1,2,3)):
 		log("Fail in test 4: b-=Vec3(1,1,1)")
-		result +=1
+		fails.append(4)
 
-	return result
+	return fails
 
 if __name__ == "__main__":
 	sys.exit(runTests())

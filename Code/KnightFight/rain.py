@@ -1,6 +1,7 @@
-from controller import *
-from collision import *
-from graphics import *
+from entity import eStates
+from controller import Controller, basic_physics, restrictToArena
+from graphics import AnimNoLoop, MultiAnim
+from vector import Vec3
 
 def rainGraphics(renlayer):
 	return {

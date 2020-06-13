@@ -1,6 +1,8 @@
-from controller import *
-from collision import *
-from graphics import *
+from entity import eStates, eDirections
+from vector import Vec3, rand_num
+from controller import Controller, basic_physics, restrictToArena, friction
+from collision import Collider, Message
+from graphics import AnimLoop, MultiAnim, AnimSingle
 
 def batGraphics(renlayer):
 	return {
@@ -108,11 +110,11 @@ class BatController(Controller):
 				if(target.x<common_data.pos.x):
 #					self.setState(data, common_data, eStates.runLeft)
 					data.vel = Vec3(-speed, 0, 0)
-					data.facing = Directions.left
+					data.facing = eDirections.left
 				else:
 #					self.setState(data, common_data, eStates.runRight)
 					data.vel = Vec3(speed, 0, 0)
-					data.facing = Directions.right
+					data.facing = eDirections.right
 				if(target.y<common_data.pos.y):
 					data.vel.y = -speed
 				else:
@@ -145,7 +147,7 @@ class BatController(Controller):
 				hurt_cool = 1
 				fall_cool = 2
 				data.health -= message.damage
-				if data.facing == Directions.left:
+				if data.facing == eDirections.left:
 					if data.health <= 0:
 						self.setState(data, common_data, eStates.fallLeft, fall_cool)
 					else:

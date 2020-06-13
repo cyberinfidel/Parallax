@@ -1,7 +1,9 @@
 # Reaper
-from controller import *
-from collision import *
-from graphics import *
+from controller import Controller, basic_physics, restrictToArena, friction
+from collision import Collider, Message
+from graphics import MultiAnim, AnimLoop, AnimSingle
+from entity import eDirections, eStates
+from vector import Vec3, rand_num
 
 def reaperGraphics(renlayer):
 	return {
@@ -117,9 +119,9 @@ class ReaperController(Controller):
 
 			self.cooldown = -1
 			self.health = 10
-			self.vel = Vec3(0,0,0)
+			self.vel = Vec3(0, 0, 0)
 			self.mass = 3
-			self.facing = Directions.right
+			self.facing = eDirections.right
 
 			common_data.state = eStates.stationary
 			common_data.new_state = False
@@ -147,11 +149,11 @@ class ReaperController(Controller):
 				if(target.x<common_data.pos.x):
 					self.setState(data, common_data, eStates.runLeft)
 					data.vel = Vec3(-speed, 0, 0)
-					data.facing = Directions.left
+					data.facing = eDirections.left
 				else:
 					self.setState(data, common_data, eStates.runRight)
 					data.vel = Vec3(speed, 0, 0)
-					data.facing = Directions.right
+					data.facing = eDirections.right
 				if(target.y<common_data.pos.y):
 					data.vel.y = -speed
 				else:
@@ -176,7 +178,7 @@ class ReaperController(Controller):
 				hurt_cool = 1
 				fall_cool = 2
 				data.health -= message.damage
-				if data.facing == Directions.left:
+				if data.facing == eDirections.left:
 					if data.health <= 0:
 						self.setState(data, common_data, eStates.fallLeft, fall_cool)
 					else:

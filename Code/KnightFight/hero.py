@@ -1,7 +1,8 @@
-from controller import *
-from collision import *
-from graphics import *
-
+from entity import eStates, eDirections, eActions
+from controller import Controller, global_tolerance, restrictToArena, global_gravity
+from collision import Collider, Message
+from graphics import AnimNoLoop, AnimLoop, MultiAnim, AnimSingle
+from vector import Vec3
 
 def heroGraphics(renlayer):
 	return {
@@ -281,7 +282,7 @@ class HeroController(Controller):
 			self.mass = 1
 			self.jump = False
 			self.attack = False
-			self.facing = Directions.down
+			self.facing = eDirections.down
 			self.health = 3
 			common_data.state = eStates.standDown
 			self.invincible_cooldown = 2
@@ -424,7 +425,7 @@ class HeroController(Controller):
 				# i.e. this hero is being controlled by a game_pad
 				# going left
 				if data.game_pad.actions[eActions.left]:
-					data.facing = Directions.left
+					data.facing = eDirections.left
 					if data.jump:
 						self.updateState(data, common_data, eStates.jumpLeft, hero_jump_cool)
 					else:
@@ -432,7 +433,7 @@ class HeroController(Controller):
 
 				# going right
 				elif data.game_pad.actions[eActions.right]:
-					data.facing = Directions.right
+					data.facing = eDirections.right
 					if data.jump:
 						self.updateState(data, common_data, eStates.jumpRight, hero_jump_cool)
 					else:
@@ -480,7 +481,7 @@ class HeroController(Controller):
 					if data.jump:
 						pass
 					else:
-						if data.facing == Directions.left:
+						if data.facing == eDirections.left:
 							self.updateState(data, common_data, eStates.attackBigLeft, hero_big_attack_cool)
 						else:
 							self.updateState(data, common_data, eStates.attackBigRight, hero_big_attack_cool)
@@ -489,7 +490,7 @@ class HeroController(Controller):
 					if data.jump:
 						pass
 					else:
-						if data.facing == Directions.left:
+						if data.facing == eDirections.left:
 							self.updateState(data, common_data, eStates.attackSmallLeft, hero_small_attack_cool)
 						else:
 							self.updateState(data, common_data, eStates.attackSmallRight, hero_small_attack_cool)
@@ -499,7 +500,7 @@ class HeroController(Controller):
 					if data.jump:
 						pass
 					else:
-						if data.facing == Directions.left:
+						if data.facing == eDirections.left:
 							self.updateState(data, common_data, eStates.blockLeft, hero_block_cool)
 						else:
 							self.updateState(data, common_data, eStates.blockRight, hero_block_cool)
@@ -529,7 +530,7 @@ class HeroController(Controller):
 					data.health-=message.damage_hero
 					hurt_cool = 1
 					fall_cool = 5
-					if data.facing == Directions.left:
+					if data.facing == eDirections.left:
 						data.vel += Vec3(3,0,0)
 						if data.health <= 0:
 							self.setState(data, common_data, eStates.fallLeft, fall_cool)

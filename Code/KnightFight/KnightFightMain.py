@@ -6,14 +6,17 @@ import sys
 sys.path.insert(1, '../')
 # actually import files
 import game
-import entity
-import controller
-import collision
-import graphics
-from vector import *
+from entity import eStates
+from collision import CollisionManager
+from vector import Vec3, Line, rand_num
 
 #import Knight Fight files
-from KnightFightScripts import *
+from KnightFight.background import backgroundGraphics, BackgroundController
+from KnightFight.hero import heroGraphics, HeroController, HeroCollider,HitController, HitCollider
+from KnightFight.bat import batGraphics, BatController, BatCollider
+from KnightFight.rain import rainGraphics, RainController
+from KnightFight.reaper import reaperGraphics, ReaperController, ReaperCollider
+from KnightFight.heart import heartGraphics, HeartIndicatorController
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -27,13 +30,13 @@ class KnightFight(game.Game):
 	def __init__(self):
 		super(KnightFight, self).__init__("Knight Fight", res_x= 320, res_y= 200, zoom = 3, fullscreen= False)
 
-		self.collision_manager = collision.CollisionManager(game=self) # TODO: should this be a ComponentManager() like the others?
+		self.collision_manager = CollisionManager(game=self) # TODO: should this be a ComponentManager() like the others?
 
 		###################
 		# make components #
 		###################
 		# Graphics Templates
-		backgraphics = self.graphics_manager.makeTemplate(backGraphics(self.renlayer))
+		backgraphics = self.graphics_manager.makeTemplate(backgroundGraphics(self.renlayer))
 		bat_graphics = self.graphics_manager.makeTemplate(batGraphics(self.renlayer))
 		reaper_graphics = self.graphics_manager.makeTemplate(reaperGraphics(self.renlayer))
 		reaper_controller = self.controller_manager.makeTemplate({"Template": ReaperController})
@@ -57,7 +60,7 @@ class KnightFight(game.Game):
 		herocontroller = self.controller_manager.makeTemplate({"Template": HeroController})
 		bat_controller = self.controller_manager.makeTemplate({"Template": BatController})
 		hit_controller = self.controller_manager.makeTemplate({"Template":HitController})
-		heart_controller = self.controller_manager.makeTemplate({"Template":HeartController})
+		heart_controller = self.controller_manager.makeTemplate({"Template":HeartIndicatorController})
 
 		# Collider Templates
 		hero_collider = self.collision_manager.makeTemplate({"Template": HeroCollider})
@@ -161,11 +164,11 @@ class KnightFight(game.Game):
 
 		# clean up dead entities
 		for index, updatable in reversed(list(enumerate(self.updatables))):
-			if updatable.getState() == entity.eStates.dead:
+			if updatable.getState() == eStates.dead:
 				self.updatables.pop(index)
 		self.collision_manager.cleanUpDead()
 		for index, drawable in reversed(list(enumerate(self.drawables))):
-			if drawable.getState() == entity.eStates.dead:
+			if drawable.getState() == eStates.dead:
 				self.drawables.pop(index)
 
 	def requestNewEntity(self,
@@ -219,10 +222,7 @@ class KnightFight(game.Game):
 def run(tests=False):
 	game = KnightFight()
 	if tests:
-		if game.runTests() != 0:
-			log("Unit tests failed.")
-			return 1
-
+		game.runTests()
 	game.run()
 	return 0
 

@@ -7,7 +7,6 @@ import sdl2.ext
 # import my files
 import graphics
 import entity
-import collision
 import vector
 
 # disable to remove logging
@@ -122,8 +121,10 @@ class Game(object):
 
 	def runTests(self):
 		result = 0
-		if(vector.runTests()!=0):
-			log("vector tests failed.")
-			result+=1
-		#elif()
+		fails = vector.runTests()
+		if len(fails)>0:
+			log("Unit tests failed.")
+			for fail in fails:
+				log("Fail in: "+ fail)
+			return 1
 		return result
