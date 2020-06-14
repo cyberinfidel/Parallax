@@ -24,7 +24,7 @@ from KnightFight.bat import batGraphics, BatController, BatCollider
 from KnightFight.rain import rainGraphics, RainController
 from KnightFight.reaper import reaperGraphics, ReaperController, ReaperCollider
 from KnightFight.heart import heartGraphics, HeartIndicatorController
-from KnightFight.title import titleGraphics, TitleController
+from KnightFight.title import titleGraphics, TitleController, eTitleStates
 
 
 class KnightFight(Game):
@@ -61,10 +61,53 @@ class KnightFight(Game):
 		self.title.setGamePad(self.input.getGamePad(0))
 
 		self.raining = False
-		self.setGameMode(eGameModes.init)
+		self.setGameMode(eGameModes.title)
 
 		self.collision_manager = CollisionManager(game=self)  # TODO: should this be a ComponentManager() like the others?
 
+		###################
+		# make components #
+		###################
+		# Graphics Templates
+		bat_graphics = self.graphics_manager.makeTemplate(batGraphics(self.renlayer))
+		reaper_graphics = self.graphics_manager.makeTemplate(reaperGraphics(self.renlayer))
+		raingraphics = self.graphics_manager.makeTemplate(rainGraphics(self.renlayer))
+		herographics = self.graphics_manager.makeTemplate(heroGraphics(self.renlayer))
+		heartgraphics = self.graphics_manager.makeTemplate(heartGraphics(self.renlayer))
+
+		# Controller Templates
+		raincontroller = self.controller_manager.makeTemplate({"Template": RainController})
+		herocontroller = self.controller_manager.makeTemplate({"Template": HeroController})
+		bat_controller = self.controller_manager.makeTemplate({"Template": BatController})
+		reaper_controller = self.controller_manager.makeTemplate({"Template": ReaperController})
+		hit_controller = self.controller_manager.makeTemplate({"Template": HitController})
+		heart_controller = self.controller_manager.makeTemplate({"Template": HeartIndicatorController})
+
+		# Collider Templates
+		hero_collider = self.collision_manager.makeTemplate({"Template": HeroCollider})
+		bat_collider = self.collision_manager.makeTemplate({"Template": BatCollider})
+		reaper_collider = self.collision_manager.makeTemplate({"Template": ReaperCollider})
+		hit_collider = self.collision_manager.makeTemplate({"Template": HitCollider})
+
+		#########################################
+		# Make entity templates from components #
+		#########################################
+		self.bat_t = self.entity_manager.makeEntityTemplate(graphics=bat_graphics, controller=bat_controller,
+																												collider=bat_collider)
+		self.reaper_t = self.entity_manager.makeEntityTemplate(graphics=reaper_graphics, controller=reaper_controller,
+																													 collider=reaper_collider)
+		self.rain_t = self.entity_manager.makeEntityTemplate(graphics=raingraphics, controller=raincontroller)
+		self.hero_t = self.entity_manager.makeEntityTemplate(graphics=herographics, controller=herocontroller,
+																												 collider=hero_collider)
+		# set up hero's attacks
+		self.hit_t = self.entity_manager.makeEntityTemplate(graphics=False, controller=hit_controller,
+																												collider=hit_collider)
+		for hit in (eStates.attackBigLeft, eStates.attackBigRight, eStates.attackSmallLeft, eStates.attackSmallRight,
+								eStates.blockLeft, eStates.blockRight):
+			herocontroller.setStateSpawnTemplate(state=hit, template=self.hit_t)
+
+		# info bar
+		self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heartgraphics, controller=heart_controller)
 	# end init()
 
 
@@ -76,50 +119,7 @@ class KnightFight(Game):
 
 		if self.game_mode==eGameModes.init:
 
-			###################
-			# make components #
-			###################
-			# Graphics Templates
-			bat_graphics = self.graphics_manager.makeTemplate(batGraphics(self.renlayer))
-			reaper_graphics = self.graphics_manager.makeTemplate(reaperGraphics(self.renlayer))
-			raingraphics = self.graphics_manager.makeTemplate(rainGraphics(self.renlayer))
-			herographics = self.graphics_manager.makeTemplate(heroGraphics(self.renlayer))
-			heartgraphics = self.graphics_manager.makeTemplate(heartGraphics(self.renlayer))
-
-			# Controller Templates
-			raincontroller = self.controller_manager.makeTemplate({"Template": RainController})
-			herocontroller = self.controller_manager.makeTemplate({"Template": HeroController})
-			bat_controller = self.controller_manager.makeTemplate({"Template": BatController})
-			reaper_controller = self.controller_manager.makeTemplate({"Template": ReaperController})
-			hit_controller = self.controller_manager.makeTemplate({"Template": HitController})
-			heart_controller = self.controller_manager.makeTemplate({"Template": HeartIndicatorController})
-
-
-			# Collider Templates
-			hero_collider = self.collision_manager.makeTemplate({"Template": HeroCollider})
-			bat_collider = self.collision_manager.makeTemplate({"Template": BatCollider})
-			reaper_collider = self.collision_manager.makeTemplate({"Template": ReaperCollider})
-			hit_collider = self.collision_manager.makeTemplate({"Template": HitCollider})
-
-			#########################################
-			# Make entity templates from components #
-			#########################################
-			self.bat_t = self.entity_manager.makeEntityTemplate(graphics=bat_graphics, controller=bat_controller,
-																													collider=bat_collider)
-			self.reaper_t = self.entity_manager.makeEntityTemplate(graphics=reaper_graphics, controller=reaper_controller,
-																														 collider=reaper_collider)
-			self.rain_t = self.entity_manager.makeEntityTemplate(graphics=raingraphics, controller=raincontroller)
-			self.hero_t = self.entity_manager.makeEntityTemplate(graphics=herographics, controller=herocontroller,
-																													 collider=hero_collider)
-			# set up hero's attacks
-			self.hit_t = self.entity_manager.makeEntityTemplate(graphics=False, controller=hit_controller,
-																													collider=hit_collider)
-			for hit in (eStates.attackBigLeft, eStates.attackBigRight, eStates.attackSmallLeft, eStates.attackSmallRight,
-									eStates.blockLeft, eStates.blockRight):
-				herocontroller.setStateSpawnTemplate(state=hit, template=self.hit_t)
-
-			# info bar
-			self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heartgraphics, controller=heart_controller)
+			pass
 
 ##################################################
 		elif self.game_mode==eGameModes.title:
@@ -180,26 +180,53 @@ class KnightFight(Game):
 					self.drawables.append(rain)
 					self.updatables.append(rain)
 			self.rain_cooldown -=1
-			if self.rain_cooldown==0:
+			if self.rain_cooldown<=0:
 				self.rain_cooldown=rand_num(500)+500
 				self.raining = not self.raining
 
+			if self.hero.getState()==eStates.dead:
+				self.setGameMode(eGameModes.game_over)
+				self.restart_cooldown=3
+
+			# TODO: detect win
+
 		####################################################
-		# Always do this:
-		for index, updatable in reversed(list(enumerate(self.updatables))):
-			updatable.update(dt)
 
-		self.collision_manager.doCollisions() # collisions between monsters
-		#self.collision_manager.doCollisionsWithSingleEntity(self.hero) # collisions with hero
+		elif self.game_mode==eGameModes.game_over:
+			self.restart_cooldown-=dt
+			self.title.setState(eTitleStates.game_over)
+			if self.restart_cooldown<=0:
+				# clean up
+				for updatable in self.updatables:
+					if not updatable is self.title:
+						updatable.common_data.state = eStates.dead
 
-		# clean up dead entities
-		for index, updatable in reversed(list(enumerate(self.updatables))):
-			if updatable.getState() == eStates.dead:
-				self.updatables.pop(index)
-		self.collision_manager.cleanUpDead()
-		for index, drawable in reversed(list(enumerate(self.drawables))):
-			if drawable.getState() == eStates.dead:
-				self.drawables.pop(index)
+				self.setGameMode(eGameModes.title)
+
+		####################################################
+
+		elif self.game_mode==eGameModes.win:
+			pass
+
+
+		# Always do this, unless paused:
+		if self.game_mode!=eGameModes.paused:
+			for index, updatable in reversed(list(enumerate(self.updatables))):
+				updatable.update(dt)
+
+			self.collision_manager.doCollisions() # collisions between monsters
+			#self.collision_manager.doCollisionsWithSingleEntity(self.hero) # collisions with hero
+
+			# clean up dead entities
+			for index, updatable in reversed(list(enumerate(self.updatables))):
+				if updatable.getState() == eStates.dead:
+					self.updatables.pop(index)
+			self.collision_manager.cleanUpDead()
+			for index, drawable in reversed(list(enumerate(self.drawables))):
+				if drawable.getState() == eStates.dead:
+					self.drawables.pop(index)
+		else:
+			self.title.update(dt)
 
 # end update() #################################################################
 

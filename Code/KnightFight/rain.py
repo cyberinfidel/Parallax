@@ -42,8 +42,8 @@ def rainGraphics(renlayer):
 
 class RainController(Controller):
 	# note custom states
-	state_fall = 1
-	state_pool = 2
+	state_fall = 2
+	state_pool = 3
 	pool_cooldown = 0.7
 
 	# define data necessary for every instance of the class

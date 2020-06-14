@@ -3,6 +3,16 @@ from controller import Controller
 from graphics import MultiAnim, AnimRandom, AnimNoLoop
 from game import eGameModes
 
+import enum
+class eTitleStates(enum.IntEnum):
+	dead = eStates.dead
+	hide = eStates.hide,
+	title = 2,
+	paused = 3,
+	game_over = 4,
+	numTitleStates = 5
+
+
 def titleGraphics(renlayer):
 	return{
 			"Name": "Title Animations",
@@ -11,44 +21,30 @@ def titleGraphics(renlayer):
 			"Anims":
 				[
 					{
-						"Name": "stationary",
-						"AnimType": AnimRandom,
-						"State": eStates.stationary,
+						"Name": "Title",
+						"AnimType": AnimNoLoop,
+						"State": eTitleStates.title,
 						"Frames":
 							[
 								["Graphics/Title/Title.png", 4, 4, 0.9],
-								# ["Graphics/Title/Title 6.png", 4, 4, 0.1],
 							],
 					},
 					{
-						"Name": "appear",
+						"Name": "Paused",
 						"AnimType": AnimNoLoop,
-						"State": eStates.appear,
+						"State": eTitleStates.paused,
 						"Frames":
 							[
-								["Graphics/Title/Title.png", 4, 4, 0.2],
-								# ["Graphics/Title/Title 2.png", 4, 4, 0.2],
-								# ["Graphics/Title/Title 3.png", 4, 4, 0.2],
-								# ["Graphics/Title/Title 4.png", 4, 4, 0.2],
-								# ["Graphics/Title/Title 5.png", 4, 4, 0.3],
-								# ["Graphics/Title/Title 6.png", 4, 4, 0.4],
-								# ["Graphics/Title/Title 7.png", 4, 4, 0.5],
+								["Graphics/Title/Paused.png", 4, 4, 0.2],
 							],
 					},
 					{
-						"Name": "fade",
+						"Name": "Paused",
 						"AnimType": AnimNoLoop,
-						"State": eStates.fade,
+						"State": eTitleStates.game_over,
 						"Frames":
 							[
-								["Graphics/Title/Title.png", 4, 4, 0.5],
-								# ["Graphics/Title/Title 6.png", 4, 4, 0.4],
-								# ["Graphics/Title/Title 5.png", 4, 4, 0.3],
-								# ["Graphics/Title/Title 4.png", 4, 4, 0.2],
-								# ["Graphics/Title/Title 3.png", 4, 4, 0.2],
-								# ["Graphics/Title/Title 2.png", 4, 4, 0.2],
-								# ["Graphics/Title/Title 1.png", 4, 4, 0.2],
-								# ["Graphics/Title/Title 0.png", 4, 4, 0.2],
+								["Graphics/Title/GameOver.png", 4, 4, 0.2],
 							],
 					},
 				]
@@ -63,27 +59,35 @@ class TitleController(Controller):
 				pass
 
 			self.cooldown = 0
-			self.health_num = 0
+			self.delay = 2
 
 	def __init__(self, data):
 		super(TitleController, self).__init__()
 
 	def update(self, data, common_data, dt):
-		if not self.coolDown(data, dt):
-			if data.game_pad:
-				if data.game_pad.actions[eActions.jump]:
-					common_data.parent.setGameMode(eGameModes.start)
-					common_data.state = eStates.dead
-			# cooling down so can't do anything new
-			# if hero health is greater or equal to this Title's number
-			# common_data.blink = False
-			# if common_data.parent.controller_data.health>=data.health_num:
-			# 	if common_data.state==eStates.fade:
-			# 		self.setState(data, common_data, eStates.appear, 1)
-			# 	else:
-			# 		self.setState(data, common_data, eStates.stationary, 1)
-			# else:
-			# 	if common_data.state in (eStates.appear,eStates.stationary):
-			# 		self.setState(data, common_data, eStates.fade, 1)
-			# 	else:
-			# 		common_data.blink=True
+#		if self.coolDown(data, dt):
+#			self.cooldown = self.delay
+
+			if common_data.game.game_mode==eGameModes.play:
+				common_data.blink=True
+				if data.game_pad.actions[eActions.pause]:
+					common_data.game.setGameMode(eGameModes.paused)
+					self.setState(data, common_data, eTitleStates.paused)
+			else:
+				common_data.blink = False
+				if common_data.game.game_mode == eGameModes.paused:
+					if data.game_pad:
+						if data.game_pad.actions[eActions.jump]:
+							common_data.game.setGameMode(eGameModes.play)
+							self.setState(data, common_data, eTitleStates.hide)
+				elif common_data.game.game_mode == eGameModes.title:
+					self.setState(data, common_data, eTitleStates.title)
+					if data.game_pad:
+						if data.game_pad.actions[eActions.jump]:
+							common_data.game.setGameMode(eGameModes.start)
+							self.setState(data, common_data, eTitleStates.hide)
+				elif common_data.game.game_mode == eGameModes.game_over:
+					self.setState(data, common_data, eTitleStates.game_over)
+
+
+

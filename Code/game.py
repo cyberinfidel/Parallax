@@ -24,7 +24,9 @@ class eGameModes(enum.IntEnum):
 	start=3
 	play=4
 	game_over=5
-	numGameModes = 6
+	win = 6
+	paused = 7
+	numGameModes = 8
 
 
 class Game(object):

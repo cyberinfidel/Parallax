@@ -16,37 +16,38 @@ def log(msg, new_line=True):
 
 class eStates(enum.IntEnum):
 	dead = 0
-	stationary = 1
-	runLeft = 2
-	runRight = 3
-	runUp = 4
-	runDown = 5
-	fallLeft = 6
-	fallRight = 7
-	idle = 8
-	down = 9
-	gettingUp = 10
-	attackSmallLeft = 11
-	attackSmallRight = 12
-	attackBigLeft = 13
-	attackBigRight = 14
-	blockLeft = 15
-	blockRight = 16
-	jumpLeft = 17
-	jumpRight = 18
-	jumpUp = 19
-	jumpDown = 20
-	jumpStat = 21
-	standDown = 22
-	standLeft = 23
-	standUp = 24
-	standRight = 25
-	hurtLeft = 26
-	hurtRight = 27
-	shadow = 28
-	appear = 29
-	fade = 30
-	numStates = 31
+	hide = 1
+	stationary = 2
+	runLeft = 3
+	runRight = 4
+	runUp = 5
+	runDown = 6
+	fallLeft = 7
+	fallRight = 8
+	idle = 9
+	down = 10
+	gettingUp = 11
+	attackSmallLeft = 12
+	attackSmallRight = 13
+	attackBigLeft = 14
+	attackBigRight = 15
+	blockLeft = 16
+	blockRight = 17
+	jumpLeft = 18
+	jumpRight = 19
+	jumpUp = 20
+	jumpDown = 21
+	jumpStat = 22
+	standDown = 23
+	standLeft = 24
+	standUp = 25
+	standRight = 26
+	hurtLeft = 27
+	hurtRight = 28
+	shadow = 29
+	appear = 30
+	fade = 31
+	numStates = 32
 
 class eDirections(enum.IntEnum):
 	down = 0
@@ -65,7 +66,8 @@ class eActions(enum.IntEnum):
 	attack_big = 6
 	block = 7
 	stationary = 8
-	numActions = 9
+	pause = 9
+	numActions = 10
 
 # Component template root class
 class Component(object):
@@ -151,7 +153,7 @@ class Entity(object):
 	def update(self, dt):
 		if self.controller:
 			self.controller.update(self.controller_data, self.common_data, dt)
-		if self.common_data.state!=eStates.dead:
+		if self.common_data.state!=eStates.hide and self.common_data.state!=eStates.dead:
 			if self.graphics:
 				self.graphics.update(self.graphics_data,self.common_data, dt)
 
@@ -210,6 +212,7 @@ class GamePad(Component):
 			eActions.attack_small:False,
 			eActions.attack_big:False,
 			eActions.block:False,
+			eActions.pause:False,
 			eActions.stationary:True
 		}
 
@@ -260,6 +263,8 @@ class Input(object):
 				if event.key.keysym.sym == sdl2.SDLK_f:
 					self.game_pads[0].set(eActions.block)
 
+				if event.key.keysym.sym == sdl2.SDLK_p:
+					self.game_pads[0].set(eActions.pause)
 
 			elif event.type == sdl2.SDL_KEYUP:
 				if event.key.keysym.sym == sdl2.SDLK_UP:
@@ -281,8 +286,8 @@ class Input(object):
 					self.game_pads[0].clear(eActions.attack_big)
 				if event.key.keysym.sym == sdl2.SDLK_f:
 					self.game_pads[0].clear(eActions.block)
-				# 	if event.key.keysym.sym in (sdl2.SDLK_UP, sdl2.SDLK_DOWN, sdl2.SDLK_RIGHT, sdl2.SDLK_LEFT):
-				# 		vel[0] = 0
-				# 		vel[1] = 0
+
+				if event.key.keysym.sym == sdl2.SDLK_p:
+					self.game_pads[0].clear(eActions.pause)
 
 

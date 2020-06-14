@@ -283,7 +283,7 @@ class HeroController(Controller):
 			self.jump = False
 			self.attack = False
 			self.facing = eDirections.down
-			self.health = 3
+			self.health = 1
 			common_data.state = eStates.standDown
 			self.invincible_cooldown = 2
 			self.invincible = self.invincible_cooldown
@@ -332,7 +332,6 @@ class HeroController(Controller):
 
 		# things that can interrupt other actions happen here e.g. landing
 
-
 		if data.invincible > 0:
 			common_data.blink = (int(data.invincible*8)%2)==0
 			data.invincible -= dt
@@ -352,10 +351,6 @@ class HeroController(Controller):
 
 		if self.coolDown(data, dt):
 			# cooling down so can't do anything new
-			if data.health < 0:
-				# self.setState(data, common_data, eStates.dead)
-				data.health = 5
-				return
 
 			# check if something needs to happen during an action
 			if data.cooldown<hero_big_attack_delay:
@@ -411,6 +406,12 @@ class HeroController(Controller):
 
 
 		else:
+
+			if data.health < 0:
+				self.setState(data, common_data, eStates.dead)
+				common_data.blink=True
+				return
+
 			data.hero_struck=False
 			# not doing anything that's cooling down so can do something else
 			if data.vel.magsqhoriz() < hero_stop:
@@ -529,11 +530,12 @@ class HeroController(Controller):
 					# hero has been hit
 					data.health-=message.damage_hero
 					hurt_cool = 1
-					fall_cool = 5
+					fall_cool = 3
 					if data.facing == eDirections.left:
 						data.vel += Vec3(3,0,0)
 						if data.health <= 0:
 							self.setState(data, common_data, eStates.fallLeft, fall_cool)
+							data.health =-1
 						else:
 							self.setState(data, common_data, eStates.hurtLeft, hurt_cool)
 
@@ -541,6 +543,7 @@ class HeroController(Controller):
 						data.vel += Vec3(-3,0,0)
 						if data.health <= 0:
 							self.setState(data, common_data, eStates.fallRight, fall_cool)
+							data.health =-1
 						else:
 							self.setState(data, common_data, eStates.hurtRight, hurt_cool)
 					data.invincible = data.invincible_cooldown
