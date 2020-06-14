@@ -283,7 +283,7 @@ class HeroController(Controller):
 			self.jump = False
 			self.attack = False
 			self.facing = eDirections.down
-			self.health = 1
+			self.health = 3
 			common_data.state = eStates.standDown
 			self.invincible_cooldown = 2
 			self.invincible = self.invincible_cooldown

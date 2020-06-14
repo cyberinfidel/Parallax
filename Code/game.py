@@ -78,7 +78,7 @@ class Game(object):
 
 
 	def render(self):
-		self.ren.color = sdl2.ext.Color(100, 200, 250)
+		self.ren.color = sdl2.ext.Color(0, 0, 0)
 		self.ren.clear()
 
 		self.draw()

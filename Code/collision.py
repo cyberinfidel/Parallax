@@ -24,10 +24,10 @@ class CollisionManager(ComponentManager):
 		return pop(index)
 
 	def doCollisions(self):
-		for indexA, colliderA in enumerate(self.collidables):
-			for indexB, colliderB in enumerate(self.collidables):
-				if indexB>indexA:
-					self.checkCollide(colliderA, colliderB)
+		if len(self.collidables)>1:
+			for indexA, colliderA in enumerate(self.collidables):
+				for colliderB in self.collidables[indexA+1:]:
+						self.checkCollide(colliderA, colliderB)
 
 	def doCollisionsWithSingleEntity(self, entity):
 		for colliderA in self.collidables:
@@ -35,9 +35,7 @@ class CollisionManager(ComponentManager):
 
 
 	def cleanUpDead(self):
-		for index, collider in enumerate(self.collidables):
-			if collider.getState() == eStates.dead:
-				self.collidables.pop(index)
+		self.collidables[:] = [x for x in self.collidables if x.getState()!=eStates.dead]
 
 	def checkCollide(self,A,B):
 
@@ -49,7 +47,6 @@ class CollisionManager(ComponentManager):
 		Bpos = B.getPos()
 		Bdim = B.collider.getDim()
 		Borig = B.collider.getOrig()
-
 
 		if (Apos.x - Aorig.x + Adim.x)> (Bpos.x -Borig.x): # Aright > Bleft
 			if (Bpos.x - Borig.x + Bdim.x) > (Apos.x - Aorig.x): # Bright < Aleft

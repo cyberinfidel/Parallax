@@ -128,7 +128,7 @@ class KnightFight(Game):
 		elif self.game_mode==eGameModes.start:
 			# make bats
 			self.bats = []
-			self.numbats = 1
+			self.numbats = 2
 			for n in range(0, self.numbats):
 				bat = self.entity_manager.makeEntity(self.bat_t, "Bat")
 				if n % 2 == 0:
@@ -141,7 +141,7 @@ class KnightFight(Game):
 
 			# make reapers
 			self.reapers = []
-			self.numreapers = 4
+			self.numreapers = 2
 			for n in range(0, self.numreapers):
 				reaper = self.entity_manager.makeEntity(self.reaper_t, "Reaper")
 				if n % 2 == 0:
@@ -152,6 +152,8 @@ class KnightFight(Game):
 				self.drawables.append(reaper)
 				self.updatables.append(reaper)
 				self.collision_manager.append(reaper)
+
+			self.num_monsters = self.numreapers+self.numbats
 
 			# make hero
 			self.hero = self.requestNewEntity(entity_template=self.hero_t, pos=Vec3(160, 60, 0), parent=False, name="Hero")
@@ -188,26 +190,23 @@ class KnightFight(Game):
 				self.setGameMode(eGameModes.game_over)
 				self.restart_cooldown=3
 
-			# TODO: detect win
-
 		####################################################
 
 		elif self.game_mode==eGameModes.game_over:
 			self.restart_cooldown-=dt
 			self.title.setState(eTitleStates.game_over)
 			if self.restart_cooldown<=0:
-				# clean up
-				for updatable in self.updatables:
-					if not updatable is self.title:
-						updatable.common_data.state = eStates.dead
-
 				self.setGameMode(eGameModes.title)
+				self.cleanUpDead()
 
 		####################################################
 
 		elif self.game_mode==eGameModes.win:
-			pass
-
+			self.restart_cooldown-=dt
+			self.title.setState(eTitleStates.win)
+			if self.restart_cooldown<=0:
+				self.setGameMode(eGameModes.title)
+				self.cleanUpDead()
 
 		# Always do this, unless paused:
 		if self.game_mode!=eGameModes.paused:
@@ -215,20 +214,22 @@ class KnightFight(Game):
 				updatable.update(dt)
 
 			self.collision_manager.doCollisions() # collisions between monsters
-			#self.collision_manager.doCollisionsWithSingleEntity(self.hero) # collisions with hero
-
 			# clean up dead entities
-			for index, updatable in reversed(list(enumerate(self.updatables))):
-				if updatable.getState() == eStates.dead:
-					self.updatables.pop(index)
-			self.collision_manager.cleanUpDead()
-			for index, drawable in reversed(list(enumerate(self.drawables))):
-				if drawable.getState() == eStates.dead:
-					self.drawables.pop(index)
+			self.cleanUpDead()
 		else:
 			self.title.update(dt)
 
 # end update() #################################################################
+
+	def cleanUpDead(self):
+		self.updatables[:] = [x for x in self.updatables if x.getState() != eStates.dead]
+		self.collision_manager.cleanUpDead()
+		self.drawables[:] = [x for x in self.drawables if x.getState() != eStates.dead]
+
+	def killPlayEntities(self):
+		for updatable in self.updatables:
+			if not (updatable is self.title):
+				updatable.common_data.state = eStates.dead
 
 	def requestNewEntity(self,
 											 entity_template,
@@ -280,6 +281,18 @@ class KnightFight(Game):
 		self.renlayer.renderSorted()
 
 # end draw()
+
+	def reportMonsterDeath(self):
+		self.num_monsters-=1
+		if self.num_monsters<=0:
+			self.setGameMode(eGameModes.win)
+			self.restart_cooldown = 6
+
+	def setGameMode(self, game_mode):
+		self.game_mode = game_mode
+		if self.game_mode==eGameModes.title:
+			self.killPlayEntities()
+
 
 def run(tests=False):
 	game = KnightFight()

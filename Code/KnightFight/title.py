@@ -10,7 +10,8 @@ class eTitleStates(enum.IntEnum):
 	title = 2,
 	paused = 3,
 	game_over = 4,
-	numTitleStates = 5
+	win = 5,
+	numTitleStates = 6
 
 
 def titleGraphics(renlayer):
@@ -39,12 +40,21 @@ def titleGraphics(renlayer):
 							],
 					},
 					{
-						"Name": "Paused",
+						"Name": "Game Over",
 						"AnimType": AnimNoLoop,
 						"State": eTitleStates.game_over,
 						"Frames":
 							[
 								["Graphics/Title/GameOver.png", 4, 4, 0.2],
+							],
+					},
+					{
+						"Name": "Win Over",
+						"AnimType": AnimNoLoop,
+						"State": eTitleStates.win,
+						"Frames":
+							[
+								["Graphics/Title/Win 0.png", 4, 4, 2],
 							],
 					},
 				]
@@ -88,6 +98,8 @@ class TitleController(Controller):
 							self.setState(data, common_data, eTitleStates.hide)
 				elif common_data.game.game_mode == eGameModes.game_over:
 					self.setState(data, common_data, eTitleStates.game_over)
+				elif common_data.game.game_mode == eGameModes.win:
+					self.setState(data, common_data, eTitleStates.win)
 
 
 

@@ -143,18 +143,20 @@ class BatController(Controller):
 			# if message.source.common_data.name !="Reaper":
 			# 	log("Reaper hit by " + message.source.common_data.name)
 			data.vel += message.force/data.mass
-			if message.damage>0:
+			if message.damage>0 and data.health>0:
 				hurt_cool = 1
 				fall_cool = 2
 				data.health -= message.damage
 				if data.facing == eDirections.left:
 					if data.health <= 0:
 						self.setState(data, common_data, eStates.fallLeft, fall_cool)
+						common_data.game.reportMonsterDeath()
 					else:
 						self.setState(data, common_data, eStates.hurtLeft, hurt_cool)
 				else:
 					if data.health <= 0:
 						self.setState(data, common_data, eStates.fallRight, fall_cool)
+						common_data.game.reportMonsterDeath()
 					else:
 						self.setState(data, common_data, eStates.hurtRight, hurt_cool)
 

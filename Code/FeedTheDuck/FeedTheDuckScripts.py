@@ -1,7 +1,7 @@
 from controller import *
 from collision import *
 from graphics import *
-
+from entity import eActions
 
 
 class DuckStates(enum.IntEnum):
