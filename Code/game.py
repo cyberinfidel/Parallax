@@ -8,6 +8,7 @@ import sdl2.ext
 import graphics
 import entity
 import vector
+import enum
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -15,6 +16,16 @@ def log(msg, new_line=True):
 		print(msg)
 	else:
 		print(msg, end='')
+
+class eGameModes(enum.IntEnum):
+	quit=0
+	init=1
+	title=2
+	start=3
+	play=4
+	game_over=5
+	numGameModes = 6
+
 
 class Game(object):
 
@@ -48,6 +59,7 @@ class Game(object):
 		sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, 320, 200)
 
 		self.running = True
+		self.game_mode = eGameModes.title
 
 		self.renlayer = graphics.RenderLayer(self.ren)
 
@@ -68,11 +80,12 @@ class Game(object):
 		self.ren.clear()
 
 		self.draw()
-
-
 		# present graphics and actually display
 		sdl2.SDL_RenderPresent(self.ren.renderer)
 		self.window.refresh()
+
+	def setGameMode(self, game_mode):
+		self.game_mode = game_mode
 
 
 	def tick(self, dt):
