@@ -47,6 +47,9 @@ class Controller(Component):
 		# already cooled down
 		return False
 
+def basic_gravity(vel):
+	vel.z-=global_gravity
+
 def basic_physics(pos, vel):
 	pos.x += vel.x
 	pos.y += vel.y

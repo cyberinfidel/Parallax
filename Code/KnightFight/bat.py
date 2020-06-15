@@ -1,6 +1,6 @@
 from entity import eStates, eDirections
 from vector import Vec3, rand_num
-from controller import Controller, basic_physics, restrictToArena, friction
+from controller import Controller, basic_gravity, basic_physics, restrictToArena, friction
 from collision import Collider, Message
 from graphics import AnimLoop, MultiAnim, AnimSingle
 
@@ -17,12 +17,12 @@ def batGraphics(renlayer):
 				"State": eStates.stationary,
 				"Frames":
 					[
-						["Graphics/Bat/Bat1.png", 24, 30, 0.5],
 						["Graphics/Bat/Bat2.png", 24, 30, 0.04],
 						["Graphics/Bat/Bat3.png", 24, 30, 0.04],
 						["Graphics/Bat/Bat4.png", 24, 30, 0.1],
 						["Graphics/Bat/Bat3.png", 24, 30, 0.1],
 						["Graphics/Bat/Bat2.png", 24, 30, 0.1],
+						["Graphics/Bat/Bat1.png", 24, 30, 0.5],
 					],
 			},
 			{
@@ -103,7 +103,7 @@ class BatController(Controller):
 			if rand_num(10)==0:
 #				self.setState(data, common_data, eStates.stationary)
 				data.vel = Vec3(0,0,0)
-				data.cooldown = rand_num(1) + 2
+				data.cooldown = rand_num(5)/10.0+0.1
 			else:
 				# chase hero
 				target = common_data.game.requestTarget(common_data.pos)
@@ -120,22 +120,24 @@ class BatController(Controller):
 				else:
 					data.vel.y = speed
 
-				if common_data.pos.distSq(Vec3(target.x,target.y,common_data.pos.z))<1000:
-					data.vel.z = -2
-				elif common_data.pos.z<(40):
-					data.vel.z = 1
+				if common_data.pos.distSq(Vec3(target.x,target.y,common_data.pos.z))<800:
+					data.vel.z = 0 # drop on target
+				elif (common_data.pos.z<80) and (data.vel.z<3):
+					data.vel.z += 2 # otherwise flap
+					common_data.entity.graphics.startAnim(data = common_data.entity.graphics_data)
 
-				data.cooldown = 0.5
+				data.cooldown = 0.2
 
 
+		basic_gravity(data.vel)
 		basic_physics(common_data.pos,data.vel)
 
 		restrictToArena(common_data.pos, data.vel)
 
 		if common_data.pos.z>0:
-			friction(data.vel, 0.01)
+			friction(data.vel, 0.01*dt)
 		else:
-			friction(data.vel)
+			friction(data.vel, 0.1*dt)
 
 
 	def receiveCollision(self, data, common_data, message):

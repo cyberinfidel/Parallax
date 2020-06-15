@@ -265,9 +265,12 @@ class MultiAnim(Component):
 			common_data.new_state=False
 			data.current_anim = common_data.state
 			data.current_state = common_data.state
-			data.current_time = 0
-			data.current_frame = 0	# TODO allow some anims to begin from different frame
+			self.startAnim(data, 0) # TODO allow some anims to begin from different frame
 		self.anims[data.current_anim].advanceAnim(data, time)
+
+	def startAnim(self, data, frame=0):
+		data.current_time = 0
+		data.current_frame = frame
 
 	def draw(self, data, common_data):
 		try:
