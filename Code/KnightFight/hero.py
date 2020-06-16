@@ -1,8 +1,28 @@
+# system
+import enum
+
+# Parallax
 from entity import eStates, eDirections, eActions
 from controller import Controller, global_tolerance, restrictToArena, global_gravity
 from collision import Collider, Message
 from graphics import AnimNoLoop, AnimLoop, MultiAnim, AnimSingle
 from vector import Vec3
+
+# Knightfight
+from strike import Strike, HitController, HitCollider
+
+
+class eStrikes(enum.IntEnum):
+	big = 0
+	big_up = 1
+	small = 2
+	block = 3
+	num_strikes = 4
+
+class eStrStates(enum.IntEnum):
+	to_strike = 0
+	struck=2
+
 
 def heroGraphics(renlayer):
 	return {
@@ -268,8 +288,6 @@ class HeroController(Controller):
 		# values global to all heroes
 		self.invincible_states = (eStates.dead, eStates.fallLeft, eStates.fallRight, eStates.dead)
 
-		self.state_spawns = {}	# holds the templates that can be spawned from different hero states e.g. eStates.attackBigLeft makes the big attack entity
-
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -288,18 +306,22 @@ class HeroController(Controller):
 			self.invincible_cooldown = 2
 			self.invincible = self.invincible_cooldown
 
+			self.hero_struck=[]
+			for s in range(0,eStrikes.num_strikes):
+				self.hero_struck.append(False)
+
 	def strike(self, data, common_data,
-						 range,
-						 force,
-							damage,
-						 name
+						 strike,
+						 flippedX=False,
+						 name="unknown strike"
 							):
-		strike = common_data.game.requestNewEntity(entity_template=self.state_spawns[common_data.state],
-																							 pos=common_data.pos +Vec3(range,0,0), parent=common_data.entity,
+		strike_ent = common_data.game.requestNewEntity(entity_template=strike.template,
+																							 pos=common_data.pos +(strike.range.flippedX() if flippedX else strike.range),
+																							 parent=common_data.entity,
 																							 name=name)
-		strike.collider_data.force = Vec3(force,0,0)
-		strike.collider_data.damage = damage
-		data.hero_struck = True
+		strike_ent.collider_data.force = Vec3(-strike.force if flippedX else strike.force,0,0)
+		strike_ent.collider_data.damage = strike.damage
+
 
 	def update(self, data, common_data, dt):
 		# get input
@@ -309,22 +331,20 @@ class HeroController(Controller):
 		hero_friction_ground = 0.1
 		hero_friction_air = 0.05
 
+		hit_controller = common_data.game.controller_manager.makeTemplate({"Template": HitController})
+		hit_collider = common_data.game.collision_manager.makeTemplate({"Template": HitCollider})
+
+		hit_t = common_data.game.entity_manager.makeEntityTemplate(graphics=False, controller=hit_controller, collider = hit_collider)
+
 		# cool downs in seconds
-		hero_big_attack_cool = 0.8
-		hero_big_attack_delay = 0.2	# note delays are when strike happens
-		hero_big_attack_force = 5
-		hero_big_attack_damage = 1
-		hero_big_attack_range = 24
-		hero_small_attack_cool = 0.3
-		hero_small_attack_delay = 0.1
-		hero_small_attack_force = 1
-		hero_small_attack_damage = 0.3
-		hero_small_attack_range = 12
-		hero_block_cool = 0.3
-		hero_block_delay = 0.2
-		hero_block_force = 4
-		hero_block_damage = 0
-		hero_block_range = 10
+		strikes = [
+			#			cool	del		range					force		damage
+			Strike(0.8,	0.2,	Vec3(24,0,0),			3,	2, template = hit_t), # big
+			Strike(0.8, 0.4,	Vec3(8, 0, 30),	2,	2, template = hit_t),  # big_up
+			Strike(0.3, 0.1,	Vec3(12, 0, 0),		1,	1, template = hit_t),  # small
+			Strike(0.3, 0.2,	Vec3(18, 0, 0),		2,	0, template = hit_t),  # block
+		]
+
 		hero_run_cool = 0
 		hero_jump_cool = -1
 
@@ -353,57 +373,17 @@ class HeroController(Controller):
 			# cooling down so can't do anything new
 
 			# check if something needs to happen during an action
-			if data.cooldown<hero_big_attack_delay:
-				if not data.hero_struck:
-					if common_data.state == eStates.attackBigLeft:
-						self.strike(data, common_data,
-												range=-hero_big_attack_range,
-												force=-hero_big_attack_force,
-												damage=hero_big_attack_damage,
-												name="Big Hit Left"
-												)
-					elif common_data.state==eStates.attackBigRight:
-						self.strike(data, common_data,
-												range=hero_big_attack_range,
-												force=hero_big_attack_force,
-												damage=hero_big_attack_damage,
-												name="Big Hit Right"
-												)
 
-			if data.cooldown < hero_small_attack_delay:
-				if not data.hero_struck:
-					if common_data.state == eStates.attackSmallLeft:
-						self.strike(data, common_data,
-												range=-hero_small_attack_range,
-												force=-hero_small_attack_force,
-												damage=hero_small_attack_damage,
-												name="Small Hit Left"
-												)
-					elif common_data.state == eStates.attackSmallRight:
-						self.strike(data, common_data,
-												range=hero_small_attack_range,
-												force=hero_small_attack_force,
-												damage=hero_small_attack_damage,
-												name="Small Hit Right"
-												)
-
-			if data.cooldown < hero_block_delay:
-				if not data.hero_struck:
-					if common_data.state == eStates.blockLeft:
-						self.strike(data, common_data,
-												range=-hero_block_range,
-												force=-hero_block_force,
-												damage=hero_block_damage,
-												name="Block Left"
-												)
-					elif common_data.state == eStates.blockRight:
-						self.strike(data, common_data,
-												range=hero_block_range,
-												force=hero_block_force,
-												damage=hero_block_damage,
-												name="Block Right"
-												)
-
+			# do strikes
+			for index, str in enumerate(strikes):
+				# TODO: check if this really is a strike
+				if data.hero_struck[index]:
+					if data.cooldown<str.delay:
+							self.strike(data, common_data,
+													strike= str,
+													flippedX = data.facing==eDirections.left
+													)
+							data.hero_struck[index] = False
 
 		else:
 
@@ -412,7 +392,8 @@ class HeroController(Controller):
 				common_data.blink=True
 				return
 
-			data.hero_struck=False
+			# for s in range(1,eStrikes.num_strikes):
+			# 	data.hero_struck[s]=False
 			# not doing anything that's cooling down so can do something else
 			if data.vel.magsqhoriz() < hero_stop:
 				# stopped so react automatically - most likely idle, but only if stationary
@@ -482,29 +463,33 @@ class HeroController(Controller):
 					if data.jump:
 						pass
 					else:
+						data.hero_struck[eStrikes.big]=True
+						data.hero_struck[eStrikes.big_up]=True
 						if data.facing == eDirections.left:
-							self.updateState(data, common_data, eStates.attackBigLeft, hero_big_attack_cool)
+							self.updateState(data, common_data, eStates.attackBigLeft, strikes[eStrikes.big].cool)
 						else:
-							self.updateState(data, common_data, eStates.attackBigRight, hero_big_attack_cool)
+							self.updateState(data, common_data, eStates.attackBigRight, strikes[eStrikes.big].cool)
 				elif data.game_pad.actions[eActions.attack_small]:
 					# small attack
 					if data.jump:
 						pass
 					else:
+						data.hero_struck[eStrikes.small]=True
 						if data.facing == eDirections.left:
-							self.updateState(data, common_data, eStates.attackSmallLeft, hero_small_attack_cool)
+							self.updateState(data, common_data, eStates.attackSmallLeft, strikes[eStrikes.small].cool)
 						else:
-							self.updateState(data, common_data, eStates.attackSmallRight, hero_small_attack_cool)
+							self.updateState(data, common_data, eStates.attackSmallRight, strikes[eStrikes.small].cool)
 
 				elif data.game_pad.actions[eActions.block]:
 					# block
 					if data.jump:
 						pass
 					else:
+						data.hero_struck[eStrikes.block]=True
 						if data.facing == eDirections.left:
-							self.updateState(data, common_data, eStates.blockLeft, hero_block_cool)
+							self.updateState(data, common_data, eStates.blockLeft, strikes[eStrikes.block].cool)
 						else:
-							self.updateState(data, common_data, eStates.blockRight, hero_block_cool)
+							self.updateState(data, common_data, eStates.blockRight, strikes[eStrikes.block].cool)
 
 
 		# "physics"
@@ -548,9 +533,6 @@ class HeroController(Controller):
 							self.setState(data, common_data, eStates.hurtRight, hurt_cool)
 					data.invincible = data.invincible_cooldown
 
-	def setStateSpawnTemplate(self, state, template):
-		self.state_spawns[state]=template
-
 class HeroCollider(Collider):
 
 	class Data(object):
@@ -574,54 +556,4 @@ class HeroCollider(Collider):
 	def getCollisionMessage(self, data, common_data):
 		return(Message(source=common_data.entity))
 
-
-###########
-# Strikes #
-###########
-
-class HitController(Controller):
-	class Data(object):
-		def __init__(self, common_data, init=False):
-			if init:
-				pass
-			else:
-				pass
-
-			self.cooldown = 0.5
-
-	def __init__(self, data):
-		super(HitController, self).__init__()
-
-	def update(self, data, common_data, dt):
-
-		if not self.coolDown(data, dt):
-			# finished big hit - otherwise just hang around
-			common_data.state = eStates.dead
-
-	def receiveCollision(self, data, common_data, message=False):
-		# if a hit hits then it lasts only for the remainder of that tick
-		# this avoids hitting the same thing multiple times
-		# common_data.state = eStates.dead
-
-		# otherwise the damage would need to be spread over multiple ticks
-		# The more ticks that the hit collides with an object th emore damage
-		# if you just tickle it, then you don't do much damageb
-		pass
-
-class HitCollider(Collider):
-	class Data(object):
-		def __init__(self, common_data, init=False):
-			if init:
-				pass
-			else:
-				pass
-
-	def __init__(self, data):
-		super(HitCollider, self).__init__()
-		# global static data to all of components
-		self.dim = Vec3(20,8,16)
-		self.orig = Vec3(10,4,0)
-
-	def getCollisionMessage(self, data, common_data):
-		return(Message(source=common_data.entity, damage=data.damage, force=data.force))
 

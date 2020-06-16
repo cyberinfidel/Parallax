@@ -85,6 +85,14 @@ class Vec3:
 	def whichSidePlane(self, plane):
 		return self.x*plane.a+self.y*plane.b+self.z*plane.c+plane.d<0
 
+# convenience methods to get a single dimension flipped
+	def flippedX(self):
+		return(Vec3(-self.x, self.y, self.z))
+	def flippedY(self):
+		return(Vec3(self.x, -self.y, self.z))
+	def flippedZ(self):
+		return(Vec3(self.x, self.y, -self.z))
+
 	## todo operators
 
 #each wall needs a line and a way of telling

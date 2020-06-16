@@ -19,7 +19,7 @@ def log(msg, new_line=True):
 
 #import Knight Fight files
 from KnightFight.background import backgroundGraphics, BackgroundController
-from KnightFight.hero import heroGraphics, HeroController, HeroCollider,HitController, HitCollider
+from KnightFight.hero import heroGraphics, HeroController, HeroCollider
 from KnightFight.bat import batGraphics, BatController, BatCollider
 from KnightFight.rain import rainGraphics, RainController
 from KnightFight.reaper import reaperGraphics, ReaperController, ReaperCollider
@@ -80,14 +80,12 @@ class KnightFight(Game):
 		herocontroller = self.controller_manager.makeTemplate({"Template": HeroController})
 		bat_controller = self.controller_manager.makeTemplate({"Template": BatController})
 		reaper_controller = self.controller_manager.makeTemplate({"Template": ReaperController})
-		hit_controller = self.controller_manager.makeTemplate({"Template": HitController})
 		heart_controller = self.controller_manager.makeTemplate({"Template": HeartIndicatorController})
 
 		# Collider Templates
 		hero_collider = self.collision_manager.makeTemplate({"Template": HeroCollider})
 		bat_collider = self.collision_manager.makeTemplate({"Template": BatCollider})
 		reaper_collider = self.collision_manager.makeTemplate({"Template": ReaperCollider})
-		hit_collider = self.collision_manager.makeTemplate({"Template": HitCollider})
 
 		#########################################
 		# Make entity templates from components #
@@ -99,12 +97,6 @@ class KnightFight(Game):
 		self.rain_t = self.entity_manager.makeEntityTemplate(graphics=raingraphics, controller=raincontroller)
 		self.hero_t = self.entity_manager.makeEntityTemplate(graphics=herographics, controller=herocontroller,
 																												 collider=hero_collider)
-		# set up hero's attacks
-		self.hit_t = self.entity_manager.makeEntityTemplate(graphics=False, controller=hit_controller,
-																												collider=hit_collider)
-		for hit in (eStates.attackBigLeft, eStates.attackBigRight, eStates.attackSmallLeft, eStates.attackSmallRight,
-								eStates.blockLeft, eStates.blockRight):
-			herocontroller.setStateSpawnTemplate(state=hit, template=self.hit_t)
 
 		# info bar
 		self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heartgraphics, controller=heart_controller)
