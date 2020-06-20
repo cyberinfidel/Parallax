@@ -7,6 +7,7 @@ import sdl2.ext
 # import my files
 import graphics
 import entity
+import game_pad
 import vector
 import enum
 
@@ -65,7 +66,7 @@ class Game(object):
 
 		self.renlayer = graphics.RenderLayer(self.ren)
 
-		self.input = entity.Input(self)
+		self.input = game_pad.Input(self)
 
 		self.drawables = []
 		self.updatables = []
@@ -85,10 +86,6 @@ class Game(object):
 		# present graphics and actually display
 		sdl2.SDL_RenderPresent(self.ren.renderer)
 		self.window.refresh()
-
-	def setGameMode(self, game_mode):
-		self.game_mode = game_mode
-
 
 	def tick(self, dt):
 		self.input.update(sdl2.ext.get_events())

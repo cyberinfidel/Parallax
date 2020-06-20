@@ -2,7 +2,8 @@
 import enum
 
 # Parallax
-from entity import eStates, eDirections, eActions
+from entity import eStates, eDirections
+from game_pad import eActions
 from controller import Controller, global_tolerance, restrictToArena, global_gravity
 from collision import Collider, Message
 from graphics import AnimNoLoop, AnimLoop, MultiAnim, AnimSingle

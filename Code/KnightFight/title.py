@@ -1,6 +1,7 @@
-from entity import eStates, eActions
+from entity import eStates
+from game_pad import eActions
 from controller import Controller
-from graphics import MultiAnim, AnimRandom, AnimNoLoop
+from graphics import MultiAnim, AnimNoLoop
 from game import eGameModes
 
 import enum
