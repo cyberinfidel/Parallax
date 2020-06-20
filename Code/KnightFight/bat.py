@@ -84,7 +84,7 @@ class BatController(Controller):
 			self.cooldown = 0
 			self.health = 5
 			self.vel = Vec3(0,0,0)
-			self.mass = 2
+			self.mass = 4
 
 	def __init__(self, game, data):
 		super(BatController, self).__init__(game)
@@ -128,16 +128,16 @@ class BatController(Controller):
 
 				data.cooldown = 0.2
 
+		if common_data.pos.z>0:
+			friction(data.vel, 0.01)
+		else:
+			friction(data.vel, 0.1)
 
 		basic_gravity(data.vel)
 		basic_physics(common_data.pos,data.vel)
 
 		restrictToArena(common_data.pos, data.vel)
 
-		if common_data.pos.z>0:
-			friction(data.vel, 0.01*dt)
-		else:
-			friction(data.vel, 0.1*dt)
 
 
 	def receiveCollision(self, data, common_data, message):

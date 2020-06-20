@@ -260,12 +260,10 @@ class KnightFight(Game):
 				# first wave
 				SpawnEnemies([
 					SpawnEntity(self.reaper_t, Vec3(300, 35, 0), False, "Reaper 2"),
-					SpawnEntity(self.reaper_t, Vec3(20, 35, 0), False, "Reaper 2"),
 				]),
-				Delay(1),
+				Delay(rand_num(1)+0.5),
 				# spawn second wave
 				SpawnEnemies([
-					SpawnEntity(self.reaper_t, Vec3(300, 35, 0), False, "Reaper 2"),
 					SpawnEntity(self.reaper_t, Vec3(20, 35, 0), False, "Reaper 2"),
 				]),
 
@@ -278,30 +276,29 @@ class KnightFight(Game):
 				SpawnEnemies([
 					SpawnEntity(self.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
 				]),
-				Delay(0.5),
+				Delay(rand_num(1)+0.5),
 				# spawn other half of wave
 				SpawnEnemies([
 					SpawnEntity(self.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
 				]),
-				Delay(0.5),
+				Delay(rand_num(1)+0.5),
 				SpawnEnemies([
 					SpawnEntity(self.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
 				]),
-				Delay(0.5),
+				Delay(rand_num(1)+0.5),
 				# spawn other half of wave
 				SpawnEnemies([
 					SpawnEntity(self.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
 				]),
-				Delay(0.5),
+				Delay(rand_num(1)+0.5),
 				SpawnEnemies([
 					SpawnEntity(self.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
 				]),
-				Delay(0.5),
+				Delay(rand_num(1)+0.5),
 				# spawn other half of wave
 				SpawnEnemies([
 					SpawnEntity(self.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
 				]),
-				Delay(0.5),
 
 				# wait until all monsters destroyed
 				WaitForNoEnemies(),
