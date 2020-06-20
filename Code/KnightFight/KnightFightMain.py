@@ -25,7 +25,8 @@ from KnightFight.rain import rainGraphics, RainController
 from KnightFight.reaper import reaperGraphics, ReaperController, ReaperCollider
 from KnightFight.heart import heartGraphics, HeartIndicatorController
 from KnightFight.title import titleGraphics, TitleController, eTitleStates
-from KnightFight.director import DirectorController, Delay, SpawnEntity, SpawnEnemies, EndGame
+from director import DirectorController, Delay, SpawnEntity, EndGame
+from KFdirector import SpawnEnemies, WaitForNoEnemies
 
 
 class KnightFight(Game):
@@ -104,46 +105,7 @@ class KnightFight(Game):
 
 		# director
 		director_controller = self.controller_manager.makeTemplate({"Template":DirectorController})
-		director_controller.events = [
-			# wait a bit
-			Delay(2),
 
-			# spawn first wave
-			SpawnEnemies([
-				SpawnEntity(self.bat_t,Vec3(30,35,5), False, "Bat 1"),
-				SpawnEntity(self.reaper_t,Vec3(30,35,0),False, "Reaper 2"),
-				SpawnEntity(self.bat_t, Vec3(300, 35,5), False, "Bat 1"),
-			]),
-
-			# wait a bit
-			Delay(2),
-			# spawn other half of wave
-			SpawnEnemies([
-				SpawnEntity(self.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
-				SpawnEntity(self.reaper_t, Vec3(300, 35, 0), False, "Reaper 2"),
-				SpawnEntity(self.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
-			]),
-
-				# wait until all monsters destroyed
-
-			# wait a bit
-			Delay(2),
-
-			# spawn second wave
-
-			# wait until all monsters destroyed
-
-			# wait a bit
-			Delay(2),
-
-			# ...
-
-			# wait a bit
-			Delay(2),
-
-			# signal game complete
-			EndGame()
-		]
 
 		self.director_t = self.entity_manager.makeEntityTemplate(controller=director_controller)
 	# end init()
@@ -164,9 +126,12 @@ class KnightFight(Game):
 			pass
 ##################################################
 		elif self.game_mode==eGameModes.start:
+			# set up new game and clean up anything from last game
 			self.num_monsters = 0
+			self.killPlayEntities()
+			self.cleanUpDead()
 			self.director = self.requestNewEntity(entity_template=self.director_t)
-			# make bats
+			self.director.controller_data.events = self.KFEvents()
 
 			# make hero
 			self.hero = self.requestNewEntity(entity_template=self.hero_t, pos=Vec3(160, 60, 0), parent=False, name="Hero")
@@ -206,6 +171,7 @@ class KnightFight(Game):
 		####################################################
 
 		elif self.game_mode==eGameModes.game_over:
+			self.director.setState(eStates.dead)
 			self.restart_cooldown-=dt
 			self.title.setState(eTitleStates.game_over)
 			if self.restart_cooldown<=0:
@@ -286,6 +252,71 @@ class KnightFight(Game):
 		self.num_monsters+=1
 		self.requestNewEntity(entity_template,pos,parent,name)
 
+
+	def KFEvents(self):
+		return[
+				# wait a bit
+				Delay(2),
+				# first wave
+				SpawnEnemies([
+					SpawnEntity(self.reaper_t, Vec3(300, 35, 0), False, "Reaper 2"),
+					SpawnEntity(self.reaper_t, Vec3(20, 35, 0), False, "Reaper 2"),
+				]),
+				Delay(1),
+				# spawn second wave
+				SpawnEnemies([
+					SpawnEntity(self.reaper_t, Vec3(300, 35, 0), False, "Reaper 2"),
+					SpawnEntity(self.reaper_t, Vec3(20, 35, 0), False, "Reaper 2"),
+				]),
+
+				# wait until all monsters destroyed
+				WaitForNoEnemies(),
+				# wait a bit
+				Delay(4),
+
+				# second  wave
+				SpawnEnemies([
+					SpawnEntity(self.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
+				]),
+				Delay(0.5),
+				# spawn other half of wave
+				SpawnEnemies([
+					SpawnEntity(self.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
+				]),
+				Delay(0.5),
+				SpawnEnemies([
+					SpawnEntity(self.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
+				]),
+				Delay(0.5),
+				# spawn other half of wave
+				SpawnEnemies([
+					SpawnEntity(self.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
+				]),
+				Delay(0.5),
+				SpawnEnemies([
+					SpawnEntity(self.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
+				]),
+				Delay(0.5),
+				# spawn other half of wave
+				SpawnEnemies([
+					SpawnEntity(self.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
+				]),
+				Delay(0.5),
+
+				# wait until all monsters destroyed
+				WaitForNoEnemies(),
+
+				# wait a bit
+				Delay(2),
+
+				# ...
+
+				WaitForNoEnemies(),
+				# wait a bit
+				Delay(2),
+				# signal game complete
+				EndGame()
+			]
 
 
 

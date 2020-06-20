@@ -47,22 +47,6 @@ class Spawn(Event):
 			)
 		return False # all done
 
-class SpawnEnemies(Event):
-	def __init__(self, spawns):
-		super(Event, self).__init__()
-		self.spawns = spawns
-
-	def update(self, data, common_data, dt):
-		# spawn entities in spawns list
-		for spawn in self.spawns:
-			common_data.game.requestNewEnemy(
-				entity_template= spawn.template,
-				pos = spawn.pos,
-				parent = False,
-				name = spawn.name
-			)
-		return False # all done
-
 class EndGame(Event):
 	def __init__(self):
 		super(Event, self).__init__()
@@ -80,15 +64,10 @@ class WaitFor(Event):
 	def update(self, data, common_data, dt):
 		return self.condition()
 
-
-
-
-
 class DirectorController(Controller):
 	def __init__(self, game, data):
 		super(DirectorController, self).__init__(game)
 		# values global to all this type of component
-		self.events = []
 
 	class Data(object):
 		def __init__(self, common_data, init=False):
@@ -97,13 +76,13 @@ class DirectorController(Controller):
 			else:
 				self.game_pad = False
 			self.current_event = 0
-
+			self.events = []
 
 	def update(self, data, common_data, dt):
-		if not self.events[data.current_event].update(data,common_data, dt):
+		if not data.events[data.current_event].update(data,common_data, dt):
 			data.current_event+=1
-		if data.current_event>=len(self.events):
+		if data.current_event>=len(data.events):
 			# run out of events so mark director for destruction
-			self.setState(data, common_data, eStates.dead)
+			data.setState(data, common_data, eStates.dead)
 
 
