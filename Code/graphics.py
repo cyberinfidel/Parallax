@@ -193,9 +193,8 @@ class GraphicsTypes(enum.IntEnum):
 
 # graphics component for a single static image
 class SingleImage(Component):
-
-	def __init__(self, data):
-		super(SingleImage, self).__init__()
+	def __init__(self, game, data):
+		super(SingleImage, self).__init__(game)
 		self.rl = data['RenderLayer']
 		self.image = self.rl.addImage(data["Image"][0], data["Image"][1],data["Image"][2])
 
@@ -216,8 +215,8 @@ class SingleAnim(Component):
 			self.current_frame = 0
 			self.current_time = 0
 
-	def __init__(self, data):
-		super(SingleAnim, self).__init__()
+	def __init__(self, game, data):
+		super(SingleAnim, self).__init__(game)
 		self.rl = data['RenderLayer']
 		self.anim = data['Anims'][0]['AnimType'](self.rl, data["Anims"][0]["Frames"])
 		self.name = data["Name"]
@@ -250,8 +249,8 @@ class MultiAnim(Component):
 				self.current_anim =  eStates.stationary
 				self.current_state = eStates.stationary
 
-	def __init__(self, data):
-		super(MultiAnim, self).__init__()
+	def __init__(self, game, data):
+		super(MultiAnim, self).__init__(game)
 		self.rl = data['RenderLayer']
 		self.anims = {}
 

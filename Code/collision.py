@@ -63,8 +63,8 @@ class CollisionManager(ComponentManager):
 
 
 class Collider(Component):
-	def __init__(self):
-		super(Collider, self).__init__()
+	def __init__(self, game):
+		super(Collider, self).__init__(game)
 
 	def getDim(self):
 		return self.dim

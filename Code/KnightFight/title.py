@@ -71,8 +71,8 @@ class TitleController(Controller):
 			self.cooldown = 0
 			self.delay = 2
 
-	def __init__(self, data):
-		super(TitleController, self).__init__()
+	def __init__(self, game, data):
+		super(TitleController, self).__init__(game)
 
 	def update(self, data, common_data, dt):
 #		if self.coolDown(data, dt):

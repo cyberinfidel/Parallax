@@ -59,8 +59,8 @@ class RainController(Controller):
 			common_data.state = RainController.state_fall
 			common_data.new_state = False
 
-	def __init__(self, data):
-		super(RainController, self).__init__()
+	def __init__(self, game, data):
+		super(RainController, self).__init__(game)
 
 	def update(self, data, common_data, dt):
 		# deal with things that can interrupt actions e.g. landing

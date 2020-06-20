@@ -126,8 +126,8 @@ class ReaperController(Controller):
 			common_data.state = eStates.stationary
 			common_data.new_state = False
 
-	def __init__(self, data):
-		super(ReaperController, self).__init__()
+	def __init__(self, game, data):
+		super(ReaperController, self).__init__(game)
 
 	def update(self, data, common_data, dt):
 		speed = 0.3
@@ -200,8 +200,8 @@ class ReaperCollider(Collider):
 			else:
 				pass
 
-	def __init__(self, data):
-		super(ReaperCollider, self).__init__()
+	def __init__(self, game, data):
+		super(ReaperCollider, self).__init__(game)
 		# global static data to all of ReaperCollider components
 		self.radius = 10.0
 		self.damage = 1

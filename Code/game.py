@@ -65,7 +65,7 @@ class Game(object):
 
 		self.renlayer = graphics.RenderLayer(self.ren)
 
-		self.input = entity.Input()
+		self.input = entity.Input(self)
 
 		self.drawables = []
 		self.updatables = []
@@ -133,6 +133,35 @@ class Game(object):
 
 		# Clear up and exit
 		sdl2.ext.quit()
+
+	def setGameMode(self, game_mode):
+		self.game_mode = game_mode
+		if self.game_mode==eGameModes.title:
+			self.killPlayEntities()
+
+	def requestNewEntity(self,
+											 entity_template,
+											 pos=vector.Vec3(0,0,0),
+											 parent=False,
+											 name=False):
+		new_entity = self.entity_manager.makeEntity(entity_template, name)
+		new_entity.setPos(pos)
+		new_entity.setParent(parent)
+		#	TODO: add generic names to entity templates
+		# if name:
+		# 	new_entity.name=name
+		#		else:
+		#			new_entity.name=entity_template.getName()
+
+		if new_entity.graphics:
+			self.drawables.append(new_entity)
+		if new_entity.controller:
+			self.updatables.append(new_entity)
+		if new_entity.collider:
+			self.collision_manager.append(new_entity)
+		return new_entity
+
+# end requestNewEntity()
 
 	def runTests(self):
 		result = 0

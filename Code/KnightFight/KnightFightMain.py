@@ -25,6 +25,7 @@ from KnightFight.rain import rainGraphics, RainController
 from KnightFight.reaper import reaperGraphics, ReaperController, ReaperCollider
 from KnightFight.heart import heartGraphics, HeartIndicatorController
 from KnightFight.title import titleGraphics, TitleController, eTitleStates
+from KnightFight.director import DirectorController, Delay, SpawnEntity, SpawnEnemies, EndGame
 
 
 class KnightFight(Game):
@@ -100,6 +101,51 @@ class KnightFight(Game):
 
 		# info bar
 		self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heartgraphics, controller=heart_controller)
+
+		# director
+		director_controller = self.controller_manager.makeTemplate({"Template":DirectorController})
+		director_controller.events = [
+			# wait a bit
+			Delay(2),
+
+			# spawn first wave
+			SpawnEnemies([
+				SpawnEntity(self.bat_t,Vec3(30,35,5), False, "Bat 1"),
+				SpawnEntity(self.reaper_t,Vec3(30,35,0),False, "Reaper 2"),
+				SpawnEntity(self.bat_t, Vec3(300, 35,5), False, "Bat 1"),
+			]),
+
+			# wait a bit
+			Delay(2),
+			# spawn other half of wave
+			SpawnEnemies([
+				SpawnEntity(self.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
+				SpawnEntity(self.reaper_t, Vec3(300, 35, 0), False, "Reaper 2"),
+				SpawnEntity(self.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
+			]),
+
+				# wait until all monsters destroyed
+
+			# wait a bit
+			Delay(2),
+
+			# spawn second wave
+
+			# wait until all monsters destroyed
+
+			# wait a bit
+			Delay(2),
+
+			# ...
+
+			# wait a bit
+			Delay(2),
+
+			# signal game complete
+			EndGame()
+		]
+
+		self.director_t = self.entity_manager.makeEntityTemplate(controller=director_controller)
 	# end init()
 
 
@@ -118,34 +164,9 @@ class KnightFight(Game):
 			pass
 ##################################################
 		elif self.game_mode==eGameModes.start:
+			self.num_monsters = 0
+			self.director = self.requestNewEntity(entity_template=self.director_t)
 			# make bats
-			self.bats = []
-			self.numbats = 2
-			for n in range(0, self.numbats):
-				bat = self.entity_manager.makeEntity(self.bat_t, "Bat")
-				if n % 2 == 0:
-					bat.setPos(Vec3(rand_num(20), rand_num(64), rand_num(20) + 40))
-				else:
-					bat.setPos(Vec3(rand_num(20) + 250, rand_num(64), rand_num(20) + 40))
-				self.drawables.append(bat)
-				self.updatables.append(bat)
-				self.collision_manager.append(bat)
-
-			# make reapers
-			self.reapers = []
-			self.numreapers = 2
-			for n in range(0, self.numreapers):
-				reaper = self.entity_manager.makeEntity(self.reaper_t, "Reaper")
-				if n % 2 == 0:
-					reaper.setPos(Vec3(rand_num(40), rand_num(100), 0))
-				else:
-					reaper.setPos(Vec3(rand_num(40) + 250, rand_num(100), 0))
-
-				self.drawables.append(reaper)
-				self.updatables.append(reaper)
-				self.collision_manager.append(reaper)
-
-			self.num_monsters = self.numreapers+self.numbats
 
 			# make hero
 			self.hero = self.requestNewEntity(entity_template=self.hero_t, pos=Vec3(160, 60, 0), parent=False, name="Hero")
@@ -223,29 +244,6 @@ class KnightFight(Game):
 			if not (updatable is self.title):
 				updatable.common_data.state = eStates.dead
 
-	def requestNewEntity(self,
-											 entity_template,
-											 pos,
-											 parent,
-											 name=False):
-		new_entity = self.entity_manager.makeEntity(entity_template, name)
-		new_entity.setPos(pos)
-		new_entity.setParent(parent)
-		#	TODO: add generic names to entity templates
-		# if name:
-		# 	new_entity.name=name
-#		else:
-#			new_entity.name=entity_template.getName()
-
-		if new_entity.graphics:
-			self.drawables.append(new_entity)
-		if new_entity.controller:
-			self.updatables.append(new_entity)
-		if new_entity.collider:
-			self.collision_manager.append(new_entity)
-		return new_entity
-
-# end requestNewEntity()
 
 	def requestTarget(self,pos):
 		return self.hero.common_data.pos
@@ -276,14 +274,19 @@ class KnightFight(Game):
 
 	def reportMonsterDeath(self):
 		self.num_monsters-=1
-		if self.num_monsters<=0:
-			self.setGameMode(eGameModes.win)
-			self.restart_cooldown = 6
+		# if self.num_monsters<=0:
+		# 	self.setGameMode(eGameModes.win)
+		# 	self.restart_cooldown = 6
 
-	def setGameMode(self, game_mode):
-		self.game_mode = game_mode
-		if self.game_mode==eGameModes.title:
-			self.killPlayEntities()
+	def requestNewEnemy(self,
+											 entity_template,
+											 pos=Vec3(0,0,0),
+											 parent=False,
+											 name=False):
+		self.num_monsters+=1
+		self.requestNewEntity(entity_template,pos,parent,name)
+
+
 
 
 def run(tests=False):

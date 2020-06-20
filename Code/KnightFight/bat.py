@@ -86,8 +86,8 @@ class BatController(Controller):
 			self.vel = Vec3(0,0,0)
 			self.mass = 2
 
-	def __init__(self, data):
-		super(BatController, self).__init__()
+	def __init__(self, game, data):
+		super(BatController, self).__init__(game)
 
 	def update(self, data, common_data, dt):
 		speed = 0.3
@@ -170,8 +170,8 @@ class BatCollider(Collider):
 			else:
 				pass
 
-	def __init__(self, data):
-		super(BatCollider, self).__init__()
+	def __init__(self, game, data):
+		super(BatCollider, self).__init__(game)
 		# global static data to all of BatCollider components
 		self.radius = 10.0
 		self.damage = 1.0

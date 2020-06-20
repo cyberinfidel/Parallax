@@ -71,6 +71,8 @@ class eActions(enum.IntEnum):
 
 # Component template root class
 class Component(object):
+	def __init__(self, game):
+		self.game = game
 
 # define a Data class if your component needs
 #  instance specific data. If all the data is
@@ -189,7 +191,7 @@ class ComponentManager(object):
 		self.game = game
 
 	def makeTemplate(self, template_data):
-		template = template_data['Template'](template_data)
+		template = template_data['Template'](self.game, template_data)
 		self.templates.append(template)
 		return self.templates[-1]
 
@@ -201,8 +203,8 @@ class ComponentManager(object):
 
 
 class GamePad(Component):
-	def __init__(self):
-		super(GamePad, self).__init__()
+	def __init__(self, game):
+		super(GamePad, self).__init__(game)
 		self.actions = {
 			eActions.up:False,
 			eActions.right:False,
@@ -228,9 +230,9 @@ class GamePad(Component):
 				self.entity.react.tryAction(action)
 
 class Input(object):
-	def __init__(self):
+	def __init__(self, game):
 		self.quit = False
-		self.game_pads = [ GamePad(), GamePad()]
+		self.game_pads = [ GamePad(game), GamePad(game)]
 
 	def getGamePad(self, id):
 		return self.game_pads[id]

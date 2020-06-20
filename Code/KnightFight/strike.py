@@ -28,8 +28,8 @@ class HitController(Controller):
 
 			self.cooldown = 0.5
 
-	def __init__(self, data):
-		super(HitController, self).__init__()
+	def __init__(self, game, data):
+		super(HitController, self).__init__(game)
 
 	def update(self, data, common_data, dt):
 
@@ -56,8 +56,8 @@ class HitCollider(Collider):
 			else:
 				pass
 
-	def __init__(self, data):
-		super(HitCollider, self).__init__()
+	def __init__(self, game, data):
+		super(HitCollider, self).__init__(game)
 		# global static data to all of components
 		self.dim = Vec3(20,8,16)
 		self.orig = Vec3(10,4,0)

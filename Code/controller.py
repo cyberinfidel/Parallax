@@ -13,8 +13,8 @@ def log(msg, new_line=True):
 
 
 class Controller(Component):
-	def __init__(self):
-		super(Controller, self).__init__()
+	def __init__(self, game):
+		super(Controller, self).__init__(game)
 
 	# Update the entity state whether the last action has cooled down or not
 	def setState(self, data, common_data, state, cooldown=-1):

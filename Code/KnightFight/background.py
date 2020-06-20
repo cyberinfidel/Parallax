@@ -3,8 +3,8 @@ from graphics import SingleImage
 
 
 class BackgroundController(Controller):
-	def __init__(self, data):
-		pass
+	def __init__(self, game, data):
+		super(Controller, self).__init__(game)
 
 	def collision(self, data, pos):
 		collision = False

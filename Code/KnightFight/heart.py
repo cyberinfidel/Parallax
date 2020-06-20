@@ -64,8 +64,8 @@ class HeartIndicatorController(Controller):
 			self.cooldown = 0
 			self.health_num = 0
 
-	def __init__(self, data):
-		super(HeartIndicatorController, self).__init__()
+	def __init__(self, game, data):
+		super(HeartIndicatorController, self).__init__(game)
 
 	def update(self, data, common_data, dt):
 		if not self.coolDown(data, dt):
