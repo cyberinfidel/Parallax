@@ -59,7 +59,7 @@ class KnightFight(Game):
 		title_graphics = self.graphics_manager.makeTemplate(titleGraphics(self.renlayer))
 		title_controller = self.controller_manager.makeTemplate({"Template": TitleController})
 		self.title_t = self.entity_manager.makeEntityTemplate(graphics=title_graphics, controller=title_controller)
-		self.title = self.requestNewEntity(entity_template=self.title_t, pos=Vec3(48, 0, 195), parent=self, name="Title")
+		self.title = self.requestNewEntity(entity_template=self.title_t, pos=Vec3(48, 50, 145), parent=self, name="Title")
 		self.title.setGamePad(self.input.getGamePad(0))
 
 		self.raining = False
@@ -283,7 +283,7 @@ class KnightFight(Game):
 				]),
 				Delay(rand_num(1)+0.5),
 				SpawnEnemies([
-					SpawnEntity(self.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
+					SpawnEntity(self.bat_t, Vec3(155, 110, 5), False, "Bat 1"),
 				]),
 				Delay(rand_num(1)+0.5),
 				# spawn other half of wave
@@ -297,7 +297,7 @@ class KnightFight(Game):
 				Delay(rand_num(1)+0.5),
 				# spawn other half of wave
 				SpawnEnemies([
-					SpawnEntity(self.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
+					SpawnEntity(self.bat_t, Vec3(155, 110, 5), False, "Bat 1"),
 				]),
 
 				# wait until all monsters destroyed

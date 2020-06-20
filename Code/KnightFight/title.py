@@ -11,6 +11,7 @@ class eTitleStates(enum.IntEnum):
 	paused = 3,
 	game_over = 4,
 	win = 5,
+	play = 6,
 	numTitleStates = 6
 
 
@@ -28,6 +29,15 @@ def titleGraphics(renlayer):
 						"Frames":
 							[
 								["Graphics/Title/Title.png", 4, 4, 0.9],
+							],
+					},
+					{
+						"Name": "TitleBar",
+						"AnimType": AnimNoLoop,
+						"State": eTitleStates.play,
+						"Frames":
+							[
+								["Graphics/Title/TitleBar.png", 4, 4, 0.9],
 							],
 					},
 					{
@@ -79,23 +89,24 @@ class TitleController(Controller):
 #			self.cooldown = self.delay
 
 			if common_data.game.game_mode==eGameModes.play:
-				common_data.blink=True
+				self.setState(data, common_data, eTitleStates.play)
 				if data.game_pad.actions[eActions.pause]:
 					common_data.game.setGameMode(eGameModes.paused)
 					self.setState(data, common_data, eTitleStates.paused)
 			else:
-				common_data.blink = False
 				if common_data.game.game_mode == eGameModes.paused:
 					if data.game_pad:
 						if data.game_pad.actions[eActions.jump]:
 							common_data.game.setGameMode(eGameModes.play)
-							self.setState(data, common_data, eTitleStates.hide)
+							self.setState(data, common_data, eTitleStates.play)
+							data.game_pad.actions[eActions.jump]=False # stops hero jumping
 				elif common_data.game.game_mode == eGameModes.title:
 					self.setState(data, common_data, eTitleStates.title)
 					if data.game_pad:
 						if data.game_pad.actions[eActions.jump]:
 							common_data.game.setGameMode(eGameModes.start)
-							self.setState(data, common_data, eTitleStates.hide)
+							self.setState(data, common_data, eTitleStates.play)
+							data.game_pad.actions[eActions.jump]=False # stops hero jumping
 				elif common_data.game.game_mode == eGameModes.game_over:
 					self.setState(data, common_data, eTitleStates.game_over)
 				elif common_data.game.game_mode == eGameModes.win:

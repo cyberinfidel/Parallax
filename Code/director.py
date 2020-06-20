@@ -83,6 +83,6 @@ class DirectorController(Controller):
 			data.current_event+=1
 		if data.current_event>=len(data.events):
 			# run out of events so mark director for destruction
-			data.setState(data, common_data, eStates.dead)
+			self.setState(data, common_data, eStates.dead)
 
 
