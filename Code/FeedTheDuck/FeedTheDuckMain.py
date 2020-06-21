@@ -5,17 +5,15 @@ import sys
 # 	add path to Parallax
 sys.path.insert(1, '../')
 # actually import files
-import game
 import entity
-import controller
 import collision
 import graphics
 import game
-from vector import *
+from vector import Vec3
 
 
-from FeedTheDuckScripts import *
-from pond import *
+from FeedTheDuckScripts import DuckGraphics, DuckController, DuckCollider
+from pond import RockGraphics, RockCollider
 
 # disable to remove logging
 def log(msg, new_line=True):

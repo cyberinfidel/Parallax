@@ -1,8 +1,14 @@
-from controller import *
-from collision import *
-from graphics import *
-from game_pad import eActions
+# system
+import enum
 
+# Parallax
+from controller import Controller, basic_physics, friction
+from collision import Collider
+from graphics import MultiAnim, AnimLoop, AnimNoLoop
+from game_pad import eActions
+from vector import Vec3
+
+# FeedTheDuck
 
 class DuckStates(enum.IntEnum):
 	stationary = 1

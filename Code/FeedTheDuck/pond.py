@@ -1,7 +1,11 @@
-from controller import *
-from collision import *
-from graphics import *
+# system
 
+# Parallax
+from collision import Collider, eShapes
+from graphics import SingleImage
+from vector import Vec3
+
+# FeedTheDuck
 
 
 def RockGraphics(renlayer):
@@ -36,7 +40,7 @@ class RockCollider(Collider):
 		# return a list of the shapes that need to be tested against
 		# in this case two circles = 2x position from origin and radii
 		# these approximate the shape of the rock
-		return ((eShapes.sphere,Vec3(16,16,16),16),(eShapes.sphere,vec3(32,16,16),16))
+		return ((eShapes.sphere,Vec3(16,16,16),16),(eShapes.sphere,Vec3(32,16,16),16))
 
 	def getCollisionMessage(self, data, common_data):
 		pass
