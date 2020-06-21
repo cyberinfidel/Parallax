@@ -21,8 +21,8 @@ class RockCollider(Collider):
 			else:
 				pass
 
-	def __init__(self, data):
-		super(RockCollider, self).__init__()
+	def __init__(self, game, data):
+		super(RockCollider, self).__init__(game)
 		# global static data to all of this class's components
 		self.radius = 15.0
 		self.mass = 10.0

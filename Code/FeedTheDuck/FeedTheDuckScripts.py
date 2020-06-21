@@ -1,7 +1,7 @@
 from controller import *
 from collision import *
 from graphics import *
-from entity import eActions
+from game_pad import eActions
 
 
 class DuckStates(enum.IntEnum):
@@ -87,8 +87,8 @@ class DuckController(Controller):
 			common_data.state = DuckStates.stationary
 
 
-	def __init__(self, init_data=False):
-		super(Controller, self).__init__()
+	def __init__(self, game, init_data=False):
+		super(Controller, self).__init__(game)
 		if init_data:
 			self.data = init_data
 
@@ -128,8 +128,8 @@ class DuckCollider(Collider):
 			else:
 				pass
 
-	def __init__(self, data):
-		super(DuckCollider, self).__init__()
+	def __init__(self, game, data):
+		super(DuckCollider, self).__init__(game)
 		# global static data to all of HeroCollider components
 		self.radius = 10.0
 		self.mass = 10.0
