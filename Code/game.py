@@ -59,7 +59,7 @@ class Game(object):
 		# makes zoomed graphics blocky (for retro effect)
 		sdl2.SDL_SetHint(sdl2.SDL_HINT_RENDER_SCALE_QUALITY, b"nearest")
 		# makes the graphics look and act like Atari ST screen size, even though rendered much larger
-		sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, 320, 200)
+		sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, res_x, res_y)
 
 		self.running = True
 		self.game_mode = eGameModes.title

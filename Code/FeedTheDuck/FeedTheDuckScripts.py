@@ -57,7 +57,7 @@ def DuckGraphics(renlayer):
 					"Frames":
 						[
 							["Graphics/Duck/DuckL1.png", 13, 15, 0.1],
-							["Graphics/Duck/DuckL2.png", 13, 15, 0.5],
+							["Graphics/Duck/DuckFeedL.png", 13, 15, 0.5],
 						],
 				},
 				{
@@ -67,7 +67,7 @@ def DuckGraphics(renlayer):
 					"Frames":
 						[
 							["Graphics/Duck/DuckR1.png", 13, 15, 0.1],
-							["Graphics/Duck/DuckR2.png", 13, 15, 0.5],
+							["Graphics/Duck/DuckFeedR.png", 13, 15, 0.5],
 						],
 				},
 			]

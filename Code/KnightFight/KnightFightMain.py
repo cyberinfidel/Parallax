@@ -42,15 +42,7 @@ class KnightFight(Game):
 		backgraphics = self.graphics_manager.makeTemplate(backgroundGraphics(self.renlayer))
 		backcontroller = self.controller_manager.makeTemplate(
 			{"Template": BackgroundController,
-			 "Lines":
-				 [
-					 Line(Vec3(64, 136, 0), Vec3(256, 136, 0)),
-					 Line(Vec3(0, 199, 0), Vec3(319, 199, 0)),
-					 Line(Vec3(64, 136, 0), Vec3(0, 199, 0)),
-					 Line(Vec3(256, 136, 0), Vec3(319, 199, 0)),
-				 ],
-			 }
-		)
+			 })
 		back_t = self.entity_manager.makeEntityTemplate(graphics=backgraphics, controller=backcontroller)
 		back = self.entity_manager.makeEntity(back_t)
 		back.setPos(Vec3(0.0, 64.0, 0.0))
