@@ -59,6 +59,24 @@ def graphics(renlayer):
 					],
 			},
 			{
+				"Name": "Standing",
+				"AnimType": AnimLoop,
+				"State": eStates.standLeft,
+				"Frames":
+					[
+						["Graphics/GoblinArcher/GoblinArcher 08.png", 22, 36, 0.04],
+					],
+			},
+			{
+				"Name": "Standing",
+				"AnimType": AnimLoop,
+				"State": eStates.standRight,
+				"Frames":
+					[
+						["Graphics/GoblinArcher/Right/GoblinArcher 08.png", 22, 36, 0.04],
+					],
+			},
+			{
 				"Name": "Simple Fall Left",
 				"AnimType": AnimNoLoop,
 				"State": eStates.fallLeft,
@@ -120,7 +138,7 @@ class Controller(Controller):
 			self.health = 5
 			self.vel = Vec3(0,0,0)
 			self.mass = 4
-			self.facing = eDirections.left
+			self.facingleft = True
 			self.fired = False
 
 	def __init__(self, game, data):
@@ -149,36 +167,30 @@ class Controller(Controller):
 
 	def update(self, data, common_data, dt):
 
+		fire_cool = 1.4
+
 		if self.coolDown(data, dt):
 			if data.fired:
 				if data.cooldown<0.9:
-					self.shoot(data,common_data,data.facing==eDirections.left)
+					self.shoot(data,common_data,data.facingleft)
 					data.fired = False
 		else:
 			if data.health <= 0:
 				self.setState(data, common_data, eStates.dead)
 				return
-			if rand_num(10)==0:
-				self.setState(data, common_data, eStates.stationary)
-				data.cooldown = rand_num(1) + 2
+			# fire at hero if in range
+			target = common_data.game.requestTarget(common_data.pos)
+			data.facingleft = (target.x<common_data.pos.x)
+			if abs(target.x-common_data.pos.x)<200 and abs(target.y-common_data.pos.y)<20:
+				self.setState(data, common_data, eStates.attackSmallLeft if data.facingleft else eStates.attackSmallRight)
+				data.fired = True
+				data.cooldown = fire_cool
 			else:
-				# chase hero
-				target = common_data.game.requestTarget(common_data.pos)
-				if(target.x<common_data.pos.x):
-					self.setState(data, common_data, eStates.attackSmallLeft)
-					data.facing = eDirections.left
-					data.fired = True
-				else:
-					self.setState(data, common_data, eStates.attackSmallRight)
-					data.facing = eDirections.right
-					data.fired = True
-
-				data.cooldown = 1.4
+				self.setState(data, common_data, eStates.standLeft if data.facingleft else eStates.standRight)
+				data.cooldown = rand_num(1) + 2
 
 		friction(data.vel)
-
 		basic_physics(common_data.pos,data.vel)
-
 		restrictToArena(common_data.pos, data.vel)
 
 
