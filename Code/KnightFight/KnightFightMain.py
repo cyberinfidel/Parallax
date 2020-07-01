@@ -21,6 +21,7 @@ def log(msg, new_line=True):
 from KnightFight.background import backgroundGraphics, BackgroundController
 from KnightFight.hero import heroGraphics, HeroController, HeroCollider
 from KnightFight.bat import batGraphics, BatController, BatCollider
+import goblinarcher
 from KnightFight.rain import rainGraphics, RainController
 from KnightFight.reaper import reaperGraphics, ReaperController, ReaperCollider
 from KnightFight.heart import heartGraphics, HeartIndicatorController
@@ -64,6 +65,7 @@ class KnightFight(Game):
 		###################
 		# Graphics Templates
 		bat_graphics = self.graphics_manager.makeTemplate(batGraphics(self.renlayer))
+		goblin_archer_graphics = self.graphics_manager.makeTemplate(goblinarcher.graphics(self.renlayer))
 		reaper_graphics = self.graphics_manager.makeTemplate(reaperGraphics(self.renlayer))
 		raingraphics = self.graphics_manager.makeTemplate(rainGraphics(self.renlayer))
 		herographics = self.graphics_manager.makeTemplate(heroGraphics(self.renlayer))
@@ -73,12 +75,14 @@ class KnightFight(Game):
 		raincontroller = self.controller_manager.makeTemplate({"Template": RainController})
 		herocontroller = self.controller_manager.makeTemplate({"Template": HeroController})
 		bat_controller = self.controller_manager.makeTemplate({"Template": BatController})
+		goblin_archer_controller = self.controller_manager.makeTemplate({"Template": goblinarcher.Controller})
 		reaper_controller = self.controller_manager.makeTemplate({"Template": ReaperController})
 		heart_controller = self.controller_manager.makeTemplate({"Template": HeartIndicatorController})
 
 		# Collider Templates
 		hero_collider = self.collision_manager.makeTemplate({"Template": HeroCollider})
 		bat_collider = self.collision_manager.makeTemplate({"Template": BatCollider})
+		goblin_archer_collider = self.collision_manager.makeTemplate({"Template": goblinarcher.Collider})
 		reaper_collider = self.collision_manager.makeTemplate({"Template": ReaperCollider})
 
 		#########################################
@@ -86,6 +90,8 @@ class KnightFight(Game):
 		#########################################
 		self.bat_t = self.entity_manager.makeEntityTemplate(graphics=bat_graphics, controller=bat_controller,
 																												collider=bat_collider)
+		self.goblin_archer_t = self.entity_manager.makeEntityTemplate(graphics=goblin_archer_graphics, controller=goblin_archer_controller,
+																												collider=goblin_archer_collider)
 		self.reaper_t = self.entity_manager.makeEntityTemplate(graphics=reaper_graphics, controller=reaper_controller,
 																													 collider=reaper_collider)
 		self.rain_t = self.entity_manager.makeEntityTemplate(graphics=raingraphics, controller=raincontroller)
@@ -249,12 +255,27 @@ class KnightFight(Game):
 		return[
 				# wait a bit
 				Delay(2),
+
+				SpawnEnemies([
+					SpawnEntity(self.goblin_archer_t, Vec3(290, 39, 0), False, "Goblin Archer"),
+				]),
+				# wait a bit
+				Delay(0.7),
+				SpawnEnemies([
+				SpawnEntity(self.goblin_archer_t, Vec3(30, 40, 0), False, "Goblin Archer"),
+				]),
+				Delay(rand_num(1)+0.5),
+
+				# wait until all monsters destroyed
+				WaitForNoEnemies(),
+				# wait a bit
+				Delay(4),
+
 				# first wave
 				SpawnEnemies([
 					SpawnEntity(self.reaper_t, Vec3(300, 35, 0), False, "Reaper 2"),
 				]),
 				Delay(rand_num(1)+0.5),
-				# spawn second wave
 				SpawnEnemies([
 					SpawnEntity(self.reaper_t, Vec3(20, 35, 0), False, "Reaper 2"),
 				]),

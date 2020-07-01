@@ -282,7 +282,7 @@ class HeroController(Controller):
 	def __init__(self, game, data):
 		super(HeroController, self).__init__(game)
 		# values global to all heroes
-		self.invincible_states = (eStates.dead, eStates.fallLeft, eStates.fallRight, eStates.dead)
+		self.invincible_states = (eStates.dead, eStates.fallLeft, eStates.fallRight)
 
 		hit_controller = self.game.controller_manager.makeTemplate({"Template": HitController})
 		hit_collider = self.game.collision_manager.makeTemplate({"Template": HitCollider})
@@ -299,7 +299,7 @@ class HeroController(Controller):
 						 force=3, damage=2, template=hit_t),  # big_up
 			Strike(cool=0.3, delay=0.1, range=Vec3(12, 0, 0), dim=Vec3(10,8,8), orig=Vec3(5,4,4),
 						 force=1, damage=1, template=hit_t),  # small
-			Strike(cool=0.8, delay=0.1, range=Vec3(18, 0, 0), dim=Vec3(10,8,8), orig=Vec3(5,4,4),
+			Strike(cool=0.8, delay=0.2, range=Vec3(18, 0, 0), dim=Vec3(10,8,8), orig=Vec3(5,4,4),
 						 force=2, damage=0, template=hit_t),  # block
 		]
 

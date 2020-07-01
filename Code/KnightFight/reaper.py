@@ -161,12 +161,12 @@ class ReaperController(Controller):
 
 				data.cooldown = 0.5
 
+		friction(data.vel)
 
 		basic_physics(common_data.pos,data.vel)
 
 		restrictToArena(common_data.pos, data.vel)
 
-		friction(data.vel)
 
 	def receiveCollision(self, data, common_data, message=False):
 #		log("Reaper hit " +common_data.name)
