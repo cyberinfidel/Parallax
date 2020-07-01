@@ -28,8 +28,6 @@ class HitController(Controller):
 			else:
 				pass
 
-			self.cooldown = 0.5
-
 	def __init__(self, game, data):
 		super(HitController, self).__init__(game)
 

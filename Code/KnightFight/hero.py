@@ -296,10 +296,10 @@ class HeroController(Controller):
 			Strike(cool=0.8, delay=0.2, range=Vec3(24, 0, 0), dim=Vec3(10,8,12), orig=Vec3(5,4,6),
 						 force=3, damage=2, template=hit_t, hero_damage=0),  # big
 			Strike(cool=0.8, delay=0.4, range=Vec3(8, 0, 30), dim=Vec3(12,8,8), orig=Vec3(6,4,4),
-						 force=2, damage=2, template=hit_t),  # big_up
+						 force=3, damage=2, template=hit_t),  # big_up
 			Strike(cool=0.3, delay=0.1, range=Vec3(12, 0, 0), dim=Vec3(10,8,8), orig=Vec3(5,4,4),
 						 force=1, damage=1, template=hit_t),  # small
-			Strike(cool=0.3, delay=0.2, range=Vec3(18, 0, 0), dim=Vec3(10,8,8), orig=Vec3(5,4,4),
+			Strike(cool=0.8, delay=0.1, range=Vec3(18, 0, 0), dim=Vec3(10,8,8), orig=Vec3(5,4,4),
 						 force=2, damage=0, template=hit_t),  # block
 		]
 
@@ -338,6 +338,7 @@ class HeroController(Controller):
 		strike_ent.collider_data.damage = strike.damage
 		strike_ent.collider_data.dim = strike.dim
 		strike_ent.collider_data.orig = strike.orig
+		strike_ent.controller_data.cooldown = strike.cool
 
 
 	def update(self, data, common_data, dt):
