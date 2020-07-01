@@ -8,7 +8,7 @@ sys.path.insert(1, '../')
 from game import Game, eGameModes
 from entity import eStates
 from collision import CollisionManager
-from vector import Vec3, Line, rand_num
+from vector import Vec3, rand_num
 
 # disable to remove logging
 def log(msg, new_line=True):

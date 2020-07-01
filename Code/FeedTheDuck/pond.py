@@ -24,14 +24,14 @@ class RockCollider(Collider):
 				pass
 			else:
 				pass
+			self.orig = Vec3(12,4,16)
+			self.dim = Vec3(24,12,32)
 
 	def __init__(self, game, data):
 		super(RockCollider, self).__init__(game)
 		# global static data to all of this class's components
 		self.radius = 15.0
 		self.mass = 10.0
-		self.orig = Vec3(12,4,16)
-		self.dim = Vec3(24,12,32)
 
 	def getRadius(self):
 		return self.radius

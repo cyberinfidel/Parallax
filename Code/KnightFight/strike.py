@@ -4,10 +4,12 @@ from collision import Collider, Message
 from vector import Vec3
 
 class Strike(object):
-	def __init__(self, cool, delay, range, force, damage, template, hero_damage=0):
+	def __init__(self, cool, delay, range, dim, orig, force, damage, template, hero_damage=0):
 		self.cool = cool
 		self.delay = delay
 		self.range = range
+		self.dim = dim
+		self.orig = orig
 		self.force = force
 		self.damage = damage
 		self.template = template
@@ -59,8 +61,6 @@ class HitCollider(Collider):
 	def __init__(self, game, data):
 		super(HitCollider, self).__init__(game)
 		# global static data to all of components
-		self.dim = Vec3(20,8,16)
-		self.orig = Vec3(10,4,0)
 
 	def getCollisionMessage(self, data, common_data):
 		return(Message(source=common_data.entity, damage=data.damage, force=data.force))

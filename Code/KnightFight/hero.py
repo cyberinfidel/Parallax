@@ -20,11 +20,6 @@ class eStrikes(enum.IntEnum):
 	block = 3
 	num_strikes = 4
 
-class eStrStates(enum.IntEnum):
-	to_strike = 0
-	struck=2
-
-
 def heroGraphics(renlayer):
 	return {
 		"Name": "Hero Animations",
@@ -297,11 +292,15 @@ class HeroController(Controller):
 
 		# cool downs in seconds
 		self.strikes = [
-			#			cool	del		range					force		damage
-			Strike(0.8, 0.2, Vec3(24, 0, 0), 3, 2, template=hit_t),  # big
-			Strike(0.8, 0.4, Vec3(8, 0, 30), 2, 2, template=hit_t),  # big_up
-			Strike(0.3, 0.1, Vec3(12, 0, 0), 1, 1, template=hit_t),  # small
-			Strike(0.3, 0.2, Vec3(18, 0, 0), 2, 0, template=hit_t),  # block
+			#			cool	del		range					dimension				origin			force		damage
+			Strike(cool=0.8, delay=0.2, range=Vec3(24, 0, 0), dim=Vec3(10,8,12), orig=Vec3(5,4,6),
+						 force=3, damage=2, template=hit_t, hero_damage=0),  # big
+			Strike(cool=0.8, delay=0.4, range=Vec3(8, 0, 30), dim=Vec3(12,8,8), orig=Vec3(6,4,4),
+						 force=2, damage=2, template=hit_t),  # big_up
+			Strike(cool=0.3, delay=0.1, range=Vec3(12, 0, 0), dim=Vec3(10,8,8), orig=Vec3(5,4,4),
+						 force=1, damage=1, template=hit_t),  # small
+			Strike(cool=0.3, delay=0.2, range=Vec3(18, 0, 0), dim=Vec3(10,8,8), orig=Vec3(5,4,4),
+						 force=2, damage=0, template=hit_t),  # block
 		]
 
 	class Data(object):
@@ -330,14 +329,15 @@ class HeroController(Controller):
 	def strike(self, data, common_data,
 						 strike,
 						 flippedX=False,
-						 name="unknown strike"
 							):
 		strike_ent = self.game.requestNewEntity(entity_template=strike.template,
 																							 pos=common_data.pos +(strike.range.flippedX() if flippedX else strike.range),
 																							 parent=common_data.entity,
-																							 name=name)
+																							 name="Hero strike")
 		strike_ent.collider_data.force = Vec3(-strike.force if flippedX else strike.force,0,0)
 		strike_ent.collider_data.damage = strike.damage
+		strike_ent.collider_data.dim = strike.dim
+		strike_ent.collider_data.orig = strike.orig
 
 
 	def update(self, data, common_data, dt):
@@ -384,7 +384,7 @@ class HeroController(Controller):
 					if data.cooldown<str.delay:
 							self.strike(data, common_data,
 													strike= str,
-													flippedX = data.facing==eDirections.left
+													flippedX = (data.facing==eDirections.left)
 													)
 							data.hero_struck[index] = False
 
@@ -537,21 +537,20 @@ class HeroController(Controller):
 					data.invincible = data.invincible_cooldown
 
 class HeroCollider(Collider):
-
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
 				pass
 			else:
 				pass
+			self.dim = Vec3(20,8,16)
+			self.orig = Vec3(10,4,0)
 
 	def __init__(self, game, data):
 		super(HeroCollider, self).__init__(game)
 		# global static data to all of HeroCollider components
 		self.radius = 10.0
 		self.mass = 10.0
-		self.dim = Vec3(20,8,16)
-		self.orig = Vec3(10,4,0)
 
 	def getRadius(self):
 		return self.radius

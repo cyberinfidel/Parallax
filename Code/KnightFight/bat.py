@@ -170,14 +170,14 @@ class BatCollider(Collider):
 				pass
 			else:
 				pass
+			self.dim = Vec3(20,8,16)
+			self.orig = Vec3(10,4,0)
 
 	def __init__(self, game, data):
 		super(BatCollider, self).__init__(game)
 		# global static data to all of BatCollider components
 		self.radius = 10.0
 		self.damage = 1.0
-		self.dim = Vec3(20,8,16)
-		self.orig = Vec3(10,4,0)
 
 	def getRadius(self):
 		return self.radius

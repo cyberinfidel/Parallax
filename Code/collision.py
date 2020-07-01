@@ -42,11 +42,11 @@ class CollisionManager(ComponentManager):
 		# progressive bounding box
 		# check x first
 		Apos = A.getPos()
-		Adim = A.collider.getDim()
-		Aorig = A.collider.getOrig()
+		Adim = A.collider_data.dim
+		Aorig = A.collider_data.orig
 		Bpos = B.getPos()
-		Bdim = B.collider.getDim()
-		Borig = B.collider.getOrig()
+		Bdim = B.collider_data.dim
+		Borig = B.collider_data.orig
 
 		if (Apos.x - Aorig.x + Adim.x)> (Bpos.x -Borig.x): # Aright > Bleft
 			if (Bpos.x - Borig.x + Bdim.x) > (Apos.x - Aorig.x): # Bright < Aleft
@@ -65,12 +65,6 @@ class CollisionManager(ComponentManager):
 class Collider(Component):
 	def __init__(self, game):
 		super(Collider, self).__init__(game)
-
-	def getDim(self):
-		return self.dim
-
-	def getOrig(self):
-		return self.orig
 
 class Message():
 	def __init__(self, source, damage=0, damage_hero=0, force=Vec3(0,0,0)):
