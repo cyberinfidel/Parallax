@@ -173,8 +173,16 @@ class EntityTemplate(object):
 class ComponentManager(object):
 	def __init__(self, game):
 		self.templates = []
-		self.data = []
 		self.game = game
+		self.instances = []
+
+	def append(self, item):
+		self.instances.append(item)
+		return len(self.instances) - 1
+
+	def pop(self, index):
+		return self.instances.pop(index)
+
 
 	def makeTemplate(self, template_data):
 		template = template_data['Template'](self.game, template_data)

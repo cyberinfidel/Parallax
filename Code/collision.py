@@ -14,28 +14,20 @@ class CollisionManager(ComponentManager):
 
 	def __init__(self, game):
 		super(CollisionManager, self).__init__(game)
-		self.collidables = []
-
-	def append(self, item):
-		self.collidables.append(item)
-		return len(self.collidables) - 1
-
-	def pop(self, index):
-		return pop(index)
 
 	def doCollisions(self):
-		if len(self.collidables)>1:
-			for indexA, colliderA in enumerate(self.collidables):
-				for colliderB in self.collidables[indexA+1:]:
+		if len(self.instances)>1:
+			for indexA, colliderA in enumerate(self.instances):
+				for colliderB in self.instances[indexA+1:]:
 						self.checkCollide(colliderA, colliderB)
 
 	def doCollisionsWithSingleEntity(self, entity):
-		for colliderA in self.collidables:
+		for colliderA in self.instances:
 					self.checkCollide(colliderA, entity)
 
 
 	def cleanUpDead(self):
-		self.collidables[:] = [x for x in self.collidables if x.getState()!=eStates.dead]
+		self.instances[:] = [x for x in self.instances if x.getState()!=eStates.dead]
 
 	def checkCollide(self,A,B):
 
