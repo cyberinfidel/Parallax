@@ -12,7 +12,7 @@ def rainGraphics(renlayer):
 			{
 				"Name": "Rain Drop Falls",
 				"AnimType": AnimNoLoop,
-				"State": RainController.state_fall,
+				"States": [RainController.state_fall],
 				"Frames":
 					[
 #						["Graphics/Rain/RainVert1.png", 1, 8, 0.1],
@@ -22,7 +22,7 @@ def rainGraphics(renlayer):
 			{
 				"Name": "Rain Drop Pool",
 				"AnimType": AnimNoLoop,
-				"State": RainController.state_pool,
+				"States": [RainController.state_pool],
 				"Frames":
 					[
 						["Graphics/Rain/RainPool 1.png", 8, 0, 0.1],

@@ -20,6 +20,24 @@ class eStrikes(enum.IntEnum):
 	block = 3
 	num_strikes = 4
 
+def HitSounds(mixer):
+	return {
+		"Name": "Hero Sounds",
+		"Template": MultiSounds,
+		"Mixer": mixer,
+		"Sounds": [
+			{
+				"Name": "Jump",
+				"SoundType": SingleNoLoop,
+				"States": [eStates.jumpUp],
+				"Files": # one of these will play at random
+				[
+					["Sounds/Jump.wav"]
+				]
+			}
+		]
+	}
+
 def heroGraphics(renlayer):
 	return {
 		"Name": "Hero Animations",
@@ -29,7 +47,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Stands",
 				"AnimType": AnimLoop,
-				"State": eStates.stationary,
+				"States": [eStates.stationary],
 				"Frames":
 					[
 						["Graphics/Hero/Hero.png", 16, 36, 2.0],
@@ -39,7 +57,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Runs Down",
 				"AnimType": AnimLoop,
-				"State": eStates.runDown,
+				"States": [eStates.runDown],
 				"Frames":
 					[
 						["Graphics/Hero/HeroRunD1.png", 16, 39, 0.1],
@@ -51,7 +69,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Runs Up",
 				"AnimType": AnimLoop,
-				"State": eStates.runUp,
+				"States": [eStates.runUp],
 				"Frames":
 					[
 						["Graphics/Hero/HeroRunU1.png", 16, 39, 0.1],
@@ -63,7 +81,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Runs Left",
 				"AnimType": AnimLoop,
-				"State": eStates.runLeft,
+				"States": [eStates.runLeft],
 				"Frames":
 					[
 						["Graphics/Hero/HeroRunL1.png", 16, 39, 0.1],
@@ -75,7 +93,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Runs Right",
 				"AnimType": AnimLoop,
-				"State": eStates.runRight,
+				"States": [eStates.runRight],
 				"Frames":
 					[
 						["Graphics/Hero/HeroRunR1.png", 16, 39, 0.1],
@@ -87,7 +105,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Jumps Right",
 				"AnimType": AnimNoLoop,
-				"State": eStates.jumpRight,
+				"States": [eStates.jumpRight],
 				"Frames":
 					[
 						["Graphics/Hero/HeroRunR1.png", 16, 39, 0.1],
@@ -97,7 +115,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Jumps Left",
 				"AnimType": AnimNoLoop,
-				"State": eStates.jumpLeft,
+				"States": [eStates.jumpLeft],
 				"Frames":
 					[
 						["Graphics/Hero/HeroRunL1.png", 16, 39, 0.1],
@@ -107,7 +125,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Jumps Up",
 				"AnimType": AnimNoLoop,
-				"State": eStates.jumpUp,
+				"States": [eStates.jumpUp],
 				"Frames":
 					[
 						["Graphics/Hero/HeroRunU1.png", 16, 39, 0.1],
@@ -117,17 +135,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Jumps Down",
 				"AnimType": AnimNoLoop,
-				"State": eStates.jumpDown,
-				"Frames":
-					[
-						["Graphics/Hero/HeroRunD1.png", 16, 39, 0.1],
-						["Graphics/Hero/HeroJumpD.png", 16, 39, 10.1],
-					],
-			},
-			{
-				"Name": "Hero Jumps Stationary",
-				"AnimType": AnimNoLoop,
-				"State": eStates.jumpStat,
+				"States": [eStates.jumpDown, eStates.jumpStat],
 				"Frames":
 					[
 						["Graphics/Hero/HeroRunD1.png", 16, 39, 0.1],
@@ -137,7 +145,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Blocks Right",
 				"AnimType": AnimNoLoop,
-				"State": eStates.blockRight,
+				"States": [eStates.blockRight],
 				"Frames":
 					[
 						["Graphics/Hero/HeroStandR.png", 48, 47, 0.1],
@@ -147,7 +155,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Blocks Left",
 				"AnimType": AnimNoLoop,
-				"State": eStates.blockLeft,
+				"States": [eStates.blockLeft],
 				"Frames":
 					[
 						["Graphics/Hero/HeroStandL.png", 48, 47, 0.1],
@@ -157,7 +165,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Big Attack Right",
 				"AnimType": AnimNoLoop,
-				"State": eStates.attackBigRight,
+				"States": [eStates.attackBigRight],
 				"Frames":
 					[
 						["Graphics/Hero/HeroBigAttack 2.png", 48, 47, 0.1],
@@ -175,7 +183,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Small Attack Right",
 				"AnimType": AnimNoLoop,
-				"State": eStates.attackSmallRight,
+				"States": [eStates.attackSmallRight],
 				"Frames":
 					[
 						["Graphics/Hero/HeroSmallAttackR 2.png", 21, 40, 0.05],
@@ -191,7 +199,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Small Attack Left",
 				"AnimType": AnimNoLoop,
-				"State": eStates.attackSmallLeft,
+				"States": [eStates.attackSmallLeft],
 				"Frames":
 					[
 						["Graphics/Hero/HeroSmallAttackL 2.png", 21, 40, 0.05],
@@ -207,7 +215,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Big Attack Left",
 				"AnimType": AnimNoLoop,
-				"State": eStates.attackBigLeft,
+				"States": [eStates.attackBigLeft],
 				"Frames":
 					[
 						["Graphics/Hero/HeroBigAttackL2.png", 48, 47, 0.1],
@@ -225,7 +233,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Fall Left",
 				"AnimType": AnimNoLoop,
-				"State": eStates.fallLeft,
+				"States": [eStates.fallLeft],
 				"Frames":
 					[
 						["Graphics/Hero/HeroFallL 1.png", 18, 47, 0.3],
@@ -235,7 +243,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Fall Right",
 				"AnimType": AnimNoLoop,
-				"State": eStates.fallRight,
+				"States": [eStates.fallRight],
 				"Frames":
 					[
 						["Graphics/Hero/HeroFallR 1.png", 18, 47, 0.3],
@@ -245,7 +253,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero Shadow",
 				"AnimType": AnimSingle,
-				"State": eStates.shadow,
+				"States": [eStates.shadow],
 				"Frames":
 					[
 						["Graphics/shadow.png", 16, 4, 0.3],
@@ -254,7 +262,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero hurt Left",
 				"AnimType": AnimNoLoop,
-				"State": eStates.hurtLeft,
+				"States": [eStates.hurtLeft],
 				"Frames":
 					[
 						["Graphics/Hero/HeroStandL.png", 48, 47, 0.1],
@@ -265,7 +273,7 @@ def heroGraphics(renlayer):
 			{
 				"Name": "Hero hurt Right",
 				"AnimType": AnimNoLoop,
-				"State": eStates.hurtRight,
+				"States": [eStates.hurtRight],
 				"Frames":
 					[
 						["Graphics/Hero/HeroStandR.png", 48, 47, 0.1],
@@ -281,14 +289,15 @@ def heroGraphics(renlayer):
 class HeroController(Controller):
 	def __init__(self, game, data):
 		super(HeroController, self).__init__(game)
-		# values global to all heroes
+		# values global to all instances
 		self.invincible_states = (eStates.dead, eStates.fallLeft, eStates.fallRight)
 
+		# set up all attacks
 		hit_controller = self.game.controller_manager.makeTemplate({"Template": HitController})
 		hit_collider = self.game.collision_manager.makeTemplate({"Template": HitCollider})
-
-		hit_t = self.game.entity_manager.makeEntityTemplate(graphics=False, controller=hit_controller,
-																															 collider=hit_collider)
+		hit_t = self.game.entity_manager.makeEntityTemplate(graphics=False,
+																												controller=hit_controller,
+																												collider=hit_collider)
 
 		# cool downs in seconds
 		self.strikes = [
@@ -303,12 +312,22 @@ class HeroController(Controller):
 						 force=2, damage=0, template=hit_t),  # block
 		]
 
+		# sounds
+
+
+
+	################
+	# end __init__ #
+	################
+
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
 				self.game_pad = init.game_pad
 			else:
 				self.game_pad = False
+
+			# values for each instance
 
 			self.cooldown = -1
 			self.vel = Vec3(0.0,0.0,0.0)
@@ -324,6 +343,10 @@ class HeroController(Controller):
 			self.hero_struck=[]
 			for s in range(0,eStrikes.num_strikes):
 				self.hero_struck.append(False)
+
+	#####################
+	# end data __init__ #
+	#####################
 
 
 	def strike(self, data, common_data,

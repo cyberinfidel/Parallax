@@ -16,7 +16,7 @@ def graphics(renlayer):
 			{
 				"Name": "Firing Arrow",
 				"AnimType": AnimLoop,
-				"State": eStates.attackSmallLeft,
+				"States": [eStates.attackSmallLeft],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/GoblinArcher 08.png", 22, 36, 0.1],
@@ -34,7 +34,7 @@ def graphics(renlayer):
 			{
 				"Name": "Firing Arrow",
 				"AnimType": AnimLoop,
-				"State": eStates.attackSmallRight,
+				"States": [eStates.attackSmallRight],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/Right/GoblinArcher 08.png", 22, 36, 0.1],
@@ -52,7 +52,7 @@ def graphics(renlayer):
 			{
 				"Name": "Standing",
 				"AnimType": AnimLoop,
-				"State": eStates.stationary,
+				"States": [eStates.stationary],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/GoblinArcher 08.png", 22, 36, 0.04],
@@ -61,7 +61,7 @@ def graphics(renlayer):
 			{
 				"Name": "Standing",
 				"AnimType": AnimLoop,
-				"State": eStates.standLeft,
+				"States": [eStates.standLeft],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/GoblinArcher 08.png", 22, 36, 0.04],
@@ -70,7 +70,7 @@ def graphics(renlayer):
 			{
 				"Name": "Standing",
 				"AnimType": AnimLoop,
-				"State": eStates.standRight,
+				"States": [eStates.standRight],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/Right/GoblinArcher 08.png", 22, 36, 0.04],
@@ -79,7 +79,7 @@ def graphics(renlayer):
 			{
 				"Name": "Simple Fall Left",
 				"AnimType": AnimNoLoop,
-				"State": eStates.fallLeft,
+				"States": [eStates.fallLeft],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/GoblinArcherDies 1.png", 22, 36, 0.5],
@@ -89,7 +89,7 @@ def graphics(renlayer):
 			{
 				"Name": "Simple Fall Right",
 				"AnimType": AnimNoLoop,
-				"State": eStates.fallRight,
+				"States": [eStates.fallRight],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/Right/GoblinArcherDies 1.png", 22, 36, 0.5],
@@ -99,7 +99,7 @@ def graphics(renlayer):
 			{
 				"Name": "Simple Hurt Left",
 				"AnimType": AnimLoop,
-				"State": eStates.hurtLeft,
+				"States": [eStates.hurtLeft],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/GoblinArcherDies 1.png", 22, 36, 0.5],
@@ -108,7 +108,7 @@ def graphics(renlayer):
 			{
 				"Name": "Simple HurtRight",
 				"AnimType": AnimLoop,
-				"State": eStates.hurtRight,
+				"States": [eStates.hurtRight],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/Right/GoblinArcherDies 1.png", 22, 36, 0.5],
@@ -117,7 +117,7 @@ def graphics(renlayer):
 			{
 				"Name": "Goblin Archer Shadow",
 				"AnimType": AnimSingle,
-				"State": eStates.shadow,
+				"States": [eStates.shadow],
 				"Frames":
 					[
 						["Graphics/shadow.png", 16, 4, 0.3],

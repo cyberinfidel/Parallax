@@ -12,7 +12,7 @@ def heartGraphics(renlayer):
 					{
 						"Name": "stationary",
 						"AnimType": AnimRandom,
-						"State": eStates.stationary,
+						"States": [eStates.stationary],
 						"Frames":
 							[
 								["Graphics/Heart/Heart 7.png", 4, 4, 0.9],
@@ -22,7 +22,7 @@ def heartGraphics(renlayer):
 					{
 						"Name": "appear",
 						"AnimType": AnimNoLoop,
-						"State": eStates.appear,
+						"States": [eStates.appear],
 						"Frames":
 							[
 								["Graphics/Heart/Heart 1.png", 4, 4, 0.2],
@@ -37,7 +37,7 @@ def heartGraphics(renlayer):
 					{
 						"Name": "fade",
 						"AnimType": AnimNoLoop,
-						"State": eStates.fade,
+						"States": [eStates.fade],
 						"Frames":
 							[
 								["Graphics/Heart/Heart 7.png", 4, 4, 0.5],

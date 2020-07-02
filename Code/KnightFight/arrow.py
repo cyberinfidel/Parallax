@@ -18,25 +18,7 @@ def AGraphics(renlayer):
 			{
 				"Name": "Arrow",
 				"AnimType": AnimSingle,
-				"State": eStates.stationary,
-				"Frames":
-					[
-						["Graphics/Arrow/ArrowLeft.png", 11, 3, 0.04],
-					],
-			},
-			{
-				"Name": "Arrow left",
-				"AnimType": AnimSingle,
-				"State": eStates.runLeft,
-				"Frames":
-					[
-						["Graphics/Arrow/ArrowLeft.png", 11, 3, 0.04],
-					],
-			},
-			{
-				"Name": "Arrow fall left",
-				"AnimType": AnimSingle,
-				"State": eStates.fallLeft,
+				"States": [eStates.stationary,eStates.runLeft,eStates.fallLeft],
 				"Frames":
 					[
 						["Graphics/Arrow/ArrowLeft.png", 11, 3, 0.04],
@@ -45,25 +27,16 @@ def AGraphics(renlayer):
 			{
 				"Name": "Arrow fall right",
 				"AnimType": AnimSingle,
-				"State": eStates.fallRight,
+				"States": [eStates.fallRight, eStates.runRight],
 				"Frames":
 					[
 						["Graphics/Arrow/ArrowRight.png", 11, 3, 0.04],
 					],
 			},
 			{
-				"Name": "Firing Arrow",
+				"Name": "Arrow Shadow",
 				"AnimType": AnimSingle,
-				"State": eStates.runRight,
-				"Frames":
-					[
-						["Graphics/Arrow/ArrowRight.png", 11, 3, 0.04],
-					],
-			},
-			{
-				"Name": "Goblin Archer Shadow",
-				"AnimType": AnimSingle,
-				"State": eStates.shadow,
+				"States": [eStates.shadow],
 				"Frames":
 					[
 						["Graphics/shadowSmall.png", 16, 4, 0.3],

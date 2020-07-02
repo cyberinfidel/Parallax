@@ -257,7 +257,8 @@ class MultiAnim(Component):
 		# parse data for single pass initialisation
 		self.name = data["Name"]
 		for anim in data["Anims"]:
-			self.anims[anim["State"]] = anim['AnimType'](self.rl, anim["Frames"])
+			for state in anim["States"]:
+				self.anims[state] = anim['AnimType'](self.rl, anim["Frames"])
 
 	def update(self, data, common_data, time):
 		if common_data.new_state:
@@ -289,8 +290,6 @@ class MultiAnim(Component):
 		except Exception as e:
 			log(e)
 			exit(1)
-
-
 
 #####################################################################
 # Animation code																										#

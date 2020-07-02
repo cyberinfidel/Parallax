@@ -62,3 +62,4 @@ class HitCollider(Collider):
 	def getCollisionMessage(self, data, common_data):
 		return(Message(source=common_data.entity, damage=data.damage, force=data.force))
 
+

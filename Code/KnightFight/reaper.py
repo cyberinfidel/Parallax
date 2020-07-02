@@ -14,7 +14,7 @@ def reaperGraphics(renlayer):
 				{
 					"Name": "Simple Reaper Stationary",
 					"AnimType": AnimLoop,
-					"State": eStates.stationary,
+					"States": [eStates.stationary],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperR1.png", 16, 38, 0.1],
@@ -23,7 +23,7 @@ def reaperGraphics(renlayer):
 				{
 				"Name": "Simple Reaper Shuffling Left",
 				"AnimType": AnimLoop,
-				"State":eStates.runLeft,
+				"States": [eStates.runLeft],
 				"Frames":
 					[
 						["Graphics/Reaper/ReaperRunL01.png", 16, 38, 0.1],
@@ -43,7 +43,7 @@ def reaperGraphics(renlayer):
 				{
 					"Name": "Simple Reaper Shuffling Right",
 					"AnimType": AnimLoop,
-					"State": eStates.runRight,
+					"States": [eStates.runRight],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperRunR01.png", 16, 38, 0.1],
@@ -63,7 +63,7 @@ def reaperGraphics(renlayer):
 				{
 					"Name": "Reaper Hurt L",
 					"AnimType": AnimLoop,
-					"State": eStates.hurtLeft,
+					"States": [eStates.hurtLeft],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperL3.png", 16, 38, 0.3],
@@ -72,7 +72,7 @@ def reaperGraphics(renlayer):
 				{
 					"Name": "Reaper Hurt R",
 					"AnimType": AnimLoop,
-					"State": eStates.hurtRight,
+					"States": [eStates.hurtRight],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperR3.png", 16, 38, 0.3],
@@ -81,7 +81,7 @@ def reaperGraphics(renlayer):
 				{
 					"Name": "Reaper Fall L",
 					"AnimType": AnimLoop,
-					"State": eStates.fallLeft,
+					"States": [eStates.fallLeft],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperFallL.png", 24, 24, 0.3],
@@ -90,7 +90,7 @@ def reaperGraphics(renlayer):
 				{
 					"Name": "Reaper Fall R",
 					"AnimType": AnimLoop,
-					"State": eStates.fallRight,
+					"States": [eStates.fallRight],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperFallR.png", 24, 24, 0.3],
@@ -99,7 +99,7 @@ def reaperGraphics(renlayer):
 				{
 					"Name": "Reaper Shadow",
 					"AnimType": AnimSingle,
-					"State": eStates.shadow,
+					"States": [eStates.shadow],
 					"Frames":
 						[
 							["Graphics/shadow.png", 16, 4, 0.3],

@@ -26,7 +26,7 @@ def titleGraphics(renlayer):
 					{
 						"Name": "Title",
 						"AnimType": AnimNoLoop,
-						"State": eTitleStates.title,
+						"States": [eTitleStates.title],
 						"Frames":
 							[
 								["Graphics/Title/Title.png", 4, 4, 0.9],
@@ -35,7 +35,7 @@ def titleGraphics(renlayer):
 					{
 						"Name": "TitleBar",
 						"AnimType": AnimNoLoop,
-						"State": eTitleStates.play,
+						"States": [eTitleStates.play],
 						"Frames":
 							[
 								["Graphics/Title/TitleBar.png", 4, 4, 0.9],
@@ -44,7 +44,7 @@ def titleGraphics(renlayer):
 					{
 						"Name": "Paused",
 						"AnimType": AnimNoLoop,
-						"State": eTitleStates.paused,
+						"States": [eTitleStates.paused],
 						"Frames":
 							[
 								["Graphics/Title/Paused.png", 4, 4, 0.2],
@@ -53,7 +53,7 @@ def titleGraphics(renlayer):
 					{
 						"Name": "Game Over",
 						"AnimType": AnimNoLoop,
-						"State": eTitleStates.game_over,
+						"States": [eTitleStates.game_over],
 						"Frames":
 							[
 								["Graphics/Title/GameOver.png", 4, 4, 0.2],
@@ -62,7 +62,7 @@ def titleGraphics(renlayer):
 					{
 						"Name": "Win Over",
 						"AnimType": AnimNoLoop,
-						"State": eTitleStates.win,
+						"States": [eTitleStates.win],
 						"Frames":
 							[
 								["Graphics/Title/Win 0.png", 4, 4, 2],

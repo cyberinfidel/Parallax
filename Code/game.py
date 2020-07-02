@@ -74,6 +74,7 @@ class Game(object):
 		self.graphics_manager = entity.ComponentManager(game=self)
 		self.controller_manager = entity.ComponentManager(game=self)
 		self.entity_manager = entity.EntityManager(game=self)
+		self.sound_manager = entity.ComponentManager(game=self)
 
 
 

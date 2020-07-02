@@ -14,7 +14,7 @@ def batGraphics(renlayer):
 			{
 				"Name": "Bat Flapping",
 				"AnimType": AnimLoop,
-				"State": eStates.stationary,
+				"States": [eStates.stationary],
 				"Frames":
 					[
 						["Graphics/Bat/Bat2.png", 24, 30, 0.04],
@@ -28,7 +28,7 @@ def batGraphics(renlayer):
 			{
 				"Name": "Simple Fall Left",
 				"AnimType": AnimLoop,
-				"State": eStates.fallLeft,
+				"States": [eStates.fallLeft],
 				"Frames":
 					[
 						["Graphics/Bat/Bat3.png", 24, 30, 0.04],
@@ -37,7 +37,7 @@ def batGraphics(renlayer):
 			{
 				"Name": "Simple Fall Right",
 				"AnimType": AnimLoop,
-				"State": eStates.fallRight,
+				"States": [eStates.fallRight],
 				"Frames":
 					[
 						["Graphics/Bat/Bat3.png", 24, 30, 0.04],
@@ -46,7 +46,7 @@ def batGraphics(renlayer):
 			{
 				"Name": "Simple Hurt Left",
 				"AnimType": AnimLoop,
-				"State": eStates.hurtLeft,
+				"States": [eStates.hurtLeft],
 				"Frames":
 					[
 						["Graphics/Bat/Bat3.png", 24, 30, 0.04],
@@ -55,7 +55,7 @@ def batGraphics(renlayer):
 			{
 				"Name": "Simple HurtRight",
 				"AnimType": AnimLoop,
-				"State": eStates.hurtRight,
+				"States": [eStates.hurtRight],
 				"Frames":
 					[
 						["Graphics/Bat/Bat3.png", 24, 30, 0.04],
@@ -64,7 +64,7 @@ def batGraphics(renlayer):
 			{
 				"Name": "Bat Shadow",
 				"AnimType": AnimSingle,
-				"State": eStates.shadow,
+				"States": [eStates.shadow],
 				"Frames":
 					[
 						["Graphics/shadow.png", 16, 4, 0.3],
