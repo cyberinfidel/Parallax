@@ -1,7 +1,6 @@
 from entity import eStates
 from controller import Controller
 from collision import Collider, Message
-from vector import Vec3
 
 class Strike(object):
 	def __init__(self, cool, delay, range, dim, orig, force, damage, template, hero_damage=0):

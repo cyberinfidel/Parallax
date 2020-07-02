@@ -1,8 +1,8 @@
 from entity import eStates, eDirections
-from vector import Vec3, rand_num
+from vector import Vec3
 from controller import Controller, basic_gravity, basic_physics, restrictToArena, friction
 from collision import Collider, Message
-from graphics import AnimLoop, AnimNoLoop, MultiAnim, AnimSingle
+from graphics import MultiAnim, AnimSingle
 
 #########
 # Arrow #
@@ -59,7 +59,17 @@ def AGraphics(renlayer):
 					[
 						["Graphics/Arrow/ArrowRight.png", 11, 3, 0.04],
 					],
-			}]
+			},
+			{
+				"Name": "Goblin Archer Shadow",
+				"AnimType": AnimSingle,
+				"State": eStates.shadow,
+				"Frames":
+					[
+						["Graphics/shadowSmall.png", 16, 4, 0.3],
+					],
+			},
+				]
 	}
 
 class AController(Controller):

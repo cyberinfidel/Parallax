@@ -1,4 +1,4 @@
-from entity import eStates, eDirections
+from entity import eStates
 from vector import Vec3, rand_num
 from controller import Controller, basic_gravity, basic_physics, restrictToArena, friction
 from collision import Collider, Message
@@ -190,6 +190,7 @@ class Controller(Controller):
 				data.cooldown = rand_num(1) + 2
 
 		friction(data.vel)
+		basic_gravity(data.vel)
 		basic_physics(common_data.pos,data.vel)
 		restrictToArena(common_data.pos, data.vel)
 
