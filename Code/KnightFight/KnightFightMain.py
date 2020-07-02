@@ -9,6 +9,8 @@ from game import Game, eGameModes
 from entity import eStates
 from collision import CollisionManager
 from vector import Vec3, rand_num
+import controller
+import graphics
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -36,6 +38,13 @@ class KnightFight(Game):
 		# most set up is in first update
 		# this way I can restart the game
 		super(KnightFight, self).__init__("Knight Fight", res_x= 320, res_y= 200, zoom = 3, fullscreen= False)
+
+		##########################
+		# set up graphics layers #
+		##########################
+		self.renlayer = graphics.RenderLayer(self.ren)
+		self.title_renlayer = graphics.RenderLayer(self.ren)
+		self.scroll = False
 
 		###############################
 		# set up background and title #
@@ -66,7 +75,7 @@ class KnightFight(Game):
 		backR.setPos(Vec3(289.0, 30.0, 0.0))
 		self.drawables.append(backR)
 
-		title_graphics = self.graphics_manager.makeTemplate(titleGraphics(self.renlayer))
+		title_graphics = self.graphics_manager.makeTemplate(titleGraphics(self.title_renlayer))
 		title_controller = self.controller_manager.makeTemplate({"Template": TitleController})
 		self.title_t = self.entity_manager.makeEntityTemplate(graphics=title_graphics, controller=title_controller)
 		self.title = self.requestNewEntity(entity_template=self.title_t, pos=Vec3(48, 50, 145), parent=self, name="Title")
@@ -86,7 +95,7 @@ class KnightFight(Game):
 		reaper_graphics = self.graphics_manager.makeTemplate(reaperGraphics(self.renlayer))
 		raingraphics = self.graphics_manager.makeTemplate(rainGraphics(self.renlayer))
 		herographics = self.graphics_manager.makeTemplate(heroGraphics(self.renlayer))
-		heartgraphics = self.graphics_manager.makeTemplate(heartGraphics(self.renlayer))
+		heartgraphics = self.graphics_manager.makeTemplate(heartGraphics(self.title_renlayer))
 
 		# Controller Templates
 		raincontroller = self.controller_manager.makeTemplate({"Template": RainController})
@@ -183,6 +192,15 @@ class KnightFight(Game):
 				self.setGameMode(eGameModes.game_over)
 				self.restart_cooldown=3
 
+			###############
+			# scroll view #
+			###############
+			if self.scroll:
+				offset = self.renlayer.getOrigin() - self.hero.common_data.pos + Vec3(160,64,0)
+				if offset.magsq()>1000:
+					self.renlayer.origin-=offset/40.0
+					self.renlayer.origin.z = 0 # make current ground level when can
+
 		####################################################
 
 		elif self.game_mode==eGameModes.game_over:
@@ -210,6 +228,7 @@ class KnightFight(Game):
 			self.collision_manager.doCollisions() # collisions between monsters
 			# clean up dead entities
 			self.cleanUpDead()
+
 		else:
 			self.title.update(dt)
 
@@ -250,6 +269,7 @@ class KnightFight(Game):
 				drawable.graphics.draw(drawable.graphics_data, drawable.common_data)
 
 		self.renlayer.renderSorted()
+		self.title_renlayer.render()
 
 # end draw()
 

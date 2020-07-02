@@ -172,6 +172,8 @@ class RenderLayer(object):
 		self.origin.x = x
 		self.origin.y = y
 		self.origin.z = z
+	def setOrigin(self, vec):
+		self.origin = vec
 
 
 	def getOriginX(self):

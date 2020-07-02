@@ -64,7 +64,6 @@ class Game(object):
 		self.running = True
 		self.game_mode = eGameModes.title
 
-		self.renlayer = graphics.RenderLayer(self.ren)
 
 		self.input = game_pad.Input(self)
 
@@ -75,8 +74,6 @@ class Game(object):
 		self.controller_manager = entity.ComponentManager(game=self)
 		self.entity_manager = entity.EntityManager(game=self)
 		self.sound_manager = entity.ComponentManager(game=self)
-
-
 
 
 	def render(self):
