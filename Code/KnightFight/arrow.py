@@ -16,7 +16,7 @@ def AGraphics(renlayer):
 			"Anims":
 				[
 			{
-				"Name": "Firing Arrow",
+				"Name": "Arrow",
 				"AnimType": AnimSingle,
 				"State": eStates.stationary,
 				"Frames":
@@ -25,7 +25,7 @@ def AGraphics(renlayer):
 					],
 			},
 			{
-				"Name": "Firing Arrow",
+				"Name": "Arrow left",
 				"AnimType": AnimSingle,
 				"State": eStates.runLeft,
 				"Frames":
@@ -34,12 +34,21 @@ def AGraphics(renlayer):
 					],
 			},
 			{
-				"Name": "Firing Arrow",
+				"Name": "Arrow fall left",
 				"AnimType": AnimSingle,
 				"State": eStates.fallLeft,
 				"Frames":
 					[
 						["Graphics/Arrow/ArrowLeft.png", 11, 3, 0.04],
+					],
+			},
+			{
+				"Name": "Arrow fall right",
+				"AnimType": AnimSingle,
+				"State": eStates.fallRight,
+				"Frames":
+					[
+						["Graphics/Arrow/ArrowRight.png", 11, 3, 0.04],
 					],
 			},
 			{
@@ -72,6 +81,8 @@ class AController(Controller):
 
 	def update(self, data, common_data, dt):
 
+		data.facing = eDirections.left if data.vel.x<0 else eDirections.right
+
 		if common_data.state==eStates.fallLeft or common_data.state==eStates.fallRight:
 			if not self.coolDown(data,dt):
 				self.setState(data, common_data, eStates.dead)
@@ -93,7 +104,7 @@ class AController(Controller):
 
 	def receiveCollision(self, data, common_data, message):
 		if message:
-			if not (common_data.state == eStates.fallRight or common_data.state == eStates.fallRight):
+			if not (common_data.state == eStates.fallRight or common_data.state == eStates.fallLeft):
 				# if message.source.common_data.name !="Reaper":
 				# 	log("Reaper hit by " + message.source.common_data.name)
 				data.vel += message.force/data.mass

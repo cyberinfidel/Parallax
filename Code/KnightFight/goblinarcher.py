@@ -204,7 +204,7 @@ class Controller(Controller):
 				hurt_cool = 1
 				fall_cool = 2
 				data.health -= message.damage
-				if data.facing == eDirections.left:
+				if data.facingleft:
 					if data.health <= 0:
 						self.setState(data, common_data, eStates.fallLeft, fall_cool)
 						common_data.game.reportMonsterDeath()

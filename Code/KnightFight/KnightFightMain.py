@@ -18,7 +18,7 @@ def log(msg, new_line=True):
 		print(msg, end='')
 
 #import Knight Fight files
-from KnightFight.background import backgroundGraphics, BackgroundController
+from KnightFight.background import backgroundGraphics, BackgroundController, backLGraphics, backRGraphics
 from KnightFight.hero import heroGraphics, HeroController, HeroCollider
 from KnightFight.bat import batGraphics, BatController, BatCollider
 import goblinarcher
@@ -40,14 +40,31 @@ class KnightFight(Game):
 		###############################
 		# set up background and title #
 		###############################
-		backgraphics = self.graphics_manager.makeTemplate(backgroundGraphics(self.renlayer))
-		backcontroller = self.controller_manager.makeTemplate(
-			{"Template": BackgroundController,
-			 })
-		back_t = self.entity_manager.makeEntityTemplate(graphics=backgraphics, controller=backcontroller)
-		back = self.entity_manager.makeEntity(back_t)
+		back_controller = self.controller_manager.makeTemplate(
+					{"Template": BackgroundController, })
+		back = self.entity_manager.makeEntity(
+			self.entity_manager.makeEntityTemplate(
+				graphics=self.graphics_manager.makeTemplate(backgroundGraphics(self.renlayer)),
+				controller= back_controller)
+		)
 		back.setPos(Vec3(0.0, 64.0, 0.0))
 		self.drawables.append(back)
+
+		backL = self.entity_manager.makeEntity(
+			self.entity_manager.makeEntityTemplate(
+				graphics=self.graphics_manager.makeTemplate(backLGraphics(self.renlayer)),
+				controller=back_controller)
+		)
+		backL.setPos(Vec3(0.0, 30.0, 0.0))
+		self.drawables.append(backL)
+
+		backR = self.entity_manager.makeEntity(
+			self.entity_manager.makeEntityTemplate(
+				graphics=self.graphics_manager.makeTemplate(backRGraphics(self.renlayer)),
+				controller=back_controller)
+		)
+		backR.setPos(Vec3(289.0, 30.0, 0.0))
+		self.drawables.append(backR)
 
 		title_graphics = self.graphics_manager.makeTemplate(titleGraphics(self.renlayer))
 		title_controller = self.controller_manager.makeTemplate({"Template": TitleController})
@@ -257,12 +274,12 @@ class KnightFight(Game):
 				Delay(2),
 
 				SpawnEnemies([
-					SpawnEntity(self.goblin_archer_t, Vec3(290, 39, 0), False, "Goblin Archer"),
+					SpawnEntity(self.goblin_archer_t, Vec3(290, 35, 0), False, "Goblin Archer"),
 				]),
 				# wait a bit
 				Delay(0.7),
 				SpawnEnemies([
-				SpawnEntity(self.goblin_archer_t, Vec3(30, 40, 0), False, "Goblin Archer"),
+				SpawnEntity(self.goblin_archer_t, Vec3(30, 35, 0), False, "Goblin Archer"),
 				]),
 				Delay(rand_num(1)+0.5),
 
