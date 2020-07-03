@@ -8,6 +8,7 @@ from controller import Controller, global_tolerance, restrictToArena, global_gra
 from collision import Collider, Message
 from graphics import AnimNoLoop, AnimLoop, MultiAnim, AnimSingle
 from vector import Vec3
+import sound
 
 # Knightfight
 from strike import Strike, HitController, HitCollider
@@ -20,22 +21,30 @@ class eStrikes(enum.IntEnum):
 	block = 3
 	num_strikes = 4
 
-def HitSounds(mixer):
+class eEvents(enum.IntEnum):
+	jump = 0
+	num_events = 1
+
+def heroSounds(mixer):
 	return {
 		"Name": "Hero Sounds",
-		"Template": MultiSounds,
+		"Template": sound.MultiSound,
 		"Mixer": mixer,
-		"Sounds": [
-			{
-				"Name": "Jump",
-				"SoundType": SingleNoLoop,
-				"States": [eStates.jumpUp],
-				"Files": # one of these will play at random
-				[
-					["Sounds/Jump.wav"]
-				]
-			}
-		]
+		"StateSounds": [
+		],
+		"EventSounds":
+			[
+				{
+					"Name": "Jump",
+					"Type": sound.Single,
+					"Events": [eEvents.jump],
+					"Samples":  # one of these will play at random if there's more than one
+						[
+							"Sounds/Hero/jump.wav"
+						]
+				}
+
+			]
 	}
 
 def heroGraphics(renlayer):
@@ -316,6 +325,8 @@ class HeroController(Controller):
 
 
 
+
+
 	################
 	# end __init__ #
 	################
@@ -402,15 +413,16 @@ class HeroController(Controller):
 			# check if something needs to happen during an action
 
 			# do strikes
-			for index, str in enumerate(self.strikes):
-				# TODO: check if this really is a strike
-				if data.hero_struck[index]:
-					if data.cooldown<str.delay:
-							self.strike(data, common_data,
-													strike= str,
-													flippedX = (data.facing==eDirections.left)
-													)
-							data.hero_struck[index] = False
+			if common_data.state not in [eStates.dead, eStates.fallLeft, eStates.fallRight, eStates.hurtLeft, eStates.hurtRight]:
+				for index, str in enumerate(self.strikes):
+					# TODO: check if this really is a strike
+					if data.hero_struck[index]:
+						if data.cooldown<str.delay:
+								self.strike(data, common_data,
+														strike= str,
+														flippedX = (data.facing==eDirections.left)
+														)
+								data.hero_struck[index] = False
 
 		else:
 
@@ -483,6 +495,9 @@ class HeroController(Controller):
 					else:
 						data.jump = True
 						data.vel.z += hero_jump_speed
+						# play jump sound
+						common_data.entity.sounds.playEvent(data, common_data, eEvents.jump)
+
 
 				# attacks and block
 				if data.game_pad.actions[eActions.attack_big]:

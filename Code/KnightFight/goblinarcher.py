@@ -170,7 +170,7 @@ class Controller(Controller):
 		fire_cool = 1.4
 
 		if self.coolDown(data, dt):
-			if data.fired:
+			if data.fired and (common_data.state not in [eStates.fallLeft,eStates.fallRight, eStates.dead]):
 				if data.cooldown<0.9:
 					self.shoot(data,common_data,data.facingleft)
 					data.fired = False

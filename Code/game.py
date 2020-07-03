@@ -1,15 +1,16 @@
 # import python libs
 import time
+import enum
 
 # import sdl files
 import sdl2.ext
+import sdl2.sdlmixer
 
 # import my files
-import graphics
 import entity
 import game_pad
 import vector
-import enum
+import collision
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -61,6 +62,8 @@ class Game(object):
 		# makes the graphics look and act like Atari ST screen size, even though rendered much larger
 		sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, res_x, res_y)
 
+
+
 		self.running = True
 		self.game_mode = eGameModes.title
 
@@ -68,6 +71,7 @@ class Game(object):
 		self.input = game_pad.Input(self)
 
 		self.drawables = []
+		self.audibles = []
 		self.updatables = []
 
 		self.graphics_manager = entity.ComponentManager(game=self)
@@ -150,6 +154,8 @@ class Game(object):
 
 		if new_entity.graphics:
 			self.drawables.append(new_entity)
+		if new_entity.sounds:
+			self.audibles.append(new_entity)
 		if new_entity.controller:
 			self.updatables.append(new_entity)
 		if new_entity.collider:
@@ -157,6 +163,9 @@ class Game(object):
 		return new_entity
 
 # end requestNewEntity()
+
+	def __del__(self):
+		sdl2.sdlmixer.Mix_CloseAudio()
 
 	def runTests(self):
 		result = 0

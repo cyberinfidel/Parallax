@@ -79,8 +79,8 @@ class EntityManager(object):
 		self.entities = []
 		self.game = game
 
-	def makeEntityTemplate(self, graphics=False, controller=False, collider=False):
-		self.templates.append(EntityTemplate(self.game, graphics,controller, collider))
+	def makeEntityTemplate(self, graphics=False, sounds=False, controller=False, collider=False):
+		self.templates.append(EntityTemplate(self.game, graphics=graphics, sounds=sounds, controller=controller, collider=collider))
 		return len(self.templates)-1
 
 	def makeEntity(self, entity_t_index, name = False):
@@ -92,7 +92,7 @@ class Entity(object):
 		def __init__(self):
 			pass
 
-	def __init__(self, name, game, graphics=False, controller=False, collider=False):
+	def __init__(self, name, game, graphics=False, sounds=False, controller=False, collider=False):
 		self.common_data = self.Data()
 		self.common_data.game = game
 		self.common_data.entity = self
@@ -106,6 +106,10 @@ class Entity(object):
 		self.graphics = graphics
 		if self.graphics:
 			self.graphics_data = graphics.makeData(self.common_data)
+
+		self.sounds = sounds
+		if self.sounds:
+			self.sounds_data = sounds.makeData(self.common_data)
 
 		self.controller = controller
 		if self.controller:
@@ -142,6 +146,8 @@ class Entity(object):
 		if self.controller:
 			self.controller.update(self.controller_data, self.common_data, dt)
 		if self.common_data.state!=eStates.hide and self.common_data.state!=eStates.dead:
+			if self.sounds:
+				self.sounds.play(self.sounds_data,self.common_data)
 			if self.graphics:
 				self.graphics.update(self.graphics_data,self.common_data, dt)
 
@@ -157,17 +163,23 @@ class Entity(object):
 		if self.graphics:
 			self.graphics_data = graphics.makeData()
 
+	def setSounds(self,sounds):
+		self.sounds = sounds
+		if self.sounds:
+			self.sounds_data = sounds.makeData()
+
 
 class EntityTemplate(object):
 
-	def __init__(self, game, graphics = False, controller = False, collider = False):
+	def __init__(self, game, graphics = False, sounds = False, controller = False, collider = False):
 		self.game = game
 		self.graphics = graphics
+		self.sounds = sounds
 		self.controller = controller
 		self.collider = collider
 
 	def instanceEntity(self, name):
-		return Entity(name, game = self.game, graphics=self.graphics, controller = self.controller, collider = self.collider)
+		return Entity(name, game = self.game, graphics=self.graphics, sounds=self.sounds, controller = self.controller, collider = self.collider)
 
 
 class ComponentManager(object):

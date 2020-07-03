@@ -1,8 +1,38 @@
+import enum
+
 from entity import eStates, eDirections
 from vector import Vec3, rand_num
 from controller import Controller, basic_gravity, basic_physics, restrictToArena, friction
 from collision import Collider, Message
-from graphics import AnimLoop, MultiAnim, AnimSingle
+from graphics import AnimLoop, AnimNoLoop, MultiAnim, AnimSingle
+import sound
+
+class eEvents(enum.IntEnum):
+	flap = 0
+	num_events = 1
+
+def batSounds(mixer):
+	return {
+		"Name": "Bat Sounds",
+		"Template": sound.MultiSound,
+		"Mixer": mixer,
+		"StateSounds": [
+		],
+		"EventSounds":
+			[
+				{
+					"Name": "Jump",
+					"Type": sound.Single,
+					"Events": [eEvents.flap],
+					"Samples":  # one of these will play at random if there's more than one
+						[
+							"Sounds/Bat/flap.wav"
+						]
+				}
+
+			]
+	}
+
 
 def batGraphics(renlayer):
 	return {
@@ -27,39 +57,40 @@ def batGraphics(renlayer):
 			},
 			{
 				"Name": "Simple Fall Left",
-				"AnimType": AnimLoop,
+				"AnimType": AnimNoLoop,
 				"States": [eStates.fallLeft],
 				"Frames":
 					[
-						["Graphics/Bat/Bat3.png", 24, 30, 0.04],
+						["Graphics/Bat/BatHurt 1.png", 24, 30, 0.04],
+						["Graphics/Bat/BatHurt 2.png", 24, 30, 0.04],
+						["Graphics/Bat/BatHurt 3.png", 24, 30, 0.04],
+						["Graphics/Bat/BatFallLeft.png", 24, 20, 0.04],
 					],
 			},
 			{
 				"Name": "Simple Fall Right",
-				"AnimType": AnimLoop,
+				"AnimType": AnimNoLoop,
 				"States": [eStates.fallRight],
 				"Frames":
 					[
-						["Graphics/Bat/Bat3.png", 24, 30, 0.04],
+						["Graphics/Bat/BatHurt 1.png", 24, 30, 0.04],
+						["Graphics/Bat/BatHurt 2.png", 24, 30, 0.04],
+						["Graphics/Bat/BatHurt 3.png", 24, 30, 0.04],
+						["Graphics/Bat/BatFallRight.png", 24, 20, 0.04],
 					],
 			},
 			{
-				"Name": "Simple Hurt Left",
+				"Name": "Hurt Left",
 				"AnimType": AnimLoop,
-				"States": [eStates.hurtLeft],
+				"States": [eStates.hurtLeft, eStates.hurtRight],
 				"Frames":
-					[
-						["Graphics/Bat/Bat3.png", 24, 30, 0.04],
-					],
-			},
-			{
-				"Name": "Simple HurtRight",
-				"AnimType": AnimLoop,
-				"States": [eStates.hurtRight],
-				"Frames":
-					[
-						["Graphics/Bat/Bat3.png", 24, 30, 0.04],
-					],
+				[
+					["Graphics/Bat/BatHurt 1.png", 24, 30, 0.04],
+					["Graphics/Bat/BatHurt 2.png", 24, 30, 0.04],
+					["Graphics/Bat/BatHurt 3.png", 24, 30, 0.04],
+					["Graphics/Bat/BatHurt 2.png", 24, 30, 0.04],
+					["Graphics/Bat/BatHurt 1.png", 24, 30, 0.04],
+				],
 			},
 			{
 				"Name": "Bat Shadow",
@@ -104,7 +135,7 @@ class BatController(Controller):
 			if rand_num(10)==0:
 #				self.setState(data, common_data, eStates.stationary)
 				data.vel = Vec3(0,0,0)
-				data.cooldown = rand_num(5)/10.0+0.1
+				data.cooldown = rand_num(10)/8.0+0.3
 			else:
 				# chase hero
 				target = common_data.game.requestTarget(common_data.pos)
@@ -126,6 +157,7 @@ class BatController(Controller):
 				elif (common_data.pos.z<80) and (data.vel.z<3):
 					data.vel.z += 2 # otherwise flap
 					common_data.entity.graphics.startAnim(data = common_data.entity.graphics_data)
+					common_data.entity.sounds.playEvent(data, common_data, eEvents.flap)
 
 				data.cooldown = 0.2
 
@@ -148,7 +180,7 @@ class BatController(Controller):
 			data.vel += message.force/data.mass
 			if message.damage>0 and data.health>0:
 				hurt_cool = 1
-				fall_cool = 2
+				fall_cool = 3
 				data.health -= message.damage
 				if data.facing == eDirections.left:
 					if data.health <= 0:

@@ -11,6 +11,7 @@ from collision import CollisionManager
 from vector import Vec3, rand_num
 import controller
 import graphics
+import sound
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -21,8 +22,8 @@ def log(msg, new_line=True):
 
 #import Knight Fight files
 from KnightFight.background import backgroundGraphics, BackgroundController, backLGraphics, backRGraphics
-from KnightFight.hero import heroGraphics, HeroController, HeroCollider
-from KnightFight.bat import batGraphics, BatController, BatCollider
+from KnightFight.hero import heroGraphics, heroSounds, HeroController, HeroCollider
+from KnightFight.bat import batGraphics, batSounds, BatController, BatCollider
 import goblinarcher
 from KnightFight.rain import rainGraphics, RainController
 from KnightFight.reaper import reaperGraphics, ReaperController, ReaperCollider
@@ -46,6 +47,10 @@ class KnightFight(Game):
 		self.title_renlayer = graphics.RenderLayer(self.ren)
 		self.scroll = False
 
+		##########################
+		# set up sound           #
+		##########################
+		self.sound_mixer = sound.SoundMixer(self)
 		###############################
 		# set up background and title #
 		###############################
@@ -97,6 +102,10 @@ class KnightFight(Game):
 		herographics = self.graphics_manager.makeTemplate(heroGraphics(self.renlayer))
 		heartgraphics = self.graphics_manager.makeTemplate(heartGraphics(self.title_renlayer))
 
+		# Sound Templates
+		hero_sounds = self.sound_manager.makeTemplate(heroSounds(self.sound_mixer))
+		bat_sounds = self.sound_manager.makeTemplate(batSounds(self.sound_mixer))
+
 		# Controller Templates
 		raincontroller = self.controller_manager.makeTemplate({"Template": RainController})
 		herocontroller = self.controller_manager.makeTemplate({"Template": HeroController})
@@ -114,15 +123,20 @@ class KnightFight(Game):
 		#########################################
 		# Make entity templates from components #
 		#########################################
-		self.bat_t = self.entity_manager.makeEntityTemplate(graphics=bat_graphics, controller=bat_controller,
+		self.bat_t = self.entity_manager.makeEntityTemplate(graphics=bat_graphics,
+																												sounds = bat_sounds,
+																												controller=bat_controller,
 																												collider=bat_collider)
 		self.goblin_archer_t = self.entity_manager.makeEntityTemplate(graphics=goblin_archer_graphics, controller=goblin_archer_controller,
 																												collider=goblin_archer_collider)
 		self.reaper_t = self.entity_manager.makeEntityTemplate(graphics=reaper_graphics, controller=reaper_controller,
 																													 collider=reaper_collider)
 		self.rain_t = self.entity_manager.makeEntityTemplate(graphics=raingraphics, controller=raincontroller)
-		self.hero_t = self.entity_manager.makeEntityTemplate(graphics=herographics, controller=herocontroller,
-																												 collider=hero_collider)
+		self.hero_t = self.entity_manager.makeEntityTemplate(graphics=herographics,
+																												 sounds = hero_sounds,
+																												 controller=herocontroller,
+																												 collider=hero_collider,
+																												 )
 
 		# info bar
 		self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heartgraphics, controller=heart_controller)
@@ -224,6 +238,8 @@ class KnightFight(Game):
 		if self.game_mode!=eGameModes.paused:
 			for index, updatable in reversed(list(enumerate(self.updatables))):
 				updatable.update(dt)
+			for audible in self.audibles:
+				audible.sounds.play(audible.sounds_data, audible.common_data)
 
 			self.collision_manager.doCollisions() # collisions between monsters
 			# clean up dead entities
@@ -238,6 +254,7 @@ class KnightFight(Game):
 		self.updatables[:] = [x for x in self.updatables if x.getState() != eStates.dead]
 		self.collision_manager.cleanUpDead()
 		self.drawables[:] = [x for x in self.drawables if x.getState() != eStates.dead]
+		self.audibles[:] = [x for x in self.audibles if x.getState() != eStates.dead]
 
 	def killPlayEntities(self):
 		for updatable in self.updatables:
@@ -260,6 +277,7 @@ class KnightFight(Game):
 	###########
 
 	def draw(self):
+
 		for drawable in self.drawables:
 			# draw shadows first
 			if drawable.graphics.hasShadow():
@@ -270,6 +288,7 @@ class KnightFight(Game):
 
 		self.renlayer.renderSorted()
 		self.title_renlayer.render()
+
 
 # end draw()
 
@@ -292,8 +311,11 @@ class KnightFight(Game):
 		return[
 				# wait a bit
 				Delay(2),
+			SpawnEnemies([
+				SpawnEntity(self.bat_t, Vec3(155, 110, 5), False, "Bat 1"),
+			]),
 
-				SpawnEnemies([
+			SpawnEnemies([
 					SpawnEntity(self.goblin_archer_t, Vec3(290, 35, 0), False, "Goblin Archer"),
 				]),
 				# wait a bit
