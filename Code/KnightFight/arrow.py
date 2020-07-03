@@ -1,7 +1,7 @@
 from entity import eStates, eDirections
 from vector import Vec3
-from controller import Controller, basic_gravity, basic_physics, restrictToArena, friction
-from collision import Collider, Message
+import controller
+import collision
 from graphics import MultiAnim, AnimSingle
 
 #########
@@ -45,7 +45,7 @@ def AGraphics(renlayer):
 				]
 	}
 
-class AController(Controller):
+class Controller(controller.Controller):
 
 	class Data(object):
 		def __init__(self, common_data, init=False):
@@ -60,7 +60,7 @@ class AController(Controller):
 			self.facing = eDirections.left
 
 	def __init__(self, game, data):
-		super(AController, self).__init__(game)
+		super(Controller, self).__init__(game)
 
 	def update(self, data, common_data, dt):
 
@@ -69,19 +69,19 @@ class AController(Controller):
 		if common_data.state==eStates.fallLeft or common_data.state==eStates.fallRight:
 			if not self.coolDown(data,dt):
 				self.setState(data, common_data, eStates.dead)
-			friction(data.vel, 0.1)
+			controller.friction(data.vel, 0.1)
 		elif common_data.pos.z>0:
-			friction(data.vel, 0.01)
+			controller.friction(data.vel, 0.01)
 		else:
 			self.setState(data,common_data,eStates.fallLeft if data.facing==eDirections.left else eStates.fallRight)
 			data.cooldown=1
-			friction(data.vel, 0.1)
+			controller.friction(data.vel, 0.1)
 
 
-		basic_gravity(data.vel)
-		basic_physics(common_data.pos,data.vel)
+		controller.basic_gravity(data.vel)
+		controller.basic_physics(common_data.pos,data.vel)
 
-		restrictToArena(common_data.pos, data.vel)
+		controller.restrictToArena(common_data.pos, data.vel)
 
 
 
@@ -90,9 +90,12 @@ class AController(Controller):
 			if not (common_data.state == eStates.fallRight or common_data.state == eStates.fallLeft):
 				# if message.source.common_data.name !="Reaper":
 				# 	log("Reaper hit by " + message.source.common_data.name)
-				data.vel += message.force/data.mass
+				if message.absorb>2:
+					data.vel = Vec3(0,0,0)
+				else:
+					data.vel = data.vel + message.force/data.mass
 
-class ACollider(Collider):
+class Collider(collision.Collider):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -100,14 +103,14 @@ class ACollider(Collider):
 			else:
 				pass
 			self.dim = Vec3(20,8,16)
-			self.orig = Vec3(10,4,0)
+			self.orig = Vec3(10,4,8)
 
 	def __init__(self, game, data):
-		super(ACollider, self).__init__(game)
+		super(Collider, self).__init__(game)
 		# global static data to all of BatCollider components
 
 	def getCollisionMessage(self, data, common_data):
 		if common_data.state==eStates.fallRight or common_data.state==eStates.fallLeft or common_data.state==eStates.dead:
 			return False
 		else:
-			return(Message(source=common_data.entity, damage=1, damage_hero=1))
+			return(collision.Message(source=common_data.entity, damage=0, damage_hero=1))

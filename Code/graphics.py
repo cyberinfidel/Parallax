@@ -16,14 +16,7 @@ sdl_image.IMG_Init(sdl_image.IMG_INIT_JPG)
 # import my files
 from entity import eStates, Component
 from vector import Vec3, rand_num
-
-
-# disable to remove logging
-def log(msg, new_line=True):
-	if new_line:
-		print(msg)
-	else:
-		print(msg, end='')
+from log import log
 
 # globals
 graphics_debug = False
@@ -172,7 +165,7 @@ class RenderLayer(object):
 		self.origin.x = x
 		self.origin.y = y
 		self.origin.z = z
-	def setOrigin(self, vec):
+	def setOriginByVec3(self, vec):
 		self.origin = vec
 
 
@@ -370,3 +363,61 @@ class AnimFrame:
 	def __init__(self, image, time):
 		self.image = image
 		self.time = time
+
+def runTests():
+
+
+	fails=[]
+
+	res_x = 320
+	res_y = 200
+	zoom = 2
+
+	# Initialize the video system - this implicitly initializes some
+	# necessary parts within the SDL2 DLL used by the video module.
+	#
+	# You SHOULD call this before using any video related methods or
+	# classes.
+	sdl2.ext.init()
+
+	# Create a new window (like your browser window or editor window,
+	# etc.) and give it a meaningful title and size. We definitely need
+	# this, if we want to present something to the user.
+
+	window = sdl2.ext.Window("Graphics Tests", size=(res_x * zoom, res_y * zoom))  # ,flags=sdl2.SDL_WINDOW_FULLSCREEN)
+
+	# By default, every Window is hidden, not shown on the screen right
+	# after creation. Thus we need to tell it to be shown now.
+	window.show()
+
+	# set up a renderer to draw stuff. This is a HW accelerated one.
+	# Switch on VSync to avoid running too fast
+	# and wasting power and keep graphics nice and clean
+	ren = sdl2.ext.Renderer(window, flags=sdl2.SDL_RENDERER_ACCELERATED | sdl2.SDL_RENDERER_PRESENTVSYNC)
+	# makes zoomed graphics blocky (for retro effect)
+	sdl2.SDL_SetHint(sdl2.SDL_HINT_RENDER_SCALE_QUALITY, b"nearest")
+	# makes the graphics look and act like Atari ST screen size, even though rendered much larger
+	sdl2.SDL_RenderSetLogicalSize(ren.renderer, res_x, res_y)
+
+	# test 1 example
+	# if not (a+b)==Vec3(2,3,4):
+	# 	log("Fail in test 1: a+b")
+	# 	fails.append(1)
+
+	rl = RenderLayer(ren)
+
+	rl.setOrigin(1,2,3)
+	if(rl.getOrigin()!=Vec3(1,2,3)):
+		fails.append(1)
+
+	rl.setOriginByVec3(Vec3(1,2,3))
+	if(rl.getOrigin()!=Vec3(1,2,3)):
+		fails.append(2)
+
+
+
+	return fails
+
+if __name__ == "__main__":
+	import sys
+	sys.exit(runTests())

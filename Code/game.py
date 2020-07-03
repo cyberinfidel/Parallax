@@ -173,6 +173,6 @@ class Game(object):
 		if len(fails)>0:
 			log("Unit tests failed.")
 			for fail in fails:
-				log("Fail in: "+ fail)
+				log(f"Fail in: {fail}")
 			return 1
 		return result

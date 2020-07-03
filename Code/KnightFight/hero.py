@@ -311,14 +311,14 @@ class HeroController(Controller):
 		# cool downs in seconds
 		self.strikes = [
 			#			cool	del		range					dimension				origin			force		damage
-			Strike(cool=0.8, delay=0.2, range=Vec3(24, 0, 0), dim=Vec3(10,8,12), orig=Vec3(5,4,6),
-						 force=3, damage=2, template=hit_t, hero_damage=0),  # big
-			Strike(cool=0.8, delay=0.4, range=Vec3(8, 0, 30), dim=Vec3(12,8,8), orig=Vec3(6,4,4),
-						 force=3, damage=2, template=hit_t),  # big_up
-			Strike(cool=0.3, delay=0.1, range=Vec3(12, 0, 0), dim=Vec3(10,8,8), orig=Vec3(5,4,4),
-						 force=1, damage=1, template=hit_t),  # small
-			Strike(cool=0.8, delay=0.2, range=Vec3(18, 0, 0), dim=Vec3(10,8,8), orig=Vec3(5,4,4),
-						 force=2, damage=0, template=hit_t),  # block
+			Strike(cool=0.8, delay=0.2, duration = 0.2, range=Vec3(24, 0, 0), dim=Vec3(10,8,12), orig=Vec3(5,4,6),
+						 force=3, absorb=0, damage=2, template=hit_t, hero_damage=0),  # big
+			Strike(cool=0.8, delay=0.4, duration = 0.2, range=Vec3(8, 10, 30), dim=Vec3(12,8,8), orig=Vec3(6,4,4),
+						 force=3, absorb=0, damage=2, template=hit_t),  # big_up
+			Strike(cool=0.3, delay=0.1, duration = 0.2, range=Vec3(12, 0, 0), dim=Vec3(10,8,8), orig=Vec3(5,4,4),
+						 force=1, absorb=0, damage=1, template=hit_t),  # small
+			Strike(cool=0.8, delay=0.1, duration = 0.6, range=Vec3(20, 0, 0), dim=Vec3(10,16,30), orig=Vec3(5,8,20),
+						 force=2, absorb=100, damage=0, template=hit_t),  # block
 		]
 
 		# sounds
@@ -369,10 +369,11 @@ class HeroController(Controller):
 																							 parent=common_data.entity,
 																							 name="Hero strike")
 		strike_ent.collider_data.force = Vec3(-strike.force if flippedX else strike.force,0,0)
+		strike_ent.collider_data.absorb = strike.absorb
 		strike_ent.collider_data.damage = strike.damage
 		strike_ent.collider_data.dim = strike.dim
 		strike_ent.collider_data.orig = strike.orig
-		strike_ent.controller_data.cooldown = strike.cool
+		strike_ent.controller_data.cooldown = strike.duration
 
 
 	def update(self, data, common_data, dt):
@@ -582,8 +583,8 @@ class HeroCollider(Collider):
 				pass
 			else:
 				pass
-			self.dim = Vec3(20,8,16)
-			self.orig = Vec3(10,4,0)
+			self.dim = Vec3(14,8,30)
+			self.orig = Vec3(7,4,15)
 
 	def __init__(self, game, data):
 		super(HeroCollider, self).__init__(game)

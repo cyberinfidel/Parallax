@@ -311,18 +311,18 @@ class KnightFight(Game):
 		return[
 				# wait a bit
 				Delay(2),
-			SpawnEnemies([
-				SpawnEntity(self.bat_t, Vec3(155, 110, 5), False, "Bat 1"),
-			]),
+			# SpawnEnemies([
+			# 	SpawnEntity(self.bat_t, Vec3(290, 35, 5), False, "Bat 1"),
+			# ]),
 
 			SpawnEnemies([
 					SpawnEntity(self.goblin_archer_t, Vec3(290, 35, 0), False, "Goblin Archer"),
 				]),
 				# wait a bit
 				Delay(0.7),
-				SpawnEnemies([
-				SpawnEntity(self.goblin_archer_t, Vec3(30, 35, 0), False, "Goblin Archer"),
-				]),
+				# SpawnEnemies([
+				# SpawnEntity(self.reaper_t, Vec3(30, 35, 0), False, "Reaper"),
+				# ]),
 				Delay(rand_num(1)+0.5),
 
 				# wait until all monsters destroyed

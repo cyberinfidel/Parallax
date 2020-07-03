@@ -1,9 +1,10 @@
 import enum
 from entity import ComponentManager, Component, eStates
 from vector import Vec3
+from log import log
 
 # globals
-collision_debug = False
+collision_debug = True
 
 class eShapes(enum.IntEnum):
 	sphere = 0
@@ -47,6 +48,8 @@ class CollisionManager(ComponentManager):
 						if (Apos.z - Aorig.z + Adim.z) > (Bpos.z - Borig.z):
 							if (Bpos.z - Borig.z + Bdim.z) > (Apos.z - Aorig.z):
 								# we have a collision
+								if collision_debug:
+									log(f"Collision - A: {A.common_data.name} B: {B.common_data.name}")
 								if A.controller:
 									A.controller.receiveCollision(A.controller_data, A.common_data, B.collider.getCollisionMessage(B.collider_data, B.common_data))
 								if B.controller:
@@ -59,9 +62,10 @@ class Collider(Component):
 		super(Collider, self).__init__(game)
 
 class Message():
-	def __init__(self, source, damage=0, damage_hero=0, force=Vec3(0,0,0)):
+	def __init__(self, source, damage=0, damage_hero=0, force=Vec3(0,0,0), absorb=0):
 		self.source = source
 		self.damage = damage
+		self.absorb = absorb
 		self.damage_hero = damage_hero
 		self.force = force
 

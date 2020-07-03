@@ -3,13 +3,15 @@ from controller import Controller
 from collision import Collider, Message
 
 class Strike(object):
-	def __init__(self, cool, delay, range, dim, orig, force, damage, template, hero_damage=0):
+	def __init__(self, cool, delay, duration, range, dim, orig, force, absorb, damage, template, hero_damage=0):
 		self.cool = cool
 		self.delay = delay
+		self.duration = duration
 		self.range = range
 		self.dim = dim
 		self.orig = orig
 		self.force = force
+		self.absorb = absorb
 		self.damage = damage
 		self.template = template
 		self.hero_damage = hero_damage
@@ -42,7 +44,7 @@ class HitController(Controller):
 		# this avoids hitting the same thing multiple times
 		# common_data.state = eStates.dead
 
-		# otherwise the damage would need to be spread over multiple ticks
+		# otherwise the damage would be spread over multiple ticks
 		# The more ticks that the hit collides with an object the more damage
 		# if you just tickle it, then you don't do much damage
 		pass
@@ -60,6 +62,6 @@ class HitCollider(Collider):
 		# global static data to all of components
 
 	def getCollisionMessage(self, data, common_data):
-		return(Message(source=common_data.entity, damage=data.damage, force=data.force))
+		return(Message(source=common_data.entity, damage=data.damage, force=data.force, absorb=data.absorb))
 
 

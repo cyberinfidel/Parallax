@@ -146,8 +146,8 @@ class Controller(Controller):
 		# values global to all instances
 		self.invincible_states = (eStates.dead, eStates.fallLeft, eStates.fallRight)
 
-		arrow_controller = self.game.controller_manager.makeTemplate({"Template": arrow.AController})
-		arrow_collider = self.game.collision_manager.makeTemplate({"Template": arrow.ACollider})
+		arrow_controller = self.game.controller_manager.makeTemplate({"Template": arrow.Controller})
+		arrow_collider = self.game.collision_manager.makeTemplate({"Template": arrow.Collider})
 		arrow_graphics = self.game.graphics_manager.makeTemplate(arrow.AGraphics(self.game.renlayer))
 
 		self.arrow_t = self.game.entity_manager.makeEntityTemplate(graphics=arrow_graphics, controller=arrow_controller,collider=arrow_collider)
