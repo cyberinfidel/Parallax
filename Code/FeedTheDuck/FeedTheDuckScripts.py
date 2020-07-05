@@ -26,7 +26,7 @@ def DuckGraphics(renlayer):
 			{
 				"Name": "Duck Stationary",
 				"AnimType": AnimLoop,
-				"State": DuckStates.stationary,
+				"States": [DuckStates.stationary],
 				"Frames":
 					[
 						["Graphics/Duck/DuckL1.png", 13, 15, 2.0],
@@ -35,7 +35,7 @@ def DuckGraphics(renlayer):
 			{
 				"Name": "Duck Swims Left",
 				"AnimType": AnimLoop,
-				"State": DuckStates.swimLeft,
+				"States": [DuckStates.swimLeft],
 				"Frames":
 					[
 						["Graphics/Duck/DuckL1.png", 13, 15, 2.0],
@@ -44,7 +44,7 @@ def DuckGraphics(renlayer):
 			{
 				"Name": "Duck Swims Right",
 				"AnimType": AnimLoop,
-					"State": DuckStates.swimRight,
+					"States": [DuckStates.swimRight],
 					"Frames":
 						[
 							["Graphics/Duck/DuckR1.png", 13, 15, 2.0],
@@ -53,7 +53,7 @@ def DuckGraphics(renlayer):
 				{
 					"Name": "Duck Feeds Left",
 					"AnimType": AnimNoLoop,
-					"State": DuckStates.feedLeft,
+					"States": [DuckStates.feedLeft],
 					"Frames":
 						[
 							["Graphics/Duck/DuckL1.png", 13, 15, 0.1],
@@ -63,7 +63,7 @@ def DuckGraphics(renlayer):
 				{
 					"Name": "Duck Feeds Right",
 					"AnimType": AnimNoLoop,
-					"State": DuckStates.feedRight,
+					"States": [DuckStates.feedRight],
 					"Frames":
 						[
 							["Graphics/Duck/DuckR1.png", 13, 15, 0.1],

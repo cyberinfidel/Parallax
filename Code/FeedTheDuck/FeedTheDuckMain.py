@@ -28,6 +28,7 @@ class FeedTheDuck(game.Game):
 	def __init__(self):
 		super(FeedTheDuck, self).__init__(title = "Feed the Duck", res_x= 320, res_y= 200, zoom = 3, fullscreen= False)
 
+		self.renlayer = graphics.RenderLayer(self.ren)
 		self.collision_manager = collision.CollisionManager(game=self) # TODO: should this be a ComponentManager() like the others?
 
 		###################
