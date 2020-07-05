@@ -202,6 +202,8 @@ class SingleImage(Component):
 	def hasShadow(self):
 		return False
 
+	def update(self, data, common_data, time):
+		pass
 
 # graphics component for a single animation only
 class SingleAnim(Component):
