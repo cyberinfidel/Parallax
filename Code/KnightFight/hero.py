@@ -19,7 +19,8 @@ class eStrikes(enum.IntEnum):
 	big_up = 1
 	small = 2
 	block = 3
-	num_strikes = 4
+	push = 4
+	num_strikes = 5
 
 class eEvents(enum.IntEnum):
 	jump = 0
@@ -311,14 +312,16 @@ class HeroController(Controller):
 		# cool downs in seconds
 		self.strikes = [
 			#			cool	del		range					dimension				origin			force		damage
-			Strike(cool=0.8, delay=0.2, duration = 0.2, range=Vec3(24, 0, 0), dim=Vec3(10,8,12), orig=Vec3(5,4,6),
+			Strike(cool=0.8, delay=0.6, duration = 0.2, range=Vec3(24, 0, 0), dim=Vec3(10,8,12), orig=Vec3(5,4,6),
 						 force=3, absorb=0, damage=2, template=hit_t, hero_damage=0),  # big
 			Strike(cool=0.8, delay=0.4, duration = 0.2, range=Vec3(8, 10, 30), dim=Vec3(12,8,8), orig=Vec3(6,4,4),
 						 force=3, absorb=0, damage=2, template=hit_t),  # big_up
-			Strike(cool=0.3, delay=0.1, duration = 0.2, range=Vec3(12, 0, 0), dim=Vec3(10,8,8), orig=Vec3(5,4,4),
+			Strike(cool=0.3, delay=0.2, duration = 0.2, range=Vec3(12, 0, 0), dim=Vec3(10,8,8), orig=Vec3(5,4,4),
 						 force=1, absorb=0, damage=1, template=hit_t),  # small
-			Strike(cool=0.8, delay=0.1, duration = 0.6, range=Vec3(20, 0, 0), dim=Vec3(10,16,30), orig=Vec3(5,8,20),
-						 force=2, absorb=100, damage=0, template=hit_t),  # block
+			Strike(cool=0.8, delay=0.6, duration = 0.5, range=Vec3(16, 0, 0), dim=Vec3(10,16,30), orig=Vec3(5,8,20),
+						 force=0.2, absorb=100, damage=0, template=hit_t),  # block
+			Strike(cool=0.8, delay=0.7, duration=0.1, range=Vec3(20, 0, 0), dim=Vec3(10, 16, 30), orig=Vec3(5, 8, 20),
+						 force=3, absorb=100, damage=0, template=hit_t),  # push
 		]
 
 		# sounds
@@ -529,6 +532,7 @@ class HeroController(Controller):
 						pass
 					else:
 						data.hero_struck[eStrikes.block]=True
+						data.hero_struck[eStrikes.push]=True
 						if data.facing == eDirections.left:
 							self.updateState(data, common_data, eStates.blockLeft, self.strikes[eStrikes.block].cool)
 						else:
@@ -596,6 +600,6 @@ class HeroCollider(Collider):
 		return self.radius
 
 	def getCollisionMessage(self, data, common_data):
-		return(Message(source=common_data.entity))
+		return(Message(source=common_data.entity, absorb=3))
 
 

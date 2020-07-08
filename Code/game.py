@@ -1,6 +1,7 @@
 # import python libs
 import time
 import enum
+import copy
 
 # import sdl files
 import sdl2.ext
@@ -144,7 +145,7 @@ class Game(object):
 											 parent=False,
 											 name=False):
 		new_entity = self.entity_manager.makeEntity(entity_template, name)
-		new_entity.setPos(pos)
+		new_entity.setPos(copy.deepcopy(pos))
 		new_entity.setParent(parent)
 		#	TODO: add generic names to entity templates
 		# if name:

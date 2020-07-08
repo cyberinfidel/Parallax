@@ -56,7 +56,7 @@ class Controller(controller.Controller):
 			self.cooldown = -1
 			self.health = 5
 			self.vel = Vec3(0,0,0)
-			self.mass = 0.5
+			self.mass = 2
 			self.facing = eDirections.left
 
 	def __init__(self, game, data):
@@ -91,7 +91,7 @@ class Controller(controller.Controller):
 				# if message.source.common_data.name !="Reaper":
 				# 	log("Reaper hit by " + message.source.common_data.name)
 				if message.absorb>2:
-					data.vel = Vec3(0,0,0)
+					data.vel = Vec3(0,0,0)+ message.force/data.mass
 				else:
 					data.vel = data.vel + message.force/data.mass
 
@@ -102,8 +102,8 @@ class Collider(collision.Collider):
 				pass
 			else:
 				pass
-			self.dim = Vec3(20,8,16)
-			self.orig = Vec3(10,4,8)
+			self.dim = Vec3(10,8,16)
+			self.orig = Vec3(5,4,8)
 
 	def __init__(self, game, data):
 		super(Collider, self).__init__(game)
@@ -113,4 +113,5 @@ class Collider(collision.Collider):
 		if common_data.state==eStates.fallRight or common_data.state==eStates.fallLeft or common_data.state==eStates.dead:
 			return False
 		else:
-			return(collision.Message(source=common_data.entity, damage=0, damage_hero=1))
+			dam = 1 if common_data.entity.controller_data.vel.magsq()>10 else 0
+			return(collision.Message(source=common_data.entity, damage=dam, damage_hero=dam))

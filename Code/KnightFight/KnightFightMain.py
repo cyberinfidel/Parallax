@@ -12,6 +12,7 @@ from vector import Vec3, rand_num
 import controller
 import graphics
 import sound
+from director import DirectorController, Delay, SpawnEntity, EndGame
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -29,7 +30,6 @@ from KnightFight.rain import rainGraphics, RainController
 from KnightFight.reaper import reaperGraphics, ReaperController, ReaperCollider
 from KnightFight.heart import heartGraphics, HeartIndicatorController
 from KnightFight.title import titleGraphics, TitleController, eTitleStates
-from director import DirectorController, Delay, SpawnEntity, EndGame
 from KFdirector import SpawnEnemies, WaitForNoEnemies
 
 
@@ -311,18 +311,21 @@ class KnightFight(Game):
 		return[
 				# wait a bit
 				Delay(2),
-			# SpawnEnemies([
-			# 	SpawnEntity(self.bat_t, Vec3(290, 35, 5), False, "Bat 1"),
-			# ]),
+			SpawnEnemies([
+				SpawnEntity(self.bat_t, Vec3(290, 35, 5), False, "Bat 1"),
+			]),
 
 			SpawnEnemies([
 					SpawnEntity(self.goblin_archer_t, Vec3(290, 35, 0), False, "Goblin Archer"),
 				]),
-				# wait a bit
+			SpawnEnemies([
+					SpawnEntity(self.goblin_archer_t, Vec3(150, 35, 0), False, "Goblin Archer"),
+				]),
+			# wait a bit
 				Delay(0.7),
-				# SpawnEnemies([
-				# SpawnEntity(self.reaper_t, Vec3(30, 35, 0), False, "Reaper"),
-				# ]),
+				SpawnEnemies([
+				SpawnEntity(self.reaper_t, Vec3(30, 35, 0), False, "Reaper"),
+				]),
 				Delay(rand_num(1)+0.5),
 
 				# wait until all monsters destroyed
