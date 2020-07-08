@@ -11,7 +11,6 @@ import sdl2.sdlmixer
 import entity
 import game_pad
 import vector
-import collision
 
 # disable to remove logging
 def log(msg, new_line=True):

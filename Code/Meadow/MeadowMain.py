@@ -138,8 +138,8 @@ class Meadow(Game):
 			self.bunny = self.requestNewEntity(entity_template=self.bunny_t, pos=Vec3(160, 60, 0), parent=False, name="Bunny")
 			self.bunny.setGamePad(self.input.getGamePad(0))
 
-			# self.present = self.requestNewEntity(entity_template=self.present_t, pos=Vec3(400, 60, 0), parent=self, name="present")
-			# self.present.controller.setButterflyTemplates(self.bfly_templates)
+			self.present = self.requestNewEntity(entity_template=self.present_t, pos=Vec3(400, 60, 0), parent=self, name="present")
+			self.present.controller.setButterflyTemplates(self.bfly_templates)
 
 			self.rain_cooldown = 500
 			self.restart_cooldown=60

@@ -2,7 +2,12 @@
 Code/.DS_Store
 .DS_Store
 *.pyc
+*.bin
+*.exe
+*.zip
 .idea/Parallax.iml
 venv
 Code/python38.dll
 Code/KnightFight/python38.dll
+Code/KnightFight/KnightFightMain.build/
+Code/Meadow/MeadowMain.build/
