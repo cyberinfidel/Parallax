@@ -2,3 +2,7 @@
 Code/.DS_Store
 .DS_Store
 *.pyc
+.idea/Parallax.iml
+venv
+Code/python38.dll
+Code/KnightFight/python38.dll

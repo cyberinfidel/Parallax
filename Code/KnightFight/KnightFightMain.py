@@ -3,7 +3,7 @@ import sys
 
 # import Parallax files
 # 	add path to Parallax
-sys.path.insert(1, '../')
+sys.path.append('../')
 # actually import files
 from game import Game, eGameModes
 from entity import eStates
@@ -38,7 +38,7 @@ class KnightFight(Game):
 		# do bare minimum to set up
 		# most set up is in first update
 		# this way I can restart the game
-		super(KnightFight, self).__init__("Knight Fight", res_x= 320, res_y= 200, zoom = 3, fullscreen= False)
+		super(KnightFight, self).__init__("Knight Fight", res_x= 320, res_y= 200, zoom = 3, fullscreen= True)
 
 		##########################
 		# set up graphics layers #
