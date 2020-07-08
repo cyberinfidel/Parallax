@@ -4,7 +4,7 @@ from vector import Vec3
 from log import log
 
 # globals
-collision_debug = True
+collision_debug = False
 
 class eShapes(enum.IntEnum):
 	sphere = 0
