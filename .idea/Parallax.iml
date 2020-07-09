@@ -7,20 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/Code/FeedTheDuck" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Code/BiscuitBattle" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Code/Meadow" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/KnightFight" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Meadow" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/SoundTest" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/FeedTheDuck" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Engine" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/BiscuitBattle" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Parallax" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
-      <excludeFolder url="file://$MODULE_DIR$/BiscuitBattle/Graphics" />
-      <excludeFolder url="file://$MODULE_DIR$/FeedTheDuck/Graphics" />
-      <excludeFolder url="file://$MODULE_DIR$/KnightFight/Graphics" />
-      <excludeFolder url="file://$MODULE_DIR$/KnightFight/Sounds" />
-      <excludeFolder url="file://$MODULE_DIR$/Meadow/Graphics" />
-      <excludeFolder url="file://$MODULE_DIR$/Meadow/OriginalGraphics" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
     <orderEntry type="inheritedJdk" />

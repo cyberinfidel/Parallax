@@ -2,12 +2,10 @@ import enum
 
 from entity import eStates, eDirections
 from vector import Vec3, rand_num
-from controller import Controller, basic_gravity, basic_physics, friction
+from controller import Controller, basic_gravity, basic_physics, restrictToArena, friction
 from collision import Collider, Message
 from graphics import AnimLoop, AnimNoLoop, MultiAnim, AnimSingle
 import sound
-
-from background import restrictToArena
 
 class eEvents(enum.IntEnum):
 	flap = 0

@@ -14,10 +14,9 @@ sdl_image.IMG_Init(sdl_image.IMG_INIT_PNG)
 sdl_image.IMG_Init(sdl_image.IMG_INIT_JPG)
 
 # import my files
-from Parallax import entity, vector
-from Parallax.vector import Vec3, rand_num
-from Parallax.log import log
-
+from entity import eStates, Component
+from vector import Vec3, rand_num
+from log import log
 
 # globals
 graphics_debug = False
@@ -117,7 +116,7 @@ class RenderLayer(object):
 		self.images = []
 		self.drawables = []
 
-		self.origin = vector.Vec3(0,0,0)
+		self.origin = Vec3(0,0,0)
 
 	# add to the store of images available in this render layer
 	def addImage(self, file, origin_x=0, origin_y=0):
@@ -188,7 +187,7 @@ class GraphicsTypes(enum.IntEnum):
 	num_graphics_types = 3
 
 # graphics component for a single static image
-class SingleImage(entity.Component):
+class SingleImage(Component):
 	def __init__(self, game, data):
 		super(SingleImage, self).__init__(game)
 		self.rl = data['RenderLayer']
@@ -207,7 +206,7 @@ class SingleImage(entity.Component):
 		pass
 
 # graphics component for a single animation only
-class SingleAnim(entity.Component):
+class SingleAnim(Component):
 	class Data(object):
 		def __init__(self, common_data):
 			self.current_frame = 0
@@ -233,7 +232,7 @@ class SingleAnim(entity.Component):
 
 
 # graphics component for multiple animations
-class MultiAnim(entity.Component):
+class MultiAnim(Component):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -244,8 +243,8 @@ class MultiAnim(entity.Component):
 			else:
 				self.current_frame = 0
 				self.current_time = 0
-				self.current_anim =  entity.eStates.stationary
-				self.current_state = entity.eStates.stationary
+				self.current_anim =  eStates.stationary
+				self.current_state = eStates.stationary
 
 	def __init__(self, game, data):
 		super(MultiAnim, self).__init__(game)
@@ -278,13 +277,13 @@ class MultiAnim(entity.Component):
 			exit(1)
 
 	def hasShadow(self):
-		return entity.eStates.shadow in self.anims
+		return eStates.shadow in self.anims
 
 	def drawShadow(self, data, common_data):
 		try:
 			# todo: work out why z=0 doesn't work
 			# todo: shrink shadow the higher z is
-			return self.rl.queueImage(self.anims[entity.eStates.shadow].getImage(0), common_data.pos.x, common_data.pos.y, 0)
+			return self.rl.queueImage(self.anims[eStates.shadow].getImage(0), common_data.pos.x, common_data.pos.y, 0)
 		except Exception as e:
 			log(e)
 			exit(1)

@@ -12,7 +12,7 @@ class Controller(controller.Controller):
 			if message.damage>0:
 				common_data.game.setGameMode(game.eGameModes.win)
 				for num in range(0,20):
-					common_data.game.requestNewEntity(
+					bfly = common_data.game.requestNewEntity(
 						entity_template= self.butterfly_templates[rand_num(3)],
 						pos= common_data.pos,
 						parent = common_data.entity,

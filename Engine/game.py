@@ -8,9 +8,9 @@ import sdl2.ext
 import sdl2.sdlmixer
 
 # import my files
-import Parallax.entity as entity
-import Parallax.game_pad as game_pad
-import Parallax.vector as vector
+import entity
+import game_pad
+import vector
 
 # disable to remove logging
 def log(msg, new_line=True):

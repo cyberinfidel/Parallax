@@ -2,7 +2,7 @@
 import enum
 
 # my file import
-from Parallax import vector
+from vector import Vec3
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -97,7 +97,7 @@ class Entity(object):
 		self.common_data.game = game
 		self.common_data.entity = self
 		self.common_data.name = name
-		self.common_data.pos = vector.Vec3(0, 0, 0)
+		self.common_data.pos = Vec3(0, 0, 0)
 		self.common_data.state = eStates.stationary
 		self.common_data.new_state = True
 		self.common_data.blink = False
