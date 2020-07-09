@@ -3,7 +3,7 @@ import sys
 
 # import Parallax files
 # 	add path to Parallax
-#sys.path.append('../')
+sys.path.append('../')
 # actually import files
 from game import Game, eGameModes
 from entity import eStates
@@ -22,14 +22,14 @@ def log(msg, new_line=True):
 		print(msg, end='')
 
 #import Knight Fight files
-from background import backgroundGraphics, BackgroundController, backLGraphics, backRGraphics
-from hero import heroGraphics, heroSounds, HeroController, HeroCollider
-from bat import batGraphics, batSounds, BatController, BatCollider
+from KnightFight.background import backgroundGraphics, BackgroundController, backLGraphics, backRGraphics
+from KnightFight.hero import heroGraphics, heroSounds, HeroController, HeroCollider
+from KnightFight.bat import batGraphics, batSounds, BatController, BatCollider
 import goblinarcher
-from rain import rainGraphics, RainController
-from reaper import reaperGraphics, ReaperController, ReaperCollider
-from heart import heartGraphics, HeartIndicatorController
-from title import titleGraphics, TitleController, eTitleStates
+from KnightFight.rain import rainGraphics, RainController
+from KnightFight.reaper import reaperGraphics, ReaperController, ReaperCollider
+from KnightFight.heart import heartGraphics, HeartIndicatorController
+from KnightFight.title import titleGraphics, TitleController, eTitleStates
 from KFdirector import SpawnEnemies, WaitForNoEnemies
 
 
