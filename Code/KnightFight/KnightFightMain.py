@@ -11,7 +11,6 @@ from game import Game, eGameModes
 from entity import eStates
 from collision import CollisionManager
 from vector import Vec3, rand_num
-import controller
 import graphics
 import sound
 from director import DirectorController, Delay, SpawnEntity, EndGame
@@ -40,7 +39,7 @@ class KnightFight(Game):
 		# do bare minimum to set up
 		# most set up is in first update
 		# this way I can restart the game
-		super(KnightFight, self).__init__("Knight Fight", res_x= 320, res_y= 200, zoom = 3, fullscreen= True)
+		super(KnightFight, self).__init__("Knight Fight", res_x= 320, res_y= 200, zoom = 3, fullscreen= False)
 		sdl2.mouse.SDL_ShowCursor(False)
 
 		##########################
@@ -49,6 +48,7 @@ class KnightFight(Game):
 		self.renlayer = graphics.RenderLayer(self.ren)
 		self.title_renlayer = graphics.RenderLayer(self.ren)
 		self.scroll = False
+		self.quit_cooldown = 3
 
 		##########################
 		# set up sound           #
@@ -90,9 +90,11 @@ class KnightFight(Game):
 		self.title.setGamePad(self.input.getGamePad(0))
 
 		self.raining = False
-		self.setGameMode(eGameModes.title)
 
 		self.collision_manager = CollisionManager(game=self)  # TODO: should this be a ComponentManager() like the others?
+
+		self.setGameMode(eGameModes.title)
+
 
 		###################
 		# make components #
@@ -237,6 +239,16 @@ class KnightFight(Game):
 				self.setGameMode(eGameModes.title)
 				self.cleanUpDead()
 
+		####################################################
+
+		elif self.game_mode==eGameModes.quit:
+			self.quit_cooldown-=dt
+			self.title.setState(eTitleStates.quit)
+			if self.quit_cooldown<=0:
+				self.running=False
+				return
+
+
 		# Always do this, unless paused:
 		if self.game_mode!=eGameModes.paused:
 			for index, updatable in reversed(list(enumerate(self.updatables))):
@@ -263,6 +275,7 @@ class KnightFight(Game):
 		for updatable in self.updatables:
 			if not (updatable is self.title):
 				updatable.common_data.state = eStates.dead
+		self.cleanUpDead()
 
 
 	def requestTarget(self,pos):
@@ -280,7 +293,6 @@ class KnightFight(Game):
 	###########
 
 	def draw(self):
-
 		for drawable in self.drawables:
 			# draw shadows first
 			if drawable.graphics.hasShadow():

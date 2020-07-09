@@ -25,7 +25,8 @@ class eActions(enum.IntEnum):
 	block = 7
 	stationary = 8
 	pause = 9
-	numActions = 10
+	quit = 10
+	numActions = 11
 class GamePad(Component):
 	def __init__(self, game):
 		super(GamePad, self).__init__(game)
@@ -39,6 +40,7 @@ class GamePad(Component):
 			eActions.attack_big:False,
 			eActions.block:False,
 			eActions.pause:False,
+			eActions.quit:False,
 			eActions.stationary:True
 		}
 
@@ -47,11 +49,6 @@ class GamePad(Component):
 
 	def clear(self,action):
 		self.actions[action]=False
-
-	def control(self):
-		for action in self.actions:
-			if action and self.entity.react:
-				self.entity.react.tryAction(action)
 
 class Input(object):
 	def __init__(self, game):
@@ -91,6 +88,8 @@ class Input(object):
 
 				if event.key.keysym.sym == sdl2.SDLK_p:
 					self.game_pads[0].set(eActions.pause)
+				if event.key.keysym.sym == sdl2.SDLK_q:
+					self.game_pads[0].set(eActions.quit)
 
 			elif event.type == sdl2.SDL_KEYUP:
 				if event.key.keysym.sym == sdl2.SDLK_UP:
@@ -115,5 +114,7 @@ class Input(object):
 
 				if event.key.keysym.sym == sdl2.SDLK_p:
 					self.game_pads[0].clear(eActions.pause)
+				if event.key.keysym.sym == sdl2.SDLK_q:
+					self.game_pads[0].clear(eActions.quit)
 
 
