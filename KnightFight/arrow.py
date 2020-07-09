@@ -3,6 +3,7 @@ from vector import Vec3
 import controller
 import collision
 from graphics import MultiAnim, AnimSingle
+import background
 
 #########
 # Arrow #
@@ -81,7 +82,7 @@ class Controller(controller.Controller):
 		controller.basic_gravity(data.vel)
 		controller.basic_physics(common_data.pos,data.vel)
 
-		controller.restrictToArena(common_data.pos, data.vel)
+		background.restrictToArena(common_data.pos, data.vel)
 
 
 

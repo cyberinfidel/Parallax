@@ -1,7 +1,5 @@
 import enum
-from entity import ComponentManager, Component, eStates
-from vector import Vec3
-from log import log
+from Parallax import entity, vector, log
 
 # globals
 collision_debug = False
@@ -11,7 +9,7 @@ class eShapes(enum.IntEnum):
 	cuboid = 1
 
 
-class CollisionManager(ComponentManager):
+class CollisionManager(entity.ComponentManager):
 
 	def __init__(self, game):
 		super(CollisionManager, self).__init__(game)
@@ -28,7 +26,7 @@ class CollisionManager(ComponentManager):
 
 
 	def cleanUpDead(self):
-		self.instances[:] = [x for x in self.instances if x.getState()!=eStates.dead]
+		self.instances[:] = [x for x in self.instances if x.getState()!=entity.eStates.dead]
 
 	def checkCollide(self,A,B):
 
@@ -57,12 +55,12 @@ class CollisionManager(ComponentManager):
 
 
 
-class Collider(Component):
+class Collider(entity.Component):
 	def __init__(self, game):
 		super(Collider, self).__init__(game)
 
 class Message():
-	def __init__(self, source, damage=0, damage_hero=0, force=Vec3(0,0,0), absorb=0):
+	def __init__(self, source, damage=0, damage_hero=0, force=vector.Vec3(0,0,0), absorb=0):
 		self.source = source
 		self.damage = damage
 		self.absorb = absorb

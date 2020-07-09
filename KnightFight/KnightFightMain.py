@@ -3,16 +3,10 @@ import sys
 
 # import Parallax files
 # 	add path to Parallax
-#sys.path.append('../')
+sys.path.append('../')
 # actually import files
-from game import Game, eGameModes
-from entity import eStates
-from collision import CollisionManager
-from vector import Vec3, rand_num
-import controller
-import graphics
-import sound
-from director import DirectorController, Delay, SpawnEntity, EndGame
+from Parallax import game, entity, collision, graphics, sound, director
+from Parallax.vector import Vec3, rand_num
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -33,12 +27,12 @@ from title import titleGraphics, TitleController, eTitleStates
 from KFdirector import SpawnEnemies, WaitForNoEnemies
 
 
-class KnightFight(Game):
+class KnightFight(game.Game):
 	def __init__(self):
 		# do bare minimum to set up
 		# most set up is in first update
 		# this way I can restart the game
-		super(KnightFight, self).__init__("Knight Fight", res_x= 320, res_y= 200, zoom = 3, fullscreen= True)
+		super(KnightFight, self).__init__("Knight Fight", res_x= 320, res_y= 200, zoom = 3, fullscreen= False)
 
 		##########################
 		# set up graphics layers #
@@ -87,9 +81,9 @@ class KnightFight(Game):
 		self.title.setGamePad(self.input.getGamePad(0))
 
 		self.raining = False
-		self.setGameMode(eGameModes.title)
+		self.setGameMode(game.eGameModes.title)
 
-		self.collision_manager = CollisionManager(game=self)  # TODO: should this be a ComponentManager() like the others?
+		self.collision_manager = collision.CollisionManager(game=self)  # TODO: should this be a ComponentManager() like the others?
 
 		###################
 		# make components #
@@ -142,7 +136,7 @@ class KnightFight(Game):
 		self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heartgraphics, controller=heart_controller)
 
 		# director
-		director_controller = self.controller_manager.makeTemplate({"Template":DirectorController})
+		director_controller = self.controller_manager.makeTemplate({"Template":director.Controller})
 
 
 		self.director_t = self.entity_manager.makeEntityTemplate(controller=director_controller)
@@ -155,15 +149,15 @@ class KnightFight(Game):
 
 	def update(self, dt):
 
-		if self.game_mode==eGameModes.init:
+		if self.game_mode==game.eGameModes.init:
 
 			pass
 
 ##################################################
-		elif self.game_mode==eGameModes.title:
+		elif self.game_mode==game.eGameModes.title:
 			pass
 ##################################################
-		elif self.game_mode==eGameModes.start:
+		elif self.game_mode==game.eGameModes.start:
 			# set up new game and clean up anything from last game
 			self.num_monsters = 0
 			self.killPlayEntities()
@@ -182,13 +176,13 @@ class KnightFight(Game):
 				self.drawables.append(heart)
 				self.updatables.append(heart)
 				heart.common_data.parent = self.hero
-				heart.common_data.state = eStates.fade
+				heart.common_data.state = entity.eStates.fade
 				heart.controller_data.health_num = n
 
 			self.rain_cooldown = 500
-			self.setGameMode(eGameModes.play)
+			self.setGameMode(game.eGameModes.play)
 		##################################################
-		elif self.game_mode==eGameModes.play:
+		elif self.game_mode==game.eGameModes.play:
 			# rain
 			if self.raining:
 				if (rand_num(10)==0):
@@ -202,8 +196,8 @@ class KnightFight(Game):
 				self.rain_cooldown=rand_num(500)+500
 				self.raining = not self.raining
 
-			if self.hero.getState()==eStates.dead:
-				self.setGameMode(eGameModes.game_over)
+			if self.hero.getState()==entity.eStates.dead:
+				self.setGameMode(game.eGameModes.game_over)
 				self.restart_cooldown=3
 
 			###############
@@ -217,25 +211,25 @@ class KnightFight(Game):
 
 		####################################################
 
-		elif self.game_mode==eGameModes.game_over:
-			self.director.setState(eStates.dead)
+		elif self.game_mode==game.eGameModes.game_over:
+			self.director.setState(entity.eStates.dead)
 			self.restart_cooldown-=dt
 			self.title.setState(eTitleStates.game_over)
 			if self.restart_cooldown<=0:
-				self.setGameMode(eGameModes.title)
+				self.setGameMode(game.eGameModes.title)
 				self.cleanUpDead()
 
 		####################################################
 
-		elif self.game_mode==eGameModes.win:
+		elif self.game_mode==game.eGameModes.win:
 			self.restart_cooldown-=dt
 			self.title.setState(eTitleStates.win)
 			if self.restart_cooldown<=0:
-				self.setGameMode(eGameModes.title)
+				self.setGameMode(game.eGameModes.title)
 				self.cleanUpDead()
 
 		# Always do this, unless paused:
-		if self.game_mode!=eGameModes.paused:
+		if self.game_mode!=game.eGameModes.paused:
 			for index, updatable in reversed(list(enumerate(self.updatables))):
 				updatable.update(dt)
 			for audible in self.audibles:
@@ -251,15 +245,15 @@ class KnightFight(Game):
 # end update() #################################################################
 
 	def cleanUpDead(self):
-		self.updatables[:] = [x for x in self.updatables if x.getState() != eStates.dead]
+		self.updatables[:] = [x for x in self.updatables if x.getState() != entity.eStates.dead]
 		self.collision_manager.cleanUpDead()
-		self.drawables[:] = [x for x in self.drawables if x.getState() != eStates.dead]
-		self.audibles[:] = [x for x in self.audibles if x.getState() != eStates.dead]
+		self.drawables[:] = [x for x in self.drawables if x.getState() != entity.eStates.dead]
+		self.audibles[:] = [x for x in self.audibles if x.getState() != entity.eStates.dead]
 
 	def killPlayEntities(self):
 		for updatable in self.updatables:
 			if not (updatable is self.title):
-				updatable.common_data.state = eStates.dead
+				updatable.common_data.state = entity.eStates.dead
 
 
 	def requestTarget(self,pos):
@@ -310,84 +304,84 @@ class KnightFight(Game):
 	def KFEvents(self):
 		return[
 				# wait a bit
-				Delay(2),
+				director.Delay(2),
 			SpawnEnemies([
-				SpawnEntity(self.bat_t, Vec3(290, 35, 5), False, "Bat 1"),
+				director.SpawnEntity(self.bat_t, Vec3(290, 35, 5), False, "Bat 1"),
 			]),
 
 			SpawnEnemies([
-					SpawnEntity(self.goblin_archer_t, Vec3(290, 35, 0), False, "Goblin Archer"),
+					director.SpawnEntity(self.goblin_archer_t, Vec3(290, 35, 0), False, "Goblin Archer"),
 				]),
 			SpawnEnemies([
-					SpawnEntity(self.goblin_archer_t, Vec3(150, 35, 0), False, "Goblin Archer"),
+					director.SpawnEntity(self.goblin_archer_t, Vec3(150, 35, 0), False, "Goblin Archer"),
 				]),
 			# wait a bit
-				Delay(0.7),
+				director.Delay(0.7),
 				SpawnEnemies([
-				SpawnEntity(self.reaper_t, Vec3(30, 35, 0), False, "Reaper"),
+				director.SpawnEntity(self.reaper_t, Vec3(30, 35, 0), False, "Reaper"),
 				]),
-				Delay(rand_num(1)+0.5),
+				director.Delay(rand_num(1)+0.5),
 
 				# wait until all monsters destroyed
 				WaitForNoEnemies(),
 				# wait a bit
-				Delay(4),
+				director.Delay(4),
 
 				# first wave
 				SpawnEnemies([
-					SpawnEntity(self.reaper_t, Vec3(300, 35, 0), False, "Reaper 2"),
+					director.SpawnEntity(self.reaper_t, Vec3(300, 35, 0), False, "Reaper 2"),
 				]),
-				Delay(rand_num(1)+0.5),
+				director.Delay(rand_num(1)+0.5),
 				SpawnEnemies([
-					SpawnEntity(self.reaper_t, Vec3(20, 35, 0), False, "Reaper 2"),
+					director.SpawnEntity(self.reaper_t, Vec3(20, 35, 0), False, "Reaper 2"),
 				]),
 
 				# wait until all monsters destroyed
 				WaitForNoEnemies(),
 				# wait a bit
-				Delay(4),
+				director.Delay(4),
 
 				# second  wave
 				SpawnEnemies([
-					SpawnEntity(self.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
+					director.SpawnEntity(self.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
 				]),
-				Delay(rand_num(1)+0.5),
+				director.Delay(rand_num(1)+0.5),
 				# spawn other half of wave
 				SpawnEnemies([
-					SpawnEntity(self.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
+					director.SpawnEntity(self.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
 				]),
-				Delay(rand_num(1)+0.5),
+				director.Delay(rand_num(1)+0.5),
 				SpawnEnemies([
-					SpawnEntity(self.bat_t, Vec3(155, 110, 5), False, "Bat 1"),
+					director.SpawnEntity(self.bat_t, Vec3(155, 110, 5), False, "Bat 1"),
 				]),
-				Delay(rand_num(1)+0.5),
+				director.Delay(rand_num(1)+0.5),
 				# spawn other half of wave
 				SpawnEnemies([
-					SpawnEntity(self.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
+					director.SpawnEntity(self.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
 				]),
-				Delay(rand_num(1)+0.5),
+				director.Delay(rand_num(1)+0.5),
 				SpawnEnemies([
-					SpawnEntity(self.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
+					director.SpawnEntity(self.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
 				]),
-				Delay(rand_num(1)+0.5),
+				director.Delay(rand_num(1)+0.5),
 				# spawn other half of wave
 				SpawnEnemies([
-					SpawnEntity(self.bat_t, Vec3(155, 110, 5), False, "Bat 1"),
+					director.SpawnEntity(self.bat_t, Vec3(155, 110, 5), False, "Bat 1"),
 				]),
 
 				# wait until all monsters destroyed
 				WaitForNoEnemies(),
 
 				# wait a bit
-				Delay(2),
+				director.Delay(2),
 
 				# ...
 
 				WaitForNoEnemies(),
 				# wait a bit
-				Delay(2),
+				director.Delay(2),
 				# signal game complete
-				EndGame()
+				director.EndGame()
 			]
 
 

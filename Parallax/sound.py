@@ -5,7 +5,7 @@ import sdl2
 import sdl2.ext
 import sdl2.sdlmixer as sdlmixer
 
-import entity
+from Parallax import entity
 
 # disable to remove logging
 def log(msg, new_line=True):

@@ -1,7 +1,5 @@
-from entity import eStates
-from controller import Controller
-from game import eGameModes
-from vector import Vec3
+from Parallax import entity, controller, game, vector
+
 
 class Event(object):
 	def __init__(self):
@@ -23,7 +21,7 @@ class Delay(Event):
 class SpawnEntity(object):
 	def __init__(self,
 							entity_template,
-							pos = Vec3(0, 0, 0),
+							pos = vector.Vec3(0, 0, 0),
 							parent = False,
 							name = False):
 		self.template=entity_template
@@ -52,7 +50,7 @@ class EndGame(Event):
 		super(Event, self).__init__()
 
 	def update(self, data, common_data, dt):
-		common_data.game.setGameMode(eGameModes.win)
+		common_data.game.setGameMode(game.eGameModes.win)
 		common_data.game.restart_cooldown = 5
 
 class WaitFor(Event):
@@ -64,9 +62,9 @@ class WaitFor(Event):
 	def update(self, data, common_data, dt):
 		return self.condition()
 
-class DirectorController(Controller):
+class Controller(controller.Controller):
 	def __init__(self, game, data):
-		super(DirectorController, self).__init__(game)
+		super(Controller, self).__init__(game)
 		# values global to all this type of component
 
 	class Data(object):
@@ -83,6 +81,6 @@ class DirectorController(Controller):
 			data.current_event+=1
 		if data.current_event>=len(data.events):
 			# run out of events so mark director for destruction
-			self.setState(data, common_data, eStates.dead)
+			self.setState(data, common_data, entity.eStates.dead)
 
 

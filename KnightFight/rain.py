@@ -1,7 +1,8 @@
 from entity import eStates
-from controller import Controller, basic_physics, restrictToArena
+from controller import Controller, basic_physics
 from graphics import AnimNoLoop, MultiAnim
 from vector import Vec3
+from background import restrictToArena
 
 def rainGraphics(renlayer):
 	return {

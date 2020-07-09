@@ -5,7 +5,7 @@ import enum
 import sdl2
 
 # my file import
-from entity import Component
+from Parallax import entity
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -26,7 +26,7 @@ class eActions(enum.IntEnum):
 	stationary = 8
 	pause = 9
 	numActions = 10
-class GamePad(Component):
+class GamePad(entity.Component):
 	def __init__(self, game):
 		super(GamePad, self).__init__(game)
 		self.actions = {

@@ -1,9 +1,10 @@
 # Reaper
-from controller import Controller, basic_physics, restrictToArena, friction
+from controller import Controller, basic_physics, friction
 from collision import Collider, Message
 from graphics import MultiAnim, AnimLoop, AnimSingle
 from entity import eDirections, eStates
 from vector import Vec3, rand_num
+from background import restrictToArena
 
 def reaperGraphics(renlayer):
 	return {

@@ -9,10 +9,8 @@ from game import Game, eGameModes
 from entity import eStates
 from collision import CollisionManager
 from vector import Vec3, rand_num
-import controller
-import graphics
-import sound
-from director import DirectorController, Delay, SpawnEntity, EndGame
+import graphics, sound, director
+from director import Delay
 
 
 # disable to remove logging
@@ -35,7 +33,7 @@ class Meadow(Game):
 		# do bare minimum to set up
 		# most set up is in first update
 		# this way I can restart the game
-		super(Meadow, self).__init__("Meadow", res_x= 640, res_y= 400, zoom = 3, fullscreen= False)
+		super(Meadow, self).__init__("Meadow", res_x= 640, res_y= 400, zoom = 3, fullscreen= True)
 		self.collision_manager = CollisionManager(game=self)  # TODO: should this be a ComponentManager() like the others?
 
 		##########################
@@ -107,7 +105,7 @@ class Meadow(Game):
 																												 )
 
 		# director
-		director_controller = self.controller_manager.makeTemplate({"Template":DirectorController})
+		director_controller = self.controller_manager.makeTemplate({"Template":director.Controller})
 		self.director_t = self.entity_manager.makeEntityTemplate(controller=director_controller)
 	# end init()
 

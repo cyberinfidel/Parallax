@@ -1,6 +1,7 @@
-from controller import Controller
+from controller import Controller, basic_physics
 from graphics import SingleImage
-
+from Parallax import vector
+from Parallax.vector import Vec3
 
 class BackgroundController(Controller):
 	def __init__(self, game, data):
@@ -31,4 +32,17 @@ def backRGraphics(renlayer):
 		}
 
 
+def restrictToArena(pos, vel):
+	# stop running through walls at either side
+	# if pos on left side of line then force to right side
+	while pos.whichSidePlane(vector.Plane(1, -1, 0, 0)):
+		basic_physics(pos, Vec3(0.1, -0.1, 0)) # normal vector to plane
+
+	# stop running through walls at either side
+	# if pos on left side of line then force to right side
+	while not pos.whichSidePlane(vector.Plane(1, 1, 0, -320)):
+		basic_physics(pos, Vec3(-0.1, -0.1, 0)) # normal vector to plane
+
+	# stop running off screen bottom, top and sides
+	pos.clamp(Vec3(0, 0, 0), Vec3(320, 60, 200))
 
