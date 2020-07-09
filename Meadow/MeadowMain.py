@@ -1,8 +1,6 @@
 # import python libs
 import sys
 
-import sdl2.mouse
-
 # import Parallax files
 # 	add path to Parallax
 sys.path.insert(1, '../')
@@ -36,7 +34,6 @@ class Meadow(Game):
 		# most set up is in first update
 		# this way I can restart the game
 		super(Meadow, self).__init__("Meadow", res_x= 640, res_y= 400, zoom = 3, fullscreen= True)
-		sdl2.mouse.SDL_ShowCursor(False)
 		self.collision_manager = CollisionManager(game=self)  # TODO: should this be a ComponentManager() like the others?
 
 		##########################
