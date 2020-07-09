@@ -104,6 +104,8 @@ class TitleController(Controller):
 				if data.game_pad.actions[eActions.pause]:
 					common_data.game.setGameMode(eGameModes.paused)
 					self.setState(data, common_data, eTitleStates.paused)
+					data.game_pad.actions[eActions.pause] = False  # stops complete quite
+					data.game_pad.actions[eActions.quit] = False  # stops complete quite
 			else:
 				if common_data.game.game_mode == eGameModes.paused:
 					if data.game_pad:
