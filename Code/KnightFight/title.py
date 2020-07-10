@@ -118,6 +118,9 @@ class TitleController(Controller):
 							common_data.game.killPlayEntities()
 							self.setState(data, common_data, eTitleStates.title)
 							data.game_pad.actions[eActions.quit]=False # stops complete quite
+						if data.game_pad.actions[eActions.fullscreen]:
+							common_data.game.toggleFullscreen()
+							data.game_pad.actions[eActions.fullscreen] = False  # stops repeat
 
 				elif common_data.game.game_mode == eGameModes.title:
 					self.setState(data, common_data, eTitleStates.title)
@@ -131,6 +134,9 @@ class TitleController(Controller):
 							common_data.game.killPlayEntities()
 							self.setState(data, common_data, eTitleStates.quit)
 							data.game_pad.actions[eActions.quit] = False  # stops complete quite
+						if data.game_pad.actions[eActions.fullscreen]:
+							common_data.game.toggleFullscreen()
+							data.game_pad.actions[eActions.fullscreen] = False  # stops repeat
 
 				elif common_data.game.game_mode == eGameModes.game_over:
 					self.setState(data, common_data, eTitleStates.game_over)

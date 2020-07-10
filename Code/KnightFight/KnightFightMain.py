@@ -23,14 +23,14 @@ def log(msg, new_line=True):
 		print(msg, end='')
 
 #import Knight Fight files
-from KnightFight.background import backgroundGraphics, BackgroundController, backLGraphics, backRGraphics
-from KnightFight.hero import heroGraphics, heroSounds, HeroController, HeroCollider
-from KnightFight.bat import batGraphics, batSounds, BatController, BatCollider
+from background import backgroundGraphics, BackgroundController, backLGraphics, backRGraphics
+from hero import heroGraphics, heroSounds, HeroController, HeroCollider
+from bat import batGraphics, batSounds, BatController, BatCollider
 import goblinarcher
-from KnightFight.rain import rainGraphics, RainController
-from KnightFight.reaper import reaperGraphics, ReaperController, ReaperCollider
-from KnightFight.heart import heartGraphics, HeartIndicatorController
-from KnightFight.title import titleGraphics, TitleController, eTitleStates
+from rain import rainGraphics, RainController
+from reaper import reaperGraphics, ReaperController, ReaperCollider
+from heart import heartGraphics, HeartIndicatorController
+from title import titleGraphics, TitleController, eTitleStates
 from KFdirector import SpawnEnemies, WaitForNoEnemies
 
 
@@ -48,7 +48,7 @@ class KnightFight(Game):
 		self.renlayer = graphics.RenderLayer(self.ren)
 		self.title_renlayer = graphics.RenderLayer(self.ren)
 		self.scroll = False
-		self.quit_cooldown = 3
+		self.quit_cooldown = 0.5
 
 		##########################
 		# set up sound           #
@@ -177,7 +177,7 @@ class KnightFight(Game):
 			self.director.controller_data.events = self.KFEvents()
 
 			# make hero
-			self.hero = self.requestNewEntity(entity_template=self.hero_t, pos=Vec3(160, 60, 0), parent=False, name="Hero")
+			self.hero = self.requestNewEntity(entity_template=self.hero_t, pos=Vec3(150, 60, 0), parent=False, name="Hero")
 			self.hero.setGamePad(self.input.getGamePad(0))
 
 			# set up life indicator in top left

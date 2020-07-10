@@ -33,6 +33,8 @@ class eGameModes(enum.IntEnum):
 
 class Game(object):
 
+
+
 	def __init__(self, title, res_x, res_y, zoom, fullscreen):
 		# Initialize the video system - this implicitly initializes some
 		# necessary parts within the SDL2 DLL used by the video module.
@@ -41,13 +43,23 @@ class Game(object):
 		# classes.
 		sdl2.ext.init()
 
+		self.title = title
+		self.res_x = res_x
+		self.res_y = res_y
+		self.zoom = zoom
+		self.fullscreen = fullscreen
+
+		sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_JOYSTICK | sdl2.SDL_INIT_GAMECONTROLLER)
+
+		# INITIALISE GRAPHICS & THE SCREEN
+
 		# Create a new window (like your browser window or editor window,
 		# etc.) and give it a meaningful title and size. We definitely need
 		# this, if we want to present something to the user.
-		if(fullscreen):
-			self.window = sdl2.ext.Window(title, size=(res_x*zoom, res_y*zoom), flags=sdl2.SDL_WINDOW_FULLSCREEN)
+		if(self.fullscreen):
+			self.window = sdl2.ext.Window(self.title, size=(self.res_x*self.zoom, self.res_y*self.zoom), flags=sdl2.SDL_WINDOW_FULLSCREEN)
 		else:
-			self.window = sdl2.ext.Window(title, size=(res_x*zoom, res_y*zoom))  # ,flags=sdl2.SDL_WINDOW_FULLSCREEN)
+			self.window = sdl2.ext.Window(self.title, size=(self.res_x*self.zoom, self.res_y*self.zoom))
 
 		# By default, every Window is hidden, not shown on the screen right
 		# after creation. Thus we need to tell it to be shown now.
@@ -60,9 +72,7 @@ class Game(object):
 		# makes zoomed graphics blocky (for retro effect)
 		sdl2.SDL_SetHint(sdl2.SDL_HINT_RENDER_SCALE_QUALITY, b"nearest")
 		# makes the graphics look and act like Atari ST screen size, even though rendered much larger
-		sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, res_x, res_y)
-
-
+		sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, self.res_x, self.res_y)
 
 		self.running = True
 		self.game_mode = eGameModes.title
@@ -79,6 +89,11 @@ class Game(object):
 		self.entity_manager = entity.EntityManager(game=self)
 		self.sound_manager = entity.ComponentManager(game=self)
 
+
+
+	def toggleFullscreen(self):
+		self.fullscreen = not self.fullscreen
+		sdl2.SDL_SetWindowFullscreen(self.window.window, self.fullscreen)
 
 	def render(self):
 		self.ren.color = sdl2.ext.Color(0, 0, 0)
