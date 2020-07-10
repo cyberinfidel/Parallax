@@ -65,7 +65,7 @@ class Input(object):
 			raise("Coudldn't initialise joysticks")
 
 		self.quit = False
-		self.game_pads = [ GamePad(game), GamePad(game)]
+		self.game_pads = [GamePad(game)]
 
 		self.key_map = {}
 		self.key_map[eActions.up] = [sdl2.SDLK_UP]
@@ -88,10 +88,12 @@ class Input(object):
 			for joy in range(sdl2.SDL_NumJoysticks()):
 				if sdl2.SDL_IsGameController(joy):
 					self.controllers[joy]=(GameController(handler=sdl2.SDL_GameControllerOpen(joy), joy_number=joy))
+			if len(self.controllers)>1:
+				self.game_pads.append(GamePad(game))
 
 
 	def getGamePad(self, id):
-		return self.game_pads[id]
+		if id<len(self.game_pads): return self.game_pads[id]
 
 	def update(self, events):
 		for event in events:
@@ -125,7 +127,7 @@ class Input(object):
 	
 				elif event.type == sdl2.SDL_CONTROLLERBUTTONUP:
 					for player in [0, 1]:
-						if event.cbutton.button == sdl2.SDL_CONTROLLER_BUTTON_A and event.cbutton.which==0:
+						if event.cbutton.button == sdl2.SDL_CONTROLLER_BUTTON_A and event.cbutton.which==player:
 							self.game_pads[player].clear(eActions.jump)
 						if event.cbutton.button == sdl2.SDL_CONTROLLER_BUTTON_Y and event.cbutton.which==player:
 							self.game_pads[player].clear(eActions.attack_big)

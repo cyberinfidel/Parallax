@@ -180,6 +180,12 @@ class KnightFight(Game):
 			self.hero = self.requestNewEntity(entity_template=self.hero_t, pos=Vec3(150, 60, 0), parent=False, name="Hero")
 			self.hero.setGamePad(self.input.getGamePad(0))
 
+			# make hero 2
+			game_pad = self.input.getGamePad(1)
+			if game_pad:
+				self.hero2 = self.requestNewEntity(entity_template=self.hero_t, pos=Vec3(170, 60, 0), parent=False, name="Hero 2")
+				self.hero2.setGamePad(game_pad)
+
 			# set up life indicator in top left
 			for n in range(1, 6):
 				heart = self.entity_manager.makeEntity(self.heart_t, "Heart")
