@@ -264,7 +264,7 @@ class Controller(controller.Controller):
 
 
 	def update(self, data, common_data, dt):
-		hero_speed = 4.5
+		hero_speed = 5
 		run_cooldown = 0.3
 		hero_jump_speed = 3.0
 		hero_stop = 0.05

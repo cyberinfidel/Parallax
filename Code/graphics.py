@@ -24,7 +24,7 @@ graphics_debug = False
 # Individual images for use as frames for animations or as part of the background etc.
 # Based on SDL images for the moment with no atlassing etc.
 class Image(object):
-	def __init__(self, ren, file, origin_x=0, origin_y=0, width=False, height=False):
+	def __init__(self, ren, file, width=False, height=False):
 		self.renderer = ren
 		# cache screen height for calculation later
 		screen_width = ctypes.c_int(0)
@@ -49,19 +49,17 @@ class Image(object):
 
 		self.src = sdl2.SDL_Rect(0, 0, self.width, self.height)
 
-		self.origin_x = origin_x
-		self.origin_y = origin_y
 
 	def draw(self, x, y, debug=graphics_debug):
 		sdl2.SDL_RenderCopy(self.renderer.renderer, self.texture, self.src,
-												sdl2.SDL_Rect(int(round(x))-self.origin_x, self.screen_height-int(round(y))-self.origin_y, self.width, self.height))
+												sdl2.SDL_Rect(int(round(x)), self.screen_height-int(round(y)), self.width, self.height))
 
 		if debug:
 			# draw the outline of the image for debugging purposes
 			sdl2.SDL_SetRenderDrawColor(self.renderer.renderer,255,255,255,50)
 			sdl2.SDL_SetRenderDrawBlendMode(self.renderer.renderer,sdl2.SDL_BLENDMODE_ADD)
 
-			sdl2.SDL_RenderDrawRect(self.renderer.renderer,sdl2.SDL_Rect(int(round(x))-self.origin_x, self.screen_height-int(round(y))-self.origin_y, self.width, self.height))
+			sdl2.SDL_RenderDrawRect(self.renderer.renderer,sdl2.SDL_Rect(int(round(x)), self.screen_height-int(round(y)), self.width, self.height))
 
 			# collision debugging - TODO: get collision radii into here
 			# sdl_gfx.filledCircleRGBA(self.renderer.renderer, int(round(x)), self.screen_height-int(round(y)), 10, 255,255,1,100 )
@@ -98,7 +96,7 @@ class RenderImage(Drawable):
 		self.image = image
 
 	def draw(self, origin):
-		self.image.draw(self.x - origin.x, self.y - origin.y + origin.z + self.z)
+		self.image.draw(self.x, self.y + self.z)
 
 class RenderShape(Drawable):
 	def __init__(self, shape, x, y, z):
@@ -191,13 +189,15 @@ class SingleImage(Component):
 	def __init__(self, game, data):
 		super(SingleImage, self).__init__(game)
 		self.rl = data['RenderLayer']
-		self.image = self.rl.addImage(data["Image"][0], data["Image"][1],data["Image"][2])
+		self.image = self.rl.addImage(data["Image"][0])
+		self.origin_x = data["Image"][1]
+		self.origin_y = data["Image"][2]
 
 	def getImage(self):
 		return self.image
 
 	def draw(self, data, common_data):
-		return self.rl.queueImage(self.image, common_data.pos.x, common_data.pos.y, common_data.pos.z)
+		return self.rl.queueImage(self.image, common_data.pos.x - self.origin_x, common_data.pos.y, common_data.pos.z + self.origin_y)
 
 	def hasShadow(self):
 		return False
@@ -225,7 +225,8 @@ class SingleAnim(Component):
 		self.anim.advanceAnim(data, time)
 
 	def draw(self, data, common_data):
-		return self.rl.queueImage(self.anim.getCurrentImage(data), common_data.pos.x, common_data.pos.y, common_data.pos.z)
+		frame = self.anim[0]
+		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, common_data.pos.y, common_data.pos.z - frame.origin_y)
 
 	def hasShadow(self):
 		return False
@@ -271,7 +272,8 @@ class MultiAnim(Component):
 
 	def draw(self, data, common_data):
 		try:
-			return self.rl.queueImage(self.anims[data.current_anim].getCurrentImage(data), common_data.pos.x, common_data.pos.y, common_data.pos.z)
+			frame = self.anims[data.current_anim].getCurrentFrame(data)
+			return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, common_data.pos.y, common_data.pos.z + frame.origin_y)
 		except Exception as e:
 			log(e)
 			exit(1)
@@ -280,13 +282,12 @@ class MultiAnim(Component):
 		return eStates.shadow in self.anims
 
 	def drawShadow(self, data, common_data):
-		try:
-			# todo: work out why z=0 doesn't work
-			# todo: shrink shadow the higher z is
-			return self.rl.queueImage(self.anims[eStates.shadow].getImage(0), common_data.pos.x, common_data.pos.y, 0)
-		except Exception as e:
-			log(e)
-			exit(1)
+
+		# todo: work out why z=0 doesn't work
+		# todo: shrink shadow the higher z is
+		frame = self.anims[eStates.shadow].getCurrentFrame(data)
+		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, common_data.pos.y, frame.origin_y)
+
 
 #####################################################################
 # Animation code																										#
@@ -301,13 +302,10 @@ class Anim(object):
 
 	def addFrames(self, render_layer, frames):
 		for frame in frames:
-			self.frames.append(AnimFrame(render_layer.addImage(frame[0], frame[1], frame[2]), frame[3]))
+			self.frames.append(AnimFrame(render_layer.addImage(frame[0]), frame[1], frame[2], frame[3]))
 
-	def getCurrentImage(self, data):
-		return self.frames[data.current_frame].image
-
-	def getImage(self, frame=0):
-		return self.frames[frame].image
+	def getCurrentFrame(self, data):
+		return self.frames[data.current_frame]
 
 
 # trivial, single frame animation
@@ -315,6 +313,9 @@ class AnimSingle(Anim):
 	def __init__(self, rl, frames):
 		super(AnimSingle, self).__init__()
 		self.addFrames(rl, frames)
+
+	def getCurrentFrame(self, data):
+		return self.frames[0]
 
 	def advanceAnim(self,anim_instance, time):
 		pass
@@ -362,8 +363,10 @@ class AnimRandom(Anim):
 
 # container for a single frame of animation
 class AnimFrame:
-	def __init__(self, image, time):
+	def __init__(self, image, origin_x, origin_y, time):
 		self.image = image
+		self.origin_x = origin_x
+		self.origin_y = origin_y
 		self.time = time
 
 def runTests():
