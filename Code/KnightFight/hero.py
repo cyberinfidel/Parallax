@@ -312,7 +312,7 @@ class HeroController(Controller):
 		# cool downs in seconds
 		self.strikes = [
 			#			cool	del		range					dimension				origin			force		damage
-			Strike(cool=0.8, delay=0.6, duration = 0.2, range=Vec3(24, 0, 0), dim=Vec3(10,8,12), orig=Vec3(5,4,6),
+			Strike(cool=0.8, delay=0.2, duration = 0.2, range=Vec3(24, 0, 0), dim=Vec3(10,8,12), orig=Vec3(5,4,6),
 						 force=3, absorb=0, damage=2, template=hit_t, hero_damage=0),  # big
 			Strike(cool=0.8, delay=0.4, duration = 0.2, range=Vec3(8, 10, 30), dim=Vec3(12,8,8), orig=Vec3(6,4,4),
 						 force=3, absorb=0, damage=2, template=hit_t),  # big_up

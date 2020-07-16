@@ -8,7 +8,7 @@ class Event(object):
 		pass
 
 
-# does nothing until enough updates have passed
+# does nothing until enough updates pass/time passes
 class Delay(Event):
 	def __init__(self, duration=False):
 		super(Event, self).__init__()
@@ -80,6 +80,7 @@ class DirectorController(Controller):
 
 	def update(self, data, common_data, dt):
 		if not data.events[data.current_event].update(data,common_data, dt):
+			# current event finished so move onto next one
 			data.current_event+=1
 		if data.current_event>=len(data.events):
 			# run out of events so mark director for destruction

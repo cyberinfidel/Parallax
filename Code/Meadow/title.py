@@ -13,7 +13,8 @@ class eTitleStates(enum.IntEnum):
 	game_over = 4,
 	win = 5,
 	play = 6,
-	numTitleStates = 6
+	quit = 7
+	numTitleStates = 8
 
 
 def titleGraphics(renlayer):
@@ -29,7 +30,7 @@ def titleGraphics(renlayer):
 						"States": [eTitleStates.title],
 						"Frames":
 							[
-								["Graphics/Title/Title.png", 0, 0, 0.9],
+								["Graphics/Title/Title.png", 4, 4, 0.9],
 							],
 					},
 					{
@@ -38,7 +39,7 @@ def titleGraphics(renlayer):
 						"States": [eTitleStates.play],
 						"Frames":
 							[
-								["Graphics/Title/TitleBar.png", 0, 0, 0.9],
+								["Graphics/Title/TitleBar.png", 4, 4, 0.9],
 							],
 					},
 					{
@@ -60,12 +61,21 @@ def titleGraphics(renlayer):
 							],
 					},
 					{
-						"Name": "Win Over",
+						"Name": "Win",
 						"AnimType": AnimNoLoop,
 						"States": [eTitleStates.win],
 						"Frames":
 							[
 								["Graphics/Title/Win 0.png", 4, 4, 2],
+							],
+					},
+					{
+						"Name": "Quit",
+						"AnimType": AnimNoLoop,
+						"States": [eTitleStates.quit],
+						"Frames":
+							[
+								["Graphics/Title/Quit.png", 4, 4, 2],
 							],
 					},
 				]
@@ -94,6 +104,8 @@ class TitleController(Controller):
 				if data.game_pad.actions[eActions.pause]:
 					common_data.game.setGameMode(eGameModes.paused)
 					self.setState(data, common_data, eTitleStates.paused)
+					data.game_pad.actions[eActions.pause] = False  # stops complete quite
+					data.game_pad.actions[eActions.quit] = False  # stops complete quite
 			else:
 				if common_data.game.game_mode == eGameModes.paused:
 					if data.game_pad:
@@ -101,6 +113,15 @@ class TitleController(Controller):
 							common_data.game.setGameMode(eGameModes.play)
 							self.setState(data, common_data, eTitleStates.play)
 							data.game_pad.actions[eActions.jump]=False # stops hero jumping
+						if data.game_pad.actions[eActions.quit]:
+							common_data.game.setGameMode(eGameModes.title)
+							common_data.game.killPlayEntities()
+							self.setState(data, common_data, eTitleStates.title)
+							data.game_pad.actions[eActions.quit]=False # stops complete quite
+						if data.game_pad.actions[eActions.fullscreen]:
+							common_data.game.toggleFullscreen()
+							data.game_pad.actions[eActions.fullscreen] = False  # stops repeat
+
 				elif common_data.game.game_mode == eGameModes.title:
 					self.setState(data, common_data, eTitleStates.title)
 					if data.game_pad:
@@ -108,6 +129,15 @@ class TitleController(Controller):
 							common_data.game.setGameMode(eGameModes.start)
 							self.setState(data, common_data, eTitleStates.play)
 							data.game_pad.actions[eActions.jump]=False # stops hero jumping
+						if data.game_pad.actions[eActions.quit]:
+							common_data.game.setGameMode(eGameModes.quit)
+							common_data.game.killPlayEntities()
+							self.setState(data, common_data, eTitleStates.quit)
+							data.game_pad.actions[eActions.quit] = False  # stops complete quite
+						if data.game_pad.actions[eActions.fullscreen]:
+							common_data.game.toggleFullscreen()
+							data.game_pad.actions[eActions.fullscreen] = False  # stops repeat
+
 				elif common_data.game.game_mode == eGameModes.game_over:
 					self.setState(data, common_data, eTitleStates.game_over)
 				elif common_data.game.game_mode == eGameModes.win:

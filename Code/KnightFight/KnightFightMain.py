@@ -31,7 +31,7 @@ from rain import rainGraphics, RainController
 from reaper import reaperGraphics, ReaperController, ReaperCollider
 from heart import heartGraphics, HeartIndicatorController
 from title import titleGraphics, TitleController, eTitleStates
-from KFdirector import SpawnEnemies, WaitForNoEnemies
+import KFdirector
 
 
 class KnightFight(Game):
@@ -174,7 +174,7 @@ class KnightFight(Game):
 			self.killPlayEntities()
 			self.cleanUpDead()
 			self.director = self.requestNewEntity(entity_template=self.director_t)
-			self.director.controller_data.events = self.KFEvents()
+			self.director.controller_data.events = KFdirector.KFEvents(self)
 
 			# make hero
 			self.hero = self.requestNewEntity(entity_template=self.hero_t, pos=Vec3(150, 60, 0), parent=False, name="Hero")
@@ -328,88 +328,7 @@ class KnightFight(Game):
 		self.requestNewEntity(entity_template,pos,parent,name)
 
 
-	def KFEvents(self):
-		return[
-				# wait a bit
-				Delay(2),
-			SpawnEnemies([
-				SpawnEntity(self.bat_t, Vec3(290, 35, 5), False, "Bat 1"),
-			]),
 
-			SpawnEnemies([
-					SpawnEntity(self.goblin_archer_t, Vec3(290, 35, 0), False, "Goblin Archer"),
-				]),
-			SpawnEnemies([
-					SpawnEntity(self.goblin_archer_t, Vec3(150, 35, 0), False, "Goblin Archer"),
-				]),
-			# wait a bit
-				Delay(0.7),
-				SpawnEnemies([
-				SpawnEntity(self.reaper_t, Vec3(30, 35, 0), False, "Reaper"),
-				]),
-				Delay(rand_num(1)+0.5),
-
-				# wait until all monsters destroyed
-				WaitForNoEnemies(),
-				# wait a bit
-				Delay(4),
-
-				# first wave
-				SpawnEnemies([
-					SpawnEntity(self.reaper_t, Vec3(300, 35, 0), False, "Reaper 2"),
-				]),
-				Delay(rand_num(1)+0.5),
-				SpawnEnemies([
-					SpawnEntity(self.reaper_t, Vec3(20, 35, 0), False, "Reaper 2"),
-				]),
-
-				# wait until all monsters destroyed
-				WaitForNoEnemies(),
-				# wait a bit
-				Delay(4),
-
-				# second  wave
-				SpawnEnemies([
-					SpawnEntity(self.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
-				]),
-				Delay(rand_num(1)+0.5),
-				# spawn other half of wave
-				SpawnEnemies([
-					SpawnEntity(self.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
-				]),
-				Delay(rand_num(1)+0.5),
-				SpawnEnemies([
-					SpawnEntity(self.bat_t, Vec3(155, 110, 5), False, "Bat 1"),
-				]),
-				Delay(rand_num(1)+0.5),
-				# spawn other half of wave
-				SpawnEnemies([
-					SpawnEntity(self.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
-				]),
-				Delay(rand_num(1)+0.5),
-				SpawnEnemies([
-					SpawnEntity(self.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
-				]),
-				Delay(rand_num(1)+0.5),
-				# spawn other half of wave
-				SpawnEnemies([
-					SpawnEntity(self.bat_t, Vec3(155, 110, 5), False, "Bat 1"),
-				]),
-
-				# wait until all monsters destroyed
-				WaitForNoEnemies(),
-
-				# wait a bit
-				Delay(2),
-
-				# ...
-
-				WaitForNoEnemies(),
-				# wait a bit
-				Delay(2),
-				# signal game complete
-				EndGame()
-			]
 
 
 
