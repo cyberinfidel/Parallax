@@ -62,7 +62,7 @@ def graphics(renlayer):
 				"States": [eStates.stationary, eStates.standRight],
 				"Frames":
 					[
-						["Graphics/Macaroon/RunFast_000.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_014.png", 20, 36, 0.015],
 					]
 			},
 			{
@@ -71,7 +71,7 @@ def graphics(renlayer):
 				"States": [eStates.standLeft],
 				"Frames":
 					[
-						["Graphics/Macaroon/Left/RunFast_000.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_014.png", 20, 36, 0.015],
 					]
 			},
 			{
@@ -80,26 +80,26 @@ def graphics(renlayer):
 				"States": [eStates.runLeft],
 				"Frames":
 					[
-						["Graphics/Macaroon/Left/RunFast_000.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_001.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_002.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_003.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_004.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_005.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_006.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_007.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_008.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_009.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_010.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_011.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_012.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_013.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_014.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_015.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_016.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_017.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_018.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_019.png", 20, 36, 0.01],
+						["Graphics/Oreo/Left/RunFast_000.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_001.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_002.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_003.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_004.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_005.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_006.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_007.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_008.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_009.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_010.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_011.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_012.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_013.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_014.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_015.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_016.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_017.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_018.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_019.png", 20, 36, 0.015],
 					],
 			},
 			{
@@ -108,26 +108,26 @@ def graphics(renlayer):
 				"States": [eStates.runRight, eStates.runUp, eStates.runDown],
 				"Frames":
 					[
-						["Graphics/Macaroon/RunFast_000.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_001.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_002.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_003.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_004.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_005.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_006.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_007.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_008.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_009.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_010.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_011.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_012.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_013.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_014.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_015.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_016.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_017.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_018.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_019.png", 20, 36, 0.01],
+						["Graphics/Oreo/RunFast_000.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_001.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_002.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_003.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_004.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_005.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_006.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_007.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_008.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_009.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_010.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_011.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_012.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_013.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_014.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_015.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_016.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_017.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_018.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_019.png", 20, 36, 0.015],
 					],
 			},
 			{
@@ -136,7 +136,7 @@ def graphics(renlayer):
 				"States": [eStates.attackSmallRight],
 				"Frames":
 					[
-						["Graphics/Macaroon/RunFast_000.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_000.png", 20, 36, 0.015],
 					],
 			},
 			{
@@ -145,7 +145,7 @@ def graphics(renlayer):
 				"States": [eStates.attackSmallLeft],
 				"Frames":
 					[
-						["Graphics/Macaroon/Left/RunFast_000.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_000.png", 20, 36, 0.015],
 					],
 			},
 			{
@@ -154,7 +154,7 @@ def graphics(renlayer):
 				"States": [eStates.jumpLeft],
 				"Frames":
 					[
-						["Graphics/Macaroon/Left/RunFast_000.png", 20, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_014.png", 20, 36, 0.015],
 					],
 			},
 			{
@@ -163,7 +163,7 @@ def graphics(renlayer):
 				"States": [eStates.jumpRight],
 				"Frames":
 					[
-						["Graphics/Macaroon/RunFast_000.png", 20, 36, 0.015],
+						["Graphics/Oreo/RunFast_014.png", 20, 36, 0.015],
 					],
 			},
 			{
@@ -264,8 +264,8 @@ class Controller(controller.Controller):
 
 
 	def update(self, data, common_data, dt):
-		hero_speed = 6
-		run_cooldown = 0.2
+		hero_speed = 4.5
+		run_cooldown = 0.3
 		hero_jump_speed = 3.0
 		hero_stop = 0.05
 		hero_friction_ground = 0.075
