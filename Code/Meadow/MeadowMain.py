@@ -48,6 +48,7 @@ class Meadow(Game):
 		self.renlayer = graphics.RenderLayer(self.ren)
 		self.title_renlayer = graphics.RenderLayer(self.ren)
 		self.scroll = False
+		self.quit_cooldown = 0.5
 
 		##########################
 		# set up sound           #
@@ -139,7 +140,7 @@ class Meadow(Game):
 			self.director.controller_data.events = self.KFEvents()
 
 			# make bunny
-			self.bunny = self.requestNewEntity(entity_template=self.bunny_t, pos=Vec3(160, 60, 0), parent=False, name="Bunny")
+			self.bunny = self.requestNewEntity(entity_template=self.bunny_t, pos=Vec3(190, 60, 0), parent=False, name="Bunny")
 			self.bunny.setGamePad(self.input.getGamePad(0))
 
 			self.present = self.requestNewEntity(entity_template=self.present_t, pos=Vec3(400, 60, 0), parent=self, name="present")
@@ -178,7 +179,7 @@ class Meadow(Game):
 			# scroll view #
 			###############
 			if self.scroll:
-				offset = self.renlayer.getOrigin() - self.bunny.common_data.pos + Vec3(160,64,0)
+				offset = self.renlayer.getOrigin() - self.bunny.common_data.pos + Vec3(self.res_x/2,self.res_y/2,0)
 				if offset.magsq()>100:
 					self.renlayer.origin-=offset/40.0
 					self.renlayer.origin.z = 0 # make current ground level when can
@@ -202,6 +203,15 @@ class Meadow(Game):
 			if self.restart_cooldown<=0:
 				self.setGameMode(eGameModes.title)
 				self.cleanUpDead()
+
+		####################################################
+
+		elif self.game_mode==eGameModes.quit:
+			self.quit_cooldown-=dt
+			self.title.setState(eTitleStates.quit)
+			if self.quit_cooldown<=0:
+				self.running=False
+				return
 
 		# Always do this, unless paused:
 		if self.game_mode!=eGameModes.paused:
