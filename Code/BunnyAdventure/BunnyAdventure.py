@@ -71,7 +71,7 @@ class BunnyAdventure(Game):
 
 		back_graphics = self.graphics_manager.makeTemplate(back.backgroundGraphics(self.renlayer))
 		back_controller = self.controller_manager.makeTemplate({"Template": back.BackgroundController})
-		self.back_t = self.entity_manager.makeEntityTemplate(graphics=False, controller=False)
+		self.back_t = self.entity_manager.makeEntityTemplate(graphics=back_graphics, controller=False)
 		self.back = self.requestNewEntity(entity_template=self.back_t, pos=Vec3(0, 270, 0), parent=self, name="back")
 
 
@@ -149,7 +149,7 @@ class BunnyAdventure(Game):
 			# make bunny
 			self.macaroon = self.requestNewEntity(entity_template=self.macaroon_t, pos=Vec3(190, 60, 0), parent=False, name="Macaroon")
 			self.macaroon.setGamePad(self.input.getGamePad(0))
-			self.oreo = self.requestNewEntity(entity_template=self.oreo_t, pos=Vec3(0, 0, 0), parent=False, name="Oreo")
+			self.oreo = self.requestNewEntity(entity_template=self.oreo_t, pos=Vec3(500, 60, 0), parent=False, name="Oreo")
 			self.oreo.setGamePad(self.input.getGamePad(1))
 
 

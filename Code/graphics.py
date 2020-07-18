@@ -19,7 +19,7 @@ from vector import Vec3, rand_num
 from log import log
 
 # globals
-graphics_debug = True
+graphics_debug = False
 
 # Individual images for use as frames for animations or as part of the background etc.
 # Based on SDL images for the moment with no atlassing etc.
@@ -45,26 +45,16 @@ class Image(object):
 
 
 	def draw(self, x, y, debug=graphics_debug):
-		# get screen dimensions entirely so can draw from bottom left instead of top left
-		# increasing z or y should go up...
-		# TODO: cache this once per frame rather than on every single draw command for every image...
-		screen_width = ctypes.c_int(0)
-		screen_height = ctypes.c_int(0)
-		sdl2.SDL_RenderGetLogicalSize(self.renderer,ctypes.byref(screen_width),ctypes.byref(screen_height))
-		self.screen_height = int(screen_height.value)
 
 		sdl2.SDL_RenderCopy(self.renderer, self.texture, self.src,
-												sdl2.SDL_Rect(int(round(x)), self.screen_height - int(round(y)), self.width, self.height))
+												sdl2.SDL_Rect(int(round(x)), int(round(y)), self.width, self.height))
 
 		if debug:
 			# draw the outline of the image for debugging purposes
 			sdl2.SDL_SetRenderDrawColor(self.renderer,255,255,255,50)
 			sdl2.SDL_SetRenderDrawBlendMode(self.renderer,sdl2.SDL_BLENDMODE_ADD)
 
-			sdl2.SDL_RenderDrawRect(self.renderer,sdl2.SDL_Rect(int(round(x)), self.screen_height - int(round(y)), self.width, self.height))
-
-			# collision debugging - TODO: get collision radii into here
-			# sdl_gfx.filledCircleRGBA(self.renderer.renderer, int(round(x)), self.screen_height-int(round(y)), 10, 255,255,1,100 )
+			sdl2.SDL_RenderDrawRect(self.renderer,sdl2.SDL_Rect(int(round(x)), int(round(y)), self.width, self.height))
 
 
 class Shape(object):
@@ -96,8 +86,8 @@ class RenderImage(Drawable):
 		self.image = image
 
 	# draws an image paying attention to the passed origin (should be the render layer origin, not the image's)
-	def draw(self, origin):
-		self.image.draw(self.x - origin.x, self.y + self.z - origin.y - origin.z)
+	def draw(self, origin, screen_height):
+		self.image.draw(self.x - origin.x, screen_height - (self.y + self.z - origin.y - origin.z))
 
 class RenderShape(Drawable):
 	def __init__(self, shape, x, y, z):
@@ -141,17 +131,27 @@ class RenderLayer(object):
 	def queueImage(self, image, x, y, z):
 		self.drawables.append(RenderImage(self.images[image], x, y, z))
 
+	def getScreenHeight(self):
+		# get screen dimensions entirely so can draw from bottom left instead of top left
+		# increasing z or y should go up...
+		screen_width = ctypes.c_int(0)
+		screen_height = ctypes.c_int(0)
+		sdl2.SDL_RenderGetLogicalSize(self.ren.renderer,ctypes.byref(screen_width),ctypes.byref(screen_height))
+		return int(screen_height.value)
+
 	# draws the drawables queue and clears it
 	def render(self):
+		screen_height = self.getScreenHeight()
 		for d in self.drawables:
-			d.draw(self.origin)
+			d.draw(origin=self.origin, screen_height=screen_height)
 		self.drawables = []
 
 	# renders the drawables queue, but in an order: lower Y last (illusion of front to back)
 	# TODO: pass in comparison and allow different orders - not as easy as first thought
 	def renderSorted(self):
+		screen_height = self.getScreenHeight()
 		for d in sorted(self.drawables, key = Drawable.getY, reverse=True):
-			d.draw(self.origin)
+			d.draw(origin=self.origin, screen_height=screen_height)
 		self.drawables = []
 
 	# sets the origin of where the renderlayer draws from i.e. position of layer
