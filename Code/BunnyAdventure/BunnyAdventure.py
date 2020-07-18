@@ -276,17 +276,17 @@ class BunnyAdventure(Game):
 				if (delta_x * delta_x + delta_y * delta_y) > 1000:  # tolerance for zooming (arbitrary)
 					new_screen_size_x = self.logical_size_x - ((self.logical_size_x - new_screen_size_x) / 40.0)
 					new_screen_size_y = self.logical_size_y - ((self.logical_size_y - new_screen_size_y) / 40.0)
-					# sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, new_screen_size_x, new_screen_size_y)
 					self.logical_size_x = new_screen_size_x
 					self.logical_size_y = new_screen_size_y
 
-				sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, int(self.logical_size_x), int(self.logical_size_y))
+				sdl2.SDL_RenderSetLogicalSize(self.ren.sdlrenderer, int(self.logical_size_x), int(self.logical_size_y))
 
 				# scroll screen based on point midway between O & M
 				offset = self.renlayer.getOrigin() - (self.macaroon.common_data.pos + self.oreo.common_data.pos) / 2.0 + Vec3(
 					self.logical_size_x / 2.0, self.logical_size_y / 2.0, 0.0)
 				if offset.magsq() > 100:  # tolerance for scrolling (arbitrary)
 					self.renlayer.origin -= offset / 20.0
+
 		for drawable in self.drawables:
 			# draw shadows first
 			if drawable.graphics.hasShadow():
@@ -297,7 +297,7 @@ class BunnyAdventure(Game):
 
 		self.renlayer.renderSorted()
 
-		sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, int(self.res_x), int(self.res_y))
+		sdl2.SDL_RenderSetLogicalSize(self.ren.sdlrenderer, int(self.res_x), int(self.res_y))
 		self.title_renlayer.render()
 
 
