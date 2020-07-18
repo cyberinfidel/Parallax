@@ -182,35 +182,7 @@ class BunnyAdventure(Game):
 			# 	self.setGameMode(eGameModes.game_over)
 			# 	self.restart_cooldown=3
 
-			#########################
-			# scroll and scale view #
-			# Here be Dragons...    #
-			#########################
-			if self.scroll: # scale on distance between O & M, if bigger than will fit on the default res and if changed more than tolerance
-				separation = abs(self.macaroon.common_data.pos - self.oreo.common_data.pos)
-				new_screen_size_x = max((separation.x)*2,self.res_x)
-				new_screen_size_y = max((separation.y+separation.z)*2,self.res_y)
-				# force 16:9 ratio
-				if (new_screen_size_x*9.0)<(new_screen_size_y*16.0): # too tall
-					new_screen_size_x = (new_screen_size_y * (16.0/9.0))
-				else: # too wide
-					new_screen_size_y = (new_screen_size_x * 9.0/16.0)
 
-				delta_x = self.logical_size_x - new_screen_size_x
-				delta_y = self.logical_size_y - new_screen_size_y
-				if (delta_x*delta_x+delta_y*delta_y)>1000:	# tolerance for zooming (arbitrary)
-					new_screen_size_x = self.logical_size_x - ((self.logical_size_x-new_screen_size_x)/40.0)
-					new_screen_size_y = self.logical_size_y - ((self.logical_size_y-new_screen_size_y)/40.0)
-					# sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, new_screen_size_x, new_screen_size_y)
-					self.logical_size_x = new_screen_size_x
-					self.logical_size_y = new_screen_size_y
-
-					sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, int(self.logical_size_x), int(self.logical_size_y))
-
-				# scroll screen
-				offset = self.renlayer.getOrigin() - (self.macaroon.common_data.pos+self.oreo.common_data.pos)/2.0 + Vec3(self.logical_size_x/2.0,self.logical_size_y/2.0,0.0)
-				if offset.magsq()>100:	# tolerance for scrolling (arbitrary)
-					self.renlayer.origin-=offset/20.0
 
 		####################################################
 
@@ -283,6 +255,38 @@ class BunnyAdventure(Game):
 
 	def draw(self):
 
+		if self.game_mode==eGameModes.play:
+			#########################
+			# scroll and scale view #
+			# Here be Dragons...    #
+			#########################
+			if self.scroll:
+				# scale on distance between O & M, if bigger than will fit on the default res and if changed more than tolerance
+				separation = abs(self.macaroon.common_data.pos - self.oreo.common_data.pos)
+				new_screen_size_x = max((separation.x) * 2, self.res_x)
+				new_screen_size_y = max((separation.y + separation.z) * 2, self.res_y)
+				# force 16:9 ratio
+				if (new_screen_size_x * 9.0) < (new_screen_size_y * 16.0):  # too tall
+					new_screen_size_x = (new_screen_size_y * (16.0 / 9.0))
+				else:  # too wide
+					new_screen_size_y = (new_screen_size_x * 9.0 / 16.0)
+
+				delta_x = self.logical_size_x - new_screen_size_x
+				delta_y = self.logical_size_y - new_screen_size_y
+				if (delta_x * delta_x + delta_y * delta_y) > 1000:  # tolerance for zooming (arbitrary)
+					new_screen_size_x = self.logical_size_x - ((self.logical_size_x - new_screen_size_x) / 40.0)
+					new_screen_size_y = self.logical_size_y - ((self.logical_size_y - new_screen_size_y) / 40.0)
+					# sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, new_screen_size_x, new_screen_size_y)
+					self.logical_size_x = new_screen_size_x
+					self.logical_size_y = new_screen_size_y
+
+				sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, int(self.logical_size_x), int(self.logical_size_y))
+
+				# scroll screen based on point midway between O & M
+				offset = self.renlayer.getOrigin() - (self.macaroon.common_data.pos + self.oreo.common_data.pos) / 2.0 + Vec3(
+					self.logical_size_x / 2.0, self.logical_size_y / 2.0, 0.0)
+				if offset.magsq() > 100:  # tolerance for scrolling (arbitrary)
+					self.renlayer.origin -= offset / 20.0
 		for drawable in self.drawables:
 			# draw shadows first
 			if drawable.graphics.hasShadow():
@@ -292,6 +296,8 @@ class BunnyAdventure(Game):
 				drawable.graphics.draw(drawable.graphics_data, drawable.common_data)
 
 		self.renlayer.renderSorted()
+
+		sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, int(self.res_x), int(self.res_y))
 		self.title_renlayer.render()
 
 
