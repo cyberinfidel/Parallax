@@ -37,8 +37,10 @@ class BunnyAdventure(Game):
 		# do bare minimum to set up
 		# most set up is in first update
 		# this way I can restart the game
-		super(BunnyAdventure, self).__init__("Bunny Adventure", res_x= 640, res_y= 360, zoom = 3, fullscreen=False)
-		sdl2.mouse.SDL_ShowCursor(False)
+		super(BunnyAdventure, self).__init__("Bunny Adventure", res_x= 640, res_y= 360, zoom = 2, fullscreen=False)
+		# sdl2.mouse.SDL_ShowCursor(False)
+		self.logical_size_x = self.res_x
+		self.logical_size_y = self.res_y
 
 		self.collision_manager = CollisionManager(game=self)  # TODO: should this be a ComponentManager() like the others?
 
@@ -47,7 +49,7 @@ class BunnyAdventure(Game):
 		##########################
 		self.renlayer = graphics.RenderLayer(self.ren)
 		self.title_renlayer = graphics.RenderLayer(self.ren)
-		self.scroll = False
+		self.scroll = True
 		self.quit_cooldown = 0.5
 
 		##########################
@@ -69,7 +71,7 @@ class BunnyAdventure(Game):
 
 		back_graphics = self.graphics_manager.makeTemplate(back.backgroundGraphics(self.renlayer))
 		back_controller = self.controller_manager.makeTemplate({"Template": back.BackgroundController})
-		self.back_t = self.entity_manager.makeEntityTemplate(graphics=back_graphics, controller=False)
+		self.back_t = self.entity_manager.makeEntityTemplate(graphics=False, controller=False)
 		self.back = self.requestNewEntity(entity_template=self.back_t, pos=Vec3(0, 270, 0), parent=self, name="back")
 
 
@@ -147,8 +149,8 @@ class BunnyAdventure(Game):
 			# make bunny
 			self.macaroon = self.requestNewEntity(entity_template=self.macaroon_t, pos=Vec3(190, 60, 0), parent=False, name="Macaroon")
 			self.macaroon.setGamePad(self.input.getGamePad(0))
-			self.oreo = self.requestNewEntity(entity_template=self.oreo_t, pos=Vec3(650, 60, 0), parent=False, name="Oreo")
-			self.oreo.setGamePad(self.input.getGamePad(0))
+			self.oreo = self.requestNewEntity(entity_template=self.oreo_t, pos=Vec3(0, 0, 0), parent=False, name="Oreo")
+			self.oreo.setGamePad(self.input.getGamePad(1))
 
 
 			self.rain_cooldown = 500
@@ -159,7 +161,7 @@ class BunnyAdventure(Game):
 
 			if (rand_num(10) == 0 and len(self.drawables)<5):
 				bfly = self.entity_manager.makeEntity(self.bfly_templates[rand_num(3)])
-				bfly.setPos(Vec3(rand_num(640), rand_num(270), 500))
+				bfly.setPos(Vec3(rand_num(self.res_x), rand_num(self.res_y), 500))
 				self.drawables.append(bfly)
 				self.updatables.append(bfly)
 
@@ -180,16 +182,35 @@ class BunnyAdventure(Game):
 			# 	self.setGameMode(eGameModes.game_over)
 			# 	self.restart_cooldown=3
 
-			###############
-			# scroll view #
-			###############
-			if self.scroll:
-				offset = self.renlayer.getOrigin() - self.bunny.common_data.pos + Vec3(self.res_x/2,self.res_y/2,0)
-				if offset.magsq()>100:
-					self.renlayer.origin-=offset/40.0
-					self.renlayer.origin.z = 0 # make current ground level when can
-					if self.renlayer.origin.y<0:
-						self.renlayer.origin.y=0
+			#########################
+			# scroll and scale view #
+			# Here be Dragons...    #
+			#########################
+			if self.scroll: # scale on distance between O & M, if bigger than will fit on the default res and if changed more than tolerance
+				separation = abs(self.macaroon.common_data.pos - self.oreo.common_data.pos)
+				new_screen_size_x = max((separation.x)*2,self.res_x)
+				new_screen_size_y = max((separation.y+separation.z)*2,self.res_y)
+				# force 16:9 ratio
+				if (new_screen_size_x*9.0)<(new_screen_size_y*16.0): # too tall
+					new_screen_size_x = (new_screen_size_y * (16.0/9.0))
+				else: # too wide
+					new_screen_size_y = (new_screen_size_x * 9.0/16.0)
+
+				delta_x = self.logical_size_x - new_screen_size_x
+				delta_y = self.logical_size_y - new_screen_size_y
+				if (delta_x*delta_x+delta_y*delta_y)>1000:	# tolerance for zooming (arbitrary)
+					new_screen_size_x = self.logical_size_x - ((self.logical_size_x-new_screen_size_x)/40.0)
+					new_screen_size_y = self.logical_size_y - ((self.logical_size_y-new_screen_size_y)/40.0)
+					# sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, new_screen_size_x, new_screen_size_y)
+					self.logical_size_x = new_screen_size_x
+					self.logical_size_y = new_screen_size_y
+
+					sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, int(self.logical_size_x), int(self.logical_size_y))
+
+				# scroll screen
+				offset = self.renlayer.getOrigin() - (self.macaroon.common_data.pos+self.oreo.common_data.pos)/2.0 + Vec3(self.logical_size_x/2.0,self.logical_size_y/2.0,0.0)
+				if offset.magsq()>100:	# tolerance for scrolling (arbitrary)
+					self.renlayer.origin-=offset/20.0
 
 		####################################################
 

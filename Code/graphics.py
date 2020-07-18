@@ -19,26 +19,20 @@ from vector import Vec3, rand_num
 from log import log
 
 # globals
-graphics_debug = False
+graphics_debug = True
 
 # Individual images for use as frames for animations or as part of the background etc.
 # Based on SDL images for the moment with no atlassing etc.
 class Image(object):
 	def __init__(self, ren, file, width=False, height=False):
-		self.renderer = ren
-		# cache screen height for calculation later
-		screen_width = ctypes.c_int(0)
-		screen_height = ctypes.c_int(0)
-		sdl2.SDL_RenderGetLogicalSize(ren.renderer,ctypes.byref(screen_width),ctypes.byref(screen_height))
-		self.screen_height = int(screen_height.value)
-
+		self.renderer = ren.renderer
 		self.file = file
 
 		# get image into surface (don't need to keep this though)
 		surface = sdl_image.IMG_Load(file.encode("ascii"))
 
 		# make a texture from the apple surface (for HW rendering)
-		self.texture = sdl2.SDL_CreateTextureFromSurface(self.renderer.renderer, surface)
+		self.texture = sdl2.SDL_CreateTextureFromSurface(self.renderer, surface)
 
 		if not (width and height):
 			self.width = surface.contents.w
@@ -51,15 +45,23 @@ class Image(object):
 
 
 	def draw(self, x, y, debug=graphics_debug):
-		sdl2.SDL_RenderCopy(self.renderer.renderer, self.texture, self.src,
-												sdl2.SDL_Rect(int(round(x)), self.screen_height-int(round(y)), self.width, self.height))
+		# get screen dimensions entirely so can draw from bottom left instead of top left
+		# increasing z or y should go up...
+		# TODO: cache this once per frame rather than on every single draw command for every image...
+		screen_width = ctypes.c_int(0)
+		screen_height = ctypes.c_int(0)
+		sdl2.SDL_RenderGetLogicalSize(self.renderer,ctypes.byref(screen_width),ctypes.byref(screen_height))
+		self.screen_height = int(screen_height.value)
+
+		sdl2.SDL_RenderCopy(self.renderer, self.texture, self.src,
+												sdl2.SDL_Rect(int(round(x)), self.screen_height - int(round(y)), self.width, self.height))
 
 		if debug:
 			# draw the outline of the image for debugging purposes
-			sdl2.SDL_SetRenderDrawColor(self.renderer.renderer,255,255,255,50)
-			sdl2.SDL_SetRenderDrawBlendMode(self.renderer.renderer,sdl2.SDL_BLENDMODE_ADD)
+			sdl2.SDL_SetRenderDrawColor(self.renderer,255,255,255,50)
+			sdl2.SDL_SetRenderDrawBlendMode(self.renderer,sdl2.SDL_BLENDMODE_ADD)
 
-			sdl2.SDL_RenderDrawRect(self.renderer.renderer,sdl2.SDL_Rect(int(round(x)), self.screen_height-int(round(y)), self.width, self.height))
+			sdl2.SDL_RenderDrawRect(self.renderer,sdl2.SDL_Rect(int(round(x)), self.screen_height - int(round(y)), self.width, self.height))
 
 			# collision debugging - TODO: get collision radii into here
 			# sdl_gfx.filledCircleRGBA(self.renderer.renderer, int(round(x)), self.screen_height-int(round(y)), 10, 255,255,1,100 )
@@ -69,8 +71,6 @@ class Shape(object):
 	def __init__(self, ren, origin_x=0, origin_y=0, colour=False):
 		self.renderer = ren
 		self.colour = colour
-
-
 		self.origin_x = origin_x
 		self.origin_y = origin_y
 
@@ -95,16 +95,18 @@ class RenderImage(Drawable):
 		super(RenderImage, self).__init__(x,y,z)
 		self.image = image
 
+	# draws an image paying attention to the passed origin (should be the render layer origin, not the image's)
 	def draw(self, origin):
-		self.image.draw(self.x, self.y + self.z)
+		self.image.draw(self.x - origin.x, self.y + self.z - origin.y - origin.z)
 
 class RenderShape(Drawable):
 	def __init__(self, shape, x, y, z):
 		super(RenderShape, self).__init__(x,y,z)
 		self.shape = shape
 
+	# draws a shape paying attention to the passed origin (should be the render layer origin, not the shape's)
 	def draw(self, origin):
-		self.shape.draw(self.x - origin.x, self.y - origin.y + origin.z + self.z)
+		self.shape.draw(self.x - origin.x, self.y + self.z - origin.y - origin.z)
 
 # a collection of images that can be added to a list of drawables that will be drawn when told to render
 class RenderLayer(object):
@@ -117,7 +119,7 @@ class RenderLayer(object):
 		self.origin = Vec3(0,0,0)
 
 	# add to the store of images available in this render layer
-	def addImage(self, file, origin_x=0, origin_y=0):
+	def addImage(self, file):
 		# find if this file has been loaded before and return that if so
 		filepath = os.path.abspath(file)
 		for index, image in enumerate(self.images):
@@ -126,7 +128,7 @@ class RenderLayer(object):
 
 		# haven't seen this file before so add it and return new index
 		try:
-			self.images.append(Image(self.ren, filepath, origin_x, origin_y))
+			self.images.append(Image(self.ren, filepath))
 		except Exception as e:
 			log("Problem loading image for frame: "+str(e)+" file:"+filepath)
 		return len(self.images) - 1
@@ -226,7 +228,7 @@ class SingleAnim(Component):
 
 	def draw(self, data, common_data):
 		frame = self.anim[0]
-		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, common_data.pos.y, common_data.pos.z - frame.origin_y)
+		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, common_data.pos.y, common_data.pos.z + frame.origin_y)
 
 	def hasShadow(self):
 		return False
@@ -285,6 +287,7 @@ class MultiAnim(Component):
 
 		# todo: work out why z=0 doesn't work
 		# todo: shrink shadow the higher z is
+		# todo: allow shadows that aren't all at z=0
 		frame = self.anims[eStates.shadow].getCurrentFrame(data)
 		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, common_data.pos.y, frame.origin_y)
 

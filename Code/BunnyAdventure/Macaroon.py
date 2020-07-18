@@ -405,7 +405,7 @@ class Controller(controller.Controller):
 			# not jumping or moving fast enough so properly stop
 			data.vel = Vec3(0.0,0.0,0.0)
 
-		background.restrictToArena(common_data.pos, data.vel)
+		# background.restrictToArena(common_data.pos, data.vel)
 
 
 	def receiveCollision(self, data, common_data, message=False):

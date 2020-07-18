@@ -23,22 +23,22 @@ class Vec3:
 		self.y = y
 		self.z = z
 
-	def __add__(self, addvector):
-		return(Vec3(self.x + addvector.x, self.y + addvector.y, self.z + addvector.z))
+	def __add__(self, vector):
+		return(Vec3(self.x + vector.x, self.y + vector.y, self.z + vector.z))
 
-	def __iadd__(self, addvector):
-		self.x += addvector.x
-		self.y += addvector.y
-		self.z += addvector.z
+	def __iadd__(self, vector):
+		self.x += vector.x
+		self.y += vector.y
+		self.z += vector.z
 		return self
 
-	def __sub__(self, addvector):
-		return(Vec3(self.x - addvector.x, self.y - addvector.y, self.z - addvector.z))
+	def __sub__(self, vector):
+		return(Vec3(self.x - vector.x, self.y - vector.y, self.z - vector.z))
 
-	def __isub__(self, addvector):
-		self.x -= addvector.x
-		self.y -= addvector.y
-		self.z -= addvector.z
+	def __isub__(self, vector):
+		self.x -= vector.x
+		self.y -= vector.y
+		self.z -= vector.z
 		return self
 
 	def __truediv__(self, div):
@@ -58,6 +58,12 @@ class Vec3:
 
 	def __str__(self):
 		return f"({self.x},{self.y},{self.z})"
+
+	def __abs__(self):
+		return Vec3(abs(self.x), abs(self.y), abs(self.z))
+
+	def __mul__(self, scalar):
+		return Vec3(self.x*scalar,self.y*scalar,self.z*scalar)
 
 	def magsq(self):
 		return (self.x*self.x + self.y*self.y + self.z * self.z)
@@ -182,7 +188,25 @@ def runTests():
 		log("Fail in test 4: b-=Vec3(1,1,1)")
 		fails.append(4)
 
+	# test 5 abs
+	a = abs(Vec3(-1,-2,-3))
+	if not (a ==Vec3(1,2,3)):
+		log("Fail in test 5: abs(Vec3(-1,-2,-3))==Vec3(1,2,3)")
+		fails.append(5)
+
+	# test 6 Vec3 * int
+	a = Vec3(-1, 2,-3)*4
+	if not (a ==Vec3(-4,8,-12)):
+		log("Fail in test 6: a ==Vec3(-4,8,-12)")
+		fails.append(6)
+
+	# test 6 Vec3 / int
+	a = Vec3(-1, 2,-3)/2
+	if not (a ==Vec3(-0.5,1,-1.5)):
+		log("Fail in test 7: a ==Vec3(-0.5,1,-1.5)")
+		fails.append(7)
+
 	return fails
 
 if __name__ == "__main__":
-	sys.exit(runTests())
+	sys.exit(len(runTests()))

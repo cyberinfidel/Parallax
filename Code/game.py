@@ -71,7 +71,7 @@ class Game(object):
 		self.ren = sdl2.ext.Renderer(self.window, flags=sdl2.SDL_RENDERER_ACCELERATED | sdl2.SDL_RENDERER_PRESENTVSYNC)
 		# makes zoomed graphics blocky (for retro effect)
 		sdl2.SDL_SetHint(sdl2.SDL_HINT_RENDER_SCALE_QUALITY, b"nearest")
-		# makes the graphics look and act like Atari ST screen size, even though rendered much larger
+		# makes the graphics look and act like the desired screen size, even though they may be rendered at a different one
 		sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, self.res_x, self.res_y)
 
 		self.running = True
