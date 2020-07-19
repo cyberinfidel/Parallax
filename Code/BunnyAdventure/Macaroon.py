@@ -230,7 +230,7 @@ class Controller(controller.Controller):
 			self.cooldown = -1
 			self.vel = Vec3(0.0,0.0,0.0)
 			self.mass = 1
-			self.jump = False
+			self.jump = True
 			self.attack = False
 			self.facingleft = True
 			self.health = 3
@@ -264,15 +264,15 @@ class Controller(controller.Controller):
 
 
 	def update(self, data, common_data, dt):
-		hero_speed = 6
-		run_cooldown = 0.2
-		hero_jump_speed = 3.0
-		hero_stop = 0.05
+		hero_speed = 4 #6
+		hero_speed_while_jumping = 2
+		hero_jump_speed = 6.0
+		hero_stop = 5
 		hero_friction_ground = 0.075
 		hero_friction_air = 0.05
 
 
-		hero_run_cool = 0
+		hero_run_cool = 0.0
 		hero_jump_cool = -1
 
 		# flags
@@ -281,6 +281,11 @@ class Controller(controller.Controller):
 
 
 		# ground vs in the air
+
+		# find out how far we are above something
+		#height = common_data.game.getDistanceBelow(common_data.pos)
+
+
 		if common_data.pos.z < 0.0 + controller.global_tolerance:
 			# we're on the ground guys
 			common_data.pos.z = 0.0
@@ -321,6 +326,9 @@ class Controller(controller.Controller):
 			if data.vel.magsqhoriz() < hero_stop:
 				# stopped so react automatically - most likely idle, but only if stationary
 				self.updateState(data, common_data, eStates.standLeft if data.facingleft else eStates.standRight)
+			else:
+				# todo add skidding
+				pass
 
 			# get input and set up an action
 			if data.game_pad:
@@ -357,21 +365,17 @@ class Controller(controller.Controller):
 						self.updateState(data, common_data, eStates.runDown, hero_run_cool)
 
 				if data.game_pad.actions[eActions.left]:
-					data.vel.x = -hero_speed
-					data.cooldown = run_cooldown
+					data.vel.x = -(hero_speed_while_jumping if data.jump else hero_speed)
 				# going right
 				elif data.game_pad.actions[eActions.right]:
-					data.vel.x = hero_speed
-					data.cooldown = run_cooldown
+					data.vel.x = (hero_speed_while_jumping if data.jump else hero_speed)
 
 				# going up
 				if data.game_pad.actions[eActions.up]:
-					data.vel.y = hero_speed
-					data.cooldown = run_cooldown
+					data.vel.y = (hero_speed_while_jumping if data.jump else hero_speed)
 				# going down
 				elif data.game_pad.actions[eActions.down]:
-					data.vel.y = -hero_speed
-					data.cooldown = run_cooldown
+					data.vel.y = -(hero_speed_while_jumping if data.jump else hero_speed)
 
 
 
@@ -383,8 +387,8 @@ class Controller(controller.Controller):
 					else:
 						# binky
 						data.jump=True
-						self.setState(data,common_data,eStates.jumpLeft if data.facingleft else eStates.jumpRight, 1)
-						data.vel+=Vec3(rand_num(3)-1, rand_num(3)-1, 4+rand_num(3))
+						self.setState(data,common_data,eStates.jumpLeft if data.facingleft else eStates.jumpRight, 0)
+						data.vel.z+= hero_jump_speed
 
 				if data.game_pad.actions[eActions.attack_big]:
 					data.hero_struck[eStrikes.small]=True
@@ -396,14 +400,14 @@ class Controller(controller.Controller):
 
 		# "physics"
 		if data.jump:
-			common_data.pos+=data.vel
 			data.vel.friction(hero_friction_air)
-		elif data.vel.magsq() > hero_stop:
-			common_data.pos+=data.vel
+		elif data.vel.magsqhoriz() > hero_stop:
 			data.vel.friction(hero_friction_ground)
 		else:
 			# not jumping or moving fast enough so properly stop
-			data.vel = Vec3(0.0,0.0,0.0)
+			data.vel =  Vec3(0.0,0.0,data.vel.z)
+
+		common_data.pos+=data.vel
 
 		# background.restrictToArena(common_data.pos, data.vel)
 
@@ -411,10 +415,77 @@ class Controller(controller.Controller):
 	def receiveCollision(self, data, common_data, message=False):
 		# log("Hero hit: "+message["name"])
 		if message:
-			common_data.pos.x -= data.vel.x * 1.1
-			common_data.pos.y -= data.vel.y * 1.1
-			common_data.pos.z -= data.vel.z * 1.1
-			data.vel = Vec3(0, 0, 0)
+			if message.impassable:
+				# move out of the way
+				pos = common_data.pos
+				dim = common_data.entity.collider_data.dim
+				orig = common_data.entity.collider_data.orig
+
+				other_pos = message.source.common_data.pos
+				other_dim = message.source.collider_data.dim
+				other_orig = message.source.collider_data.orig
+
+				if True: #message.platform:
+					overlap_bottom =  (pos.z - orig.z + dim.z)- (other_pos.z - other_orig.z)
+					overlap_top = (other_pos.z - other_orig.z + other_dim.z)- (pos.z - orig.z)
+					# print(f"top {overlap_top} bottom {overlap_bottom}")
+					if overlap_top < 5:
+						if (overlap_top)<(overlap_bottom):
+							pos.z+=overlap_top+0.1
+							data.vel.z=0
+							data.jump=False
+						else:
+							pos.z-=overlap_bottom
+							data.vel.z=-data.vel.z
+					else:
+
+
+						# hit side so work out axis with smallest overlap and spit out
+						overlap_right = (other_pos.x-other_orig.x) - (pos.x-orig.x+dim.x)
+						overlap_left = ((other_pos.x -other_orig.x+other_dim.x) - (pos.x - orig.x))
+						if (abs(overlap_left)<abs(overlap_right)):
+							min_x_overlap = overlap_left
+						else:
+							min_x_overlap = overlap_right
+
+						overlap_up = (other_pos.y-other_orig.y) -(pos.y-orig.y+dim.y)
+						overlap_down =  (other_pos.y - other_orig.y + other_dim.y) - (pos.y - orig.y)
+						if (abs(overlap_down)<abs(overlap_up)):
+							min_y_overlap = overlap_down
+						else:
+							min_y_overlap = overlap_up
+
+						if abs(min_x_overlap)<abs(min_y_overlap):
+							pos.x+=min_x_overlap
+						else:
+							pos.y+=min_y_overlap
+
+
+
+
+
+
+
+				# print("Landed")
+					# 	else:
+					# 		print("hit side")
+					# 	pos.z=top
+					# elif data.vel.z>0:
+					# 	# rising and hit bottom
+					# 	pos.z = other_pos.z-other_orig.z+orig.z
+					# 	print("Bumped head")
+					# else:
+					# 	data.vel=Vec3(0,0,0)
+
+
+
+				# get vector between colliders
+
+				# while collision_manager.checkCollide(common_data.entity, message.source):
+				# 	common_data.pos.x -= data.vel.x * 1.1
+				# 	common_data.pos.y -= data.vel.y * 1.1
+				# 	common_data.pos.z -= data.vel.z * 1.1
+				# data.vel.z = 0 #Vec3(0, 0, 0)
 
 
 class Collider(collision.Collider):
@@ -424,8 +495,8 @@ class Collider(collision.Collider):
 				pass
 			else:
 				pass
-			self.dim = Vec3(40,8,30)
-			self.orig = Vec3(20,4,15)
+			self.dim = Vec3(30,8,20)
+			self.orig = Vec3(15,4,0)
 
 	def __init__(self, game, data):
 		super(collision.Collider, self).__init__(game)

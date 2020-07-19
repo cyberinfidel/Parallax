@@ -28,6 +28,7 @@ def log(msg, new_line=True):
 import Macaroon as macaroon
 import Oreo as oreo
 import background as back
+import plat
 from title import titleGraphics, TitleController, eTitleStates
 from rain import rainGraphics, RainController
 import butterfly as butterfly
@@ -69,10 +70,11 @@ class BunnyAdventure(Game):
 		self.raining = False
 		self.setGameMode(eGameModes.title)
 
-		back_graphics = self.graphics_manager.makeTemplate(back.backgroundGraphics(self.renlayer))
-		back_controller = self.controller_manager.makeTemplate({"Template": back.BackgroundController})
-		self.back_t = self.entity_manager.makeEntityTemplate(graphics=back_graphics, controller=False)
-		self.back = self.requestNewEntity(entity_template=self.back_t, pos=Vec3(0, 270, 0), parent=self, name="back")
+		self.back_t = self.entity_manager.makeEntityTemplate(graphics=back.getGraphics(self.graphics_manager,self.renlayer))
+		self.platform_t = self.entity_manager.makeEntityTemplate(graphics=plat.getGraphics(self.graphics_manager,self.renlayer),
+																												 controller=plat.getController(self.controller_manager),
+																												 collider=plat.getCollider(self.collision_manager)
+																												 )
 
 
 
@@ -146,8 +148,12 @@ class BunnyAdventure(Game):
 			self.director = self.requestNewEntity(entity_template=self.director_t)
 			self.director.controller_data.events = self.KFEvents()
 
-			# make bunny
-			self.macaroon = self.requestNewEntity(entity_template=self.macaroon_t, pos=Vec3(190, 60, 0), parent=False, name="Macaroon")
+			self.back = self.requestNewEntity(entity_template=self.back_t, pos=Vec3(0, 500, -500), parent=self, name="back")
+			for n in (0,100,200,300,400):
+				self.platform = self.requestNewEntity(entity_template=self.platform_t, pos=Vec3(300+n/2, 50, n/10), parent=self, name="platform")
+
+			# make bunnies
+			self.macaroon = self.requestNewEntity(entity_template=self.macaroon_t, pos=Vec3(190, 60, 50), parent=False, name="Macaroon")
 			self.macaroon.setGamePad(self.input.getGamePad(0))
 			self.oreo = self.requestNewEntity(entity_template=self.oreo_t, pos=Vec3(500, 60, 0), parent=False, name="Oreo")
 			self.oreo.setGamePad(self.input.getGamePad(1))
@@ -317,6 +323,9 @@ class BunnyAdventure(Game):
 		self.num_monsters+=1
 		self.requestNewEntity(entity_template,pos,parent,name)
 
+	def getDistanceBelow(self, pos):
+		# ask collision manager
+		self.collision_manager.getDistanceBelow(pos)
 
 	def KFEvents(self):
 		return[

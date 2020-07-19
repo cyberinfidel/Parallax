@@ -2,17 +2,20 @@ from graphics import SingleImage
 import controller
 from vector import Vec3
 
-class BackgroundController(controller.Controller):
-	def __init__(self, game, data):
-		super(BackgroundController, self).__init__(game)
+def getController(manager):
+	return manager.makeTemplate({"Template": Controller})
 
-def backgroundGraphics(renlayer):
-	return {
+class Controller(controller.Controller):
+	def __init__(self, game, data):
+		super(Controller, self).__init__(game)
+
+def getGraphics(graphics_manager, renlayer):
+	return graphics_manager.makeTemplate({
 			"Name": "Background",
 			"Template": SingleImage,
 			"RenderLayer": renlayer,
-			"Image": ["Graphics/Back/Meadow.png", 0, 230, 0]
-		}
+			"Image": ["Graphics/Back/Meadow.png", 0, 500, 0]
+		})
 
 
 def restrictToArena(pos, vel):

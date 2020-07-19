@@ -20,11 +20,17 @@ class CollisionManager(ComponentManager):
 		if len(self.instances)>1:
 			for indexA, colliderA in enumerate(self.instances):
 				for colliderB in self.instances[indexA+1:]:
-						self.checkCollide(colliderA, colliderB)
+					if self.checkCollide(colliderA, colliderB):
+						self.resolveCollision(colliderA, colliderB)
 
 	def doCollisionsWithSingleEntity(self, entity):
 		for colliderA in self.instances:
-					self.checkCollide(colliderA, entity)
+					if self.checkCollide(colliderA, entity):
+						self.resolveCollision(colliderA,entity)
+
+	def getDistanceBelow(self, pos):
+		for collider in self.instances:
+			pass
 
 
 	def cleanUpDead(self):
@@ -48,12 +54,17 @@ class CollisionManager(ComponentManager):
 						if (Apos.z - Aorig.z + Adim.z) > (Bpos.z - Borig.z):
 							if (Bpos.z - Borig.z + Bdim.z) > (Apos.z - Aorig.z):
 								# we have a collision
+
+
 								if collision_debug:
 									log(f"Collision - A: {A.common_data.name} B: {B.common_data.name}")
-								if A.controller:
-									A.controller.receiveCollision(A.controller_data, A.common_data, B.collider.getCollisionMessage(B.collider_data, B.common_data))
-								if B.controller:
-									B.controller.receiveCollision(B.controller_data, B.common_data,A.collider.getCollisionMessage(A.collider_data,A.common_data))
+								return True
+
+	def resolveCollision(self, A, B):
+			if A.controller:
+				A.controller.receiveCollision(A.controller_data, A.common_data, B.collider.getCollisionMessage(B.collider_data, B.common_data))
+			if B.controller:
+				B.controller.receiveCollision(B.controller_data, B.common_data,A.collider.getCollisionMessage(A.collider_data,A.common_data))
 
 
 
@@ -62,12 +73,14 @@ class Collider(Component):
 		super(Collider, self).__init__(game)
 
 class Message():
-	def __init__(self, source, damage=0, damage_hero=0, force=Vec3(0,0,0), absorb=0):
+	def __init__(self, source, damage=0, damage_hero=0, force=Vec3(0,0,0), absorb=0, impassable=False, platform=False):
 		self.source = source
 		self.damage = damage
 		self.absorb = absorb
 		self.damage_hero = damage_hero
 		self.force = force
+		self.impassable = impassable
+		self.platform = platform
 
 	def getCollisionMessage(self,data, common_data):
 		return Message(source=False)

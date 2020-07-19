@@ -437,6 +437,6 @@ class Collider(collision.Collider):
 		return self.radius
 
 	def getCollisionMessage(self, data, common_data):
-		return(collision.Message(source=common_data.entity, absorb=3))
+		return(collision.Message(source=common_data.entity, absorb=3, impassable=True))
 
 

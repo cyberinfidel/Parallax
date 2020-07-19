@@ -79,6 +79,12 @@ class Drawable(object):
 	def getY(self):
 		return self.y
 
+	def getZ(self):
+		return self.z
+
+	def getDrawDepth(self):
+		return self.y# - self.z
+
 
 class RenderImage(Drawable):
 	def __init__(self, image, x, y, z):
@@ -150,7 +156,7 @@ class RenderLayer(object):
 	# TODO: pass in comparison and allow different orders - not as easy as first thought
 	def renderSorted(self):
 		screen_height = self.getScreenHeight()
-		for d in sorted(self.drawables, key = Drawable.getY, reverse=True):
+		for d in sorted(self.drawables, key = Drawable.getDrawDepth, reverse=True):
 			d.draw(origin=self.origin, screen_height=screen_height)
 		self.drawables = []
 
