@@ -2,14 +2,13 @@ from graphics import SingleImage
 import controller
 from vector import Vec3
 
-def getController(manager):
+def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-
 class Controller(controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
 
-def getGraphics(graphics_manager, renlayer):
+def makeGraphics(graphics_manager, renlayer):
 	return graphics_manager.makeTemplate({
 			"Name": "Background",
 			"Template": SingleImage,

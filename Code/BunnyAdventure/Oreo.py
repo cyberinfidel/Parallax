@@ -13,8 +13,7 @@ import sound
 from vector import rand_num
 
 # Knightfight
-from strike import Strike, HitController, HitCollider
-
+import strike
 
 class eStrikes(enum.IntEnum):
 	big = 0
@@ -187,8 +186,8 @@ class Controller(controller.Controller):
 		self.invincible_states = (eStates.dead, eStates.fallLeft, eStates.fallRight)
 
 		# set up all attacks
-		hit_controller = self.game.controller_manager.makeTemplate({"Template": HitController})
-		hit_collider = self.game.collision_manager.makeTemplate({"Template": HitCollider})
+		hit_controller = strike.makeController(self.game.controller_manager)
+		hit_collider = strike.makeCollider(self.game.collision_manager)
 		hit_t = self.game.entity_manager.makeEntityTemplate(graphics=False,
 																												controller=hit_controller,
 																												collider=hit_collider)
@@ -196,15 +195,15 @@ class Controller(controller.Controller):
 		# cool downs in seconds
 		self.strikes = [
 			#			cool	del		range					dimension				origin			force		damage
-			Strike(cool=0.8, delay=0.6, duration = 0.2, range=Vec3(24, 0, 0), dim=Vec3(10,8,12), orig=Vec3(5,4,6),
+			strike.Strike(cool=0.8, delay=0.6, duration = 0.2, range=Vec3(24, 0, 0), dim=Vec3(10,8,12), orig=Vec3(5,4,6),
 						 force=3, absorb=0, damage=2, template=hit_t, hero_damage=0),  # big
-			Strike(cool=0.8, delay=0.4, duration = 0.2, range=Vec3(8, 10, 30), dim=Vec3(12,8,8), orig=Vec3(6,4,4),
+			strike.Strike(cool=0.8, delay=0.4, duration = 0.2, range=Vec3(8, 10, 30), dim=Vec3(12,8,8), orig=Vec3(6,4,4),
 						 force=3, absorb=0, damage=2, template=hit_t),  # big_up
-			Strike(cool=1.5, delay=0.2, duration = 0.2, range=Vec3(25, 0, 0), dim=Vec3(30,16,16), orig=Vec3(5,4,4),
+			strike.Strike(cool=1.5, delay=0.2, duration = 0.2, range=Vec3(25, 0, 0), dim=Vec3(30,16,16), orig=Vec3(5,4,4),
 						 force=1, absorb=0, damage=1, template=hit_t),  # small
-			Strike(cool=1.5, delay=0.6, duration = 0.5, range=Vec3(16, 0, 0), dim=Vec3(10,16,30), orig=Vec3(5,8,20),
+			strike.Strike(cool=1.5, delay=0.6, duration = 0.5, range=Vec3(16, 0, 0), dim=Vec3(10,16,30), orig=Vec3(5,8,20),
 						 force=0.2, absorb=100, damage=0, template=hit_t),  # block
-			Strike(cool=0.8, delay=0.7, duration=0.1, range=Vec3(20, 0, 0), dim=Vec3(10, 16, 30), orig=Vec3(5, 8, 20),
+			strike.Strike(cool=0.8, delay=0.7, duration=0.1, range=Vec3(20, 0, 0), dim=Vec3(10, 16, 30), orig=Vec3(5, 8, 20),
 						 force=3, absorb=100, damage=0, template=hit_t),  # push
 		]
 
@@ -264,10 +263,10 @@ class Controller(controller.Controller):
 
 
 	def update(self, data, common_data, dt):
-		hero_speed = 5
-		run_cooldown = 0.3
-		hero_jump_speed = 3.0
-		hero_stop = 0.05
+		hero_speed = 4 #6
+		hero_speed_while_jumping = 2
+		hero_jump_speed = 6.0
+		hero_stop = 5
 		hero_friction_ground = 0.075
 		hero_friction_air = 0.05
 
@@ -357,21 +356,17 @@ class Controller(controller.Controller):
 						self.updateState(data, common_data, eStates.runDown, hero_run_cool)
 
 				if data.game_pad.actions[eActions.left]:
-					data.vel.x = -hero_speed
-					data.cooldown = run_cooldown
+					data.vel.x = -(hero_speed_while_jumping if data.jump else hero_speed)
 				# going right
 				elif data.game_pad.actions[eActions.right]:
-					data.vel.x = hero_speed
-					data.cooldown = run_cooldown
+					data.vel.x = (hero_speed_while_jumping if data.jump else hero_speed)
 
 				# going up
 				if data.game_pad.actions[eActions.up]:
-					data.vel.y = hero_speed
-					data.cooldown = run_cooldown
+					data.vel.y = (hero_speed_while_jumping if data.jump else hero_speed)
 				# going down
 				elif data.game_pad.actions[eActions.down]:
-					data.vel.y = -hero_speed
-					data.cooldown = run_cooldown
+					data.vel.y = -(hero_speed_while_jumping if data.jump else hero_speed)
 
 
 
@@ -383,8 +378,8 @@ class Controller(controller.Controller):
 					else:
 						# binky
 						data.jump=True
-						self.setState(data,common_data,eStates.jumpLeft if data.facingleft else eStates.jumpRight, 1)
-						data.vel+=Vec3(rand_num(3)-1, rand_num(3)-1, 4+rand_num(3))
+						self.setState(data,common_data,eStates.jumpLeft if data.facingleft else eStates.jumpRight, 0)
+						data.vel.z+= hero_jump_speed
 
 				if data.game_pad.actions[eActions.attack_big]:
 					data.hero_struck[eStrikes.small]=True
@@ -396,25 +391,75 @@ class Controller(controller.Controller):
 
 		# "physics"
 		if data.jump:
-			common_data.pos+=data.vel
 			data.vel.friction(hero_friction_air)
-		elif data.vel.magsq() > hero_stop:
-			common_data.pos+=data.vel
+		elif data.vel.magsqhoriz() > hero_stop:
 			data.vel.friction(hero_friction_ground)
 		else:
 			# not jumping or moving fast enough so properly stop
-			data.vel = Vec3(0.0,0.0,0.0)
+			data.vel =  Vec3(0.0,0.0,data.vel.z)
+
+		common_data.pos+=data.vel
 
 		# background.restrictToArena(common_data.pos, data.vel)
 
 
-	def receiveCollision(self, data, common_data, message=False):
+	def receiveCollision(self,A, B):
 		# log("Hero hit: "+message["name"])
-		if message:
-			common_data.pos.x -= data.vel.x * 1.1
-			common_data.pos.y -= data.vel.y * 1.1
-			common_data.pos.z -= data.vel.z * 1.1
-			data.vel = Vec3(0, 0, 0)
+		if B.collider:
+			if B.collider_data.impassable:
+				# move out of the way
+				pos = A.common_data.pos
+				dim = A.common_data.entity.collider_data.dim
+				orig = A.common_data.entity.collider_data.orig
+
+				B_pos = B.common_data.pos
+				B_dim = B.collider_data.dim
+				B_orig = B.collider_data.orig
+
+				landed = False
+				# z
+				overlap_bottom = (B_pos.z - B_orig.z) - (pos.z - orig.z + dim.z)
+				overlap_top = (B_pos.z - B_orig.z + B_dim.z)- (pos.z - orig.z)
+				# print(f"top {overlap_top} bottom {overlap_bottom}")
+				if (abs(overlap_top)<abs(overlap_bottom)):
+					# closer to top than bottom
+					min_z_overlap = overlap_top
+					landed = True
+				else:
+					min_z_overlap = overlap_bottom
+
+				# x
+				overlap_right = (B_pos.x-B_orig.x) - (pos.x-orig.x+dim.x)
+				overlap_left = ((B_pos.x -B_orig.x+B_dim.x) - (pos.x - orig.x))
+				if (abs(overlap_left)<abs(overlap_right)):
+					min_x_overlap = overlap_left
+				else:
+					min_x_overlap = overlap_right
+
+				overlap_up = (B_pos.y-B_orig.y) -(pos.y-orig.y+dim.y)
+				overlap_down =  (B_pos.y - B_orig.y + B_dim.y) - (pos.y - orig.y)
+				if (abs(overlap_down)<abs(overlap_up)):
+					min_y_overlap = overlap_down
+				else:
+					min_y_overlap = overlap_up
+
+				# y
+				if abs(min_x_overlap)<abs(min_y_overlap):
+					if abs(min_x_overlap)<abs(min_z_overlap):
+						pos.x+=min_x_overlap
+					else:
+						pos.z+=min_z_overlap
+						A.controller_data.vel.z = 0
+						if landed:
+							A.controller_data.jump = False
+				else:
+					if abs(min_y_overlap)<abs(min_z_overlap):
+						pos.y+=min_y_overlap
+					else:
+						pos.z+=min_z_overlap
+						A.controller_data.vel.z = 0
+						if landed:
+							A.controller_data.jump = False
 
 
 class Collider(collision.Collider):
@@ -424,8 +469,10 @@ class Collider(collision.Collider):
 				pass
 			else:
 				pass
-			self.dim = Vec3(40,8,30)
-			self.orig = Vec3(20,4,15)
+			self.dim = Vec3(30,8,20)
+			self.orig = Vec3(15,4,0)
+			self.absorb = 3
+			self.impassable = True
 
 	def __init__(self, game, data):
 		super(collision.Collider, self).__init__(game)
@@ -436,7 +483,5 @@ class Collider(collision.Collider):
 	def getRadius(self):
 		return self.radius
 
-	def getCollisionMessage(self, data, common_data):
-		return(collision.Message(source=common_data.entity, absorb=3, impassable=True))
 
 

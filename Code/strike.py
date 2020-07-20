@@ -1,6 +1,6 @@
 from entity import eStates
-from controller import Controller
-from collision import Collider, Message
+import controller
+import collision
 
 class Strike(object):
 	def __init__(self, cool, delay, duration, range, dim, orig, force, absorb, damage, template, hero_damage=0):
@@ -20,8 +20,9 @@ class Strike(object):
 #######
 # Hit #
 #######
-
-class HitController(Controller):
+def makeController(manager):
+	return manager.makeTemplate({"Template": Controller})
+class Controller(controller.Controller):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -30,7 +31,7 @@ class HitController(Controller):
 				pass
 
 	def __init__(self, game, data):
-		super(HitController, self).__init__(game)
+		super(Controller, self).__init__(game)
 
 	def update(self, data, common_data, dt):
 
@@ -49,7 +50,9 @@ class HitController(Controller):
 		# if you just tickle it, then you don't do much damage
 		pass
 
-class HitCollider(Collider):
+def makeCollider(manager):
+	return manager.makeTemplate({"Template": Collider})
+class Collider(collision.Collider):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -58,10 +61,7 @@ class HitCollider(Collider):
 				pass
 
 	def __init__(self, game, data):
-		super(HitCollider, self).__init__(game)
+		super(Collider, self).__init__(game)
 		# global static data to all of components
-
-	def getCollisionMessage(self, data, common_data):
-		return(Message(source=common_data.entity, damage=data.damage, force=data.force, absorb=data.absorb))
 
 

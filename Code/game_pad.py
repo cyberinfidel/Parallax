@@ -27,7 +27,8 @@ class eActions(enum.IntEnum):
 	pause = 9
 	quit = 10
 	fullscreen = 11
-	numActions = 12
+	select = 12
+	numActions = 13
 
 class GamePad(Component):
 	def __init__(self, game):
@@ -44,7 +45,8 @@ class GamePad(Component):
 			eActions.pause:False,
 			eActions.quit:False,
 			eActions.fullscreen:False,
-			eActions.stationary:True
+			eActions.stationary:True,
+			eActions.select: False
 		}
 
 	def set(self,action):
@@ -81,6 +83,7 @@ class Input(object):
 		self.key_map[eActions.pause] = [sdl2.SDLK_p, sdl2.SDLK_ESCAPE]
 		self.key_map[eActions.quit] = [sdl2.SDLK_q, sdl2.SDLK_ESCAPE]
 		self.key_map[eActions.fullscreen] = [sdl2.SDLK_f]
+		self.key_map[eActions.select] = [sdl2.SDLK_TAB, sdl2.SDLK_o]
 
 		self.controllers = {}
 
@@ -174,7 +177,9 @@ class Input(object):
 						self.game_pads[0].set(eActions.quit)
 					if event.key.keysym.sym in self.key_map[eActions.fullscreen]:
 						self.game_pads[0].set(eActions.fullscreen)
-	
+					if event.key.keysym.sym in self.key_map[eActions.select]:
+						self.game_pads[0].set(eActions.select)
+
 				elif event.type == sdl2.SDL_KEYUP:
 					if event.key.keysym.sym in self.key_map[eActions.up]:
 						self.game_pads[0].clear(eActions.up)
@@ -200,5 +205,7 @@ class Input(object):
 						self.game_pads[0].clear(eActions.quit)
 					if event.key.keysym.sym in self.key_map[eActions.fullscreen]:
 						self.game_pads[0].clear(eActions.fullscreen)
-	
+					if event.key.keysym.sym in self.key_map[eActions.select]:
+						self.game_pads[0].clear(eActions.select)
+
 

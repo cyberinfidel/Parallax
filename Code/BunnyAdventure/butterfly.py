@@ -3,7 +3,7 @@ import enum
 from entity import eStates, eDirections
 from vector import Vec3, rand_num
 from controller import Controller, basic_gravity, basic_physics, friction
-from collision import Collider, Message
+import collision
 from graphics import AnimLoop, AnimNoLoop, MultiAnim, AnimSingle
 import sound
 from background import restrictToArena

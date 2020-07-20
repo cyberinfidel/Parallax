@@ -62,26 +62,19 @@ class CollisionManager(ComponentManager):
 
 	def resolveCollision(self, A, B):
 			if A.controller:
-				A.controller.receiveCollision(A.controller_data, A.common_data, B.collider.getCollisionMessage(B.collider_data, B.common_data))
+				A.controller.receiveCollision(A,B)
 			if B.controller:
-				B.controller.receiveCollision(B.controller_data, B.common_data,A.collider.getCollisionMessage(A.collider_data,A.common_data))
+				B.controller.receiveCollision(B,A)
 
 
 
 class Collider(Component):
-	def __init__(self, game):
+	def __init__(self, game, damage=0, damage_hero=0, force=Vec3(0,0,0), absorb=0, impassable=False, platform=False):
 		super(Collider, self).__init__(game)
-
-class Message():
-	def __init__(self, source, damage=0, damage_hero=0, force=Vec3(0,0,0), absorb=0, impassable=False, platform=False):
-		self.source = source
 		self.damage = damage
 		self.absorb = absorb
 		self.damage_hero = damage_hero
 		self.force = force
 		self.impassable = impassable
 		self.platform = platform
-
-	def getCollisionMessage(self,data, common_data):
-		return Message(source=False)
 

@@ -3,9 +3,8 @@ import controller
 import collision
 from vector import Vec3
 
-def getController(manager):
+def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-
 class Controller(controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
@@ -18,18 +17,18 @@ class Controller(controller.Controller):
 		return
 		if common_data.pos.z>100:
 			data.vel.z = -0.2
-		elif common_data.pos.z<5:
+		elif common_data.pos.z<20:
 			data.vel.z = 0.2
 
 		controller.basic_physics(common_data.pos, data.vel)
 
-	def receiveCollision(self, data, common_data, message=False):
+	def receiveCollision(self, A, B):
 		# scenery doesn't react to collisions
 		pass
 
 
 
-def getGraphics(graphics_manager, renlayer):
+def makeGraphics(graphics_manager, renlayer):
 	# return graphics_manager.makeTemplate({
 	# 		"Name": "Platform",
 	# 		"Template": graphics.SingleImage,
@@ -64,7 +63,7 @@ def restrictToArena(pos, vel):
 	# stop running off screen bottom, top and sides
 	pos.clamp(Vec3(50, 0, 0), Vec3(100, 90, 10))
 
-def getCollider(manager):
+def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
 class Collider(collision.Collider):
 	class Data(object):
@@ -73,8 +72,9 @@ class Collider(collision.Collider):
 				pass
 			else:
 				pass
-			self.dim = Vec3(50,10,20)
-			self.orig = Vec3(25,5,0)
+			self.dim = Vec3(50,10,30)
+			self.orig = Vec3(25,5,20)
+			self.impassable = True
 
 	def __init__(self, game, data):
 		super(Collider, self).__init__(game)

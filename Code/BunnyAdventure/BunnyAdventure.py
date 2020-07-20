@@ -70,10 +70,10 @@ class BunnyAdventure(Game):
 		self.raining = False
 		self.setGameMode(eGameModes.title)
 
-		self.back_t = self.entity_manager.makeEntityTemplate(graphics=back.getGraphics(self.graphics_manager,self.renlayer))
-		self.platform_t = self.entity_manager.makeEntityTemplate(graphics=plat.getGraphics(self.graphics_manager,self.renlayer),
-																												 controller=plat.getController(self.controller_manager),
-																												 collider=plat.getCollider(self.collision_manager)
+		self.back_t = self.entity_manager.makeEntityTemplate(graphics=back.makeGraphics(self.graphics_manager,self.renlayer))
+		self.platform_t = self.entity_manager.makeEntityTemplate(graphics=plat.makeGraphics(self.graphics_manager,self.renlayer),
+																												 controller=plat.makeController(self.controller_manager),
+																												 collider=plat.makeCollider(self.collision_manager)
 																												 )
 
 
@@ -158,6 +158,7 @@ class BunnyAdventure(Game):
 			self.macaroon.setGamePad(self.input.getGamePad(0))
 			self.oreo = self.requestNewEntity(entity_template=self.oreo_t, pos=Vec3(500, 60, 0), parent=False, name="Oreo")
 			self.oreo.setGamePad(self.input.getGamePad(1))
+			self.control_macaroon = True
 
 
 			self.rain_cooldown = 500
@@ -327,6 +328,11 @@ class BunnyAdventure(Game):
 	def getDistanceBelow(self, pos):
 		# ask collision manager
 		self.collision_manager.getDistanceBelow(pos)
+
+	def swapControllers(self):
+		self.control_macaroon = not self.control_macaroon
+		self.macaroon.setGamePad(self.input.getGamePad(0 if self.control_macaroon else 1))
+		self.oreo.setGamePad(self.input.getGamePad(1 if self.control_macaroon else 0))
 
 	def KFEvents(self):
 		return[

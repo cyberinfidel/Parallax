@@ -13,7 +13,7 @@ import sound
 from vector import rand_num
 
 # Knightfight
-from strike import Strike, HitController, HitCollider
+import strike
 
 
 class eStrikes(enum.IntEnum):
@@ -187,8 +187,8 @@ class Controller(controller.Controller):
 		self.invincible_states = (eStates.dead, eStates.fallLeft, eStates.fallRight)
 
 		# set up all attacks
-		hit_controller = self.game.controller_manager.makeTemplate({"Template": HitController})
-		hit_collider = self.game.collision_manager.makeTemplate({"Template": HitCollider})
+		hit_controller = strike.makeController(self.game.controller_manager)
+		hit_collider = strike.makeCollider(self.game.collision_manager)
 		hit_t = self.game.entity_manager.makeEntityTemplate(graphics=False,
 																												controller=hit_controller,
 																												collider=hit_collider)
@@ -196,15 +196,15 @@ class Controller(controller.Controller):
 		# cool downs in seconds
 		self.strikes = [
 			#			cool	del		range					dimension				origin			force		damage
-			Strike(cool=0.8, delay=0.6, duration = 0.2, range=Vec3(24, 0, 0), dim=Vec3(10,8,12), orig=Vec3(5,4,6),
+			strike.Strike(cool=0.8, delay=0.6, duration = 0.2, range=Vec3(24, 0, 0), dim=Vec3(10,8,12), orig=Vec3(5,4,6),
 						 force=3, absorb=0, damage=2, template=hit_t, hero_damage=0),  # big
-			Strike(cool=0.8, delay=0.4, duration = 0.2, range=Vec3(8, 10, 30), dim=Vec3(12,8,8), orig=Vec3(6,4,4),
+			strike.Strike(cool=0.8, delay=0.4, duration = 0.2, range=Vec3(8, 10, 30), dim=Vec3(12,8,8), orig=Vec3(6,4,4),
 						 force=3, absorb=0, damage=2, template=hit_t),  # big_up
-			Strike(cool=1.5, delay=0.2, duration = 0.2, range=Vec3(25, 0, 0), dim=Vec3(30,16,16), orig=Vec3(5,4,4),
+			strike.Strike(cool=1.5, delay=0.2, duration = 0.2, range=Vec3(25, 0, 0), dim=Vec3(30,16,16), orig=Vec3(5,4,4),
 						 force=1, absorb=0, damage=1, template=hit_t),  # small
-			Strike(cool=1.5, delay=0.6, duration = 0.5, range=Vec3(16, 0, 0), dim=Vec3(10,16,30), orig=Vec3(5,8,20),
+			strike.Strike(cool=1.5, delay=0.6, duration = 0.5, range=Vec3(16, 0, 0), dim=Vec3(10,16,30), orig=Vec3(5,8,20),
 						 force=0.2, absorb=100, damage=0, template=hit_t),  # block
-			Strike(cool=0.8, delay=0.7, duration=0.1, range=Vec3(20, 0, 0), dim=Vec3(10, 16, 30), orig=Vec3(5, 8, 20),
+			strike.Strike(cool=0.8, delay=0.7, duration=0.1, range=Vec3(20, 0, 0), dim=Vec3(10, 16, 30), orig=Vec3(5, 8, 20),
 						 force=3, absorb=100, damage=0, template=hit_t),  # push
 		]
 
@@ -272,7 +272,7 @@ class Controller(controller.Controller):
 		hero_friction_air = 0.05
 
 
-		hero_run_cool = 0.0
+		hero_run_cool = 0
 		hero_jump_cool = -1
 
 		# flags
@@ -412,102 +412,63 @@ class Controller(controller.Controller):
 		# background.restrictToArena(common_data.pos, data.vel)
 
 
-	def receiveCollision(self, data, common_data, message=False):
+	def receiveCollision(self,A, B):
 		# log("Hero hit: "+message["name"])
-		if message:
-			if message.impassable:
+		if B.collider:
+			if B.collider_data.impassable:
 				# move out of the way
-				pos = common_data.pos
-				dim = common_data.entity.collider_data.dim
-				orig = common_data.entity.collider_data.orig
+				pos = A.common_data.pos
+				dim = A.common_data.entity.collider_data.dim
+				orig = A.common_data.entity.collider_data.orig
 
-				other_pos = message.source.common_data.pos
-				other_dim = message.source.collider_data.dim
-				other_orig = message.source.collider_data.orig
+				B_pos = B.common_data.pos
+				B_dim = B.collider_data.dim
+				B_orig = B.collider_data.orig
 
-				if True: #message.platform:
-					landed = False
-					overlap_bottom = (other_pos.z - other_orig.z) - (pos.z - orig.z + dim.z)
-					overlap_top = (other_pos.z - other_orig.z + other_dim.z)- (pos.z - orig.z)
-					# print(f"top {overlap_top} bottom {overlap_bottom}")
-					if (abs(overlap_top)<abs(overlap_bottom)):
-						# closer to top than bottom
-						min_z_overlap = overlap_top
-						landed = True
+				landed = False
+				# z
+				overlap_bottom = (B_pos.z - B_orig.z) - (pos.z - orig.z + dim.z)
+				overlap_top = (B_pos.z - B_orig.z + B_dim.z)- (pos.z - orig.z)
+				# print(f"top {overlap_top} bottom {overlap_bottom}")
+				if (abs(overlap_top)<abs(overlap_bottom)):
+					# closer to top than bottom
+					min_z_overlap = overlap_top
+					landed = True
+				else:
+					min_z_overlap = overlap_bottom
+
+				# x
+				overlap_right = (B_pos.x-B_orig.x) - (pos.x-orig.x+dim.x)
+				overlap_left = ((B_pos.x -B_orig.x+B_dim.x) - (pos.x - orig.x))
+				if (abs(overlap_left)<abs(overlap_right)):
+					min_x_overlap = overlap_left
+				else:
+					min_x_overlap = overlap_right
+
+				overlap_up = (B_pos.y-B_orig.y) -(pos.y-orig.y+dim.y)
+				overlap_down =  (B_pos.y - B_orig.y + B_dim.y) - (pos.y - orig.y)
+				if (abs(overlap_down)<abs(overlap_up)):
+					min_y_overlap = overlap_down
+				else:
+					min_y_overlap = overlap_up
+
+				# y
+				if abs(min_x_overlap)<abs(min_y_overlap):
+					if abs(min_x_overlap)<abs(min_z_overlap):
+						pos.x+=min_x_overlap
 					else:
-						min_z_overlap = overlap_bottom
-
-					# 	if overlap_top < 10:
-					# 		pos.z+=overlap_top+0.02
-					# 		data.vel.z=0
-					# 		data.jump=False
-					# elif data.vel.z<0:
-					# 	pos.z+=overlap_bottom
-					# 	data.vel.z=-1
-					# 	print("bump")
-					# else:
-
-
-					# hit side so work out axis with smallest overlap and spit out
-					overlap_right = (other_pos.x-other_orig.x) - (pos.x-orig.x+dim.x)
-					overlap_left = ((other_pos.x -other_orig.x+other_dim.x) - (pos.x - orig.x))
-					if (abs(overlap_left)<abs(overlap_right)):
-						min_x_overlap = overlap_left
+						pos.z+=min_z_overlap
+						A.controller_data.vel.z = 0
+						if landed:
+							A.controller_data.jump = False
+				else:
+					if abs(min_y_overlap)<abs(min_z_overlap):
+						pos.y+=min_y_overlap
 					else:
-						min_x_overlap = overlap_right
-
-					overlap_up = (other_pos.y-other_orig.y) -(pos.y-orig.y+dim.y)
-					overlap_down =  (other_pos.y - other_orig.y + other_dim.y) - (pos.y - orig.y)
-					if (abs(overlap_down)<abs(overlap_up)):
-						min_y_overlap = overlap_down
-					else:
-						min_y_overlap = overlap_up
-
-					if abs(min_x_overlap)<abs(min_y_overlap):
-						if abs(min_x_overlap)<abs(min_z_overlap):
-							pos.x+=min_x_overlap
-						else:
-							pos.z+=min_z_overlap
-							data.vel.z = 0
-							if landed:
-								data.jump = False
-								print("landed")
-					else:
-						if abs(min_y_overlap)<abs(min_z_overlap):
-							pos.y+=min_y_overlap
-						else:
-							pos.z+=min_z_overlap
-							data.vel.z = 0
-							if landed:
-								data.jump = False
-								print("landed 2")
-
-
-
-
-
-
-
-				# print("Landed")
-					# 	else:
-					# 		print("hit side")
-					# 	pos.z=top
-					# elif data.vel.z>0:
-					# 	# rising and hit bottom
-					# 	pos.z = other_pos.z-other_orig.z+orig.z
-					# 	print("Bumped head")
-					# else:
-					# 	data.vel=Vec3(0,0,0)
-
-
-
-				# get vector between colliders
-
-				# while collision_manager.checkCollide(common_data.entity, message.source):
-				# 	common_data.pos.x -= data.vel.x * 1.1
-				# 	common_data.pos.y -= data.vel.y * 1.1
-				# 	common_data.pos.z -= data.vel.z * 1.1
-				# data.vel.z = 0 #Vec3(0, 0, 0)
+						pos.z+=min_z_overlap
+						A.controller_data.vel.z = 0
+						if landed:
+							A.controller_data.jump = False
 
 
 class Collider(collision.Collider):
@@ -519,6 +480,8 @@ class Collider(collision.Collider):
 				pass
 			self.dim = Vec3(30,8,20)
 			self.orig = Vec3(15,4,0)
+			self.absorb = 3
+			self.impassable = True
 
 	def __init__(self, game, data):
 		super(collision.Collider, self).__init__(game)
@@ -528,8 +491,5 @@ class Collider(collision.Collider):
 
 	def getRadius(self):
 		return self.radius
-
-	def getCollisionMessage(self, data, common_data):
-		return(collision.Message(source=common_data.entity, absorb=3))
 
 
