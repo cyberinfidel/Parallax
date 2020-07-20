@@ -426,39 +426,61 @@ class Controller(controller.Controller):
 				other_orig = message.source.collider_data.orig
 
 				if True: #message.platform:
-					overlap_bottom =  (pos.z - orig.z + dim.z)- (other_pos.z - other_orig.z)
+					landed = False
+					overlap_bottom = (other_pos.z - other_orig.z) - (pos.z - orig.z + dim.z)
 					overlap_top = (other_pos.z - other_orig.z + other_dim.z)- (pos.z - orig.z)
 					# print(f"top {overlap_top} bottom {overlap_bottom}")
-					if overlap_top < 5:
-						if (overlap_top)<(overlap_bottom):
-							pos.z+=overlap_top+0.1
-							data.vel.z=0
-							data.jump=False
-						else:
-							pos.z-=overlap_bottom
-							data.vel.z=-data.vel.z
+					if (abs(overlap_top)<abs(overlap_bottom)):
+						# closer to top than bottom
+						min_z_overlap = overlap_top
+						landed = True
 					else:
+						min_z_overlap = overlap_bottom
+
+					# 	if overlap_top < 10:
+					# 		pos.z+=overlap_top+0.02
+					# 		data.vel.z=0
+					# 		data.jump=False
+					# elif data.vel.z<0:
+					# 	pos.z+=overlap_bottom
+					# 	data.vel.z=-1
+					# 	print("bump")
+					# else:
 
 
-						# hit side so work out axis with smallest overlap and spit out
-						overlap_right = (other_pos.x-other_orig.x) - (pos.x-orig.x+dim.x)
-						overlap_left = ((other_pos.x -other_orig.x+other_dim.x) - (pos.x - orig.x))
-						if (abs(overlap_left)<abs(overlap_right)):
-							min_x_overlap = overlap_left
-						else:
-							min_x_overlap = overlap_right
+					# hit side so work out axis with smallest overlap and spit out
+					overlap_right = (other_pos.x-other_orig.x) - (pos.x-orig.x+dim.x)
+					overlap_left = ((other_pos.x -other_orig.x+other_dim.x) - (pos.x - orig.x))
+					if (abs(overlap_left)<abs(overlap_right)):
+						min_x_overlap = overlap_left
+					else:
+						min_x_overlap = overlap_right
 
-						overlap_up = (other_pos.y-other_orig.y) -(pos.y-orig.y+dim.y)
-						overlap_down =  (other_pos.y - other_orig.y + other_dim.y) - (pos.y - orig.y)
-						if (abs(overlap_down)<abs(overlap_up)):
-							min_y_overlap = overlap_down
-						else:
-							min_y_overlap = overlap_up
+					overlap_up = (other_pos.y-other_orig.y) -(pos.y-orig.y+dim.y)
+					overlap_down =  (other_pos.y - other_orig.y + other_dim.y) - (pos.y - orig.y)
+					if (abs(overlap_down)<abs(overlap_up)):
+						min_y_overlap = overlap_down
+					else:
+						min_y_overlap = overlap_up
 
-						if abs(min_x_overlap)<abs(min_y_overlap):
+					if abs(min_x_overlap)<abs(min_y_overlap):
+						if abs(min_x_overlap)<abs(min_z_overlap):
 							pos.x+=min_x_overlap
 						else:
+							pos.z+=min_z_overlap
+							data.vel.z = 0
+							if landed:
+								data.jump = False
+								print("landed")
+					else:
+						if abs(min_y_overlap)<abs(min_z_overlap):
 							pos.y+=min_y_overlap
+						else:
+							pos.z+=min_z_overlap
+							data.vel.z = 0
+							if landed:
+								data.jump = False
+								print("landed 2")
 
 
 

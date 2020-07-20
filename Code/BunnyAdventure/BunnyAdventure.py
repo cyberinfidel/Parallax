@@ -150,7 +150,8 @@ class BunnyAdventure(Game):
 
 			self.back = self.requestNewEntity(entity_template=self.back_t, pos=Vec3(0, 500, -500), parent=self, name="back")
 			for n in (0,100,200,300,400):
-				self.platform = self.requestNewEntity(entity_template=self.platform_t, pos=Vec3(300+n/2, 50, n/10), parent=self, name="platform")
+				for m in (0, 12, 24, 36, 48, 60):
+					self.platform = self.requestNewEntity(entity_template=self.platform_t, pos=Vec3(300+n/2, 50+m, n/5 - 5), parent=self, name="platform")
 
 			# make bunnies
 			self.macaroon = self.requestNewEntity(entity_template=self.macaroon_t, pos=Vec3(190, 60, 50), parent=False, name="Macaroon")

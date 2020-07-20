@@ -1,4 +1,4 @@
-from graphics import SingleImage
+import graphics
 import controller
 import collision
 from vector import Vec3
@@ -30,11 +30,23 @@ class Controller(controller.Controller):
 
 
 def getGraphics(graphics_manager, renlayer):
+	# return graphics_manager.makeTemplate({
+	# 		"Name": "Platform",
+	# 		"Template": graphics.SingleImage,
+	# 		"RenderLayer": renlayer,
+	# 		"Image": ["Graphics/Platform/TestPlatform50x50.png", 25, 35, 0]
+	# })
+
 	return graphics_manager.makeTemplate({
 			"Name": "Platform",
-			"Template": SingleImage,
+			"Template": graphics.MultiImage,
 			"RenderLayer": renlayer,
-			"Image": ["Graphics/Platform/TestPlatform50x50.png", 25, 5, 0]
+			"Images": [
+				# ["Graphics/Platform/TestPlatform50x12.png", 25, 39],
+				# ["Graphics/Platform/TestPlatform50x12.png", 25, 27],
+				# ["Graphics/Platform/TestPlatform50x12.png", 25, 15],
+				["Graphics/Platform/TestPlatform50x12.png", 25, 3]
+			]
 		})
 
 
@@ -61,8 +73,8 @@ class Collider(collision.Collider):
 				pass
 			else:
 				pass
-			self.dim = Vec3(50,50,510)
-			self.orig = Vec3(25,45,500)
+			self.dim = Vec3(50,10,20)
+			self.orig = Vec3(25,5,0)
 
 	def __init__(self, game, data):
 		super(Collider, self).__init__(game)

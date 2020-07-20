@@ -83,8 +83,7 @@ class Drawable(object):
 		return self.z
 
 	def getDrawDepth(self):
-		return self.y# - self.z
-
+		return self.y
 
 class RenderImage(Drawable):
 	def __init__(self, image, x, y, z):
@@ -200,6 +199,7 @@ class SingleImage(Component):
 		self.image = self.rl.addImage(data["Image"][0])
 		self.origin_x = data["Image"][1]
 		self.origin_y = data["Image"][2]
+		self.name = data["Name"]
 
 	def getImage(self):
 		return self.image
@@ -212,6 +212,30 @@ class SingleImage(Component):
 
 	def update(self, data, common_data, time):
 		pass
+
+# graphics component for multiple static images
+class MultiImage(Component):
+	def __init__(self, game, data):
+		super(MultiImage, self).__init__(game)
+		self.rl = data['RenderLayer']
+		self.images = []
+		for image in data["Images"]:
+			self.images.append(AnimFrame(self.rl.addImage(image[0]), image[1], image[2],0))
+
+	def getImage(self):
+		return self.image
+
+	def draw(self, data, common_data):
+		for image in self.images:
+			self.rl.queueImage(image.image, common_data.pos.x - image.origin_x, common_data.pos.y, common_data.pos.z + image.origin_y)
+		return True
+
+	def hasShadow(self):
+		return False
+
+	def update(self, data, common_data, time):
+		pass
+
 
 # graphics component for a single animation only
 class SingleAnim(Component):
