@@ -15,8 +15,8 @@ def makeGraphics(manager, renlayer):
 				"States": [Controller.state_fall],
 				"Frames":
 					[
-#						["Graphics/Rain/RainVert1.png", 1, 8, 0.1],
-						["Graphics/Rain/RainVert2.png", 1, 8, 0.1],
+#						["Graphics/Rain/RainVert1.png", 1, 8, 0, 0.1],
+						["Graphics/Rain/RainVert2.png", 1, 8, 0, 0.1],
 					]
 			},
 			{
@@ -25,15 +25,15 @@ def makeGraphics(manager, renlayer):
 				"States": [Controller.state_pool],
 				"Frames":
 					[
-						["Graphics/Rain/RainPool 1.png", 8, 0, 0.1],
-						["Graphics/Rain/RainPool 2.png", 8, 0, 0.1],
-						["Graphics/Rain/RainPool 1.png", 8, 0, 0.1],
-						["Graphics/Rain/RainPool 2.png", 8, 0, 0.1],
-						["Graphics/Rain/RainPool 1.png", 8, 0, 0.1],
-						["Graphics/Rain/RainPool 2.png", 8, 0, 0.1],
-						["Graphics/Rain/RainPool 3.png", 8, 0, 0.1],
-						["Graphics/Rain/RainPool 4.png", 8, 0, 0.1],
-						["Graphics/Rain/RainPool 5.png", 8, 0, 0.1],
+						["Graphics/Rain/RainPool 1.png", 8, 0, 0, 0.1],
+						["Graphics/Rain/RainPool 2.png", 8, 0, 0, 0.1],
+						["Graphics/Rain/RainPool 1.png", 8, 0, 0, 0.1],
+						["Graphics/Rain/RainPool 2.png", 8, 0, 0, 0.1],
+						["Graphics/Rain/RainPool 1.png", 8, 0, 0, 0.1],
+						["Graphics/Rain/RainPool 2.png", 8, 0, 0, 0.1],
+						["Graphics/Rain/RainPool 3.png", 8, 0, 0, 0.1],
+						["Graphics/Rain/RainPool 4.png", 8, 0, 0, 0.1],
+						["Graphics/Rain/RainPool 5.png", 8, 0, 0, 0.1],
 
 					]
 			},

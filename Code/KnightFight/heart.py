@@ -14,8 +14,8 @@ def makeGraphics(manager, renlayer):
 						"States": [entity.eStates.stationary],
 						"Frames":
 							[
-								["Graphics/Heart/Heart 7.png", 4, 4, 0.9],
-								["Graphics/Heart/Heart 6.png", 4, 4, 0.1],
+								["Graphics/Heart/Heart 7.png", 4, 0, 4, 0.9],
+								["Graphics/Heart/Heart 6.png", 4, 0, 4, 0.1],
 							],
 					},
 					{
@@ -24,13 +24,13 @@ def makeGraphics(manager, renlayer):
 						"States": [entity.eStates.appear],
 						"Frames":
 							[
-								["Graphics/Heart/Heart 1.png", 4, 4, 0.2],
-								["Graphics/Heart/Heart 2.png", 4, 4, 0.2],
-								["Graphics/Heart/Heart 3.png", 4, 4, 0.2],
-								["Graphics/Heart/Heart 4.png", 4, 4, 0.2],
-								["Graphics/Heart/Heart 5.png", 4, 4, 0.3],
-								["Graphics/Heart/Heart 6.png", 4, 4, 0.4],
-								["Graphics/Heart/Heart 7.png", 4, 4, 0.5],
+								["Graphics/Heart/Heart 1.png", 4, 0, 4, 0.2],
+								["Graphics/Heart/Heart 2.png", 4, 0, 4, 0.2],
+								["Graphics/Heart/Heart 3.png", 4, 0, 4, 0.2],
+								["Graphics/Heart/Heart 4.png", 4, 0, 4, 0.2],
+								["Graphics/Heart/Heart 5.png", 4, 0, 4, 0.3],
+								["Graphics/Heart/Heart 6.png", 4, 0, 4, 0.4],
+								["Graphics/Heart/Heart 7.png", 4, 0, 4, 0.5],
 							],
 					},
 					{
@@ -39,14 +39,14 @@ def makeGraphics(manager, renlayer):
 						"States": [entity.eStates.fade],
 						"Frames":
 							[
-								["Graphics/Heart/Heart 7.png", 4, 4, 0.5],
-								["Graphics/Heart/Heart 6.png", 4, 4, 0.4],
-								["Graphics/Heart/Heart 5.png", 4, 4, 0.3],
-								["Graphics/Heart/Heart 4.png", 4, 4, 0.2],
-								["Graphics/Heart/Heart 3.png", 4, 4, 0.2],
-								["Graphics/Heart/Heart 2.png", 4, 4, 0.2],
-								["Graphics/Heart/Heart 1.png", 4, 4, 0.2],
-								["Graphics/Heart/Heart 0.png", 4, 4, 0.2],
+								["Graphics/Heart/Heart 7.png", 4, 0, 4, 0.5],
+								["Graphics/Heart/Heart 6.png", 4, 0, 4, 0.4],
+								["Graphics/Heart/Heart 5.png", 4, 0, 4, 0.3],
+								["Graphics/Heart/Heart 4.png", 4, 0, 4, 0.2],
+								["Graphics/Heart/Heart 3.png", 4, 0, 4, 0.2],
+								["Graphics/Heart/Heart 2.png", 4, 0, 4, 0.2],
+								["Graphics/Heart/Heart 1.png", 4, 0, 4, 0.2],
+								["Graphics/Heart/Heart 0.png", 4, 0, 4, 0.2],
 							],
 					},
 				]

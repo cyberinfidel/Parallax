@@ -15,27 +15,27 @@ def makeGraphics(renlayer):
 			"Template": graphics.MultiImage,
 			"RenderLayer": renlayer,
 			"Images": [
-				["Graphics/FightCourtyard.png", 0, 136, 0],
-				["Graphics/BackLeft.png", 0, 15, 0],
-				["Graphics/BackRight.png", -289, 15, 0]
+				["Graphics/FightCourtyard.png", 0, 0, 136, 0],
+				["Graphics/BackLeft.png", 0, -44, 60, 0],
+				["Graphics/BackRight.png", -289, -44, 130, 0]
 		]
 		}
 
-def backLGraphics(renlayer):
-	return {
-			"Name": "Background",
-			"Template": graphics.SingleImage,
-			"RenderLayer": renlayer,
-			"Image": ["Graphics/BackLeft.png", 0, 50, 0]
-		}
-
-def backRGraphics(renlayer):
-	return {
-			"Name": "Background",
-			"Template": graphics.SingleImage,
-			"RenderLayer": renlayer,
-			"Image": ["Graphics/BackRight.png", 0, 50, 0]
-		}
+# def backLGraphics(renlayer):
+# 	return {
+# 			"Name": "Background",
+# 			"Template": graphics.SingleImage,
+# 			"RenderLayer": renlayer,
+# 			"Image": ["Graphics/BackLeft.png", 0, 0, 50, 0]
+# 		}
+#
+# def backRGraphics(renlayer):
+# 	return {
+# 			"Name": "Background",
+# 			"Template": graphics.SingleImage,
+# 			"RenderLayer": renlayer,
+# 			"Image": ["Graphics/BackRight.png", 0, 0, 50, 0]
+# 		}
 
 def restrictToArena(pos, vel):
 	# stop running through walls at either side

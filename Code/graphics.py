@@ -199,13 +199,14 @@ class SingleImage(Component):
 		self.image = self.rl.addImage(data["Image"][0])
 		self.origin_x = data["Image"][1]
 		self.origin_y = data["Image"][2]
+		self.origin_z = data["Image"][3]
 		self.name = data["Name"]
 
 	def getImage(self):
 		return self.image
 
 	def draw(self, data, common_data):
-		return self.rl.queueImage(self.image, common_data.pos.x - self.origin_x, common_data.pos.y, common_data.pos.z + self.origin_y)
+		return self.rl.queueImage(self.image, common_data.pos.x - self.origin_x, common_data.pos.y + self.origin_y, common_data.pos.z + self.origin_z)
 
 	def hasShadow(self):
 		return False
@@ -220,14 +221,14 @@ class MultiImage(Component):
 		self.rl = data['RenderLayer']
 		self.images = []
 		for image in data["Images"]:
-			self.images.append(AnimFrame(self.rl.addImage(image[0]), image[1], image[2],0))
+			self.images.append(AnimFrame(self.rl.addImage(image[0]), image[1], image[2], image[3], 0))
 
 	def getImage(self):
 		return self.image
 
 	def draw(self, data, common_data):
 		for image in self.images:
-			self.rl.queueImage(image.image, common_data.pos.x - image.origin_x, common_data.pos.y, common_data.pos.z + image.origin_y)
+			self.rl.queueImage(image.image, common_data.pos.x - image.origin_x, common_data.pos.y + image.origin_y, common_data.pos.z + image.origin_z)
 		return True
 
 	def hasShadow(self):
@@ -258,7 +259,7 @@ class SingleAnim(Component):
 
 	def draw(self, data, common_data):
 		frame = self.anim[0]
-		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, common_data.pos.y, common_data.pos.z + frame.origin_y)
+		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, common_data.pos.y + frame.origin_y, common_data.pos.z + frame.origin_z)
 
 	def hasShadow(self):
 		return False
@@ -305,7 +306,7 @@ class MultiAnim(Component):
 	def draw(self, data, common_data):
 		try:
 			frame = self.anims[data.current_anim].getCurrentFrame(data)
-			return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, common_data.pos.y, common_data.pos.z + frame.origin_y)
+			return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, common_data.pos.y + frame.origin_y, common_data.pos.z + frame.origin_z)
 		except Exception as e:
 			log(e)
 			exit(1)
@@ -335,7 +336,7 @@ class Anim(object):
 
 	def addFrames(self, render_layer, frames):
 		for frame in frames:
-			self.frames.append(AnimFrame(render_layer.addImage(frame[0]), frame[1], frame[2], frame[3]))
+			self.frames.append(AnimFrame(render_layer.addImage(frame[0]), frame[1], frame[2], frame[3], frame[4]))
 
 	def getCurrentFrame(self, data):
 		return self.frames[data.current_frame]
@@ -396,10 +397,11 @@ class AnimRandom(Anim):
 
 # container for a single frame of animation
 class AnimFrame:
-	def __init__(self, image, origin_x, origin_y, time):
+	def __init__(self, image, origin_x, origin_y, origin_z, time):
 		self.image = image
 		self.origin_x = origin_x
 		self.origin_y = origin_y
+		self.origin_z = origin_z
 		self.time = time
 
 def runTests():
