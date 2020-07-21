@@ -7,14 +7,15 @@ import sdl2.mouse
 # 	add path to Parallax
 sys.path.insert(1, '../')
 # actually import files
-from game import Game, eGameModes
-from entity import eStates
-from collision import CollisionManager
+import game
+import entity
+import collision
+import vector
 from vector import Vec3, rand_num
 import controller
 import graphics
 import sound
-from director import DirectorController, Delay, SpawnEntity, EndGame
+import director
 
 
 # disable to remove logging
@@ -29,11 +30,11 @@ import Macaroon as macaroon
 import Oreo as oreo
 import background as back
 import plat
-from title import titleGraphics, TitleController, eTitleStates
-from rain import rainGraphics, RainController
+import title
+import rain
 import butterfly as butterfly
 
-class BunnyAdventure(Game):
+class BunnyAdventure(game.Game):
 	def __init__(self):
 		# do bare minimum to set up
 		# most set up is in first update
@@ -43,7 +44,7 @@ class BunnyAdventure(Game):
 		self.logical_size_x = self.res_x
 		self.logical_size_y = self.res_y
 
-		self.collision_manager = CollisionManager(game=self)  # TODO: should this be a ComponentManager() like the others?
+		self.collision_manager = collision.CollisionManager(game=self)  # TODO: should this be a ComponentManager() like the others?
 
 		##########################
 		# set up graphics layers #
@@ -61,14 +62,14 @@ class BunnyAdventure(Game):
 		# set up background and title #
 		###############################
 
-		title_graphics = self.graphics_manager.makeTemplate(titleGraphics(self.title_renlayer))
-		title_controller = self.controller_manager.makeTemplate({"Template": TitleController})
+		title_graphics = title.makeGraphics(self.graphics_manager, self.title_renlayer)
+		title_controller = title.makeController(self.controller_manager)
 		self.title_t = self.entity_manager.makeEntityTemplate(graphics=title_graphics, controller=title_controller)
 		self.title = self.requestNewEntity(entity_template=self.title_t, pos=Vec3(80, 400, -50), parent=self, name="Title")
 		self.title.setGamePad(self.input.getGamePad(0))
 
 		self.raining = False
-		self.setGameMode(eGameModes.title)
+		self.setGameMode(game.eGameModes.title)
 
 		self.back_t = self.entity_manager.makeEntityTemplate(graphics=back.makeGraphics(self.graphics_manager,self.renlayer))
 		self.platform_t = self.entity_manager.makeEntityTemplate(graphics=plat.makeGraphics(self.graphics_manager,self.renlayer),
@@ -82,31 +83,31 @@ class BunnyAdventure(Game):
 		# make components #
 		###################
 		# Graphics Templates
-		raingraphics = self.graphics_manager.makeTemplate(rainGraphics(self.renlayer))
-		macaroon_graphics = self.graphics_manager.makeTemplate(macaroon.graphics(self.renlayer))
-		oreo_graphics = self.graphics_manager.makeTemplate(oreo.graphics(self.renlayer))
+		rain_graphics = rain.makeGraphics(self.graphics_manager,self.renlayer)
+		macaroon_graphics = macaroon.makeGraphics(self.graphics_manager,self.renlayer)
+		oreo_graphics = oreo.makeGraphics(self.graphics_manager,self.renlayer)
 
 		# Sound Templates
 		macaroon_sounds = False #self.sound_manager.makeTemplate(heroSounds(self.sound_mixer))
 		oreo_sounds = False #self.sound_manager.makeTemplate(heroSounds(self.sound_mixer))
 
 		# Controller Templates
-		raincontroller = self.controller_manager.makeTemplate({"Template": RainController})
-		macaroon_controller = self.controller_manager.makeTemplate({"Template": macaroon.Controller})
-		oreo_controller = self.controller_manager.makeTemplate({"Template": oreo.Controller})
-		bfly_controller = self.controller_manager.makeTemplate({"Template": butterfly.Controller})
+		rain_controller = rain.makeController(self.controller_manager)
+		macaroon_controller = macaroon.makeController(self.controller_manager)
+		oreo_controller = oreo.makeController(self.controller_manager)
+		bfly_controller = butterfly.makeController(self.controller_manager)
 
 		# Collider Templates
-		macaroon_collider = self.collision_manager.makeTemplate({"Template": macaroon.Collider})
-		oreo_collider = self.collision_manager.makeTemplate({"Template": oreo.Collider})
+		macaroon_collider = macaroon.makeCollider(self.collision_manager)
+		oreo_collider = oreo.makeCollider(self.collision_manager)
 
 		#########################################
 		# Make entity templates from components #
 		#########################################
-		self.rain_t = self.entity_manager.makeEntityTemplate(graphics=raingraphics, controller=raincontroller)
+		self.rain_t = self.entity_manager.makeEntityTemplate(graphics=rain_graphics, controller=rain_controller)
 		self.bfly_templates =[]
-		for bfly_graphics in [butterfly.graphics, butterfly.graphics2, butterfly.graphics3]:
-			self.bfly_templates.append(self.entity_manager.makeEntityTemplate(graphics=self.graphics_manager.makeTemplate(bfly_graphics(self.renlayer)), controller=bfly_controller))
+		for bfly_graphics in [butterfly.makeGraphics, butterfly.makeGraphics2, butterfly.makeGraphics3]:
+			self.bfly_templates.append(self.entity_manager.makeEntityTemplate(graphics=bfly_graphics(self.graphics_manager,self.renlayer), controller=bfly_controller))
 
 		self.macaroon_t = self.entity_manager.makeEntityTemplate(graphics=macaroon_graphics,
 																												 sounds = macaroon_sounds,
@@ -121,8 +122,7 @@ class BunnyAdventure(Game):
 																												 )
 
 		# director
-		director_controller = self.controller_manager.makeTemplate({"Template":DirectorController})
-		self.director_t = self.entity_manager.makeEntityTemplate(controller=director_controller)
+		self.director_t = self.entity_manager.makeEntityTemplate(controller=director.makeController(self.controller_manager))
 	# end init()
 
 
@@ -132,15 +132,15 @@ class BunnyAdventure(Game):
 
 	def update(self, dt):
 
-		if self.game_mode==eGameModes.init:
+		if self.game_mode==game.eGameModes.init:
 
 			pass
 
 ##################################################
-		elif self.game_mode==eGameModes.title:
+		elif self.game_mode==game.eGameModes.title:
 			pass
 ##################################################
-		elif self.game_mode==eGameModes.start:
+		elif self.game_mode==game.eGameModes.start:
 			# set up new game and clean up anything from last game
 			self.num_monsters = 0
 			self.killPlayEntities()
@@ -154,20 +154,20 @@ class BunnyAdventure(Game):
 					self.platform = self.requestNewEntity(entity_template=self.platform_t, pos=Vec3(300+n/2, 50+m, n/5 - 5), parent=self, name="platform")
 
 			# make bunnies
-			self.macaroon = self.requestNewEntity(entity_template=self.macaroon_t, pos=Vec3(190, 60, 50), parent=False, name="Macaroon")
-			self.macaroon.setGamePad(self.input.getGamePad(0))
 			self.oreo = self.requestNewEntity(entity_template=self.oreo_t, pos=Vec3(500, 60, 0), parent=False, name="Oreo")
 			self.oreo.setGamePad(self.input.getGamePad(1))
+			self.macaroon = self.requestNewEntity(entity_template=self.macaroon_t, pos=Vec3(190, 60, 50), parent=False, name="Macaroon")
+			self.macaroon.setGamePad(self.input.getGamePad(0))
 			self.control_macaroon = True
 
 
 			self.rain_cooldown = 500
 			self.restart_cooldown=60
-			self.setGameMode(eGameModes.play)
+			self.setGameMode(game.eGameModes.play)
 		##################################################
-		elif self.game_mode==eGameModes.play:
+		elif self.game_mode==game.eGameModes.play:
 
-			if (rand_num(10) == 0 and len(self.drawables)<5):
+			if (rand_num(10) == 0 and len(self.drawables)<55):
 				bfly = self.entity_manager.makeEntity(self.bfly_templates[rand_num(3)])
 				bfly.setPos(Vec3(rand_num(self.res_x), rand_num(self.res_y), 500))
 				self.drawables.append(bfly)
@@ -177,7 +177,7 @@ class BunnyAdventure(Game):
 			if False:#self.raining:
 				if (rand_num(20)==0):
 					rain = self.entity_manager.makeEntity(self.rain_t)
-					rain.setState(RainController.state_fall)
+					rain.setState(rain.Controller.state_fall)
 					rain.setPos(Vec3(rand_num(1920), rand_num(270), 500))
 					self.drawables.append(rain)
 					self.updatables.append(rain)
@@ -186,41 +186,41 @@ class BunnyAdventure(Game):
 				self.rain_cooldown=rand_num(500)+500
 				self.raining = not self.raining
 
-			# if self.hero.getState()==eStates.dead:
-			# 	self.setGameMode(eGameModes.game_over)
+			# if self.hero.getState()==entity.eStates.dead:
+			# 	self.setGameMode(game.eGameModes.game_over)
 			# 	self.restart_cooldown=3
 
 
 
 		####################################################
 
-		elif self.game_mode==eGameModes.game_over:
-			self.director.setState(eStates.dead)
+		elif self.game_mode==game.eGameModes.game_over:
+			self.director.setState(entity.eStates.dead)
 			self.restart_cooldown-=dt
-			self.title.setState(eTitleStates.game_over)
+			self.title.setState(title.eTitlentity.eStates.game_over)
 			if self.restart_cooldown<=0:
-				self.setGameMode(eGameModes.title)
+				self.setGameMode(game.eGameModes.title)
 				self.cleanUpDead()
 
 		####################################################
 
-		elif self.game_mode==eGameModes.win:
+		elif self.game_mode==game.eGameModes.win:
 			self.restart_cooldown-=dt
 			if self.restart_cooldown<=0:
-				self.setGameMode(eGameModes.title)
+				self.setGameMode(game.eGameModes.title)
 				self.cleanUpDead()
 
 		####################################################
 
-		elif self.game_mode==eGameModes.quit:
+		elif self.game_mode==game.eGameModes.quit:
 			self.quit_cooldown-=dt
-			self.title.setState(eTitleStates.quit)
+			self.title.setState(title.eTitleStates.quit)
 			if self.quit_cooldown<=0:
 				self.running=False
 				return
 
 		# Always do this, unless paused:
-		if self.game_mode!=eGameModes.paused:
+		if self.game_mode!=game.eGameModes.paused:
 			for index, updatable in reversed(list(enumerate(self.updatables))):
 				updatable.update(dt)
 			for audible in self.audibles:
@@ -236,15 +236,15 @@ class BunnyAdventure(Game):
 # end update() #################################################################
 
 	def cleanUpDead(self):
-		self.updatables[:] = [x for x in self.updatables if x.getState() != eStates.dead]
+		self.updatables[:] = [x for x in self.updatables if x.getState() != entity.eStates.dead]
 		self.collision_manager.cleanUpDead()
-		self.drawables[:] = [x for x in self.drawables if x.getState() != eStates.dead]
-		self.audibles[:] = [x for x in self.audibles if x.getState() != eStates.dead]
+		self.drawables[:] = [x for x in self.drawables if x.getState() != entity.eStates.dead]
+		self.audibles[:] = [x for x in self.audibles if x.getState() != entity.eStates.dead]
 
 	def killPlayEntities(self):
 		for updatable in self.updatables:
 			if not (updatable is self.title):
-				updatable.common_data.state = eStates.dead
+				updatable.common_data.state = entity.eStates.dead
 
 
 	def requestTarget(self,pos):
@@ -263,7 +263,7 @@ class BunnyAdventure(Game):
 
 	def draw(self):
 
-		if self.game_mode==eGameModes.play:
+		if self.game_mode==game.eGameModes.play:
 			#########################
 			# scroll and scale view #
 			# Here be Dragons...    #
@@ -314,7 +314,7 @@ class BunnyAdventure(Game):
 	def reportMonsterDeath(self):
 		self.num_monsters-=1
 		# if self.num_monsters<=0:
-		# 	self.setGameMode(eGameModes.win)
+		# 	self.setGameMode(game.eGameModes.win)
 		# 	self.restart_cooldown = 6
 
 	def requestNewEnemy(self,
@@ -337,9 +337,9 @@ class BunnyAdventure(Game):
 	def KFEvents(self):
 		return[
 				# wait a bit
-				Delay(2),
+				director.Delay(2),
 			# wait a bit
-				Delay(0.7),
+				director.Delay(0.7),
 				# EndGame()
 			]
 

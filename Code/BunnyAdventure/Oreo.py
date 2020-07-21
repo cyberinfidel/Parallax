@@ -49,8 +49,8 @@ def sounds(mixer):
 			]
 	}
 
-def graphics(renlayer):
-	return {
+def makeGraphics(manager, renlayer):
+	return manager.makeTemplate( {
 		"Name": "Bunny Animations",
 		"Template": MultiAnim,
 		"RenderLayer": renlayer,
@@ -176,9 +176,10 @@ def graphics(renlayer):
 			},
 		]
 
-	}
+	})
 
-
+def makeController(manager):
+	return manager.makeTemplate({"Template": Controller})
 class Controller(controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
@@ -403,18 +404,18 @@ class Controller(controller.Controller):
 		# background.restrictToArena(common_data.pos, data.vel)
 
 
-	def receiveCollision(self,A, B):
+	def receiveCollision(self,A, message):
 		# log("Hero hit: "+message["name"])
-		if B.collider:
-			if B.collider_data.impassable:
+		if message:
+			if message.impassable:
 				# move out of the way
 				pos = A.common_data.pos
 				dim = A.common_data.entity.collider_data.dim
 				orig = A.common_data.entity.collider_data.orig
 
-				B_pos = B.common_data.pos
-				B_dim = B.collider_data.dim
-				B_orig = B.collider_data.orig
+				B_pos = message.source.common_data.pos
+				B_dim = message.source.collider_data.dim
+				B_orig = message.source.collider_data.orig
 
 				landed = False
 				# z
@@ -461,7 +462,8 @@ class Controller(controller.Controller):
 						if landed:
 							A.controller_data.jump = False
 
-
+def makeCollider(manager):
+	return manager.makeTemplate({"Template": Collider})
 class Collider(collision.Collider):
 	class Data(object):
 		def __init__(self, common_data, init=False):
@@ -473,15 +475,19 @@ class Collider(collision.Collider):
 			self.orig = Vec3(15,4,0)
 			self.absorb = 3
 			self.impassable = True
+			self.radius = 10.0
+			self.mass = 10.0
 
 	def __init__(self, game, data):
 		super(collision.Collider, self).__init__(game)
 		# global static data to all of HeroCollider components
-		self.radius = 10.0
-		self.mass = 10.0
 
-	def getRadius(self):
-		return self.radius
+	def getCollisionMessage(self, data, common_data):
+		return(collision.Message(
+			source=common_data.entity,
+			impassable=data.impassable
+		))
+
 
 
 

@@ -22,30 +22,19 @@ class Controller(controller.Controller):
 
 		controller.basic_physics(common_data.pos, data.vel)
 
-	def receiveCollision(self, A, B):
+	def receiveCollision(self, A, message):
 		# scenery doesn't react to collisions
 		pass
 
 
 
-def makeGraphics(graphics_manager, renlayer):
-	# return graphics_manager.makeTemplate({
-	# 		"Name": "Platform",
-	# 		"Template": graphics.SingleImage,
-	# 		"RenderLayer": renlayer,
-	# 		"Image": ["Graphics/Platform/TestPlatform50x50.png", 25, 35, 0]
-	# })
-
-	return graphics_manager.makeTemplate({
+def makeGraphics(manager, renlayer):
+	return manager.makeTemplate({
 			"Name": "Platform",
-			"Template": graphics.MultiImage,
+			"Template": graphics.SingleImage,
 			"RenderLayer": renlayer,
-			"Images": [
-				# ["Graphics/Platform/TestPlatform50x12.png", 25, 39],
-				# ["Graphics/Platform/TestPlatform50x12.png", 25, 27],
-				# ["Graphics/Platform/TestPlatform50x12.png", 25, 15],
+			"Image":
 				["Graphics/Platform/TestPlatform50x12.png", 25, 3]
-			]
 		})
 
 
@@ -74,7 +63,6 @@ class Collider(collision.Collider):
 				pass
 			self.dim = Vec3(50,10,30)
 			self.orig = Vec3(25,5,20)
-			self.impassable = True
 
 	def __init__(self, game, data):
 		super(Collider, self).__init__(game)
@@ -84,7 +72,5 @@ class Collider(collision.Collider):
 
 	def getCollisionMessage(self, data, common_data):
 		return(collision.Message(source=common_data.entity,
-														 absorb=1000,
-														 impassable=True,
-														 platform = True))
+														 impassable=True))
 

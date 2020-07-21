@@ -1,6 +1,6 @@
 from entity import eStates
 from game_pad import eActions
-from controller import Controller
+import controller
 from graphics import MultiAnim, AnimNoLoop
 from game import eGameModes
 
@@ -17,8 +17,8 @@ class eTitleStates(enum.IntEnum):
 	numTitleStates = 8
 
 
-def titleGraphics(renlayer):
-	return{
+def makeGraphics(manager, renlayer):
+	return manager.makeTemplate({
 			"Name": "Title Animations",
 			"Template": MultiAnim,
 			"RenderLayer": renlayer,
@@ -79,9 +79,11 @@ def titleGraphics(renlayer):
 							],
 					},
 				]
-	}
+	})
 
-class TitleController(Controller):
+def makeController(manager):
+	return manager.makeTemplate({"Template": Controller})
+class Controller(controller.Controller):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -93,7 +95,7 @@ class TitleController(Controller):
 			self.delay = 2
 
 	def __init__(self, game, data):
-		super(TitleController, self).__init__(game)
+		super(Controller, self).__init__(game)
 
 	def update(self, data, common_data, dt):
 #		if self.coolDown(data, dt):

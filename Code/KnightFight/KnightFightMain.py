@@ -13,7 +13,7 @@ from collision import CollisionManager
 from vector import Vec3, rand_num
 import graphics
 import sound
-from director import DirectorController, Delay, SpawnEntity, EndGame
+import director
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -23,14 +23,14 @@ def log(msg, new_line=True):
 		print(msg, end='')
 
 #import Knight Fight files
-from background import backgroundGraphics, BackgroundController, backLGraphics, backRGraphics
-from hero import heroGraphics, heroSounds, HeroController, HeroCollider
-from bat import batGraphics, batSounds, BatController, BatCollider
+import background
+import hero
+import bat
 import goblinarcher
-from rain import rainGraphics, RainController
-from reaper import reaperGraphics, ReaperController, ReaperCollider
-from heart import heartGraphics, HeartIndicatorController
-from title import titleGraphics, TitleController, eTitleStates
+import rain
+import reaper
+import heart
+import title
 import KFdirector
 
 
@@ -57,35 +57,32 @@ class KnightFight(Game):
 		###############################
 		# set up background and title #
 		###############################
-		back_controller = self.controller_manager.makeTemplate(
-					{"Template": BackgroundController, })
+		back_controller = background.makeController(self.controller_manager)
 		back = self.entity_manager.makeEntity(
 			self.entity_manager.makeEntityTemplate(
-				graphics=self.graphics_manager.makeTemplate(backgroundGraphics(self.renlayer)),
+				graphics=self.graphics_manager.makeTemplate(background.makeGraphics(self.renlayer)),
 				controller= back_controller)
 		)
 		back.setPos(Vec3(0.0, 64.0, 0.0))
 		self.drawables.append(back)
 
-		backL = self.entity_manager.makeEntity(
-			self.entity_manager.makeEntityTemplate(
-				graphics=self.graphics_manager.makeTemplate(backLGraphics(self.renlayer)),
-				controller=back_controller)
-		)
-		backL.setPos(Vec3(0.0, 30.0, 0.0))
-		self.drawables.append(backL)
+		# backL = self.entity_manager.makeEntity(
+		# 	self.entity_manager.makeEntityTemplate(
+		# 		graphics=self.graphics_manager.makeTemplate(background.makeLGraphics(self.renlayer)),
+		# 		controller=back_controller)
+		# )
+		# backL.setPos(Vec3(0.0, 30.0, 0.0))
+		# self.drawables.append(backL)
+		#
+		# backR = self.entity_manager.makeEntity(
+		# 	self.entity_manager.makeEntityTemplate(
+		# 		graphics=self.graphics_manager.makeTemplate(backRGraphics(self.renlayer)),
+		# 		controller=back_controller)
+		# )
+		# backR.setPos(Vec3(289.0, 30.0, 0.0))
+		# self.drawables.append(backR)
 
-		backR = self.entity_manager.makeEntity(
-			self.entity_manager.makeEntityTemplate(
-				graphics=self.graphics_manager.makeTemplate(backRGraphics(self.renlayer)),
-				controller=back_controller)
-		)
-		backR.setPos(Vec3(289.0, 30.0, 0.0))
-		self.drawables.append(backR)
-
-		title_graphics = self.graphics_manager.makeTemplate(titleGraphics(self.title_renlayer))
-		title_controller = self.controller_manager.makeTemplate({"Template": TitleController})
-		self.title_t = self.entity_manager.makeEntityTemplate(graphics=title_graphics, controller=title_controller)
+		self.title_t = self.entity_manager.makeEntityTemplate(graphics=title.makeGraphics(self.graphics_manager, self.title_renlayer), controller=title.makeController(self.controller_manager))
 		self.title = self.requestNewEntity(entity_template=self.title_t, pos=Vec3(48, 50, 145), parent=self, name="Title")
 		self.title.setGamePad(self.input.getGamePad(0))
 
@@ -100,30 +97,28 @@ class KnightFight(Game):
 		# make components #
 		###################
 		# Graphics Templates
-		bat_graphics = self.graphics_manager.makeTemplate(batGraphics(self.renlayer))
-		goblin_archer_graphics = self.graphics_manager.makeTemplate(goblinarcher.graphics(self.renlayer))
-		reaper_graphics = self.graphics_manager.makeTemplate(reaperGraphics(self.renlayer))
-		raingraphics = self.graphics_manager.makeTemplate(rainGraphics(self.renlayer))
-		herographics = self.graphics_manager.makeTemplate(heroGraphics(self.renlayer))
-		heartgraphics = self.graphics_manager.makeTemplate(heartGraphics(self.title_renlayer))
+		bat_graphics = bat.makeGraphics(self.graphics_manager, self.renlayer)
+		goblin_archer_graphics = goblinarcher.makeGraphics(self.graphics_manager, self.renlayer)
+		reaper_graphics = reaper.makeGraphics(self.graphics_manager, self.renlayer)
+		herographics = hero.makeGraphics(self.graphics_manager, self.renlayer)
+		heartgraphics = heart.makeGraphics(self.graphics_manager, self.renlayer)
 
 		# Sound Templates
-		hero_sounds = self.sound_manager.makeTemplate(heroSounds(self.sound_mixer))
-		bat_sounds = self.sound_manager.makeTemplate(batSounds(self.sound_mixer))
+		hero_sounds = hero.makeSounds(self.sound_manager, self.sound_mixer)
+		bat_sounds = bat.makeSounds(self.sound_manager, self.sound_mixer)
 
 		# Controller Templates
-		raincontroller = self.controller_manager.makeTemplate({"Template": RainController})
-		herocontroller = self.controller_manager.makeTemplate({"Template": HeroController})
-		bat_controller = self.controller_manager.makeTemplate({"Template": BatController})
-		goblin_archer_controller = self.controller_manager.makeTemplate({"Template": goblinarcher.Controller})
-		reaper_controller = self.controller_manager.makeTemplate({"Template": ReaperController})
-		heart_controller = self.controller_manager.makeTemplate({"Template": HeartIndicatorController})
+		herocontroller = hero.makeController(self.controller_manager)
+		bat_controller = bat.makeController(self.controller_manager)
+		goblin_archer_controller = goblinarcher.makeController(self.controller_manager)
+		reaper_controller = reaper.makeController(self.controller_manager)
+		heart_controller = heart.makeController(self.controller_manager)
 
 		# Collider Templates
-		hero_collider = self.collision_manager.makeTemplate({"Template": HeroCollider})
-		bat_collider = self.collision_manager.makeTemplate({"Template": BatCollider})
-		goblin_archer_collider = self.collision_manager.makeTemplate({"Template": goblinarcher.Collider})
-		reaper_collider = self.collision_manager.makeTemplate({"Template": ReaperCollider})
+		hero_collider = hero.makeCollider(self.collision_manager)
+		bat_collider = bat.makeCollider(self.collision_manager)
+		goblin_archer_collider = goblinarcher.makeCollider(self.collision_manager)
+		reaper_collider = reaper.makeCollider(self.collision_manager)
 
 		#########################################
 		# Make entity templates from components #
@@ -136,7 +131,9 @@ class KnightFight(Game):
 																												collider=goblin_archer_collider)
 		self.reaper_t = self.entity_manager.makeEntityTemplate(graphics=reaper_graphics, controller=reaper_controller,
 																													 collider=reaper_collider)
-		self.rain_t = self.entity_manager.makeEntityTemplate(graphics=raingraphics, controller=raincontroller)
+		self.rain_t = self.entity_manager.makeEntityTemplate(
+			graphics=rain.makeGraphics(self.graphics_manager, self.renlayer),
+			controller=rain.makeController(self.controller_manager))
 		self.hero_t = self.entity_manager.makeEntityTemplate(graphics=herographics,
 																												 sounds = hero_sounds,
 																												 controller=herocontroller,
@@ -147,8 +144,7 @@ class KnightFight(Game):
 		self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heartgraphics, controller=heart_controller)
 
 		# director
-		director_controller = self.controller_manager.makeTemplate({"Template":DirectorController})
-
+		director_controller = director.makeController(self.controller_manager)
 
 		self.director_t = self.entity_manager.makeEntityTemplate(controller=director_controller)
 	# end init()
@@ -203,11 +199,11 @@ class KnightFight(Game):
 			# rain
 			if self.raining:
 				if (rand_num(10)==0):
-					rain = self.entity_manager.makeEntity(self.rain_t)
-					rain.setState(RainController.state_fall)
-					rain.setPos(Vec3(rand_num(320), rand_num(64), 200))
-					self.drawables.append(rain)
-					self.updatables.append(rain)
+					raindrop = self.entity_manager.makeEntity(self.rain_t)
+					raindrop.setState(rain.eRainStates.state_fall)
+					raindrop.setPos(Vec3(rand_num(320), rand_num(64), 200))
+					self.drawables.append(raindrop)
+					self.updatables.append(raindrop)
 			self.rain_cooldown -=1
 			if self.rain_cooldown<=0:
 				self.rain_cooldown=rand_num(500)+500
@@ -231,7 +227,7 @@ class KnightFight(Game):
 		elif self.game_mode==eGameModes.game_over:
 			self.director.setState(eStates.dead)
 			self.restart_cooldown-=dt
-			self.title.setState(eTitleStates.game_over)
+			self.title.setState(title.eTitleStates.game_over)
 			if self.restart_cooldown<=0:
 				self.setGameMode(eGameModes.title)
 				self.cleanUpDead()
@@ -240,7 +236,7 @@ class KnightFight(Game):
 
 		elif self.game_mode==eGameModes.win:
 			self.restart_cooldown-=dt
-			self.title.setState(eTitleStates.win)
+			self.title.setState(title.eTitleStates.win)
 			if self.restart_cooldown<=0:
 				self.setGameMode(eGameModes.title)
 				self.cleanUpDead()
@@ -249,7 +245,7 @@ class KnightFight(Game):
 
 		elif self.game_mode==eGameModes.quit:
 			self.quit_cooldown-=dt
-			self.title.setState(eTitleStates.quit)
+			self.title.setState(title.eTitleStates.quit)
 			if self.quit_cooldown<=0:
 				self.running=False
 				return

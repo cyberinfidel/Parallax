@@ -1,18 +1,18 @@
 from entity import eStates
-from controller import Controller, basic_physics, restrictToArena
-from graphics import AnimNoLoop, MultiAnim
+import controller
+import graphics
 from vector import Vec3
 
-def rainGraphics(renlayer):
-	return {
+def makeGraphics(manager, renlayer):
+	return manager.makeTemplate( {
 		"Name": "Rain",
-		"Template": MultiAnim,
+		"Template": graphics.MultiAnim,
 		"RenderLayer": renlayer,
 		"Anims": [
 			{
 				"Name": "Rain Drop Falls",
-				"AnimType": AnimNoLoop,
-				"States": [RainController.state_fall],
+				"AnimType": graphics.AnimNoLoop,
+				"States": [Controller.state_fall],
 				"Frames":
 					[
 #						["Graphics/Rain/RainVert1.png", 1, 8, 0.1],
@@ -21,8 +21,8 @@ def rainGraphics(renlayer):
 			},
 			{
 				"Name": "Rain Drop Pool",
-				"AnimType": AnimNoLoop,
-				"States": [RainController.state_pool],
+				"AnimType": graphics.AnimNoLoop,
+				"States": [Controller.state_pool],
 				"Frames":
 					[
 						["Graphics/Rain/RainPool 1.png", 8, 0, 0.1],
@@ -38,9 +38,11 @@ def rainGraphics(renlayer):
 					]
 			},
 		]
-	}
+	})
 
-class RainController(Controller):
+def makeController(manager):
+	return manager.makeTemplate({"Template": Controller})
+class Controller(controller.Controller):
 	# note custom states
 	state_fall = 2
 	state_pool = 3
@@ -56,11 +58,11 @@ class RainController(Controller):
 
 			self.vel = Vec3(0.0,0.0,-3.0)
 			self.cooldown = -1
-			common_data.state = RainController.state_fall
+			common_data.state = Controller.state_fall
 			common_data.new_state = False
 
 	def __init__(self, game, data):
-		super(RainController, self).__init__(game)
+		super(Controller, self).__init__(game)
 
 	def update(self, data, common_data, dt):
 		# deal with things that can interrupt actions e.g. landing
@@ -74,9 +76,9 @@ class RainController(Controller):
 
 		# deal with things that can't interrupt actions that are already happening
 		if not self.coolDown(data, dt):
-			if common_data.state == RainController.state_pool:
+			if common_data.state == Controller.state_pool:
 				self.setState(data, common_data, eStates.dead)
 
-		basic_physics(common_data.pos,data.vel)
+		controller.basic_physics(common_data.pos,data.vel)
 
 

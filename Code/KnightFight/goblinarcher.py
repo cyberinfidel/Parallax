@@ -1,22 +1,22 @@
-from entity import eStates
+import entity
 from vector import Vec3, rand_num
-from controller import Controller, basic_gravity, basic_physics, restrictToArena, friction
-from collision import Collider, Message
-from graphics import AnimLoop, AnimNoLoop, MultiAnim, AnimSingle
-
+import controller
+import collision
+import graphics
+import background
 import arrow
 
-def graphics(renlayer):
-	return {
+def makeGraphics(manager, renlayer):
+	return manager.makeTemplate({
 			"Name": "Goblin Archer",
-			"Template": MultiAnim,
+			"Template": graphics.MultiAnim,
 			"RenderLayer": renlayer,
 			"Anims":
 				[
 			{
 				"Name": "Firing Arrow",
-				"AnimType": AnimLoop,
-				"States": [eStates.attackSmallLeft],
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.attackSmallLeft],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/GoblinArcher 08.png", 22, 36, 0.1],
@@ -33,8 +33,8 @@ def graphics(renlayer):
 			},
 			{
 				"Name": "Firing Arrow",
-				"AnimType": AnimLoop,
-				"States": [eStates.attackSmallRight],
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.attackSmallRight],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/Right/GoblinArcher 08.png", 22, 36, 0.1],
@@ -51,8 +51,8 @@ def graphics(renlayer):
 			},
 			{
 				"Name": "Standing",
-				"AnimType": AnimLoop,
-				"States": [eStates.stationary],
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.stationary],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/GoblinArcher 08.png", 22, 36, 0.04],
@@ -60,8 +60,8 @@ def graphics(renlayer):
 			},
 			{
 				"Name": "Standing",
-				"AnimType": AnimLoop,
-				"States": [eStates.standLeft],
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.standLeft],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/GoblinArcher 08.png", 22, 36, 0.04],
@@ -69,8 +69,8 @@ def graphics(renlayer):
 			},
 			{
 				"Name": "Standing",
-				"AnimType": AnimLoop,
-				"States": [eStates.standRight],
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.standRight],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/Right/GoblinArcher 08.png", 22, 36, 0.04],
@@ -78,8 +78,8 @@ def graphics(renlayer):
 			},
 			{
 				"Name": "Simple Fall Left",
-				"AnimType": AnimNoLoop,
-				"States": [eStates.fallLeft],
+				"AnimType": graphics.AnimNoLoop,
+				"States": [entity.eStates.fallLeft],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/GoblinArcherDies 1.png", 22, 36, 0.5],
@@ -88,8 +88,8 @@ def graphics(renlayer):
 			},
 			{
 				"Name": "Simple Fall Right",
-				"AnimType": AnimNoLoop,
-				"States": [eStates.fallRight],
+				"AnimType": graphics.AnimNoLoop,
+				"States": [entity.eStates.fallRight],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/Right/GoblinArcherDies 1.png", 22, 36, 0.5],
@@ -98,8 +98,8 @@ def graphics(renlayer):
 			},
 			{
 				"Name": "Simple Hurt Left",
-				"AnimType": AnimLoop,
-				"States": [eStates.hurtLeft],
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.hurtLeft],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/GoblinArcherDies 1.png", 22, 36, 0.5],
@@ -107,8 +107,8 @@ def graphics(renlayer):
 			},
 			{
 				"Name": "Simple HurtRight",
-				"AnimType": AnimLoop,
-				"States": [eStates.hurtRight],
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.hurtRight],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/Right/GoblinArcherDies 1.png", 22, 36, 0.5],
@@ -116,17 +116,19 @@ def graphics(renlayer):
 			},
 			{
 				"Name": "Goblin Archer Shadow",
-				"AnimType": AnimSingle,
-				"States": [eStates.shadow],
+				"AnimType": graphics.AnimSingle,
+				"States": [entity.eStates.shadow],
 				"Frames":
 					[
 						["Graphics/shadow.png", 16, 4, 0.3],
 					],
 			},
 			]
-		}
+		})
 
-class Controller(Controller):
+def makeController(manager):
+	return manager.makeTemplate({"Template": Controller})
+class Controller(controller.Controller):
 
 	class Data(object):
 		def __init__(self, common_data, init=False):
@@ -144,7 +146,7 @@ class Controller(Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
 		# values global to all instances
-		self.invincible_states = (eStates.dead, eStates.fallLeft, eStates.fallRight)
+		self.invincible_states = (entity.eStates.dead, entity.eStates.fallLeft, entity.eStates.fallRight)
 
 		arrow_controller = self.game.controller_manager.makeTemplate({"Template": arrow.Controller})
 		arrow_collider = self.game.collision_manager.makeTemplate({"Template": arrow.Collider})
@@ -162,7 +164,7 @@ class Controller(Controller):
 																							 name="Goblin archer arrow")
 		arrow.collider_data.force = 0#Vec3(-1 if flippedX else 1,0,0)
 		arrow.collider_data.hero_damage = 1
-		arrow.common_data.state = (eStates.runLeft if flippedX else eStates.runRight)
+		arrow.common_data.state = (entity.eStates.runLeft if flippedX else entity.eStates.runRight)
 		arrow.controller_data.vel = Vec3(-7 if flippedX else 7,0,1)
 
 	def update(self, data, common_data, dt):
@@ -170,33 +172,35 @@ class Controller(Controller):
 		fire_cool = 1.4
 
 		if self.coolDown(data, dt):
-			if data.fired and (common_data.state not in [eStates.fallLeft,eStates.fallRight, eStates.dead]):
+			if data.fired and (common_data.state not in [entity.eStates.fallLeft,entity.eStates.fallRight, entity.eStates.dead]):
 				if data.cooldown<0.9:
 					self.shoot(data,common_data,data.facingleft)
 					data.fired = False
 		else:
 			if data.health <= 0:
-				self.setState(data, common_data, eStates.dead)
+				self.setState(data, common_data, entity.eStates.dead)
 				return
 			# fire at hero if in range
 			target = common_data.game.requestTarget(common_data.pos)
 			data.facingleft = (target.x<common_data.pos.x)
 			if abs(target.x-common_data.pos.x)<200 and abs(target.y-common_data.pos.y)<20:
-				self.setState(data, common_data, eStates.attackSmallLeft if data.facingleft else eStates.attackSmallRight)
+				self.setState(data, common_data, entity.eStates.attackSmallLeft if data.facingleft else entity.eStates.attackSmallRight)
 				data.fired = True
 				data.cooldown = fire_cool
 			else:
-				self.setState(data, common_data, eStates.standLeft if data.facingleft else eStates.standRight)
+				self.setState(data, common_data, entity.eStates.standLeft if data.facingleft else entity.eStates.standRight)
 				data.cooldown = rand_num(1) + 2
 
-		friction(data.vel)
-		basic_gravity(data.vel)
-		basic_physics(common_data.pos,data.vel)
-		restrictToArena(common_data.pos, data.vel)
+		controller.friction(data.vel)
+		controller.basic_gravity(data.vel)
+		controller.basic_physics(common_data.pos,data.vel)
+		background.restrictToArena(common_data.pos, data.vel)
 
 
 
-	def receiveCollision(self, data, common_data, message):
+	def receiveCollision(self, this_entity, message):
+		data = this_entity.controller_data
+		common_data = this_entity.common_data
 		if message:
 			# if message.source.common_data.name !="Reaper":
 			# 	log("Reaper hit by " + message.source.common_data.name)
@@ -209,18 +213,20 @@ class Controller(Controller):
 					data.health -= message.damage
 					if data.facingleft:
 						if data.health <= 0:
-							self.setState(data, common_data, eStates.fallLeft, fall_cool)
+							self.setState(data, common_data, entity.eStates.fallLeft, fall_cool)
 							common_data.game.reportMonsterDeath()
 						else:
-							self.setState(data, common_data, eStates.hurtLeft, hurt_cool)
+							self.setState(data, common_data, entity.eStates.hurtLeft, hurt_cool)
 					else:
 						if data.health <= 0:
-							self.setState(data, common_data, eStates.fallRight, fall_cool)
+							self.setState(data, common_data, entity.eStates.fallRight, fall_cool)
 							common_data.game.reportMonsterDeath()
 						else:
-							self.setState(data, common_data, eStates.hurtRight, hurt_cool)
+							self.setState(data, common_data, entity.eStates.hurtRight, hurt_cool)
 
-class Collider(Collider):
+def makeCollider(manager):
+	return manager.makeTemplate({"Template": Collider})
+class Collider(collision.Collider):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -229,18 +235,17 @@ class Collider(Collider):
 				pass
 			self.dim = Vec3(20,8,16)
 			self.orig = Vec3(10,4,0)
+			self.damage = 1.0
+			self.damage_hero=1
+			self.force = Vec3(0,0,0)
 
 	def __init__(self, game, data):
 		super(Collider, self).__init__(game)
 		# global static data to all of BatCollider components
 		self.radius = 10.0
-		self.damage = 1.0
-
-	def getRadius(self):
-		return self.radius
 
 	def getCollisionMessage(self, data, common_data):
-		return(Message(source=common_data.entity, damage=0, damage_hero=1))
+		return(collision.Message(source=common_data.entity, damage=0, damage_hero=1))
 
 
 

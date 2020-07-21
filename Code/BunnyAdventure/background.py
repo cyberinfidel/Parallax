@@ -2,8 +2,8 @@ from graphics import SingleImage
 import controller
 from vector import Vec3
 
-def makeController(manager):
-	return manager.makeTemplate({"Template": Controller})
+def makeController(manager, template):
+	return manager.makeTemplate({"Template": template})
 class Controller(controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)

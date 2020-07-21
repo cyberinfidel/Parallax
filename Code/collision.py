@@ -15,6 +15,7 @@ class CollisionManager(ComponentManager):
 
 	def __init__(self, game):
 		super(CollisionManager, self).__init__(game)
+		self.odd= True
 
 	def doCollisions(self):
 		if len(self.instances)>1:
@@ -62,19 +63,22 @@ class CollisionManager(ComponentManager):
 
 	def resolveCollision(self, A, B):
 			if A.controller:
-				A.controller.receiveCollision(A,B)
+				A.controller.receiveCollision(A, B.collider.getCollisionMessage(B.collider_data, B.common_data))
 			if B.controller:
-				B.controller.receiveCollision(B,A)
+				B.controller.receiveCollision(B, A.collider.getCollisionMessage(A.collider_data, A.common_data))
 
 
 
 class Collider(Component):
-	def __init__(self, game, damage=0, damage_hero=0, force=Vec3(0,0,0), absorb=0, impassable=False, platform=False):
+	def __init__(self, game):
 		super(Collider, self).__init__(game)
+
+class Message(object):
+	def __init__(self, source, damage=0, damage_hero=0, force=Vec3(0,0,0), absorb=0, impassable=False):
+		self.source = source
 		self.damage = damage
 		self.absorb = absorb
 		self.damage_hero = damage_hero
 		self.force = force
+		self.absorb = absorb
 		self.impassable = impassable
-		self.platform = platform
-

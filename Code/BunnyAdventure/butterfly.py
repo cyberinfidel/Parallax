@@ -2,7 +2,7 @@ import enum
 
 from entity import eStates, eDirections
 from vector import Vec3, rand_num
-from controller import Controller, basic_gravity, basic_physics, friction
+import controller
 import collision
 from graphics import AnimLoop, AnimNoLoop, MultiAnim, AnimSingle
 import sound
@@ -14,8 +14,8 @@ class eEvents(enum.IntEnum):
 
 
 
-def graphics(renlayer):
-	return {
+def makeGraphics(manager, renlayer):
+	return manager.makeTemplate({
 			"Name": "Butterfly",
 			"Template": MultiAnim,
 			"RenderLayer": renlayer,
@@ -45,10 +45,10 @@ def graphics(renlayer):
 					],
 			},
 			]
-		}
+		})
 
-def graphics2(renlayer):
-	return {
+def makeGraphics2(manager, renlayer):
+	return manager.makeTemplate({
 			"Name": "Butterfly",
 			"Template": MultiAnim,
 			"RenderLayer": renlayer,
@@ -78,10 +78,10 @@ def graphics2(renlayer):
 					],
 			},
 			]
-		}
+		})
 
-def graphics3(renlayer):
-	return {
+def makeGraphics3(manager, renlayer):
+	return manager.makeTemplate({
 			"Name": "Butterfly",
 			"Template": MultiAnim,
 			"RenderLayer": renlayer,
@@ -111,8 +111,11 @@ def graphics3(renlayer):
 					],
 			},
 			]
-		}
-class Controller(Controller):
+		})
+
+def makeController(manager):
+	return manager.makeTemplate({"Template": Controller})
+class Controller(controller.Controller):
 
 	class Data(object):
 		def __init__(self, common_data, init=False):
@@ -174,12 +177,12 @@ class Controller(Controller):
 				data.cooldown = 0.2
 
 		if common_data.pos.z>0:
-			friction(data.vel, 0.01)
+			controller.friction(data.vel, 0.01)
 		else:
-			friction(data.vel, 0.1)
+			controller.friction(data.vel, 0.1)
 
-		basic_gravity(data.vel)
-		basic_physics(common_data.pos,data.vel)
+		controller.basic_gravity(data.vel)
+		controller.basic_physics(common_data.pos,data.vel)
 
 		restrictToArena(common_data.pos, data.vel)
 

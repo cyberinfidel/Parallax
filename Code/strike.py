@@ -39,7 +39,7 @@ class Controller(controller.Controller):
 			# finished big hit - otherwise just hang around
 			common_data.state = eStates.dead
 
-	def receiveCollision(self, data, common_data, message=False):
+	def receiveCollision(self, entity, message=False):
 		# Could make it so
 		# if a hit hits then it lasts only for the remainder of that tick
 		# this avoids hitting the same thing multiple times
@@ -64,4 +64,6 @@ class Collider(collision.Collider):
 		super(Collider, self).__init__(game)
 		# global static data to all of components
 
+	def getCollisionMessage(self, data, common_data):
+		return(collision.Message(source=common_data.entity, damage=data.damage, force=data.force, absorb=data.absorb))
 

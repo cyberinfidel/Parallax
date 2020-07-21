@@ -1,18 +1,20 @@
 import enum
 
-from entity import eStates, eDirections
+import entity
+import vector
 from vector import Vec3, rand_num
-from controller import Controller, basic_gravity, basic_physics, restrictToArena, friction
-from collision import Collider, Message
-from graphics import AnimLoop, AnimNoLoop, MultiAnim, AnimSingle
+import controller
+import collision
+import graphics
 import sound
+import background
 
 class eEvents(enum.IntEnum):
 	flap = 0
 	num_events = 1
 
-def batSounds(mixer):
-	return {
+def makeSounds(manager, mixer):
+	return manager.makeTemplate( {
 		"Name": "Bat Sounds",
 		"Template": sound.MultiSound,
 		"Mixer": mixer,
@@ -31,20 +33,20 @@ def batSounds(mixer):
 				}
 
 			]
-	}
+	})
 
 
-def batGraphics(renlayer):
-	return {
+def makeGraphics(manager, renlayer):
+	return manager.makeTemplate({
 			"Name": "Bat",
-			"Template": MultiAnim,
+			"Template": graphics.MultiAnim,
 			"RenderLayer": renlayer,
 			"Anims":
 				[
 			{
 				"Name": "Bat Flapping",
-				"AnimType": AnimLoop,
-				"States": [eStates.stationary],
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.stationary],
 				"Frames":
 					[
 						["Graphics/Bat/Bat2.png", 24, 30, 0.04],
@@ -57,8 +59,8 @@ def batGraphics(renlayer):
 			},
 			{
 				"Name": "Simple Fall Left",
-				"AnimType": AnimNoLoop,
-				"States": [eStates.fallLeft],
+				"AnimType": graphics.AnimNoLoop,
+				"States": [entity.eStates.fallLeft],
 				"Frames":
 					[
 						["Graphics/Bat/BatHurt 1.png", 24, 30, 0.04],
@@ -69,8 +71,8 @@ def batGraphics(renlayer):
 			},
 			{
 				"Name": "Simple Fall Right",
-				"AnimType": AnimNoLoop,
-				"States": [eStates.fallRight],
+				"AnimType": graphics.AnimNoLoop,
+				"States": [entity.eStates.fallRight],
 				"Frames":
 					[
 						["Graphics/Bat/BatHurt 1.png", 24, 30, 0.04],
@@ -81,8 +83,8 @@ def batGraphics(renlayer):
 			},
 			{
 				"Name": "Hurt Left",
-				"AnimType": AnimLoop,
-				"States": [eStates.hurtLeft, eStates.hurtRight],
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.hurtLeft, entity.eStates.hurtRight],
 				"Frames":
 				[
 					["Graphics/Bat/BatHurt 1.png", 24, 30, 0.04],
@@ -94,17 +96,19 @@ def batGraphics(renlayer):
 			},
 			{
 				"Name": "Bat Shadow",
-				"AnimType": AnimSingle,
-				"States": [eStates.shadow],
+				"AnimType": graphics.AnimSingle,
+				"States": [entity.eStates.shadow],
 				"Frames":
 					[
 						["Graphics/shadow.png", 16, 4, 0.3],
 					],
 			},
 			]
-		}
+		})
 
-class BatController(Controller):
+def makeController(manager):
+	return manager.makeTemplate({"Template": Controller})
+class Controller(controller.Controller):
 
 	class Data(object):
 		def __init__(self, common_data, init=False):
@@ -116,10 +120,10 @@ class BatController(Controller):
 			self.health = 5
 			self.vel = Vec3(0,0,0)
 			self.mass = 4
-			self.facing = eDirections.left
+			self.facing = entity.eDirections.left
 
 	def __init__(self, game, data):
-		super(BatController, self).__init__(game)
+		super(Controller, self).__init__(game)
 
 	def update(self, data, common_data, dt):
 		speed = 0.3
@@ -129,9 +133,9 @@ class BatController(Controller):
 			pass
 		else:
 			if data.health <= 0:
-				self.setState(data, common_data, eStates.dead)
+				self.setState(data, common_data, entity.eStates.dead)
 				return
-			self.setState(data, common_data, eStates.stationary)
+			self.setState(data, common_data, entity.eStates.stationary)
 			if rand_num(10)==0:
 #				self.setState(data, common_data, eStates.stationary)
 				data.vel = Vec3(0,0,0)
@@ -142,11 +146,11 @@ class BatController(Controller):
 				if(target.x<common_data.pos.x):
 #					self.setState(data, common_data, eStates.runLeft)
 					data.vel = Vec3(-speed, 0, 0)
-					data.facing = eDirections.left
+					data.facing = entity.eDirections.left
 				else:
 #					self.setState(data, common_data, eStates.runRight)
 					data.vel = Vec3(speed, 0, 0)
-					data.facing = eDirections.right
+					data.facing = entity.eDirections.right
 				if(target.y<common_data.pos.y):
 					data.vel.y = -speed
 				else:
@@ -162,18 +166,20 @@ class BatController(Controller):
 				data.cooldown = 0.2
 
 		if common_data.pos.z>0:
-			friction(data.vel, 0.01)
+			controller.friction(data.vel, 0.01)
 		else:
-			friction(data.vel, 0.1)
+			controller.friction(data.vel, 0.1)
 
-		basic_gravity(data.vel)
-		basic_physics(common_data.pos,data.vel)
+		controller.basic_gravity(data.vel)
+		controller.basic_physics(common_data.pos,data.vel)
 
-		restrictToArena(common_data.pos, data.vel)
+		background.restrictToArena(common_data.pos, data.vel)
 
 
 
-	def receiveCollision(self, data, common_data, message):
+	def receiveCollision(self, this_entity, message):
+		data = this_entity.controller_data
+		common_data = this_entity.common_data
 		if message:
 			# if message.source.common_data.name !="Reaper":
 			# 	log("Reaper hit by " + message.source.common_data.name)
@@ -182,20 +188,22 @@ class BatController(Controller):
 				hurt_cool = 1
 				fall_cool = 3
 				data.health -= message.damage
-				if data.facing == eDirections.left:
+				if data.facing == entity.eDirections.left:
 					if data.health <= 0:
-						self.setState(data, common_data, eStates.fallLeft, fall_cool)
+						self.setState(data, common_data, entity.eStates.fallLeft, fall_cool)
 						common_data.game.reportMonsterDeath()
 					else:
-						self.setState(data, common_data, eStates.hurtLeft, hurt_cool)
+						self.setState(data, common_data, entity.eStates.hurtLeft, hurt_cool)
 				else:
 					if data.health <= 0:
-						self.setState(data, common_data, eStates.fallRight, fall_cool)
+						self.setState(data, common_data, entity.eStates.fallRight, fall_cool)
 						common_data.game.reportMonsterDeath()
 					else:
-						self.setState(data, common_data, eStates.hurtRight, hurt_cool)
+						self.setState(data, common_data, entity.eStates.hurtRight, hurt_cool)
 
-class BatCollider(Collider):
+def makeCollider(manager):
+	return manager.makeTemplate({"Template": Collider})
+class Collider(collision.Collider):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -204,18 +212,17 @@ class BatCollider(Collider):
 				pass
 			self.dim = Vec3(20,8,16)
 			self.orig = Vec3(10,4,0)
+			self.damage = 1
+			self.damage_hero = 1
+			self.force = Vec3(0,0,0)
 
 	def __init__(self, game, data):
-		super(BatCollider, self).__init__(game)
+		super(Collider, self).__init__(game)
 		# global static data to all of BatCollider components
-		self.radius = 10.0
-		self.damage = 1.0
-
-	def getRadius(self):
-		return self.radius
 
 	def getCollisionMessage(self, data, common_data):
-		return(Message(source=common_data.entity, damage=0, damage_hero=1))
+		return(collision.Message(source=common_data.entity, damage=0, damage_hero=1))
+
 
 
 

@@ -85,7 +85,9 @@ class Controller(controller.Controller):
 
 
 
-	def receiveCollision(self, data, common_data, message):
+	def receiveCollision(self, this_entity, message):
+		data = this_entity.controller_data
+		common_data = this_entity.common_data
 		if message:
 			if not (common_data.state == eStates.fallRight or common_data.state == eStates.fallLeft):
 				# if message.source.common_data.name !="Reaper":

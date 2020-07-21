@@ -1,4 +1,4 @@
-from director import Event, DirectorController, Delay, SpawnEntity, EndGame
+from director import Event, Controller, Delay, SpawnEntity, EndGame
 from vector import Vec3, rand_num
 
 class SpawnEnemies(Event):
@@ -29,16 +29,16 @@ class WaitForNoEnemies(Event):
 def KFEvents(game):
 	return[
 			# wait a bit
-			Delay(2),
+			Delay(200),
 		SpawnEnemies([
 			SpawnEntity(game.bat_t, Vec3(290, 35, 5), False, "Bat 1"),
 		]),
 
 		SpawnEnemies([
-				SpawnEntity(game.goblin_archer_t, Vec3(290, 35, 0), False, "Goblin Archer"),
+				SpawnEntity(game.goblin_archer_t, Vec3(292, 35, 0), False, "Goblin Archer"),
 			]),
 		SpawnEnemies([
-				SpawnEntity(game.goblin_archer_t, Vec3(150, 35, 0), False, "Goblin Archer"),
+				SpawnEntity(game.goblin_archer_t, Vec3(25, 35, 0), False, "Goblin Archer"),
 			]),
 		# wait a bit
 			Delay(0.7),

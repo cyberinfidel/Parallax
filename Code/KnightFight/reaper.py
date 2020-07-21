@@ -1,20 +1,20 @@
 # Reaper
-from controller import Controller, basic_physics, restrictToArena, friction
-from collision import Collider, Message
-from graphics import MultiAnim, AnimLoop, AnimSingle
-from entity import eDirections, eStates
+import controller
+import collision
+import graphics
+import entity
 from vector import Vec3, rand_num
 
-def reaperGraphics(renlayer):
-	return {
+def makeGraphics(manager, renlayer):
+	return manager.makeTemplate({
 			"Name": "Reaper",
-			"Template": MultiAnim,
+			"Template": graphics.MultiAnim,
 			"RenderLayer": renlayer,
 			"Anims": [
 				{
 					"Name": "Simple Reaper Stationary",
-					"AnimType": AnimLoop,
-					"States": [eStates.stationary],
+					"AnimType": graphics.AnimLoop,
+					"States": [entity.eStates.stationary],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperR1.png", 16, 38, 0.1],
@@ -22,8 +22,8 @@ def reaperGraphics(renlayer):
 				},
 				{
 				"Name": "Simple Reaper Shuffling Left",
-				"AnimType": AnimLoop,
-				"States": [eStates.runLeft],
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.runLeft],
 				"Frames":
 					[
 						["Graphics/Reaper/ReaperRunL01.png", 16, 38, 0.1],
@@ -42,8 +42,8 @@ def reaperGraphics(renlayer):
 			},
 				{
 					"Name": "Simple Reaper Shuffling Right",
-					"AnimType": AnimLoop,
-					"States": [eStates.runRight],
+					"AnimType": graphics.AnimLoop,
+					"States": [entity.eStates.runRight],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperRunR01.png", 16, 38, 0.1],
@@ -62,8 +62,8 @@ def reaperGraphics(renlayer):
 				},
 				{
 					"Name": "Reaper Hurt L",
-					"AnimType": AnimLoop,
-					"States": [eStates.hurtLeft],
+					"AnimType": graphics.AnimLoop,
+					"States": [entity.eStates.hurtLeft],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperL3.png", 16, 38, 0.3],
@@ -71,8 +71,8 @@ def reaperGraphics(renlayer):
 				},
 				{
 					"Name": "Reaper Hurt R",
-					"AnimType": AnimLoop,
-					"States": [eStates.hurtRight],
+					"AnimType": graphics.AnimLoop,
+					"States": [entity.eStates.hurtRight],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperR3.png", 16, 38, 0.3],
@@ -80,8 +80,8 @@ def reaperGraphics(renlayer):
 				},
 				{
 					"Name": "Reaper Fall L",
-					"AnimType": AnimLoop,
-					"States": [eStates.fallLeft],
+					"AnimType": graphics.AnimLoop,
+					"States": [entity.eStates.fallLeft],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperFallL.png", 24, 24, 0.3],
@@ -89,8 +89,8 @@ def reaperGraphics(renlayer):
 				},
 				{
 					"Name": "Reaper Fall R",
-					"AnimType": AnimLoop,
-					"States": [eStates.fallRight],
+					"AnimType": graphics.AnimLoop,
+					"States": [entity.eStates.fallRight],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperFallR.png", 24, 24, 0.3],
@@ -98,18 +98,20 @@ def reaperGraphics(renlayer):
 				},
 				{
 					"Name": "Reaper Shadow",
-					"AnimType": AnimSingle,
-					"States": [eStates.shadow],
+					"AnimType": graphics.AnimSingle,
+					"States": [entity.eStates.shadow],
 					"Frames":
 						[
 							["Graphics/shadow.png", 16, 4, 0.3],
 						],
 				},
 			]
-		}
+		})
 
 
-class ReaperController(Controller):
+def makeController(manager):
+	return manager.makeTemplate({"Template": Controller})
+class Controller(controller.Controller):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -121,13 +123,13 @@ class ReaperController(Controller):
 			self.health = 10
 			self.vel = Vec3(0, 0, 0)
 			self.mass = 3
-			self.facing = eDirections.right
+			self.facing = entity.eDirections.right
 
-			common_data.state = eStates.stationary
+			common_data.state = entity.eStates.stationary
 			common_data.new_state = False
 
 	def __init__(self, game, data):
-		super(ReaperController, self).__init__(game)
+		super(Controller, self).__init__(game)
 
 	def update(self, data, common_data, dt):
 		speed = 0.3
@@ -137,23 +139,23 @@ class ReaperController(Controller):
 			pass
 		else:
 			if data.health <= 0:
-				self.setState(data, common_data, eStates.dead)
+				self.setState(data, common_data, entity.eStates.dead)
 				return
 			if rand_num(10)==0:
-				self.setState(data, common_data, eStates.stationary)
+				self.setState(data, common_data, entity.eStates.stationary)
 				data.vel = Vec3(0,0,0)
 				data.cooldown = rand_num(1) + 2
 			else:
 				# chase hero
 				target = common_data.game.requestTarget(common_data.pos)
 				if(target.x<common_data.pos.x):
-					self.setState(data, common_data, eStates.runLeft)
+					self.setState(data, common_data, entity.eStates.runLeft)
 					data.vel = Vec3(-speed, 0, 0)
-					data.facing = eDirections.left
+					data.facing = entity.eDirections.left
 				else:
-					self.setState(data, common_data, eStates.runRight)
+					self.setState(data, common_data, entity.eStates.runRight)
 					data.vel = Vec3(speed, 0, 0)
-					data.facing = eDirections.right
+					data.facing = entity.eDirections.right
 				if(target.y<common_data.pos.y):
 					data.vel.y = -speed
 				else:
@@ -161,15 +163,16 @@ class ReaperController(Controller):
 
 				data.cooldown = 0.5
 
-		friction(data.vel)
-
-		basic_physics(common_data.pos,data.vel)
-
-		restrictToArena(common_data.pos, data.vel)
+		controller.friction(data.vel)
+		controller.basic_physics(common_data.pos,data.vel)
+		controller.restrictToArena(common_data.pos, data.vel)
 
 
-	def receiveCollision(self, data, common_data, message=False):
+	def receiveCollision(self, this_entity, message=False):
 #		log("Reaper hit " +common_data.name)
+		data = this_entity.controller_data
+		common_data = this_entity.common_data
+
 		if message:
 			# if message.source.common_data.name !="Reaper":
 			# 	log("Reaper hit by " + message.source.common_data.name)
@@ -178,21 +181,23 @@ class ReaperController(Controller):
 				hurt_cool = 1
 				fall_cool = 2
 				data.health -= message.damage
-				if data.facing == eDirections.left:
+				if data.facing == entity.eDirections.left:
 					if data.health <= 0:
-						self.setState(data, common_data, eStates.fallLeft, fall_cool)
+						self.setState(data, common_data, entity.eStates.fallLeft, fall_cool)
 						common_data.game.reportMonsterDeath()
 					else:
-						self.setState(data, common_data, eStates.hurtLeft, hurt_cool)
+						self.setState(data, common_data, entity.eStates.hurtLeft, hurt_cool)
 				else:
 					if data.health <= 0:
-						self.setState(data, common_data, eStates.fallRight, fall_cool)
+						self.setState(data, common_data, entity.eStates.fallRight, fall_cool)
 						common_data.game.reportMonsterDeath()
 					else:
-						self.setState(data, common_data, eStates.hurtRight, hurt_cool)
+						self.setState(data, common_data, entity.eStates.hurtRight, hurt_cool)
+			# todo change damage_hero to 0 in collider on death
 
-
-class ReaperCollider(Collider):
+def makeCollider(manager):
+	return manager.makeTemplate({"Template": Collider})
+class Collider(collision.Collider):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -201,20 +206,17 @@ class ReaperCollider(Collider):
 				pass
 			self.dim = Vec3(20,10,16)
 			self.orig = Vec3(10,2,0)
+			self.damage_hero=1
+
 
 	def __init__(self, game, data):
-		super(ReaperCollider, self).__init__(game)
+		super(Collider, self).__init__(game)
 		# global static data to all of ReaperCollider components
 		self.radius = 10.0
-		self.damage = 1
-
-	def getRadius(self):
-		return self.radius
+		self.damage_hero = 1
 
 	def getCollisionMessage(self, data, common_data):
-		if common_data.entity.controller_data.health>0:
-			return(Message(source=common_data.entity,damage=0,damage_hero=1, force=Vec3(0,0,0)))
+		if common_data.entity.controller_data.health > 0:
+			return (collision.Message(source=common_data.entity, damage=0, damage_hero=1, force=Vec3(0, 0, 0)))
 		else:
-		 	return(Message(source=common_data.entity))
-
-
+			return (collision.Message(source=common_data.entity))

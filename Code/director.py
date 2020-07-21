@@ -64,9 +64,11 @@ class WaitFor(Event):
 	def update(self, data, common_data, dt):
 		return self.condition()
 
-class DirectorController(Controller):
+def makeController(manager):
+	return manager.makeTemplate({"Template": Controller})
+class Controller(Controller):
 	def __init__(self, game, data):
-		super(DirectorController, self).__init__(game)
+		super(Controller, self).__init__(game)
 		# values global to all this type of component
 
 	class Data(object):
