@@ -17,7 +17,7 @@ def makeGraphics(manager, renlayer):
 					"States": [entity.eStates.stationary],
 					"Frames":
 						[
-							["Graphics/Reaper/ReaperR1.png", 16, 38, 0.1],
+							["Graphics/Reaper/ReaperR1.png", 16, 0, 38, 0.1],
 						],
 				},
 				{
@@ -26,18 +26,18 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.runLeft],
 				"Frames":
 					[
-						["Graphics/Reaper/ReaperRunL01.png", 16, 38, 0.1],
-						["Graphics/Reaper/ReaperRunL02.png", 16, 38, 0.1],
-						["Graphics/Reaper/ReaperRunL03.png", 16, 38, 0.1],
-						["Graphics/Reaper/ReaperRunL04.png", 16, 38, 0.1],
-						["Graphics/Reaper/ReaperRunL05.png", 16, 38, 0.1],
-						["Graphics/Reaper/ReaperRunL06.png", 16, 38, 0.1],
-						["Graphics/Reaper/ReaperRunL07.png", 16, 38, 0.1],
-						["Graphics/Reaper/ReaperRunL08.png", 16, 38, 0.1],
-						["Graphics/Reaper/ReaperRunL09.png", 16, 38, 0.1],
-						["Graphics/Reaper/ReaperRunL10.png", 16, 38, 0.1],
-						["Graphics/Reaper/ReaperRunL11.png", 16, 38, 0.1],
-						["Graphics/Reaper/ReaperRunL12.png", 16, 38, 0.1],
+						["Graphics/Reaper/ReaperRunL01.png", 16, 0, 38, 0.1],
+						["Graphics/Reaper/ReaperRunL02.png", 16, 0, 38, 0.1],
+						["Graphics/Reaper/ReaperRunL03.png", 16, 0, 38, 0.1],
+						["Graphics/Reaper/ReaperRunL04.png", 16, 0, 38, 0.1],
+						["Graphics/Reaper/ReaperRunL05.png", 16, 0, 38, 0.1],
+						["Graphics/Reaper/ReaperRunL06.png", 16, 0, 38, 0.1],
+						["Graphics/Reaper/ReaperRunL07.png", 16, 0, 38, 0.1],
+						["Graphics/Reaper/ReaperRunL08.png", 16, 0, 38, 0.1],
+						["Graphics/Reaper/ReaperRunL09.png", 16, 0, 38, 0.1],
+						["Graphics/Reaper/ReaperRunL10.png", 16, 0, 38, 0.1],
+						["Graphics/Reaper/ReaperRunL11.png", 16, 0, 38, 0.1],
+						["Graphics/Reaper/ReaperRunL12.png", 16, 0, 38, 0.1],
 					],
 			},
 				{
@@ -46,18 +46,18 @@ def makeGraphics(manager, renlayer):
 					"States": [entity.eStates.runRight],
 					"Frames":
 						[
-							["Graphics/Reaper/ReaperRunR01.png", 16, 38, 0.1],
-							["Graphics/Reaper/ReaperRunR02.png", 16, 38, 0.1],
-							["Graphics/Reaper/ReaperRunR03.png", 16, 38, 0.1],
-							["Graphics/Reaper/ReaperRunR04.png", 16, 38, 0.1],
-							["Graphics/Reaper/ReaperRunR05.png", 16, 38, 0.1],
-							["Graphics/Reaper/ReaperRunR06.png", 16, 38, 0.1],
-							["Graphics/Reaper/ReaperRunR07.png", 16, 38, 0.1],
-							["Graphics/Reaper/ReaperRunR08.png", 16, 38, 0.1],
-							["Graphics/Reaper/ReaperRunR09.png", 16, 38, 0.1],
-							["Graphics/Reaper/ReaperRunR10.png", 16, 38, 0.1],
-							["Graphics/Reaper/ReaperRunR11.png", 16, 38, 0.1],
-							["Graphics/Reaper/ReaperRunR12.png", 16, 38, 0.1],
+							["Graphics/Reaper/ReaperRunR01.png", 16, 0, 38, 0.1],
+							["Graphics/Reaper/ReaperRunR02.png", 16, 0, 38, 0.1],
+							["Graphics/Reaper/ReaperRunR03.png", 16, 0, 38, 0.1],
+							["Graphics/Reaper/ReaperRunR04.png", 16, 0, 38, 0.1],
+							["Graphics/Reaper/ReaperRunR05.png", 16, 0, 38, 0.1],
+							["Graphics/Reaper/ReaperRunR06.png", 16, 0, 38, 0.1],
+							["Graphics/Reaper/ReaperRunR07.png", 16, 0, 38, 0.1],
+							["Graphics/Reaper/ReaperRunR08.png", 16, 0, 38, 0.1],
+							["Graphics/Reaper/ReaperRunR09.png", 16, 0, 38, 0.1],
+							["Graphics/Reaper/ReaperRunR10.png", 16, 0, 38, 0.1],
+							["Graphics/Reaper/ReaperRunR11.png", 16, 0, 38, 0.1],
+							["Graphics/Reaper/ReaperRunR12.png", 16, 0, 38, 0.1],
 						],
 				},
 				{
@@ -66,7 +66,7 @@ def makeGraphics(manager, renlayer):
 					"States": [entity.eStates.hurtLeft],
 					"Frames":
 						[
-							["Graphics/Reaper/ReaperL3.png", 16, 38, 0.3],
+							["Graphics/Reaper/ReaperL3.png", 16, 0, 38, 0.3],
 						],
 				},
 				{
@@ -75,7 +75,7 @@ def makeGraphics(manager, renlayer):
 					"States": [entity.eStates.hurtRight],
 					"Frames":
 						[
-							["Graphics/Reaper/ReaperR3.png", 16, 38, 0.3],
+							["Graphics/Reaper/ReaperR3.png", 16, 0, 38, 0.3],
 						],
 				},
 				{
@@ -84,7 +84,7 @@ def makeGraphics(manager, renlayer):
 					"States": [entity.eStates.fallLeft],
 					"Frames":
 						[
-							["Graphics/Reaper/ReaperFallL.png", 24, 24, 0.3],
+							["Graphics/Reaper/ReaperFallL.png", 24, 0, 24, 0.3],
 						],
 				},
 				{
@@ -93,7 +93,7 @@ def makeGraphics(manager, renlayer):
 					"States": [entity.eStates.fallRight],
 					"Frames":
 						[
-							["Graphics/Reaper/ReaperFallR.png", 24, 24, 0.3],
+							["Graphics/Reaper/ReaperFallR.png", 24, 0, 24, 0.3],
 						],
 				},
 				{
@@ -102,7 +102,7 @@ def makeGraphics(manager, renlayer):
 					"States": [entity.eStates.shadow],
 					"Frames":
 						[
-							["Graphics/shadow.png", 16, 4, 0.3],
+							["Graphics/shadow.png", 16, 0, 4, 0.3],
 						],
 				},
 			]

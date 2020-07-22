@@ -100,8 +100,8 @@ class KnightFight(Game):
 		bat_graphics = bat.makeGraphics(self.graphics_manager, self.renlayer)
 		goblin_archer_graphics = goblinarcher.makeGraphics(self.graphics_manager, self.renlayer)
 		reaper_graphics = reaper.makeGraphics(self.graphics_manager, self.renlayer)
+		heart_graphics = heart.makeGraphics(self.graphics_manager, self.renlayer)
 		herographics = hero.makeGraphics(self.graphics_manager, self.renlayer)
-		heartgraphics = heart.makeGraphics(self.graphics_manager, self.renlayer)
 
 		# Sound Templates
 		hero_sounds = hero.makeSounds(self.sound_manager, self.sound_mixer)
@@ -141,7 +141,7 @@ class KnightFight(Game):
 																												 )
 
 		# info bar
-		self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heartgraphics, controller=heart_controller)
+		self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heart_graphics, controller=heart_controller)
 
 		# director
 		director_controller = director.makeController(self.controller_manager)

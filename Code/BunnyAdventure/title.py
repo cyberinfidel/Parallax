@@ -30,7 +30,7 @@ def makeGraphics(manager, renlayer):
 						"States": [eTitleStates.title],
 						"Frames":
 							[
-								["Graphics/Title/Title.png", 4, 4, 0.9],
+								["Graphics/Title/Title.png", 4, 0, 4, 0.9],
 							],
 					},
 					{
@@ -39,7 +39,7 @@ def makeGraphics(manager, renlayer):
 						"States": [eTitleStates.play],
 						"Frames":
 							[
-								["Graphics/Title/TitleBar.png", 4, 4, 0.9],
+								["Graphics/Title/TitleBar.png", 4, 0, 4, 0.9],
 							],
 					},
 					{
@@ -48,7 +48,7 @@ def makeGraphics(manager, renlayer):
 						"States": [eTitleStates.paused],
 						"Frames":
 							[
-								["Graphics/Title/Paused.png", 4, 4, 0.2],
+								["Graphics/Title/Paused.png", 4, 0, 4, 0.2],
 							],
 					},
 					{
@@ -57,7 +57,7 @@ def makeGraphics(manager, renlayer):
 						"States": [eTitleStates.game_over],
 						"Frames":
 							[
-								["Graphics/Title/GameOver.png", 4, 4, 0.2],
+								["Graphics/Title/GameOver.png", 4, 0, 4, 0.2],
 							],
 					},
 					{
@@ -66,7 +66,7 @@ def makeGraphics(manager, renlayer):
 						"States": [eTitleStates.win],
 						"Frames":
 							[
-								["Graphics/Title/Win 0.png", 4, 4, 2],
+								["Graphics/Title/Win 0.png", 4, 0, 4, 2],
 							],
 					},
 					{
@@ -75,7 +75,7 @@ def makeGraphics(manager, renlayer):
 						"States": [eTitleStates.quit],
 						"Frames":
 							[
-								["Graphics/Title/Quit.png", 4, 4, 2],
+								["Graphics/Title/Quit.png", 4, 0, 4, 2],
 							],
 					},
 				]

@@ -8,7 +8,8 @@ collision_debug = False
 
 class eShapes(enum.IntEnum):
 	sphere = 0
-	cuboid = 1
+	cuboidAA = 1,
+	cuboid = 2
 
 
 class CollisionManager(ComponentManager):
@@ -66,6 +67,7 @@ class CollisionManager(ComponentManager):
 				A.controller.receiveCollision(A, B.collider.getCollisionMessage(B.collider_data, B.common_data))
 			if B.controller:
 				B.controller.receiveCollision(B, A.collider.getCollisionMessage(A.collider_data, A.common_data))
+
 
 
 

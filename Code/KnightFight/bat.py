@@ -49,12 +49,12 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.stationary],
 				"Frames":
 					[
-						["Graphics/Bat/Bat2.png", 24, 30, 0.04],
-						["Graphics/Bat/Bat3.png", 24, 30, 0.04],
-						["Graphics/Bat/Bat4.png", 24, 30, 0.1],
-						["Graphics/Bat/Bat3.png", 24, 30, 0.1],
-						["Graphics/Bat/Bat2.png", 24, 30, 0.1],
-						["Graphics/Bat/Bat1.png", 24, 30, 0.5],
+						["Graphics/Bat/Bat2.png", 24, 0, 30, 0.04],
+						["Graphics/Bat/Bat3.png", 24, 0, 30, 0.04],
+						["Graphics/Bat/Bat4.png", 24, 0, 30, 0.1],
+						["Graphics/Bat/Bat3.png", 24, 0, 30, 0.1],
+						["Graphics/Bat/Bat2.png", 24, 0, 30, 0.1],
+						["Graphics/Bat/Bat1.png", 24, 0, 30, 0.5],
 					],
 			},
 			{
@@ -63,10 +63,10 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.fallLeft],
 				"Frames":
 					[
-						["Graphics/Bat/BatHurt 1.png", 24, 30, 0.04],
-						["Graphics/Bat/BatHurt 2.png", 24, 30, 0.04],
-						["Graphics/Bat/BatHurt 3.png", 24, 30, 0.04],
-						["Graphics/Bat/BatFallLeft.png", 24, 20, 0.04],
+						["Graphics/Bat/BatHurt 1.png", 24, 0, 30, 0.04],
+						["Graphics/Bat/BatHurt 2.png", 24, 0, 30, 0.04],
+						["Graphics/Bat/BatHurt 3.png", 24, 0, 30, 0.04],
+						["Graphics/Bat/BatFallLeft.png", 24, 0, 20, 0.04],
 					],
 			},
 			{
@@ -75,10 +75,10 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.fallRight],
 				"Frames":
 					[
-						["Graphics/Bat/BatHurt 1.png", 24, 30, 0.04],
-						["Graphics/Bat/BatHurt 2.png", 24, 30, 0.04],
-						["Graphics/Bat/BatHurt 3.png", 24, 30, 0.04],
-						["Graphics/Bat/BatFallRight.png", 24, 20, 0.04],
+						["Graphics/Bat/BatHurt 1.png", 24, 0, 30, 0.04],
+						["Graphics/Bat/BatHurt 2.png", 24, 0, 30, 0.04],
+						["Graphics/Bat/BatHurt 3.png", 24, 0, 30, 0.04],
+						["Graphics/Bat/BatFallRight.png", 24, 0, 20, 0.04],
 					],
 			},
 			{
@@ -87,11 +87,11 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.hurtLeft, entity.eStates.hurtRight],
 				"Frames":
 				[
-					["Graphics/Bat/BatHurt 1.png", 24, 30, 0.04],
-					["Graphics/Bat/BatHurt 2.png", 24, 30, 0.04],
-					["Graphics/Bat/BatHurt 3.png", 24, 30, 0.04],
-					["Graphics/Bat/BatHurt 2.png", 24, 30, 0.04],
-					["Graphics/Bat/BatHurt 1.png", 24, 30, 0.04],
+					["Graphics/Bat/BatHurt 1.png", 24, 0, 30, 0.04],
+					["Graphics/Bat/BatHurt 2.png", 24, 0, 30, 0.04],
+					["Graphics/Bat/BatHurt 3.png", 24, 0, 30, 0.04],
+					["Graphics/Bat/BatHurt 2.png", 24, 0, 30, 0.04],
+					["Graphics/Bat/BatHurt 1.png", 24, 0, 30, 0.04],
 				],
 			},
 			{
@@ -100,7 +100,7 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.shadow],
 				"Frames":
 					[
-						["Graphics/shadow.png", 16, 4, 0.3],
+						["Graphics/shadow.png", 16, 0, 4, 0.3],
 					],
 			},
 			]

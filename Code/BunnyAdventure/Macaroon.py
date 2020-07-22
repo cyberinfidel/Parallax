@@ -62,7 +62,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.stationary, eStates.standRight],
 				"Frames":
 					[
-						["Graphics/Macaroon/RunFast_000.png", 20, 36, 0.015],
+						["Graphics/Macaroon/RunFast_000.png", 20, 0, 36, 0.015],
 					]
 			},
 			{
@@ -71,7 +71,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.standLeft],
 				"Frames":
 					[
-						["Graphics/Macaroon/Left/RunFast_000.png", 20, 36, 0.015],
+						["Graphics/Macaroon/Left/RunFast_000.png", 20, 0, 36, 0.015],
 					]
 			},
 			{
@@ -80,26 +80,26 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.runLeft],
 				"Frames":
 					[
-						["Graphics/Macaroon/Left/RunFast_000.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_001.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_002.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_003.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_004.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_005.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_006.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_007.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_008.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_009.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_010.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_011.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_012.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_013.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_014.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_015.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_016.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_017.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_018.png", 20, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_019.png", 20, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_000.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_001.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_002.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_003.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_004.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_005.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_006.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_007.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_008.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_009.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_010.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_011.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_012.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_013.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_014.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_015.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_016.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_017.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_018.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_019.png", 20, 0, 36, 0.01],
 					],
 			},
 			{
@@ -108,26 +108,26 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.runRight, eStates.runUp, eStates.runDown],
 				"Frames":
 					[
-						["Graphics/Macaroon/RunFast_000.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_001.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_002.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_003.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_004.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_005.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_006.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_007.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_008.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_009.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_010.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_011.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_012.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_013.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_014.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_015.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_016.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_017.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_018.png", 20, 36, 0.01],
-						["Graphics/Macaroon/RunFast_019.png", 20, 36, 0.01],
+						["Graphics/Macaroon/RunFast_000.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_001.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_002.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_003.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_004.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_005.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_006.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_007.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_008.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_009.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_010.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_011.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_012.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_013.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_014.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_015.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_016.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_017.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_018.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_019.png", 20, 0, 36, 0.01],
 					],
 			},
 			{
@@ -136,7 +136,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.attackSmallRight],
 				"Frames":
 					[
-						["Graphics/Macaroon/RunFast_000.png", 20, 36, 0.015],
+						["Graphics/Macaroon/RunFast_000.png", 20, 0, 36, 0.015],
 					],
 			},
 			{
@@ -145,7 +145,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.attackSmallLeft],
 				"Frames":
 					[
-						["Graphics/Macaroon/Left/RunFast_000.png", 20, 36, 0.015],
+						["Graphics/Macaroon/Left/RunFast_000.png", 20, 0, 36, 0.015],
 					],
 			},
 			{
@@ -154,7 +154,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.jumpLeft],
 				"Frames":
 					[
-						["Graphics/Macaroon/Left/RunFast_000.png", 20, 36, 0.015],
+						["Graphics/Macaroon/Left/RunFast_000.png", 20, 0, 36, 0.015],
 					],
 			},
 			{
@@ -163,7 +163,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.jumpRight],
 				"Frames":
 					[
-						["Graphics/Macaroon/RunFast_000.png", 20, 36, 0.015],
+						["Graphics/Macaroon/RunFast_000.png", 20, 0, 36, 0.015],
 					],
 			},
 			{
@@ -172,7 +172,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.shadow],
 				"Frames":
 					[
-						["Graphics/shadow.png", 16, 4, 0.3],
+						["Graphics/shadow.png", 16, 0, 4, 0.3],
 					],
 			},
 		]

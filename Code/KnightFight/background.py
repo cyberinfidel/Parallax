@@ -17,7 +17,7 @@ def makeGraphics(renlayer):
 			"Images": [
 				["Graphics/FightCourtyard.png", 0, 0, 136, 0],
 				["Graphics/BackLeft.png", 0, -44, 60, 0],
-				["Graphics/BackRight.png", -289, -44, 130, 0]
+				["Graphics/BackRight.png", -289, -44, 60, 0]
 		]
 		}
 

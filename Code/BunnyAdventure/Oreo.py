@@ -61,7 +61,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.stationary, eStates.standRight],
 				"Frames":
 					[
-						["Graphics/Oreo/RunFast_014.png", 25, 36, 0.015],
+						["Graphics/Oreo/RunFast_014.png", 25, 0, 36, 0.015],
 					]
 			},
 			{
@@ -70,7 +70,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.standLeft],
 				"Frames":
 					[
-						["Graphics/Oreo/Left/RunFast_014.png", 25, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_014.png", 25, 0, 36, 0.015],
 					]
 			},
 			{
@@ -79,26 +79,26 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.runLeft],
 				"Frames":
 					[
-						["Graphics/Oreo/Left/RunFast_000.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_001.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_002.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_003.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_004.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_005.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_006.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_007.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_008.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_009.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_010.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_011.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_012.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_013.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_014.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_015.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_016.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_017.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_018.png", 25, 36, 0.015],
-						["Graphics/Oreo/Left/RunFast_019.png", 25, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_000.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_001.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_002.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_003.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_004.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_005.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_006.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_007.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_008.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_009.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_010.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_011.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_012.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_013.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_014.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_015.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_016.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_017.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_018.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_019.png", 25, 0, 36, 0.015],
 					],
 			},
 			{
@@ -107,26 +107,26 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.runRight, eStates.runUp, eStates.runDown],
 				"Frames":
 					[
-						["Graphics/Oreo/RunFast_000.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_001.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_002.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_003.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_004.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_005.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_006.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_007.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_008.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_009.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_010.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_011.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_012.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_013.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_014.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_015.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_016.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_017.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_018.png", 25, 36, 0.015],
-						["Graphics/Oreo/RunFast_019.png", 25, 36, 0.015],
+						["Graphics/Oreo/RunFast_000.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_001.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_002.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_003.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_004.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_005.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_006.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_007.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_008.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_009.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_010.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_011.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_012.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_013.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_014.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_015.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_016.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_017.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_018.png", 25, 0, 36, 0.015],
+						["Graphics/Oreo/RunFast_019.png", 25, 0, 36, 0.015],
 					],
 			},
 			{
@@ -135,7 +135,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.attackSmallRight],
 				"Frames":
 					[
-						["Graphics/Oreo/RunFast_000.png", 25, 36, 0.015],
+						["Graphics/Oreo/RunFast_000.png", 25, 0, 36, 0.015],
 					],
 			},
 			{
@@ -144,7 +144,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.attackSmallLeft],
 				"Frames":
 					[
-						["Graphics/Oreo/Left/RunFast_000.png", 25, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_000.png", 25, 0, 36, 0.015],
 					],
 			},
 			{
@@ -153,7 +153,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.jumpLeft],
 				"Frames":
 					[
-						["Graphics/Oreo/Left/RunFast_014.png", 25, 36, 0.015],
+						["Graphics/Oreo/Left/RunFast_014.png", 25, 0, 36, 0.015],
 					],
 			},
 			{
@@ -162,7 +162,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.jumpRight],
 				"Frames":
 					[
-						["Graphics/Oreo/RunFast_014.png", 25, 36, 0.015],
+						["Graphics/Oreo/RunFast_014.png", 25, 0, 36, 0.015],
 					],
 			},
 			{
@@ -171,7 +171,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.shadow],
 				"Frames":
 					[
-						["Graphics/shadow.png", 16, 4, 0.3],
+						["Graphics/shadow.png", 16, 0, 4, 0.3],
 					],
 			},
 		]

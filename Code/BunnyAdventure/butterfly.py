@@ -27,12 +27,12 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.stationary],
 				"Frames":
 					[
-						["Graphics/Butterfly/Butterfly 2.png", 8, 15, 0.04],
-						["Graphics/Butterfly/Butterfly 3.png", 8, 15, 0.04],
-						["Graphics/Butterfly/Butterfly 4.png", 8, 15, 0.1],
-						["Graphics/Butterfly/Butterfly 3.png", 8, 15, 0.1],
-						["Graphics/Butterfly/Butterfly 2.png", 8, 15, 0.1],
-						["Graphics/Butterfly/Butterfly 1.png", 8, 15, 0.5],
+						["Graphics/Butterfly/Butterfly 2.png", 8, 0, 15, 0.04],
+						["Graphics/Butterfly/Butterfly 3.png", 8, 0, 15, 0.04],
+						["Graphics/Butterfly/Butterfly 4.png", 8, 0, 15, 0.1],
+						["Graphics/Butterfly/Butterfly 3.png", 8, 0, 15, 0.1],
+						["Graphics/Butterfly/Butterfly 2.png", 8, 0, 15, 0.1],
+						["Graphics/Butterfly/Butterfly 1.png", 8, 0, 15, 0.5],
 					],
 			},
 			{
@@ -41,7 +41,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.shadow],
 				"Frames":
 					[
-						["Graphics/shadowSmall.png", 16, 4, 0.3],
+						["Graphics/shadowSmall.png", 16, 0, 4, 0.3],
 					],
 			},
 			]
@@ -60,12 +60,12 @@ def makeGraphics2(manager, renlayer):
 				"States": [eStates.stationary],
 				"Frames":
 					[
-						["Graphics/Butterfly2/Butterfly 2.png", 8, 15, 0.04],
-						["Graphics/Butterfly2/Butterfly 3.png", 8, 15, 0.04],
-						["Graphics/Butterfly2/Butterfly 4.png", 8, 15, 0.1],
-						["Graphics/Butterfly2/Butterfly 3.png", 8, 15, 0.1],
-						["Graphics/Butterfly2/Butterfly 2.png", 8, 15, 0.1],
-						["Graphics/Butterfly2/Butterfly 1.png", 8, 15, 0.5],
+						["Graphics/Butterfly2/Butterfly 2.png", 8, 0, 15, 0.04],
+						["Graphics/Butterfly2/Butterfly 3.png", 8, 0, 15, 0.04],
+						["Graphics/Butterfly2/Butterfly 4.png", 8, 0, 15, 0.1],
+						["Graphics/Butterfly2/Butterfly 3.png", 8, 0, 15, 0.1],
+						["Graphics/Butterfly2/Butterfly 2.png", 8, 0, 15, 0.1],
+						["Graphics/Butterfly2/Butterfly 1.png", 8, 0, 15, 0.5],
 					],
 			},
 			{
@@ -74,7 +74,7 @@ def makeGraphics2(manager, renlayer):
 				"States": [eStates.shadow],
 				"Frames":
 					[
-						["Graphics/shadowSmall.png", 16, 4, 0.3],
+						["Graphics/shadowSmall.png", 16, 0,  4, 0.3],
 					],
 			},
 			]
@@ -93,12 +93,12 @@ def makeGraphics3(manager, renlayer):
 				"States": [eStates.stationary],
 				"Frames":
 					[
-						["Graphics/Butterfly3/Butterfly 2.png", 8, 15, 0.04],
-						["Graphics/Butterfly3/Butterfly 3.png", 8, 15, 0.04],
-						["Graphics/Butterfly3/Butterfly 4.png", 8, 15, 0.1],
-						["Graphics/Butterfly3/Butterfly 3.png", 8, 15, 0.1],
-						["Graphics/Butterfly3/Butterfly 2.png", 8, 15, 0.1],
-						["Graphics/Butterfly3/Butterfly 1.png", 8, 15, 0.5],
+						["Graphics/Butterfly3/Butterfly 2.png", 8, 0, 15, 0.04],
+						["Graphics/Butterfly3/Butterfly 3.png", 8, 0, 15, 0.04],
+						["Graphics/Butterfly3/Butterfly 4.png", 8, 0, 15, 0.1],
+						["Graphics/Butterfly3/Butterfly 3.png", 8, 0, 15, 0.1],
+						["Graphics/Butterfly3/Butterfly 2.png", 8, 0, 15, 0.1],
+						["Graphics/Butterfly3/Butterfly 1.png", 8, 0, 15, 0.5],
 					],
 			},
 			{
@@ -107,7 +107,7 @@ def makeGraphics3(manager, renlayer):
 				"States": [eStates.shadow],
 				"Frames":
 					[
-						["Graphics/shadowSmall.png", 16, 4, 0.3],
+						["Graphics/shadowSmall.png", 16, 0, 4, 0.3],
 					],
 			},
 			]

@@ -21,7 +21,7 @@ def AGraphics(renlayer):
 				"States": [eStates.stationary,eStates.runLeft,eStates.fallLeft],
 				"Frames":
 					[
-						["Graphics/Arrow/ArrowLeft.png", 11, 3, 0.04],
+						["Graphics/Arrow/ArrowLeft.png", 11, 0, 3, 0.04],
 					],
 			},
 			{
@@ -30,7 +30,7 @@ def AGraphics(renlayer):
 				"States": [eStates.fallRight, eStates.runRight],
 				"Frames":
 					[
-						["Graphics/Arrow/ArrowRight.png", 11, 3, 0.04],
+						["Graphics/Arrow/ArrowRight.png", 11, 0, 3, 0.04],
 					],
 			},
 			{
@@ -39,7 +39,7 @@ def AGraphics(renlayer):
 				"States": [eStates.shadow],
 				"Frames":
 					[
-						["Graphics/shadowSmall.png", 16, 4, 0.3],
+						["Graphics/shadowSmall.png", 16, 0, 4, 0.3],
 					],
 			},
 				]

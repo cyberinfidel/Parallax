@@ -29,7 +29,7 @@ class WaitForNoEnemies(Event):
 def KFEvents(game):
 	return[
 			# wait a bit
-			Delay(200),
+			Delay(2),
 		SpawnEnemies([
 			SpawnEntity(game.bat_t, Vec3(290, 35, 5), False, "Bat 1"),
 		]),

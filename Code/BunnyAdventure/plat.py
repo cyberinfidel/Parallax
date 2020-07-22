@@ -34,7 +34,7 @@ def makeGraphics(manager, renlayer):
 			"Template": graphics.SingleImage,
 			"RenderLayer": renlayer,
 			"Image":
-				["Graphics/Platform/TestPlatform50x12.png", 25, 3]
+				["Graphics/Platform/TestPlatform50x12.png", 25, 0, 3]
 		})
 
 
