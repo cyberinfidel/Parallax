@@ -69,7 +69,7 @@ class Vec3:
 		return (self.x*self.x + self.y*self.y + self.z * self.z)
 
 	def magsqhoriz(self):
-		return (self.x*self.x + self.y*self.y)
+		return (self.x*self.x + self.z*self.z)
 
 	def distSq(self, B):
 		x = (self.x - B.x)

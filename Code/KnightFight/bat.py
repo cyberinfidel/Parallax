@@ -49,12 +49,12 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.stationary],
 				"Frames":
 					[
-						["Graphics/Bat/Bat2.png", 24, 0, 30, 0.04],
-						["Graphics/Bat/Bat3.png", 24, 0, 30, 0.04],
-						["Graphics/Bat/Bat4.png", 24, 0, 30, 0.1],
-						["Graphics/Bat/Bat3.png", 24, 0, 30, 0.1],
-						["Graphics/Bat/Bat2.png", 24, 0, 30, 0.1],
-						["Graphics/Bat/Bat1.png", 24, 0, 30, 0.5],
+						["Graphics/Bat/Bat2.png", 24, 30, 0, 0.04],
+						["Graphics/Bat/Bat3.png", 24, 30, 0, 0.04],
+						["Graphics/Bat/Bat4.png", 24, 30, 0, 0.1],
+						["Graphics/Bat/Bat3.png", 24, 30, 0, 0.1],
+						["Graphics/Bat/Bat2.png", 24, 30, 0, 0.1],
+						["Graphics/Bat/Bat1.png", 24, 30, 0, 0.5],
 					],
 			},
 			{
@@ -63,9 +63,9 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.fallLeft],
 				"Frames":
 					[
-						["Graphics/Bat/BatHurt 1.png", 24, 0, 30, 0.04],
-						["Graphics/Bat/BatHurt 2.png", 24, 0, 30, 0.04],
-						["Graphics/Bat/BatHurt 3.png", 24, 0, 30, 0.04],
+						["Graphics/Bat/BatHurt 1.png", 24, 30, 0, 0.04],
+						["Graphics/Bat/BatHurt 2.png", 24, 30, 0, 0.04],
+						["Graphics/Bat/BatHurt 3.png", 24, 30, 0, 0.04],
 						["Graphics/Bat/BatFallLeft.png", 24, 0, 20, 0.04],
 					],
 			},
@@ -75,9 +75,9 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.fallRight],
 				"Frames":
 					[
-						["Graphics/Bat/BatHurt 1.png", 24, 0, 30, 0.04],
-						["Graphics/Bat/BatHurt 2.png", 24, 0, 30, 0.04],
-						["Graphics/Bat/BatHurt 3.png", 24, 0, 30, 0.04],
+						["Graphics/Bat/BatHurt 1.png", 24, 30, 0, 0.04],
+						["Graphics/Bat/BatHurt 2.png", 24, 30, 0, 0.04],
+						["Graphics/Bat/BatHurt 3.png", 24, 30, 0, 0.04],
 						["Graphics/Bat/BatFallRight.png", 24, 0, 20, 0.04],
 					],
 			},
@@ -87,11 +87,11 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.hurtLeft, entity.eStates.hurtRight],
 				"Frames":
 				[
-					["Graphics/Bat/BatHurt 1.png", 24, 0, 30, 0.04],
-					["Graphics/Bat/BatHurt 2.png", 24, 0, 30, 0.04],
-					["Graphics/Bat/BatHurt 3.png", 24, 0, 30, 0.04],
-					["Graphics/Bat/BatHurt 2.png", 24, 0, 30, 0.04],
-					["Graphics/Bat/BatHurt 1.png", 24, 0, 30, 0.04],
+					["Graphics/Bat/BatHurt 1.png", 24, 30, 0, 0.04],
+					["Graphics/Bat/BatHurt 2.png", 24, 30, 0, 0.04],
+					["Graphics/Bat/BatHurt 3.png", 24, 30, 0, 0.04],
+					["Graphics/Bat/BatHurt 2.png", 24, 30, 0, 0.04],
+					["Graphics/Bat/BatHurt 1.png", 24, 30, 0, 0.04],
 				],
 			},
 			{
@@ -100,7 +100,7 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.shadow],
 				"Frames":
 					[
-						["Graphics/shadow.png", 16, 0, 4, 0.3],
+						["Graphics/shadow.png", 16, 4, 0, 0.3],
 					],
 			},
 			]
@@ -151,21 +151,21 @@ class Controller(controller.Controller):
 #					self.setState(data, common_data, eStates.runRight)
 					data.vel = Vec3(speed, 0, 0)
 					data.facing = entity.eDirections.right
-				if(target.y<common_data.pos.y):
-					data.vel.y = -speed
+				if(target.z<common_data.pos.z):
+					data.vel.z = -speed
 				else:
-					data.vel.y = speed
+					data.vel.z = speed
 
-				if common_data.pos.distSq(Vec3(target.x,target.y,common_data.pos.z))<800:
-					data.vel.z = 0 # drop on target
+				if common_data.pos.distSq(Vec3(target.x,target.y,common_data.pos.y))<800:
+					data.vel.y = 0 # drop on target
 				elif (common_data.pos.z<80) and (data.vel.z<3):
-					data.vel.z += 2 # otherwise flap
+					data.vel.y += 2 # otherwise flap
 					common_data.entity.graphics.startAnim(data = common_data.entity.graphics_data)
 					common_data.entity.sounds.playEvent(data, common_data, eEvents.flap)
 
 				data.cooldown = 0.2
 
-		if common_data.pos.z>0:
+		if common_data.pos.y>0:
 			controller.friction(data.vel, 0.01)
 		else:
 			controller.friction(data.vel, 0.1)
@@ -181,8 +181,6 @@ class Controller(controller.Controller):
 		data = this_entity.controller_data
 		common_data = this_entity.common_data
 		if message:
-			# if message.source.common_data.name !="Reaper":
-			# 	log("Reaper hit by " + message.source.common_data.name)
 			data.vel += message.force/data.mass
 			if message.damage>0 and data.health>0:
 				hurt_cool = 1
@@ -210,8 +208,8 @@ class Collider(collision.Collider):
 				pass
 			else:
 				pass
-			self.dim = Vec3(20,8,16)
-			self.orig = Vec3(10,4,0)
+			self.dim = Vec3(20,16,8)
+			self.orig = Vec3(10,0,4)
 			self.damage = 1
 			self.damage_hero = 1
 			self.force = Vec3(0,0,0)

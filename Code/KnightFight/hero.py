@@ -61,8 +61,8 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.stationary],
 				"Frames":
 					[
-						["Graphics/Hero/Hero.png", 16, 0, 36, 2.0],
-						["Graphics/Hero/HeroBlink.png", 16, 0, 36, 0.5],
+						["Graphics/Hero/Hero.png", 16, 36, 0, 2.0],
+						["Graphics/Hero/HeroBlink.png", 16, 36, 0, 0.5],
 					]
 			},
 			{
@@ -71,10 +71,10 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.runDown],
 				"Frames":
 					[
-						["Graphics/Hero/HeroRunD1.png", 16, 0, 39, 0.1],
-						["Graphics/Hero/HeroRunD2.png", 16, 0, 39, 0.1],
-						["Graphics/Hero/HeroRunD3.png", 16, 0, 39, 0.1],
-						["Graphics/Hero/HeroRunD4.png", 16, 0, 39, 0.1],
+						["Graphics/Hero/HeroRunD1.png", 16, 39, 0, 0.1],
+						["Graphics/Hero/HeroRunD2.png", 16, 39, 0, 0.1],
+						["Graphics/Hero/HeroRunD3.png", 16, 39, 0, 0.1],
+						["Graphics/Hero/HeroRunD4.png", 16, 39, 0, 0.1],
 					],
 			},
 			{
@@ -83,10 +83,10 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.runUp],
 				"Frames":
 					[
-						["Graphics/Hero/HeroRunU1.png", 16, 0, 39, 0.1],
-						["Graphics/Hero/HeroRunU2.png", 16, 0, 39, 0.1],
-						["Graphics/Hero/HeroRunU3.png", 16, 0, 39, 0.1],
-						["Graphics/Hero/HeroRunU4.png", 16, 0, 39, 0.1],
+						["Graphics/Hero/HeroRunU1.png", 16, 39, 0, 0.1],
+						["Graphics/Hero/HeroRunU2.png", 16, 39, 0, 0.1],
+						["Graphics/Hero/HeroRunU3.png", 16, 39, 0, 0.1],
+						["Graphics/Hero/HeroRunU4.png", 16, 39, 0, 0.1],
 					],
 			},
 			{
@@ -95,10 +95,10 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.runLeft],
 				"Frames":
 					[
-						["Graphics/Hero/HeroRunL1.png", 16, 0, 39, 0.1],
-						["Graphics/Hero/HeroRunL2.png", 16, 0, 39, 0.05],
-						["Graphics/Hero/HeroRunL3.png", 16, 0, 39, 0.1],
-						["Graphics/Hero/HeroRunL4.png", 16, 0, 39, 0.1],
+						["Graphics/Hero/HeroRunL1.png", 16, 39, 0, 0.1],
+						["Graphics/Hero/HeroRunL2.png", 16, 39, 0, 0.05],
+						["Graphics/Hero/HeroRunL3.png", 16, 39, 0, 0.1],
+						["Graphics/Hero/HeroRunL4.png", 16, 39, 0, 0.1],
 					],
 			},
 			{
@@ -107,10 +107,10 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.runRight],
 				"Frames":
 					[
-						["Graphics/Hero/HeroRunR1.png", 16, 0, 39, 0.1],
-						["Graphics/Hero/HeroRunR2.png", 16, 0, 39, 0.05],
-						["Graphics/Hero/HeroRunR3.png", 16, 0, 39, 0.1],
-						["Graphics/Hero/HeroRunR4.png", 16, 0, 39, 0.1],
+						["Graphics/Hero/HeroRunR1.png", 16, 39, 0, 0.1],
+						["Graphics/Hero/HeroRunR2.png", 16, 39, 0, 0.05],
+						["Graphics/Hero/HeroRunR3.png", 16, 39, 0, 0.1],
+						["Graphics/Hero/HeroRunR4.png", 16, 39, 0, 0.1],
 					],
 			},
 			{
@@ -119,8 +119,8 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.jumpRight],
 				"Frames":
 					[
-						["Graphics/Hero/HeroRunR1.png", 16, 0, 39, 0.1],
-						["Graphics/Hero/HeroJumpR.png", 16, 0, 39, 10.1],
+						["Graphics/Hero/HeroRunR1.png", 16, 39, 0, 0.1],
+						["Graphics/Hero/HeroJumpR.png", 16, 39, 0, 10.1],
 					],
 			},
 			{
@@ -129,8 +129,8 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.jumpLeft],
 				"Frames":
 					[
-						["Graphics/Hero/HeroRunL1.png", 16, 0, 39, 0.1],
-						["Graphics/Hero/HeroJumpL.png", 16, 0, 39, 10.1],
+						["Graphics/Hero/HeroRunL1.png", 16, 39, 0, 0.1],
+						["Graphics/Hero/HeroJumpL.png", 16, 39, 0, 10.1],
 					],
 			},
 			{
@@ -139,8 +139,8 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.jumpUp],
 				"Frames":
 					[
-						["Graphics/Hero/HeroRunU1.png", 16, 0, 39, 0.1],
-						["Graphics/Hero/HeroJumpU.png", 16, 0, 39, 10.1],
+						["Graphics/Hero/HeroRunU1.png", 16, 39, 0, 0.1],
+						["Graphics/Hero/HeroJumpU.png", 16, 39, 0, 10.1],
 					],
 			},
 			{
@@ -149,8 +149,8 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.jumpDown, entity.eStates.jumpStat],
 				"Frames":
 					[
-						["Graphics/Hero/HeroRunD1.png", 16, 0, 39, 0.1],
-						["Graphics/Hero/HeroJumpD.png", 16, 0, 39, 10.1],
+						["Graphics/Hero/HeroRunD1.png", 16, 39, 0, 0.1],
+						["Graphics/Hero/HeroJumpD.png", 16, 39, 0, 10.1],
 					],
 			},
 			{
@@ -159,8 +159,8 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.blockRight],
 				"Frames":
 					[
-						["Graphics/Hero/HeroStandR.png", 48, 0, 47, 0.1],
-						["Graphics/Hero/HeroBlockR 1.png", 24, 0, 39, 0.1],
+						["Graphics/Hero/HeroStandR.png", 48, 47, 0, 0.1],
+						["Graphics/Hero/HeroBlockR 1.png", 24, 39, 0, 0.1],
 					],
 			},
 			{
@@ -169,8 +169,8 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.blockLeft],
 				"Frames":
 					[
-						["Graphics/Hero/HeroStandL.png", 48, 0, 47, 0.1],
-						["Graphics/Hero/HeroBlockL 1.png", 24, 0, 39, 0.1],
+						["Graphics/Hero/HeroStandL.png", 48, 47, 0, 0.1],
+						["Graphics/Hero/HeroBlockL 1.png", 24, 39, 0, 0.1],
 					],
 			},
 			{
@@ -179,16 +179,16 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.attackBigRight],
 				"Frames":
 					[
-						["Graphics/Hero/HeroBigAttack 2.png", 48, 0, 47, 0.1],
-						["Graphics/Hero/HeroBigAttack 3.png", 48, 0, 47, 0.1],
-						["Graphics/Hero/HeroBigAttack 4.png", 48, 0, 47, 0.1],
-						["Graphics/Hero/HeroBigAttack 5.png", 48, 0, 47, 0.1],
-						["Graphics/Hero/HeroBigAttack 6.png", 48, 0, 47, 0.05],
-						["Graphics/Hero/HeroBigAttack 7.png", 48, 0, 47, 0.05],
-						["Graphics/Hero/HeroBigAttack 8.png", 48, 0, 47, 0.05],
-						["Graphics/Hero/HeroBigAttack 9.png", 48, 0, 47, 0.1],
-						["Graphics/Hero/HeroBigAttack 10.png", 48, 0, 47, 0.1],
-						["Graphics/Hero/HeroBigAttack 11.png", 48, 0, 47, 0.1],
+						["Graphics/Hero/HeroBigAttack 2.png", 48, 47, 0, 0.1],
+						["Graphics/Hero/HeroBigAttack 3.png", 48, 47, 0, 0.1],
+						["Graphics/Hero/HeroBigAttack 4.png", 48, 47, 0, 0.1],
+						["Graphics/Hero/HeroBigAttack 5.png", 48, 47, 0, 0.1],
+						["Graphics/Hero/HeroBigAttack 6.png", 48, 47, 0, 0.05],
+						["Graphics/Hero/HeroBigAttack 7.png", 48, 47, 0, 0.05],
+						["Graphics/Hero/HeroBigAttack 8.png", 48, 47, 0, 0.05],
+						["Graphics/Hero/HeroBigAttack 9.png", 48, 47, 0, 0.1],
+						["Graphics/Hero/HeroBigAttack 10.png", 48, 47, 0, 0.1],
+						["Graphics/Hero/HeroBigAttack 11.png", 48, 47, 0, 0.1],
 					],
 			},
 			{
@@ -197,14 +197,14 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.attackSmallRight],
 				"Frames":
 					[
-						["Graphics/Hero/HeroSmallAttackR 2.png", 21, 0,  40, 0.05],
-						["Graphics/Hero/HeroSmallAttackR 3.png", 21, 0,  40, 0.05],
-						["Graphics/Hero/HeroSmallAttackR 4.png", 21, 0,  40, 0.05],
-						["Graphics/Hero/HeroSmallAttackR 5.png", 21, 0,  40, 0.05],
-						["Graphics/Hero/HeroSmallAttackR 6.png", 21, 0,  40, 0.05],
-						["Graphics/Hero/HeroSmallAttackR 7.png", 21, 0,  40, 0.05],
-						["Graphics/Hero/HeroSmallAttackR 8.png", 21, 0,  40, 0.05],
-						["Graphics/Hero/HeroSmallAttackR 9.png", 21, 0,  40, 0.1],
+						["Graphics/Hero/HeroSmallAttackR 2.png", 21, 40, 0, 0.05],
+						["Graphics/Hero/HeroSmallAttackR 3.png", 21, 40, 0, 0.05],
+						["Graphics/Hero/HeroSmallAttackR 4.png", 21, 40, 0, 0.05],
+						["Graphics/Hero/HeroSmallAttackR 5.png", 21, 40, 0, 0.05],
+						["Graphics/Hero/HeroSmallAttackR 6.png", 21, 40, 0, 0.05],
+						["Graphics/Hero/HeroSmallAttackR 7.png", 21, 40, 0, 0.05],
+						["Graphics/Hero/HeroSmallAttackR 8.png", 21, 40, 0, 0.05],
+						["Graphics/Hero/HeroSmallAttackR 9.png", 21, 40, 0, 0.1],
 					],
 			},
 			{
@@ -213,14 +213,14 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.attackSmallLeft],
 				"Frames":
 					[
-						["Graphics/Hero/HeroSmallAttackL 2.png", 21, 0,  40, 0.05],
-						["Graphics/Hero/HeroSmallAttackL 3.png", 21, 0,  40, 0.05],
-						["Graphics/Hero/HeroSmallAttackL 4.png", 21, 0,  40, 0.05],
-						["Graphics/Hero/HeroSmallAttackL 5.png", 21, 0,  40, 0.05],
-						["Graphics/Hero/HeroSmallAttackL 6.png", 21, 0,  40, 0.05],
-						["Graphics/Hero/HeroSmallAttackL 7.png", 21, 0,  40, 0.05],
-						["Graphics/Hero/HeroSmallAttackL 8.png", 21, 0,  40, 0.05],
-						["Graphics/Hero/HeroSmallAttackL 9.png", 21, 0,  40, 0.1],
+						["Graphics/Hero/HeroSmallAttackL 2.png", 21, 40, 0, 0.05],
+						["Graphics/Hero/HeroSmallAttackL 3.png", 21, 40, 0, 0.05],
+						["Graphics/Hero/HeroSmallAttackL 4.png", 21, 40, 0, 0.05],
+						["Graphics/Hero/HeroSmallAttackL 5.png", 21, 40, 0, 0.05],
+						["Graphics/Hero/HeroSmallAttackL 6.png", 21, 40, 0, 0.05],
+						["Graphics/Hero/HeroSmallAttackL 7.png", 21, 40, 0, 0.05],
+						["Graphics/Hero/HeroSmallAttackL 8.png", 21, 40, 0, 0.05],
+						["Graphics/Hero/HeroSmallAttackL 9.png", 21, 40, 0, 0.1],
 					],
 			},
 			{
@@ -229,16 +229,16 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.attackBigLeft],
 				"Frames":
 					[
-						["Graphics/Hero/HeroBigAttackL2.png", 48, 0, 47, 0.1],
-						["Graphics/Hero/HeroBigAttackL3.png", 48, 0, 47, 0.1],
-						["Graphics/Hero/HeroBigAttackL4.png", 48, 0, 47, 0.1],
-						["Graphics/Hero/HeroBigAttackL5.png", 48, 0, 47, 0.1],
-						["Graphics/Hero/HeroBigAttackL6.png", 48, 0, 47, 0.05],
-						["Graphics/Hero/HeroBigAttackL7.png", 48, 0, 47, 0.05],
-						["Graphics/Hero/HeroBigAttackL8.png", 48, 0, 47, 0.05],
-						["Graphics/Hero/HeroBigAttackL9.png", 48, 0, 47, 0.1],
-						["Graphics/Hero/HeroBigAttackL10.png", 48, 0, 47, 0.1],
-						["Graphics/Hero/HeroBigAttackL11.png", 48, 0, 47, 0.1],
+						["Graphics/Hero/HeroBigAttackL2.png", 48, 47, 0, 0.1],
+						["Graphics/Hero/HeroBigAttackL3.png", 48, 47, 0, 0.1],
+						["Graphics/Hero/HeroBigAttackL4.png", 48, 47, 0, 0.1],
+						["Graphics/Hero/HeroBigAttackL5.png", 48, 47, 0, 0.1],
+						["Graphics/Hero/HeroBigAttackL6.png", 48, 47, 0, 0.05],
+						["Graphics/Hero/HeroBigAttackL7.png", 48, 47, 0, 0.05],
+						["Graphics/Hero/HeroBigAttackL8.png", 48, 47, 0, 0.05],
+						["Graphics/Hero/HeroBigAttackL9.png", 48, 47, 0, 0.1],
+						["Graphics/Hero/HeroBigAttackL10.png", 48, 47, 0, 0.1],
+						["Graphics/Hero/HeroBigAttackL11.png", 48, 47, 0, 0.1],
 					],
 			},
 			{
@@ -247,8 +247,8 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.fallLeft],
 				"Frames":
 					[
-						["Graphics/Hero/HeroFallL 1.png", 18, 0, 47, 0.3],
-						["Graphics/Hero/HeroFallL 2.png", 20, 0, 40, 1.0],
+						["Graphics/Hero/HeroFallL 1.png", 18, 47, 0, 0.3],
+						["Graphics/Hero/HeroFallL 2.png", 20, 40, 0, 1.0],
 					],
 			},
 			{
@@ -257,8 +257,8 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.fallRight],
 				"Frames":
 					[
-						["Graphics/Hero/HeroFallR 1.png", 18, 0, 47, 0.3],
-						["Graphics/Hero/HeroFallR 2.png", 20, 0, 40, 1.0],
+						["Graphics/Hero/HeroFallR 1.png", 18, 47, 0, 0.3],
+						["Graphics/Hero/HeroFallR 2.png", 20, 40, 0, 1.0],
 					],
 			},
 			{
@@ -276,9 +276,9 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.hurtLeft],
 				"Frames":
 					[
-						["Graphics/Hero/HeroStandL.png", 48, 0, 47, 0.1],
-						["Graphics/Hero/HeroFallL 1.png", 18, 0, 47, 0.3],
-						["Graphics/Hero/HeroBlockL 1.png", 24, 0, 39, 0.1],
+						["Graphics/Hero/HeroStandL.png", 48, 47, 0, 0.1],
+						["Graphics/Hero/HeroFallL 1.png", 18, 47, 0, 0.3],
+						["Graphics/Hero/HeroBlockL 1.png", 24, 39, 0, 0.1],
 					],
 			},
 			{
@@ -287,9 +287,9 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.hurtRight],
 				"Frames":
 					[
-						["Graphics/Hero/HeroStandR.png", 48, 0, 47, 0.1],
-						["Graphics/Hero/HeroFallR 1.png", 18, 0, 47, 0.3],
-						["Graphics/Hero/HeroBlockR 1.png", 24, 0, 39, 0.1],
+						["Graphics/Hero/HeroStandR.png", 48, 47, 0, 0.1],
+						["Graphics/Hero/HeroFallR 1.png", 18, 47, 0, 0.3],
+						["Graphics/Hero/HeroBlockR 1.png", 24, 39, 0, 0.1],
 					],
 			},
 		]
@@ -315,15 +315,15 @@ class Controller(controller.Controller):
 		# cool downs in seconds
 		self.strikes = [
 			#			cool	del		range					dimension				origin			force		damage
-			strike.Strike(cool=0.8, delay=0.2, duration = 0.2, range=Vec3(24, 0, 0), dim=Vec3(10,8,12), orig=Vec3(5,4,6),
+			strike.Strike(cool=0.8, delay=0.2, duration = 0.2, range=Vec3(24, 0, 0), dim=Vec3(10,12,8), orig=Vec3(5,6,4),
 						 force=3, absorb=0, damage=2, template=hit_t, hero_damage=0),  # big
-			strike.Strike(cool=0.8, delay=0.4, duration = 0.2, range=Vec3(8, 10, 30), dim=Vec3(12,8,8), orig=Vec3(6,4,4),
+			strike.Strike(cool=0.8, delay=0.4, duration = 0.2, range=Vec3(8, 30, 10), dim=Vec3(12,8,8), orig=Vec3(6,4,4),
 						 force=3, absorb=0, damage=2, template=hit_t),  # big_up
 			strike.Strike(cool=0.3, delay=0.2, duration = 0.2, range=Vec3(12, 0, 0), dim=Vec3(10,8,8), orig=Vec3(5,4,4),
 						 force=1, absorb=0, damage=1, template=hit_t),  # small
-			strike.Strike(cool=0.8, delay=0.6, duration = 0.5, range=Vec3(16, 0, 0), dim=Vec3(10,16,30), orig=Vec3(5,8,20),
+			strike.Strike(cool=0.8, delay=0.6, duration = 0.5, range=Vec3(16, 0, 0), dim=Vec3(10,30,16), orig=Vec3(5,20,8),
 						 force=0.2, absorb=100, damage=0, template=hit_t),  # block
-			strike.Strike(cool=0.8, delay=0.7, duration=0.1, range=Vec3(20, 0, 0), dim=Vec3(10, 16, 30), orig=Vec3(5, 8, 20),
+			strike.Strike(cool=0.8, delay=0.7, duration=0.1, range=Vec3(20, 0, 0), dim=Vec3(10, 30, 16), orig=Vec3(5, 20, 8),
 						 force=3, absorb=100, damage=0, template=hit_t),  # push
 		]
 
@@ -404,13 +404,13 @@ class Controller(controller.Controller):
 			common_data.blink=False
 
 		# ground vs in the air
-		if common_data.pos.z < 0.0 + controller.global_tolerance:
+		if common_data.pos.y < 0.0 + controller.global_tolerance:
 			# we're on the ground guys
-			common_data.pos.z = 0.0
-			data.vel.z = 0.0
+			common_data.pos.y = 0.0
+			data.vel.y = 0.0
 			data.jump = False
 		else:
-			data.vel.z -= controller.global_gravity
+			data.vel.y -= controller.global_gravity
 
 		# deal with things that can't interrupt actions that are already happening
 
@@ -490,10 +490,10 @@ class Controller(controller.Controller):
 
 				# going up
 				if data.game_pad.actions[game_pad.eActions.up]:
-					data.vel.y = hero_speed
+					data.vel.z = hero_speed
 				# going down
 				elif data.game_pad.actions[game_pad.eActions.down]:
-					data.vel.y = -hero_speed
+					data.vel.z = -hero_speed
 
 				# deal with jump button
 				if data.game_pad.actions[game_pad.eActions.jump]:
@@ -501,7 +501,7 @@ class Controller(controller.Controller):
 						pass
 					else:
 						data.jump = True
-						data.vel.z += hero_jump_speed
+						data.vel.y += hero_jump_speed
 						# play jump sound
 						common_data.entity.sounds.playEvent(data, common_data, eEvents.jump)
 
@@ -594,8 +594,8 @@ class Collider(collision.Collider):
 				pass
 			else:
 				pass
-			self.dim = Vec3(14,8,30)
-			self.orig = Vec3(7,4,15)
+			self.dim = Vec3(14,30,8)
+			self.orig = Vec3(7,15,4)
 			self.mass = 10.0
 			self.force = 0.0
 

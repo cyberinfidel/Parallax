@@ -60,7 +60,7 @@ class Controller(controller.Controller):
 			else:
 				self.game_pad = False
 
-			self.vel = Vec3(0.0,0.0,-3.0)
+			self.vel = Vec3(0.0,-3.0,0.0)
 			self.cooldown = -1
 			common_data.state = eRainStates.state_fall
 			common_data.new_state = False
@@ -71,7 +71,7 @@ class Controller(controller.Controller):
 
 	def update(self, data, common_data, dt):
 		# deal with things that can interrupt actions e.g. landing
-		if common_data.pos.z <= 0:
+		if common_data.pos.y <= 0:
 			# on the ground
 			self.setState(data, common_data, eRainStates.state_pool, self.pool_cooldown)
 			data.vel = Vec3(0, 0, 0)

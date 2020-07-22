@@ -29,7 +29,7 @@ def DuckGraphics(renlayer):
 				"States": [DuckStates.stationary],
 				"Frames":
 					[
-						["Graphics/Duck/DuckL1.png", 13, 15, 2.0],
+						["Graphics/Duck/DuckL1.png", 13, 15, 0, 2.0],
 					]
 			},
 			{
@@ -38,7 +38,7 @@ def DuckGraphics(renlayer):
 				"States": [DuckStates.swimLeft],
 				"Frames":
 					[
-						["Graphics/Duck/DuckL1.png", 13, 15, 2.0],
+						["Graphics/Duck/DuckL1.png", 13, 15, 0, 2.0],
 					]
 			},
 			{
@@ -47,7 +47,7 @@ def DuckGraphics(renlayer):
 					"States": [DuckStates.swimRight],
 					"Frames":
 						[
-							["Graphics/Duck/DuckR1.png", 13, 15, 2.0],
+							["Graphics/Duck/DuckR1.png", 13, 15, 0, 2.0],
 						]
 				},
 				{
@@ -56,8 +56,8 @@ def DuckGraphics(renlayer):
 					"States": [DuckStates.feedLeft],
 					"Frames":
 						[
-							["Graphics/Duck/DuckL1.png", 13, 15, 0.1],
-							["Graphics/Duck/DuckFeedL.png", 13, 15, 0.5],
+							["Graphics/Duck/DuckL1.png", 13, 15, 0, 0.1],
+							["Graphics/Duck/DuckFeedL.png", 13, 15, 0, 0.5],
 						],
 				},
 				{
@@ -66,8 +66,8 @@ def DuckGraphics(renlayer):
 					"States": [DuckStates.feedRight],
 					"Frames":
 						[
-							["Graphics/Duck/DuckR1.png", 13, 15, 0.1],
-							["Graphics/Duck/DuckFeedR.png", 13, 15, 0.5],
+							["Graphics/Duck/DuckR1.png", 13, 15, 0, 0.1],
+							["Graphics/Duck/DuckFeedR.png", 13, 15, 0, 0.5],
 						],
 				},
 			]
@@ -111,10 +111,10 @@ class DuckController(Controller):
 			data.vel.x = DuckController.speed
 
 		if data.game_pad.actions[eActions.up]:
-			data.vel.y = DuckController.speed
+			data.vel.z = DuckController.speed
 
 		elif data.game_pad.actions[eActions.down]:
-			data.vel.y = -DuckController.speed
+			data.vel.z = -DuckController.speed
 
 		basic_physics(common_data.pos, data.vel)
 		friction(data.vel)

@@ -13,7 +13,7 @@ def RockGraphics(renlayer):
 			"Name": "Background",
 			"Template": SingleImage,
 			"RenderLayer": renlayer,
-			"Image": ["Graphics/Background/Rock.png", 24, 24, 0]
+			"Image": ["Graphics/Background/Rock.png", 24, 24, 0, 0]
 		}
 
 class RockCollider(Collider):
@@ -24,8 +24,8 @@ class RockCollider(Collider):
 				pass
 			else:
 				pass
-			self.orig = Vec3(12,4,16)
-			self.dim = Vec3(24,12,32)
+			self.orig = Vec3(12,16,4)
+			self.dim = Vec3(24,32,12)
 
 	def __init__(self, game, data):
 		super(RockCollider, self).__init__(game)

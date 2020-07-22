@@ -11,14 +11,14 @@ class Controller(controller.Controller):
 
 	class Data(object):
 		def __init__(self, common_data, init=False):
-			self.vel = Vec3(0,0,0.2)
+			self.vel = Vec3(0,0,0)
 
 	def update(self, data, common_data, dt):
 		return
-		if common_data.pos.z>100:
-			data.vel.z = -0.2
-		elif common_data.pos.z<20:
-			data.vel.z = 0.2
+		if common_data.pos.y>100:
+			data.vel.y = -0.2
+		elif common_data.pos.y<20:
+			data.vel.y = 0.2
 
 		controller.basic_physics(common_data.pos, data.vel)
 
@@ -34,7 +34,7 @@ def makeGraphics(manager, renlayer):
 			"Template": graphics.SingleImage,
 			"RenderLayer": renlayer,
 			"Image":
-				["Graphics/Platform/TestPlatform50x12.png", 25, 0, 3]
+				["Graphics/Platform/TestPlatform50x12.png", 25, 3, 0]
 		})
 
 
@@ -50,7 +50,7 @@ def restrictToArena(pos, vel):
 	# 	controller.basic_physics(pos, Vec3(-0.1, -0.1, 0)) # normal vector to plane
 
 	# stop running off screen bottom, top and sides
-	pos.clamp(Vec3(50, 0, 0), Vec3(100, 90, 10))
+	pos.clamp(Vec3(50, 0, 0), Vec3(100, 10, 90))
 
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
@@ -61,8 +61,8 @@ class Collider(collision.Collider):
 				pass
 			else:
 				pass
-			self.dim = Vec3(50,10,30)
-			self.orig = Vec3(25,5,20)
+			self.dim = Vec3(50,30,10)
+			self.orig = Vec3(25,20,5)
 
 	def __init__(self, game, data):
 		super(Collider, self).__init__(game)

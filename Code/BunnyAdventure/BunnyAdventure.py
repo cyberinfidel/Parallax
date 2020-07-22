@@ -32,7 +32,7 @@ import background as back
 import plat
 import title
 import rain
-import butterfly as butterfly
+import butterfly
 
 class BunnyAdventure(game.Game):
 	def __init__(self):
@@ -65,7 +65,7 @@ class BunnyAdventure(game.Game):
 		title_graphics = title.makeGraphics(self.graphics_manager, self.title_renlayer)
 		title_controller = title.makeController(self.controller_manager)
 		self.title_t = self.entity_manager.makeEntityTemplate(graphics=title_graphics, controller=title_controller)
-		self.title = self.requestNewEntity(entity_template=self.title_t, pos=Vec3(80, 400, -50), parent=self, name="Title")
+		self.title = self.requestNewEntity(entity_template=self.title_t, pos=Vec3(80, -50, 400), parent=self, name="Title")
 		self.title.setGamePad(self.input.getGamePad(0))
 
 		self.raining = False
@@ -148,15 +148,15 @@ class BunnyAdventure(game.Game):
 			self.director = self.requestNewEntity(entity_template=self.director_t)
 			self.director.controller_data.events = self.KFEvents()
 
-			self.back = self.requestNewEntity(entity_template=self.back_t, pos=Vec3(0, 500, -500), parent=self, name="back")
+			self.back = self.requestNewEntity(entity_template=self.back_t, pos=Vec3(0, -500, 500), parent=self, name="back")
 			for n in (0,100,200,300,400):
 				for m in (0, 12, 24, 36, 48, 60):
-					self.platform = self.requestNewEntity(entity_template=self.platform_t, pos=Vec3(300+n/2, 50+m, n/5 - 5), parent=self, name="platform")
+					self.platform = self.requestNewEntity(entity_template=self.platform_t, pos=Vec3(300+n/2, n/5 - 5, 50+m), parent=self, name="platform")
 
 			# make bunnies
-			self.oreo = self.requestNewEntity(entity_template=self.oreo_t, pos=Vec3(500, 60, 0), parent=False, name="Oreo")
+			self.oreo = self.requestNewEntity(entity_template=self.oreo_t, pos=Vec3(500, 0, 60), parent=False, name="Oreo")
 			self.oreo.setGamePad(self.input.getGamePad(1))
-			self.macaroon = self.requestNewEntity(entity_template=self.macaroon_t, pos=Vec3(190, 60, 50), parent=False, name="Macaroon")
+			self.macaroon = self.requestNewEntity(entity_template=self.macaroon_t, pos=Vec3(190, 50, 60), parent=False, name="Macaroon")
 			self.macaroon.setGamePad(self.input.getGamePad(0))
 			self.control_macaroon = True
 
@@ -169,18 +169,18 @@ class BunnyAdventure(game.Game):
 
 			if (rand_num(10) == 0 and len(self.drawables)<55):
 				bfly = self.entity_manager.makeEntity(self.bfly_templates[rand_num(3)])
-				bfly.setPos(Vec3(rand_num(self.res_x), rand_num(self.res_y), 500))
+				bfly.setPos(Vec3(rand_num(self.res_x), 500, rand_num(self.res_y)))
 				self.drawables.append(bfly)
 				self.updatables.append(bfly)
 
 			# rain
-			if False:#self.raining:
+			if self.raining:
 				if (rand_num(20)==0):
-					rain = self.entity_manager.makeEntity(self.rain_t)
-					rain.setState(rain.Controller.state_fall)
-					rain.setPos(Vec3(rand_num(1920), rand_num(270), 500))
-					self.drawables.append(rain)
-					self.updatables.append(rain)
+					raindrop = self.entity_manager.makeEntity(self.rain_t)
+					raindrop.setState(rain.Controller.state_fall)
+					raindrop.setPos(Vec3(rand_num(1920), 500, rand_num(270)))
+					self.drawables.append(raindrop)
+					self.updatables.append(raindrop)
 			self.rain_cooldown -=1
 			if self.rain_cooldown<=0:
 				self.rain_cooldown=rand_num(500)+500
@@ -290,7 +290,7 @@ class BunnyAdventure(game.Game):
 				sdl2.SDL_RenderSetLogicalSize(self.ren.sdlrenderer, int(self.logical_size_x), int(self.logical_size_y))
 
 				# scroll screen based on point midway between O & M
-				offset = self.renlayer.getOrigin() - (self.macaroon.common_data.pos + self.oreo.common_data.pos) / 2.0 + Vec3(
+				offset = self.renlayer.getOrigin() - ((self.macaroon.common_data.pos + self.oreo.common_data.pos) / 2.0) + Vec3(
 					self.logical_size_x / 2.0, self.logical_size_y / 2.0, 0.0)
 				if offset.magsq() > 100:  # tolerance for scrolling (arbitrary)
 					self.renlayer.origin -= offset / 20.0
@@ -298,6 +298,8 @@ class BunnyAdventure(game.Game):
 		for drawable in self.drawables:
 			# draw shadows first
 			if drawable.graphics.hasShadow():
+				# find where to draw shadow based on what is beneath the entity
+				#shadow_pos = self.collision_manager.getDistanceBelow(drawable.common_data.pos)
 				drawable.graphics.drawShadow(drawable.graphics_data, drawable.common_data)
 			# draw actual things
 			if not drawable.common_data.blink:

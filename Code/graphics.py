@@ -83,7 +83,7 @@ class Drawable(object):
 		return self.z
 
 	def getDrawDepth(self):
-		return self.y
+		return self.z
 
 class RenderImage(Drawable):
 	def __init__(self, image, x, y, z):
@@ -316,11 +316,11 @@ class MultiAnim(Component):
 
 	def drawShadow(self, data, common_data):
 
-		# todo: work out why z=0 doesn't work
-		# todo: shrink shadow the higher z is
-		# todo: allow shadows that aren't all at z=0
+		# todo: work out why y=0 doesn't work
+		# todo: shrink shadow the higher y is
+		# todo: allow shadows that aren't all at y=0
 		frame = self.anims[eStates.shadow].getCurrentFrame(data)
-		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, common_data.pos.y, frame.origin_y)
+		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, frame.origin_y, common_data.pos.z)
 
 
 #####################################################################

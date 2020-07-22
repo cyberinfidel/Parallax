@@ -13,7 +13,7 @@ def makeGraphics(graphics_manager, renlayer):
 			"Name": "Background",
 			"Template": SingleImage,
 			"RenderLayer": renlayer,
-			"Image": ["Graphics/Back/Meadow.png", 0, 500, 0]
+			"Image": ["Graphics/Back/Meadow.png", 0, 0, 500]
 		})
 
 
@@ -29,6 +29,6 @@ def restrictToArena(pos, vel):
 	# 	controller.basic_physics(pos, Vec3(-0.1, -0.1, 0)) # normal vector to plane
 
 	# stop running off screen bottom, top and sides
-	pos.clamp(Vec3(100, 0, 0), Vec3(600, 200, 1000))
+	pos.clamp(Vec3(100, 0, 0), Vec3(600, 1000, 200))
 
 

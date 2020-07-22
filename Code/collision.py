@@ -51,12 +51,11 @@ class CollisionManager(ComponentManager):
 
 		if (Apos.x - Aorig.x + Adim.x)> (Bpos.x -Borig.x): # Aright > Bleft
 			if (Bpos.x - Borig.x + Bdim.x) > (Apos.x - Aorig.x): # Bright < Aleft
-				if (Apos.y - Aorig.y + Adim.y) > (Bpos.y - Borig.y):
-					if (Bpos.y - Borig.y + Bdim.y) > (Apos.y - Aorig.y):
-						if (Apos.z - Aorig.z + Adim.z) > (Bpos.z - Borig.z):
-							if (Bpos.z - Borig.z + Bdim.z) > (Apos.z - Aorig.z):
+				if (Apos.z - Aorig.z + Adim.z) > (Bpos.z - Borig.z):
+					if (Bpos.z - Borig.z + Bdim.z) > (Apos.z - Aorig.z):
+						if (Apos.y - Aorig.y + Adim.y) > (Bpos.y - Borig.y):
+							if (Bpos.y - Borig.y + Bdim.y) > (Apos.y - Aorig.y):
 								# we have a collision
-
 
 								if collision_debug:
 									log(f"Collision - A: {A.common_data.name} B: {B.common_data.name}")

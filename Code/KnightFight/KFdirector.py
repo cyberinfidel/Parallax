@@ -31,19 +31,19 @@ def KFEvents(game):
 			# wait a bit
 			Delay(2),
 		SpawnEnemies([
-			SpawnEntity(game.bat_t, Vec3(290, 35, 5), False, "Bat 1"),
+			SpawnEntity(game.bat_t, Vec3(290, 5, 35), False, "Bat 1"),
 		]),
 
 		SpawnEnemies([
-				SpawnEntity(game.goblin_archer_t, Vec3(292, 35, 0), False, "Goblin Archer"),
+				SpawnEntity(game.goblin_archer_t, Vec3(292, 0, 35), False, "Goblin Archer"),
 			]),
 		SpawnEnemies([
-				SpawnEntity(game.goblin_archer_t, Vec3(25, 35, 0), False, "Goblin Archer"),
+				SpawnEntity(game.goblin_archer_t, Vec3(25, 0, 35), False, "Goblin Archer"),
 			]),
 		# wait a bit
 			Delay(0.7),
 			SpawnEnemies([
-			SpawnEntity(game.reaper_t, Vec3(30, 35, 0), False, "Reaper"),
+			SpawnEntity(game.reaper_t, Vec3(30, 0, 35), False, "Reaper"),
 			]),
 			Delay(rand_num(1)+0.5),
 
@@ -54,11 +54,11 @@ def KFEvents(game):
 
 			# first wave
 			SpawnEnemies([
-				SpawnEntity(game.reaper_t, Vec3(300, 35, 0), False, "Reaper 2"),
+				SpawnEntity(game.reaper_t, Vec3(300, 0, 35), False, "Reaper 2"),
 			]),
 			Delay(rand_num(1)+0.5),
 			SpawnEnemies([
-				SpawnEntity(game.reaper_t, Vec3(20, 35, 0), False, "Reaper 2"),
+				SpawnEntity(game.reaper_t, Vec3(20, 0, 35), False, "Reaper 2"),
 			]),
 
 			# wait until all monsters destroyed
@@ -68,30 +68,30 @@ def KFEvents(game):
 
 			# second  wave
 			SpawnEnemies([
-				SpawnEntity(game.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
+				SpawnEntity(game.bat_t, Vec3(30, 5, 35), False, "Bat 1"),
 			]),
 			Delay(rand_num(1)+0.5),
 			# spawn other half of wave
 			SpawnEnemies([
-				SpawnEntity(game.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
+				SpawnEntity(game.bat_t, Vec3(300, 5, 35), False, "Bat 1"),
 			]),
 			Delay(rand_num(1)+0.5),
 			SpawnEnemies([
-				SpawnEntity(game.bat_t, Vec3(155, 110, 5), False, "Bat 1"),
-			]),
-			Delay(rand_num(1)+0.5),
-			# spawn other half of wave
-			SpawnEnemies([
-				SpawnEntity(game.bat_t, Vec3(300, 35, 5), False, "Bat 1"),
-			]),
-			Delay(rand_num(1)+0.5),
-			SpawnEnemies([
-				SpawnEntity(game.bat_t, Vec3(30, 35, 5), False, "Bat 1"),
+				SpawnEntity(game.bat_t, Vec3(155, 5, 110), False, "Bat 1"),
 			]),
 			Delay(rand_num(1)+0.5),
 			# spawn other half of wave
 			SpawnEnemies([
-				SpawnEntity(game.bat_t, Vec3(155, 110, 5), False, "Bat 1"),
+				SpawnEntity(game.bat_t, Vec3(300, 5, 35), False, "Bat 1"),
+			]),
+			Delay(rand_num(1)+0.5),
+			SpawnEnemies([
+				SpawnEntity(game.bat_t, Vec3(30, 5, 35), False, "Bat 1"),
+			]),
+			Delay(rand_num(1)+0.5),
+			# spawn other half of wave
+			SpawnEnemies([
+				SpawnEntity(game.bat_t, Vec3(155, 5, 110), False, "Bat 1"),
 			]),
 
 			# wait until all monsters destroyed

@@ -62,7 +62,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.stationary, eStates.standRight],
 				"Frames":
 					[
-						["Graphics/Macaroon/RunFast_000.png", 20, 0, 36, 0.015],
+						["Graphics/Macaroon/RunFast_000.png", 20, 36, 0, 0.015],
 					]
 			},
 			{
@@ -71,7 +71,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.standLeft],
 				"Frames":
 					[
-						["Graphics/Macaroon/Left/RunFast_000.png", 20, 0, 36, 0.015],
+						["Graphics/Macaroon/Left/RunFast_000.png", 20, 36, 0, 0.015],
 					]
 			},
 			{
@@ -80,26 +80,26 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.runLeft],
 				"Frames":
 					[
-						["Graphics/Macaroon/Left/RunFast_000.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_001.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_002.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_003.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_004.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_005.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_006.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_007.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_008.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_009.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_010.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_011.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_012.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_013.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_014.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_015.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_016.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_017.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_018.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/Left/RunFast_019.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/Left/RunFast_000.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_001.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_002.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_003.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_004.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_005.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_006.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_007.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_008.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_009.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_010.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_011.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_012.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_013.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_014.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_015.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_016.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_017.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_018.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/Left/RunFast_019.png", 20, 36, 0, 0.01],
 					],
 			},
 			{
@@ -108,26 +108,26 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.runRight, eStates.runUp, eStates.runDown],
 				"Frames":
 					[
-						["Graphics/Macaroon/RunFast_000.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_001.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_002.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_003.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_004.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_005.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_006.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_007.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_008.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_009.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_010.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_011.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_012.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_013.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_014.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_015.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_016.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_017.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_018.png", 20, 0, 36, 0.01],
-						["Graphics/Macaroon/RunFast_019.png", 20, 0, 36, 0.01],
+						["Graphics/Macaroon/RunFast_000.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_001.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_002.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_003.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_004.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_005.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_006.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_007.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_008.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_009.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_010.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_011.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_012.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_013.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_014.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_015.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_016.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_017.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_018.png", 20, 36, 0, 0.01],
+						["Graphics/Macaroon/RunFast_019.png", 20, 36, 0, 0.01],
 					],
 			},
 			{
@@ -136,7 +136,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.attackSmallRight],
 				"Frames":
 					[
-						["Graphics/Macaroon/RunFast_000.png", 20, 0, 36, 0.015],
+						["Graphics/Macaroon/RunFast_000.png", 20, 36, 0, 0.015],
 					],
 			},
 			{
@@ -145,7 +145,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.attackSmallLeft],
 				"Frames":
 					[
-						["Graphics/Macaroon/Left/RunFast_000.png", 20, 0, 36, 0.015],
+						["Graphics/Macaroon/Left/RunFast_000.png", 20, 36, 0, 0.015],
 					],
 			},
 			{
@@ -154,7 +154,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.jumpLeft],
 				"Frames":
 					[
-						["Graphics/Macaroon/Left/RunFast_000.png", 20, 0, 36, 0.015],
+						["Graphics/Macaroon/Left/RunFast_000.png", 20, 36, 0, 0.015],
 					],
 			},
 			{
@@ -163,7 +163,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.jumpRight],
 				"Frames":
 					[
-						["Graphics/Macaroon/RunFast_000.png", 20, 0, 36, 0.015],
+						["Graphics/Macaroon/RunFast_000.png", 20, 36, 0, 0.015],
 					],
 			},
 			{
@@ -172,7 +172,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.shadow],
 				"Frames":
 					[
-						["Graphics/shadow.png", 16, 0, 4, 0.3],
+						["Graphics/shadow.png", 16, 4, 0, 0.3],
 					],
 			},
 		]
@@ -197,15 +197,15 @@ class Controller(controller.Controller):
 		# cool downs in seconds
 		self.strikes = [
 			#			cool	del		range					dimension				origin			force		damage
-			strike.Strike(cool=0.8, delay=0.6, duration = 0.2, range=Vec3(24, 0, 0), dim=Vec3(10,8,12), orig=Vec3(5,4,6),
+			strike.Strike(cool=0.8, delay=0.6, duration = 0.2, range=Vec3(24, 0, 0), dim=Vec3(10,12,8), orig=Vec3(5,6,4),
 						 force=3, absorb=0, damage=2, template=hit_t, hero_damage=0),  # big
-			strike.Strike(cool=0.8, delay=0.4, duration = 0.2, range=Vec3(8, 10, 30), dim=Vec3(12,8,8), orig=Vec3(6,4,4),
+			strike.Strike(cool=0.8, delay=0.4, duration = 0.2, range=Vec3(8, 30, 10), dim=Vec3(12,8,8), orig=Vec3(6,4,4),
 						 force=3, absorb=0, damage=2, template=hit_t),  # big_up
 			strike.Strike(cool=1.5, delay=0.2, duration = 0.2, range=Vec3(25, 0, 0), dim=Vec3(30,16,16), orig=Vec3(5,4,4),
 						 force=1, absorb=0, damage=1, template=hit_t),  # small
-			strike.Strike(cool=1.5, delay=0.6, duration = 0.5, range=Vec3(16, 0, 0), dim=Vec3(10,16,30), orig=Vec3(5,8,20),
+			strike.Strike(cool=1.5, delay=0.6, duration = 0.5, range=Vec3(16, 0, 0), dim=Vec3(10,30,16), orig=Vec3(5,20,8),
 						 force=0.2, absorb=100, damage=0, template=hit_t),  # block
-			strike.Strike(cool=0.8, delay=0.7, duration=0.1, range=Vec3(20, 0, 0), dim=Vec3(10, 16, 30), orig=Vec3(5, 8, 20),
+			strike.Strike(cool=0.8, delay=0.7, duration=0.1, range=Vec3(20, 0, 0), dim=Vec3(10,30,16), orig=Vec3(5,20,8),
 						 force=3, absorb=100, damage=0, template=hit_t),  # push
 		]
 
@@ -287,13 +287,13 @@ class Controller(controller.Controller):
 		#height = common_data.game.getDistanceBelow(common_data.pos)
 
 
-		if common_data.pos.z < 0.0 + controller.global_tolerance:
+		if common_data.pos.y < 0.0 + controller.global_tolerance:
 			# we're on the ground guys
-			common_data.pos.z = 0.0
-			data.vel.z = 0.0
+			common_data.pos.y = 0.0
+			data.vel.y = 0.0
 			data.jump = False
 		else:
-			data.vel.z -= controller.global_gravity
+			data.vel.y -= controller.global_gravity
 
 		# deal with things that can't interrupt actions that are already happening
 
@@ -373,10 +373,10 @@ class Controller(controller.Controller):
 
 				# going up
 				if data.game_pad.actions[eActions.up]:
-					data.vel.y = (hero_speed_while_jumping if data.jump else hero_speed)
+					data.vel.z = (hero_speed_while_jumping if data.jump else hero_speed)
 				# going down
 				elif data.game_pad.actions[eActions.down]:
-					data.vel.y = -(hero_speed_while_jumping if data.jump else hero_speed)
+					data.vel.z = -(hero_speed_while_jumping if data.jump else hero_speed)
 
 
 
@@ -389,7 +389,7 @@ class Controller(controller.Controller):
 						# binky
 						data.jump=True
 						self.setState(data,common_data,eStates.jumpLeft if data.facingleft else eStates.jumpRight, 0)
-						data.vel.z+= hero_jump_speed
+						data.vel.y+= hero_jump_speed
 
 				if data.game_pad.actions[eActions.attack_big]:
 					data.hero_struck[eStrikes.small]=True
@@ -406,7 +406,7 @@ class Controller(controller.Controller):
 			data.vel.friction(hero_friction_ground)
 		else:
 			# not jumping or moving fast enough so properly stop
-			data.vel =  Vec3(0.0,0.0,data.vel.z)
+			data.vel =  Vec3(0.0,data.vel.y,0.0)
 
 		common_data.pos+=data.vel
 
@@ -427,16 +427,16 @@ class Controller(controller.Controller):
 				B_orig = message.source.collider_data.orig
 
 				landed = False
-				# z
-				overlap_bottom = (B_pos.z - B_orig.z) - (pos.z - orig.z + dim.z)
-				overlap_top = (B_pos.z - B_orig.z + B_dim.z)- (pos.z - orig.z)
+				# y - height
+				overlap_bottom = (B_pos.y - B_orig.y) - (pos.y - orig.y + dim.y)
+				overlap_top = (B_pos.y - B_orig.y + B_dim.y)- (pos.y - orig.y)
 				# print(f"top {overlap_top} bottom {overlap_bottom}")
 				if (abs(overlap_top)<abs(overlap_bottom)):
 					# closer to top than bottom
-					min_z_overlap = overlap_top
+					min_y_overlap = overlap_top
 					landed = True
 				else:
-					min_z_overlap = overlap_bottom
+					min_y_overlap = overlap_bottom
 
 				# x
 				overlap_right = (B_pos.x-B_orig.x) - (pos.x-orig.x+dim.x)
@@ -446,28 +446,28 @@ class Controller(controller.Controller):
 				else:
 					min_x_overlap = overlap_right
 
-				overlap_up = (B_pos.y-B_orig.y) -(pos.y-orig.y+dim.y)
-				overlap_down =  (B_pos.y - B_orig.y + B_dim.y) - (pos.y - orig.y)
+				overlap_up = (B_pos.z-B_orig.z) -(pos.z-orig.z+dim.z)
+				overlap_down =  (B_pos.z - B_orig.z + B_dim.z) - (pos.z - orig.z)
 				if (abs(overlap_down)<abs(overlap_up)):
-					min_y_overlap = overlap_down
+					min_z_overlap = overlap_down
 				else:
-					min_y_overlap = overlap_up
+					min_z_overlap = overlap_up
 
-				# y
-				if abs(min_x_overlap)<abs(min_y_overlap):
-					if abs(min_x_overlap)<abs(min_z_overlap):
+				# resolve which is minimal overlap and move
+				if abs(min_x_overlap)<abs(min_z_overlap):
+					if abs(min_x_overlap)<abs(min_y_overlap):
 						pos.x+=min_x_overlap
 					else:
-						pos.z+=min_z_overlap
-						A.controller_data.vel.z = 0
+						pos.y+=min_y_overlap
+						A.controller_data.vel.y = 0
 						if landed:
 							A.controller_data.jump = False
 				else:
-					if abs(min_y_overlap)<abs(min_z_overlap):
-						pos.y+=min_y_overlap
-					else:
+					if abs(min_z_overlap)<abs(min_y_overlap):
 						pos.z+=min_z_overlap
-						A.controller_data.vel.z = 0
+					else:
+						pos.y+=min_y_overlap
+						A.controller_data.vel.y = 0
 						if landed:
 							A.controller_data.jump = False
 
@@ -480,8 +480,8 @@ class Collider(collision.Collider):
 				pass
 			else:
 				pass
-			self.dim = Vec3(30,8,20)
-			self.orig = Vec3(15,4,0)
+			self.dim = Vec3(30,20,8)
+			self.orig = Vec3(15,0,4)
 			self.absorb = 3
 			self.impassable = True
 			self.radius = 10.0

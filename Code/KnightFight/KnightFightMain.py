@@ -63,7 +63,7 @@ class KnightFight(Game):
 				graphics=self.graphics_manager.makeTemplate(background.makeGraphics(self.renlayer)),
 				controller= back_controller)
 		)
-		back.setPos(Vec3(0.0, 64.0, 0.0))
+		back.setPos(Vec3(0.0, 0.0, 64.0))
 		self.drawables.append(back)
 
 		# backL = self.entity_manager.makeEntity(
@@ -71,7 +71,7 @@ class KnightFight(Game):
 		# 		graphics=self.graphics_manager.makeTemplate(background.makeLGraphics(self.renlayer)),
 		# 		controller=back_controller)
 		# )
-		# backL.setPos(Vec3(0.0, 30.0, 0.0))
+		# backL.setPos(Vec3(0.0, 0.0, 30.0))
 		# self.drawables.append(backL)
 		#
 		# backR = self.entity_manager.makeEntity(
@@ -79,11 +79,11 @@ class KnightFight(Game):
 		# 		graphics=self.graphics_manager.makeTemplate(backRGraphics(self.renlayer)),
 		# 		controller=back_controller)
 		# )
-		# backR.setPos(Vec3(289.0, 30.0, 0.0))
+		# backR.setPos(Vec3(289.0, 0.0, 30.0))
 		# self.drawables.append(backR)
 
 		self.title_t = self.entity_manager.makeEntityTemplate(graphics=title.makeGraphics(self.graphics_manager, self.title_renlayer), controller=title.makeController(self.controller_manager))
-		self.title = self.requestNewEntity(entity_template=self.title_t, pos=Vec3(48, 50, 145), parent=self, name="Title")
+		self.title = self.requestNewEntity(entity_template=self.title_t, pos=Vec3(48, 145, 50), parent=self, name="Title")
 		self.title.setGamePad(self.input.getGamePad(0))
 
 		self.raining = False
@@ -173,19 +173,19 @@ class KnightFight(Game):
 			self.director.controller_data.events = KFdirector.KFEvents(self)
 
 			# make hero
-			self.hero = self.requestNewEntity(entity_template=self.hero_t, pos=Vec3(150, 60, 0), parent=False, name="Hero")
+			self.hero = self.requestNewEntity(entity_template=self.hero_t, pos=Vec3(150, 0, 60), parent=False, name="Hero")
 			self.hero.setGamePad(self.input.getGamePad(0))
 
 			# make hero 2
 			game_pad = self.input.getGamePad(1)
 			if game_pad:
-				self.hero2 = self.requestNewEntity(entity_template=self.hero_t, pos=Vec3(170, 60, 0), parent=False, name="Hero 2")
+				self.hero2 = self.requestNewEntity(entity_template=self.hero_t, pos=Vec3(170, 0, 60), parent=False, name="Hero 2")
 				self.hero2.setGamePad(game_pad)
 
 			# set up life indicator in top left
 			for n in range(1, 6):
 				heart = self.entity_manager.makeEntity(self.heart_t, "Heart")
-				heart.setPos(Vec3(10 * n, 0, 190))
+				heart.setPos(Vec3(10 * n, 190, 0))
 				self.drawables.append(heart)
 				self.updatables.append(heart)
 				heart.common_data.parent = self.hero
@@ -201,7 +201,7 @@ class KnightFight(Game):
 				if (rand_num(10)==0):
 					raindrop = self.entity_manager.makeEntity(self.rain_t)
 					raindrop.setState(rain.eRainStates.state_fall)
-					raindrop.setPos(Vec3(rand_num(320), rand_num(64), 200))
+					raindrop.setPos(Vec3(rand_num(320), 200, rand_num(64)))
 					self.drawables.append(raindrop)
 					self.updatables.append(raindrop)
 			self.rain_cooldown -=1
@@ -217,7 +217,7 @@ class KnightFight(Game):
 			# scroll view #
 			###############
 			if self.scroll:
-				offset = self.renlayer.getOrigin() - self.hero.common_data.pos + Vec3(160,64,0)
+				offset = self.renlayer.getOrigin() - self.hero.common_data.pos + Vec3(160, 64, 0)
 				if offset.magsq()>1000:
 					self.renlayer.origin-=offset/40.0
 					self.renlayer.origin.z = 0 # make current ground level when can

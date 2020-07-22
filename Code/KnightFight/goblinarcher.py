@@ -19,16 +19,16 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.attackSmallLeft],
 				"Frames":
 					[
-						["Graphics/GoblinArcher/GoblinArcher 08.png", 22, 0, 36, 0.1],
-						["Graphics/GoblinArcher/GoblinArcher 09.png", 22, 0, 36, 0.1],
-						["Graphics/GoblinArcher/GoblinArcher 10.png", 22, 0, 36, 0.1],
-						["Graphics/GoblinArcher/GoblinArcher 01.png", 22, 0, 36, 0.2],
-						["Graphics/GoblinArcher/GoblinArcher 02.png", 22, 0, 36, 0.2],
-						["Graphics/GoblinArcher/GoblinArcher 03.png", 22, 0, 36, 0.1],
-						["Graphics/GoblinArcher/GoblinArcher 04.png", 22, 0, 36, 0.1],
-						["Graphics/GoblinArcher/GoblinArcher 05.png", 22, 0, 36, 0.1],
-						["Graphics/GoblinArcher/GoblinArcher 06.png", 22, 0, 36, 0.2],
-						["Graphics/GoblinArcher/GoblinArcher 07.png", 22, 0, 36, 0.2],
+						["Graphics/GoblinArcher/GoblinArcher 08.png", 22, 36, 0, 0.1],
+						["Graphics/GoblinArcher/GoblinArcher 09.png", 22, 36, 0, 0.1],
+						["Graphics/GoblinArcher/GoblinArcher 10.png", 22, 36, 0, 0.1],
+						["Graphics/GoblinArcher/GoblinArcher 01.png", 22, 36, 0, 0.2],
+						["Graphics/GoblinArcher/GoblinArcher 02.png", 22, 36, 0, 0.2],
+						["Graphics/GoblinArcher/GoblinArcher 03.png", 22, 36, 0, 0.1],
+						["Graphics/GoblinArcher/GoblinArcher 04.png", 22, 36, 0, 0.1],
+						["Graphics/GoblinArcher/GoblinArcher 05.png", 22, 36, 0, 0.1],
+						["Graphics/GoblinArcher/GoblinArcher 06.png", 22, 36, 0, 0.2],
+						["Graphics/GoblinArcher/GoblinArcher 07.png", 22, 36, 0, 0.2],
 					],
 			},
 			{
@@ -37,16 +37,16 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.attackSmallRight],
 				"Frames":
 					[
-						["Graphics/GoblinArcher/Right/GoblinArcher 08.png", 22, 0, 36, 0.1],
-						["Graphics/GoblinArcher/Right/GoblinArcher 09.png", 22, 0, 36, 0.1],
-						["Graphics/GoblinArcher/Right/GoblinArcher 10.png", 22, 0, 36, 0.1],
-						["Graphics/GoblinArcher/Right/GoblinArcher 01.png", 22, 0, 36, 0.2],
-						["Graphics/GoblinArcher/Right/GoblinArcher 02.png", 22, 0, 36, 0.2],
-						["Graphics/GoblinArcher/Right/GoblinArcher 03.png", 22, 0, 36, 0.1],
-						["Graphics/GoblinArcher/Right/GoblinArcher 04.png", 22, 0, 36, 0.1],
-						["Graphics/GoblinArcher/Right/GoblinArcher 05.png", 22, 0, 36, 0.1],
-						["Graphics/GoblinArcher/Right/GoblinArcher 06.png", 22, 0, 36, 0.2],
-						["Graphics/GoblinArcher/Right/GoblinArcher 07.png", 22, 0, 36, 0.2],
+						["Graphics/GoblinArcher/Right/GoblinArcher 08.png", 22, 36, 0, 0.1],
+						["Graphics/GoblinArcher/Right/GoblinArcher 09.png", 22, 36, 0, 0.1],
+						["Graphics/GoblinArcher/Right/GoblinArcher 10.png", 22, 36, 0, 0.1],
+						["Graphics/GoblinArcher/Right/GoblinArcher 01.png", 22, 36, 0, 0.2],
+						["Graphics/GoblinArcher/Right/GoblinArcher 02.png", 22, 36, 0, 0.2],
+						["Graphics/GoblinArcher/Right/GoblinArcher 03.png", 22, 36, 0, 0.1],
+						["Graphics/GoblinArcher/Right/GoblinArcher 04.png", 22, 36, 0, 0.1],
+						["Graphics/GoblinArcher/Right/GoblinArcher 05.png", 22, 36, 0, 0.1],
+						["Graphics/GoblinArcher/Right/GoblinArcher 06.png", 22, 36, 0, 0.2],
+						["Graphics/GoblinArcher/Right/GoblinArcher 07.png", 22, 36, 0, 0.2],
 					],
 			},
 			{
@@ -55,7 +55,7 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.stationary],
 				"Frames":
 					[
-						["Graphics/GoblinArcher/GoblinArcher 08.png", 22, 0, 36, 0.04],
+						["Graphics/GoblinArcher/GoblinArcher 08.png", 22, 36, 0, 0.04],
 					],
 			},
 			{
@@ -64,7 +64,7 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.standLeft],
 				"Frames":
 					[
-						["Graphics/GoblinArcher/GoblinArcher 08.png", 22, 0, 36, 0.04],
+						["Graphics/GoblinArcher/GoblinArcher 08.png", 22, 36, 0, 0.04],
 					],
 			},
 			{
@@ -73,7 +73,7 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.standRight],
 				"Frames":
 					[
-						["Graphics/GoblinArcher/Right/GoblinArcher 08.png", 22, 0, 36, 0.04],
+						["Graphics/GoblinArcher/Right/GoblinArcher 08.png", 22, 36, 0, 0.04],
 					],
 			},
 			{
@@ -82,8 +82,8 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.fallLeft],
 				"Frames":
 					[
-						["Graphics/GoblinArcher/GoblinArcherDies 1.png", 22, 0, 36, 0.5],
-						["Graphics/GoblinArcher/GoblinArcherDies 2.png", 22, 0, 36, 0.5],
+						["Graphics/GoblinArcher/GoblinArcherDies 1.png", 22, 36, 0, 0.5],
+						["Graphics/GoblinArcher/GoblinArcherDies 2.png", 22, 36, 0, 0.5],
 					],
 			},
 			{
@@ -92,8 +92,8 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.fallRight],
 				"Frames":
 					[
-						["Graphics/GoblinArcher/Right/GoblinArcherDies 1.png", 22, 0, 36, 0.5],
-						["Graphics/GoblinArcher/Right/GoblinArcherDies 2.png", 22, 0, 36, 0.5],
+						["Graphics/GoblinArcher/Right/GoblinArcherDies 1.png", 22, 36, 0, 0.5],
+						["Graphics/GoblinArcher/Right/GoblinArcherDies 2.png", 22, 36, 0, 0.5],
 					],
 			},
 			{
@@ -102,7 +102,7 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.hurtLeft],
 				"Frames":
 					[
-						["Graphics/GoblinArcher/GoblinArcherDies 1.png", 22, 0, 36, 0.5],
+						["Graphics/GoblinArcher/GoblinArcherDies 1.png", 22, 36, 0, 0.5],
 					],
 			},
 			{
@@ -111,7 +111,7 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.hurtRight],
 				"Frames":
 					[
-						["Graphics/GoblinArcher/Right/GoblinArcherDies 1.png", 22, 0, 36, 0.5],
+						["Graphics/GoblinArcher/Right/GoblinArcherDies 1.png", 22, 36, 0, 0.5],
 					],
 			},
 			{
@@ -120,7 +120,7 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.shadow],
 				"Frames":
 					[
-						["Graphics/shadow.png", 16, 0, 4, 0.3],
+						["Graphics/shadow.png", 16, 4, 0, 0.3],
 					],
 			},
 			]
@@ -159,13 +159,13 @@ class Controller(controller.Controller):
 						 flippedX=False,
 							):
 		arrow = self.game.requestNewEntity(entity_template=self.arrow_t,
-																							 pos=common_data.pos+Vec3(-5 if flippedX else 5,0,20),
+																							 pos=common_data.pos+Vec3(-5 if flippedX else 5,20,0),
 																							 parent=common_data.entity,
 																							 name="Goblin archer arrow")
 		arrow.collider_data.force = 0#Vec3(-1 if flippedX else 1,0,0)
 		arrow.collider_data.hero_damage = 1
 		arrow.common_data.state = (entity.eStates.runLeft if flippedX else entity.eStates.runRight)
-		arrow.controller_data.vel = Vec3(-7 if flippedX else 7,0,1)
+		arrow.controller_data.vel = Vec3(-7 if flippedX else 7,1,0)
 
 	def update(self, data, common_data, dt):
 
@@ -183,7 +183,7 @@ class Controller(controller.Controller):
 			# fire at hero if in range
 			target = common_data.game.requestTarget(common_data.pos)
 			data.facingleft = (target.x<common_data.pos.x)
-			if abs(target.x-common_data.pos.x)<200 and abs(target.y-common_data.pos.y)<20:
+			if abs(target.x-common_data.pos.x)<200 and abs(target.z-common_data.pos.z)<20:
 				self.setState(data, common_data, entity.eStates.attackSmallLeft if data.facingleft else entity.eStates.attackSmallRight)
 				data.fired = True
 				data.cooldown = fire_cool
@@ -233,8 +233,8 @@ class Collider(collision.Collider):
 				pass
 			else:
 				pass
-			self.dim = Vec3(20,8,16)
-			self.orig = Vec3(10,4,0)
+			self.dim = Vec3(20,16,8)
+			self.orig = Vec3(10,0,4)
 			self.damage = 1.0
 			self.damage_hero=1
 			self.force = Vec3(0,0,0)

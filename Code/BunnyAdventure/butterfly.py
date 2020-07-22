@@ -27,12 +27,12 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.stationary],
 				"Frames":
 					[
-						["Graphics/Butterfly/Butterfly 2.png", 8, 0, 15, 0.04],
-						["Graphics/Butterfly/Butterfly 3.png", 8, 0, 15, 0.04],
-						["Graphics/Butterfly/Butterfly 4.png", 8, 0, 15, 0.1],
-						["Graphics/Butterfly/Butterfly 3.png", 8, 0, 15, 0.1],
-						["Graphics/Butterfly/Butterfly 2.png", 8, 0, 15, 0.1],
-						["Graphics/Butterfly/Butterfly 1.png", 8, 0, 15, 0.5],
+						["Graphics/Butterfly/Butterfly 2.png", 8, 15, 0, 0.04],
+						["Graphics/Butterfly/Butterfly 3.png", 8, 15, 0, 0.04],
+						["Graphics/Butterfly/Butterfly 4.png", 8, 15, 0, 0.1],
+						["Graphics/Butterfly/Butterfly 3.png", 8, 15, 0, 0.1],
+						["Graphics/Butterfly/Butterfly 2.png", 8, 15, 0, 0.1],
+						["Graphics/Butterfly/Butterfly 1.png", 8, 15, 0, 0.5],
 					],
 			},
 			{
@@ -41,7 +41,7 @@ def makeGraphics(manager, renlayer):
 				"States": [eStates.shadow],
 				"Frames":
 					[
-						["Graphics/shadowSmall.png", 16, 0, 4, 0.3],
+						["Graphics/shadowSmall.png", 16, 4, 0, 0.3],
 					],
 			},
 			]
@@ -60,12 +60,12 @@ def makeGraphics2(manager, renlayer):
 				"States": [eStates.stationary],
 				"Frames":
 					[
-						["Graphics/Butterfly2/Butterfly 2.png", 8, 0, 15, 0.04],
-						["Graphics/Butterfly2/Butterfly 3.png", 8, 0, 15, 0.04],
-						["Graphics/Butterfly2/Butterfly 4.png", 8, 0, 15, 0.1],
-						["Graphics/Butterfly2/Butterfly 3.png", 8, 0, 15, 0.1],
-						["Graphics/Butterfly2/Butterfly 2.png", 8, 0, 15, 0.1],
-						["Graphics/Butterfly2/Butterfly 1.png", 8, 0, 15, 0.5],
+						["Graphics/Butterfly2/Butterfly 2.png", 8, 15, 0, 0.04],
+						["Graphics/Butterfly2/Butterfly 3.png", 8, 15, 0, 0.04],
+						["Graphics/Butterfly2/Butterfly 4.png", 8, 15, 0, 0.1],
+						["Graphics/Butterfly2/Butterfly 3.png", 8, 15, 0, 0.1],
+						["Graphics/Butterfly2/Butterfly 2.png", 8, 15, 0, 0.1],
+						["Graphics/Butterfly2/Butterfly 1.png", 8, 15, 0, 0.5],
 					],
 			},
 			{
@@ -74,7 +74,7 @@ def makeGraphics2(manager, renlayer):
 				"States": [eStates.shadow],
 				"Frames":
 					[
-						["Graphics/shadowSmall.png", 16, 0,  4, 0.3],
+						["Graphics/shadowSmall.png", 16, 4,  0, 0.3],
 					],
 			},
 			]
@@ -93,12 +93,12 @@ def makeGraphics3(manager, renlayer):
 				"States": [eStates.stationary],
 				"Frames":
 					[
-						["Graphics/Butterfly3/Butterfly 2.png", 8, 0, 15, 0.04],
-						["Graphics/Butterfly3/Butterfly 3.png", 8, 0, 15, 0.04],
-						["Graphics/Butterfly3/Butterfly 4.png", 8, 0, 15, 0.1],
-						["Graphics/Butterfly3/Butterfly 3.png", 8, 0, 15, 0.1],
-						["Graphics/Butterfly3/Butterfly 2.png", 8, 0, 15, 0.1],
-						["Graphics/Butterfly3/Butterfly 1.png", 8, 0, 15, 0.5],
+						["Graphics/Butterfly3/Butterfly 2.png", 8, 15, 0, 0.04],
+						["Graphics/Butterfly3/Butterfly 3.png", 8, 15, 0, 0.04],
+						["Graphics/Butterfly3/Butterfly 4.png", 8, 15, 0, 0.1],
+						["Graphics/Butterfly3/Butterfly 3.png", 8, 15, 0, 0.1],
+						["Graphics/Butterfly3/Butterfly 2.png", 8, 15, 0, 0.1],
+						["Graphics/Butterfly3/Butterfly 1.png", 8, 15, 0, 0.5],
 					],
 			},
 			{
@@ -107,7 +107,7 @@ def makeGraphics3(manager, renlayer):
 				"States": [eStates.shadow],
 				"Frames":
 					[
-						["Graphics/shadowSmall.png", 16, 0, 4, 0.3],
+						["Graphics/shadowSmall.png", 16, 4, 0, 0.3],
 					],
 			},
 			]
@@ -163,20 +163,20 @@ class Controller(controller.Controller):
 #					self.setState(data, common_data, eStates.runRight)
 					data.vel = Vec3(speed, 0, 0)
 					data.facing = eDirections.right
-				if(data. target.y<common_data.pos.y):
-					data.vel.y = -speed
+				if(data. target.z<common_data.pos.z):
+					data.vel.z = -speed
 				else:
-					data.vel.y = speed
+					data.vel.z = speed
 
 				if common_data.pos.distSq(Vec3(data.target.x,data.target.y,common_data.pos.z))<800:
-					data.vel.z = 0 # drop on target
+					data.vel.y = 0 # drop on target
 				elif (common_data.pos.z<80+rand_num(200)) and (data.vel.z<3):
-					data.vel.z += 2+rand_num(5) # otherwise flap
+					data.vel.y += 2+rand_num(5) # otherwise flap
 					common_data.entity.graphics.startAnim(data = common_data.entity.graphics_data)
 
 				data.cooldown = 0.2
 
-		if common_data.pos.z>0:
+		if common_data.pos.y>0:
 			controller.friction(data.vel, 0.01)
 		else:
 			controller.friction(data.vel, 0.1)

@@ -40,7 +40,7 @@ class FeedTheDuck(game.Game):
 			"Name": "Background",
 			"Template": graphics.SingleImage,
 			"RenderLayer": self.renlayer,
-			"Image": ["Graphics/Background/Back.png", 0, 65, 0]
+			"Image": ["Graphics/Background/Back.png", 0, 0, 65]
 		})
 		rockgraphics = self.graphics_manager.makeTemplate(RockGraphics(self.renlayer))
 		duckgraphics = self.graphics_manager.makeTemplate(DuckGraphics(self.renlayer))

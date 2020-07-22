@@ -3,6 +3,7 @@ from vector import Vec3
 import controller
 import collision
 from graphics import MultiAnim, AnimSingle
+import background
 
 #########
 # Arrow #
@@ -21,7 +22,7 @@ def AGraphics(renlayer):
 				"States": [eStates.stationary,eStates.runLeft,eStates.fallLeft],
 				"Frames":
 					[
-						["Graphics/Arrow/ArrowLeft.png", 11, 0, 3, 0.04],
+						["Graphics/Arrow/ArrowLeft.png", 11, 3, 0, 0.04],
 					],
 			},
 			{
@@ -30,7 +31,7 @@ def AGraphics(renlayer):
 				"States": [eStates.fallRight, eStates.runRight],
 				"Frames":
 					[
-						["Graphics/Arrow/ArrowRight.png", 11, 0, 3, 0.04],
+						["Graphics/Arrow/ArrowRight.png", 11, 3, 0, 0.04],
 					],
 			},
 			{
@@ -39,7 +40,7 @@ def AGraphics(renlayer):
 				"States": [eStates.shadow],
 				"Frames":
 					[
-						["Graphics/shadowSmall.png", 16, 0, 4, 0.3],
+						["Graphics/shadowSmall.png", 16, 4, 0, 0.3],
 					],
 			},
 				]
@@ -70,7 +71,7 @@ class Controller(controller.Controller):
 			if not self.coolDown(data,dt):
 				self.setState(data, common_data, eStates.dead)
 			controller.friction(data.vel, 0.1)
-		elif common_data.pos.z>0:
+		elif common_data.pos.y>0:
 			controller.friction(data.vel, 0.01)
 		else:
 			self.setState(data,common_data,eStates.fallLeft if data.facing==eDirections.left else eStates.fallRight)
@@ -81,7 +82,7 @@ class Controller(controller.Controller):
 		controller.basic_gravity(data.vel)
 		controller.basic_physics(common_data.pos,data.vel)
 
-		controller.restrictToArena(common_data.pos, data.vel)
+		background.restrictToArena(common_data.pos, data.vel)
 
 
 
@@ -104,8 +105,8 @@ class Collider(collision.Collider):
 				pass
 			else:
 				pass
-			self.dim = Vec3(10,8,16)
-			self.orig = Vec3(5,4,8)
+			self.dim = Vec3(10,16,8)
+			self.orig = Vec3(5,8,4)
 
 	def __init__(self, game, data):
 		super(Collider, self).__init__(game)

@@ -15,9 +15,9 @@ def makeGraphics(renlayer):
 			"Template": graphics.MultiImage,
 			"RenderLayer": renlayer,
 			"Images": [
-				["Graphics/FightCourtyard.png", 0, 0, 136, 0],
-				["Graphics/BackLeft.png", 0, -44, 60, 0],
-				["Graphics/BackRight.png", -289, -44, 60, 0]
+				["Graphics/FightCourtyard.png", 0, 136, 0, 0],
+				["Graphics/BackLeft.png", 0, 60, -44, 0],
+				["Graphics/BackRight.png", -289, 60, -44, 0]
 		]
 		}
 
@@ -26,7 +26,7 @@ def makeGraphics(renlayer):
 # 			"Name": "Background",
 # 			"Template": graphics.SingleImage,
 # 			"RenderLayer": renlayer,
-# 			"Image": ["Graphics/BackLeft.png", 0, 0, 50, 0]
+# 			"Image": ["Graphics/BackLeft.png", 0, 50, 0, 0]
 # 		}
 #
 # def backRGraphics(renlayer):
@@ -34,21 +34,21 @@ def makeGraphics(renlayer):
 # 			"Name": "Background",
 # 			"Template": graphics.SingleImage,
 # 			"RenderLayer": renlayer,
-# 			"Image": ["Graphics/BackRight.png", 0, 0, 50, 0]
+# 			"Image": ["Graphics/BackRight.png", 0, 50, 0, 0]
 # 		}
 
 def restrictToArena(pos, vel):
 	# stop running through walls at either side
 	# if pos on left side of line then force to right side
-	while pos.whichSidePlane(vector.Plane(1, -1, 0, 0)):
-		controller.basic_physics(pos, Vec3(0.1, -0.1, 0)) # normal vector to plane
+	while pos.whichSidePlane(vector.Plane(1, 0, -1, 0)):
+		controller.basic_physics(pos, Vec3(0.1, 0, -0.1)) # normal vector to plane
 
 	# stop running through walls at either side
 	# if pos on left side of line then force to right side
-	while not pos.whichSidePlane(vector.Plane(1, 1, 0, -320)):
-		controller.basic_physics(pos, Vec3(-0.1, -0.1, 0)) # normal vector to plane
+	while not pos.whichSidePlane(vector.Plane(1, 0, 1, -320)):
+		controller.basic_physics(pos, Vec3(-0.1, 0, -0.1)) # normal vector to plane
 
 	# stop running off screen bottom, top and sides
-	pos.clamp(Vec3(0, 0, 0), Vec3(320, 60, 200))
+	pos.clamp(Vec3(0, 0, 0), Vec3(320, 200, 60))
 
 
