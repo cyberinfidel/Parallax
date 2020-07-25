@@ -51,6 +51,7 @@ class eDirections(enum.IntEnum):
 	left = 1
 	up = 2
 	right = 3
+	num_directions = 4
 
 
 

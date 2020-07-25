@@ -13,10 +13,11 @@ import background
 
 
 
-class ePathStates(enum.IntEnum):
-	poo = 5
-	hedge = 3
-	clear = 4
+class eTileStates(enum.IntEnum):
+	poo = 3
+	hedge = 4
+	clear = 6
+	hole = 5
 
 
 def makeGraphics(manager, renlayer):
@@ -28,21 +29,28 @@ def makeGraphics(manager, renlayer):
 			{
 				"Name": "Path without Poo",
 				"AnimType": graphics.AnimSingle,
-				"States": [ePathStates.clear],
+				"States": [eTileStates.clear],
 				"Frames":
 						[["Graphics/Path/Path.png", 8, 8, 0, 0.8]],
 			},
 			{
 				"Name": "Path with Poo",
 				"AnimType": graphics.AnimSingle,
-				"States": [ePathStates.poo],
+				"States": [eTileStates.poo],
 				"Frames":
 						[["Graphics/Path/Path Poo.png", 8, 8, 0, 0.8]],
 			},
 			{
+				"Name": "Path with Hole",
+				"AnimType": graphics.AnimSingle,
+				"States": [eTileStates.hole],
+				"Frames":
+						[["Graphics/Path/Path Hole.png", 8, 8, 0, 0.8]],
+			},
+			{
 				"Name": "Hedge",
 				"AnimType": graphics.AnimSingle,
-				"States": [ePathStates.hedge],
+				"States": [eTileStates.hedge],
 				"Frames":
 					[["Graphics/Hedge/Hedge.png", 8, 8, 0, 0.8]],
 			},
@@ -59,11 +67,6 @@ class Controller(controller.Controller):
 		super(Controller, self).__init__(game)
 		# values global to all instances
 
-
-
-
-
-
 	################
 	# end __init__ #
 	################
@@ -76,15 +79,25 @@ class Controller(controller.Controller):
 				self.game_pad = False
 
 			# values for each instance
-
+			self.types = []
+			self.exits = []
 
 
 	#####################
 	# end data __init__ #
 	#####################
 
+	def addExit(self, data, exit):
+		data.exits.append(exit)
 
+	def getExits(self, data):
+		return data.exits
 
+	def addType(self, data, type):
+		data.types.append(type)
+
+	def getTypes(self, data):
+		return data.types
 
 	def update(self, data, common_data, dt):
 		pass
@@ -114,7 +127,7 @@ class Collider(collision.Collider):
 
 	def getCollisionMessage(self, data, common_data):
 		message = collision.Message(source=common_data.entity)
-		if common_data.state==ePathStates.hedge:
+		if common_data.state==eTileStates.hedge:
 			message.impassable = True
 			message.poo = False
 		else:

@@ -12,8 +12,7 @@ from vector import Vec3
 import vector
 import sound
 import game
-
-import path
+import tile
 
 
 
@@ -147,7 +146,7 @@ class Controller(controller.Controller):
 			self.vel = Vec3(0.0,0.0,0.0)
 			self.queued_vel = Vec3(0.0,0.0,0.0)
 			self.facing = False
-			self.queued_facing = False
+			self.queued_facing = 4
 			self.health = 3
 			common_data.state = entity.eStates.stationary
 			self.queued_state = common_data.state
@@ -171,89 +170,89 @@ class Controller(controller.Controller):
 			# going left
 			if data.game_pad.actions[game_pad.eActions.left]:
 				data.queued_facing = entity.eDirections.left
-				data.queued_state = entity.eStates.runLeft
 				data.queued_vel.x = -bunny_speed
 				data.queued_vel.y = 0
 
 			# going right
 			elif data.game_pad.actions[game_pad.eActions.right]:
 				data.queued_facing = entity.eDirections.right
-				data.queued_state = entity.eStates.runRight
 				data.queued_vel.x = bunny_speed
 				data.queued_vel.y = 0
 
 			# going up
 			elif data.game_pad.actions[game_pad.eActions.up]:
 				data.queued_facing = entity.eDirections.up
-				data.queued_state = entity.eStates.runUp
 				data.queued_vel.x = 0
 				data.queued_vel.y = bunny_speed
 
 			# going down
 			elif data.game_pad.actions[game_pad.eActions.down]:
 				data.queued_facing = entity.eDirections.down
-				data.queued_state = entity.eStates.runDown
 				data.queued_vel.x = 0
 				data.queued_vel.y = -bunny_speed
 
+			data.queued_state = [entity.eStates.runDown, entity.eStates.runLeft, entity.eStates.runUp, entity.eStates.runRight, entity.eStates.stationary][data.queued_facing]
 
+		if common_data.state!=entity.eStates.stationary:
+			x, y = data.level.getCoordFromPos(common_data.pos)
+			current_tile = data.level.getTileFromCoord(x,y)
+			exits = current_tile.controller.getExits(current_tile.controller_data)
+			x_in_tile = common_data.pos.x%16
+			y_in_tile = common_data.pos.y%16
 
-		x, y = data.level.getCoordFromPos(common_data.pos)
-		exits = data.level.getExitsFromCoord(x,y)
-		x_in_tile = common_data.pos.x%16
-		y_in_tile = common_data.pos.y%16
-
-		if (x_in_tile>6 and x_in_tile<10) and (y_in_tile>6 and y_in_tile<10):
-			pood = data.level.poo(x,y)
-			if pood:
-				common_data.game.setGameMode(game.eGameModes.win)
-
-
-		# data.facing = data.queued_facing
-					# data.vel =  copy.deepcopy(data.queued_vel)
-					# self.updateState(data, common_data, data.queued_state)
-		# print(f"{x_in_tile},{y_in_tile} {exits}")
-
-		if ((
-				(data.facing==entity.eDirections.left and data.queued_facing==entity.eDirections.right)
-				or (data.facing == entity.eDirections.right and data.queued_facing == entity.eDirections.left)
-				or (data.facing == entity.eDirections.up and data.queued_facing == entity.eDirections.down)
-				or (data.facing == entity.eDirections.down and data.queued_facing == entity.eDirections.up)
-		)
-				or (x_in_tile==8 and y_in_tile==8
-				and (((data.queued_facing == entity.eDirections.left) and (entity.eDirections.left in exits))
-				or ((data.queued_facing == entity.eDirections.right) and (entity.eDirections.right in exits))
-				or ((data.queued_facing == entity.eDirections.up) and (entity.eDirections.up in exits))
-				or ((data.queued_facing == entity.eDirections.down) and (entity.eDirections.down in exits))))):
-				data.facing = data.queued_facing
-				self.setState(data, common_data, data.queued_state)
-
-		if data.facing==entity.eDirections.left:
-			data.vel.x=-bunny_speed
-			data.vel.y=0
-		elif data.facing==entity.eDirections.right:
-			data.vel.x=bunny_speed
-			data.vel.y=0
-		elif data.facing == entity.eDirections.up:
-			data.vel.y = bunny_speed
-			data.vel.x=0
-		elif data.facing == entity.eDirections.down:
-			data.vel.y = -bunny_speed
-			data.vel.x=0
-
-
-		if x_in_tile == 8 and y_in_tile == 8:
-			if ((data.facing == entity.eDirections.left) and not (entity.eDirections.left in exits)) \
-				or ((data.facing == entity.eDirections.right) and not (entity.eDirections.right in exits)):
-					data.vel.x=0
-			if ((data.facing == entity.eDirections.up) and not (entity.eDirections.up in exits)) \
-				or ((data.facing == entity.eDirections.down) and not (entity.eDirections.down  in exits)):
-					data.vel.y=0
+			if (x_in_tile>6 and x_in_tile<10) and (y_in_tile>6 and y_in_tile<10):
+				if current_tile.common_data.state == tile.eTileStates.clear:
+					if data.level.poo(current_tile):	# returns true if count of poos reaches number of empty spaces
+						common_data.game.setGameMode(game.eGameModes.win)
+				elif current_tile.common_data.state == tile.eTileStates.hole:
+					hole = data.level.getNextHole(x,y)
+					common_data.pos = copy.deepcopy(hole.exit)
+					data.facing = hole.direction
+					data.queued_facing = hole.direction
 
 
 
-		if data.game_pad.actions[game_pad.eActions.jump]:
-			data.vel = Vec3(0,0,0)
+
+			if ((
+					(data.facing==entity.eDirections.left and data.queued_facing==entity.eDirections.right)
+					or (data.facing == entity.eDirections.right and data.queued_facing == entity.eDirections.left)
+					or (data.facing == entity.eDirections.up and data.queued_facing == entity.eDirections.down)
+					or (data.facing == entity.eDirections.down and data.queued_facing == entity.eDirections.up)
+			)
+					or (x_in_tile==8 and y_in_tile==8
+					and (((data.queued_facing == entity.eDirections.left) and (entity.eDirections.left in exits))
+					or ((data.queued_facing == entity.eDirections.right) and (entity.eDirections.right in exits))
+					or ((data.queued_facing == entity.eDirections.up) and (entity.eDirections.up in exits))
+					or ((data.queued_facing == entity.eDirections.down) and (entity.eDirections.down in exits))))):
+					data.facing = data.queued_facing
+					self.setState(data, common_data, data.queued_state)
+
+			if data.facing==entity.eDirections.left:
+				data.vel.x=-bunny_speed
+				data.vel.y=0
+			elif data.facing==entity.eDirections.right:
+				data.vel.x=bunny_speed
+				data.vel.y=0
+			elif data.facing == entity.eDirections.up:
+				data.vel.y = bunny_speed
+				data.vel.x=0
+			elif data.facing == entity.eDirections.down:
+				data.vel.y = -bunny_speed
+				data.vel.x=0
+
+
+			if x_in_tile == 8 and y_in_tile == 8:
+				if ((data.facing == entity.eDirections.left) and not (entity.eDirections.left in exits)) \
+					or ((data.facing == entity.eDirections.right) and not (entity.eDirections.right in exits)):
+						data.vel.x=0
+				if ((data.facing == entity.eDirections.up) and not (entity.eDirections.up in exits)) \
+					or ((data.facing == entity.eDirections.down) and not (entity.eDirections.down  in exits)):
+						data.vel.y=0
+
+
+
+		else:
+			self.setState(data, common_data, data.queued_state)
 
 
 		controller.basic_physics(common_data.pos, data.vel)
@@ -262,9 +261,12 @@ class Controller(controller.Controller):
 
 	def receiveCollision(self, A, message):
 		if message:
-			if message.impassable:
-				pass
-				# print(f"col source{message.source.common_data.pos.x},{message.source.common_data.pos.y}")
+			if message.damage>0:
+				A.common_data.game.setGameMode(game.eGameModes.game_over)
+				A.controller_data.game_pad=False
+				A.controller.setState(A.controller_data,A.common_data,entity.eStates.dead)
+
+			# print(f"col source{message.source.common_data.pos.x},{message.source.common_data.pos.y}")
 		# 	print(f"Hedge source{message.source.common_data.pos.x}{message.source.common_data.pos.y}")
 			# 	# A.controller_data.vel = Vec3(0,0,0)
 
@@ -277,8 +279,8 @@ class Collider(collision.Collider):
 				pass
 			else:
 				pass
-			self.dim = Vec3(16,16,8)
-			self.orig = Vec3(7,7,4)
+			self.dim = Vec3(8,8,8)
+			self.orig = Vec3(4,4,4)
 			self.mass = 10.0
 			self.force = 0.0
 

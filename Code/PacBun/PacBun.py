@@ -15,6 +15,7 @@ from vector import Vec3, rand_num
 import graphics
 import sound
 import director
+import enum
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -27,73 +28,9 @@ def log(msg, new_line=True):
 import title
 import heart
 import bunny
-import path
-
-
-class Level(object):
-
-	def __init__(self, map):
-		self.map = map
-
-		# flip since we draw from bottom left
-		for i in range(0, 10):
-			swap = self.map[i]
-			self.map[i] = self.map[19 - i]
-			self.map[19 - i] = swap
-
-		self.data = [None]*20
-		for i in range(0,20):
-			self.data[i] = [None]*20
-
-		self.entities = [None]*20
-		for i in range(0,20):
-			self.entities[i] = [None]*20
-
-		self.num_spaces=0
-		self.num_poos=0
-		for y in range(0,20):
-			for x in range(0,20):
-				if self.map[y][x]!="H":
-					self.num_spaces+=1
-					self.data[y][x]=[]
-					# work out ways out of the blank space
-					if self.map[y+1][x]!="H":
-						self.data[y][x].append(entity.eDirections.up)
-					if self.map[y-1][x]!="H":
-						self.data[y][x].append(entity.eDirections.down)
-					if self.map[y][x-1]!="H":
-						self.data[y][x].append(entity.eDirections.left)
-					if self.map[y][x+1]!="H":
-						self.data[y][x].append(entity.eDirections.right)
-
-
-
-	def getLocFromCoord(self,x,y):
-		return self.map[y][x]
-
-	def getCoordFromPos(self, pos):
-		return int(pos.x/16),int(pos.y/16)
-
-	def getExitsFromCoord(self, x, y):
-		return self.data[y][x]
-
-
-	def setEntityForCoord(self, entity, x, y):
-		if (self.data[y][x]):
-			entity.setState(path.ePathStates.clear)
-		else:
-			entity.setState(path.ePathStates.hedge)
-		# entity.collider_data.exits=self.data[y][x]
-		self.entities[y][x]=entity
-
-	def poo(self,x,y):
-		entity = self.entities[y][x]
-		if entity.getState()!=path.ePathStates.poo:
-			entity.controller.setState(entity.controller_data, entity.common_data,path.ePathStates.poo)
-			self.num_poos+=1
-			if self.num_poos>= self.num_spaces:
-				return True	# signal win
-		return False
+import fox
+import tile
+import level
 
 
 class PacBun(Game):
@@ -111,7 +48,6 @@ class PacBun(Game):
 		self.title_renlayer = graphics.RenderLayer(self.ren)
 		self.scroll = False
 		self.quit_cooldown = 0.5
-		self.restart_cooldown = 2
 
 		##########################
 		# set up sound           #
@@ -148,53 +84,10 @@ class PacBun(Game):
 
 		self.bunny_t = self.entity_manager.makeEntityTemplate(graphics=bunny.makeGraphics(self.graphics_manager, self.renlayer), controller = bunny.makeController(self.controller_manager), collider=bunny.makeCollider(self.collision_manager))
 
-		self.path_t = self.entity_manager.makeEntityTemplate(graphics=path.makeGraphics(self.graphics_manager, self.renlayer), controller = path.makeController(self.controller_manager) )
+		self.fox_t = self.entity_manager.makeEntityTemplate(graphics=fox.makeGraphics(self.graphics_manager, self.renlayer), controller = fox.makeController(self.controller_manager), collider=fox.makeCollider(self.collision_manager))
 
-		self.level = Level([
-			"HHHHHHHHHHHHHHHHHHHH",
-			"H          HHHHHHHHH",
-			"H HHHH HHHHHHHHHHHHH",
-			"H HHHH HHHHHH HHHHHH",
-			"H HHHH HH HHHHH HHHH",
-			"H HHHH HH HHHHH HHHH",
-			"H                  H",
-			"HH H        HHHHH HH",
-			"HH HHHHH        H HH",
-			"H                  H",
-			"H                  H",
-			"HH H        HHHHH HH",
-			"HH HHHHH        H HH",
-			"H         HHHHHHH  H",
-			"H  HHHHHHHHHHHHHH  H",
-			"HH H        HHHHH HH",
-			"HH HHHHH        H HH",
-			"H                  H",
-			"HHHH HH        HHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-		])
+		self.tile_t = self.entity_manager.makeEntityTemplate(graphics=tile.makeGraphics(self.graphics_manager, self.renlayer), controller = tile.makeController(self.controller_manager) )
 
-		self.level = Level([
-			"HHHHHHHHHHHHHHHHHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-			"HHHHHHHH   HHHHHHHHH",
-			"HHHHHHHO   OHHHHHHHH",
-			"HHHHHHHH   HHHHHHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-			"HHHHHHHHHHHHHHHHHHHH",
-		])
 
 	# end init()
 
@@ -218,8 +111,67 @@ class PacBun(Game):
 			self.num_monsters = 0
 			self.killPlayEntities()
 			self.cleanUpDead()
+			self.restart_cooldown = 2
 
-			self.bunny = self.requestNewEntity(self.bunny_t, pos=Vec3(16*10+8,16*10+8,0), parent=self, name="Bunny")
+			# initialise map
+
+			self.level = level.Level(self,
+			[
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HF                 H",
+				"H HHHH HHHHHH HHHH H",
+				"H oHHH HH          H",
+				"H HHHH HH HHHoH HHHH",
+				"H HHHH HH HHHHH HHHH",
+				"H                  H",
+				"H HH HHHHHH HHHHHH H",
+				"H HH HHH    HHHHHH H",
+				"H HH HHH HHHHHHHHH H",
+				"H  H       B    oH H",
+				"HH H HHHHHHHHHH HH H",
+				"HH H HHHHHHH    HH H",
+				"H            HH HH H",
+				"H HH HHHHHHH HH HH H",
+				"H HH HHHHHHH HH HH H",
+				"H Ho            HH H",
+				"H HHHHHHHHHHHHHHHH H",
+				"H                 FH",
+				"HHHHHHHHHHHHHHHHHHHH",
+			])
+			#
+			# self.level = level.Level(self,
+			# [
+			# 	"HHHHHHHHHHHHHHHHHHHH",
+			# 	"HHHHHHHHHHHHHHHHHHHH",
+			# 	"HHHHHHHHHHHHHHHHHHHH",
+			# 	"HHHHHHHHHHHHHHHHHHHH",
+			# 	"HHHHHHHHHHHHHHHHHHHH",
+			# 	"HHHHHHHHHHHHHHHHHHHH",
+			# 	"HHHHHHHHHHHHHHHHHHHH",
+			# 	"HHHHHHHHHHHHHHHHHHHH",
+			# 	"HHH HHHHHHHHHHHHHHHH",
+			# 	"HHH HHHH   HHHHHHHHH",
+			# 	"HHH HHHo B oHHHHHHHH",
+			# 	"HHH HHHH   HHHHHHHHH",
+			# 	"HHH HHHHHHHHHHHHHHHH",
+			# 	"HHH HHHHHHHHHHHHHHHH",
+			# 	"HHH HHHHHHHHHHHHHHHH",
+			# 	"HHHHHHHHHHHHHHHHHHHH",
+			# 	"HHHHHHHHHHHHHHHHHHHH",
+			# 	"HHHHHHHHHHHHHHHHHHHH",
+			# 	"HHHHHHHHHHHHHHHHHHHH",
+			# 	"HHHHHHHHHHHHHHHHHHHH",
+			# ])
+
+			self.bunny = self.requestNewEntity(self.bunny_t, pos=self.level.getBunnyStart(), parent=self, name="Bunny")
+			self.foxes = []
+			for index,fox_start in enumerate(self.level.getFoxStarts()):
+				this_fox = self.requestNewEntity(self.fox_t, pos=fox_start, parent=self, name="Fox")
+				this_fox.controller_data.bunny = self.bunny
+				this_fox.controller_data.level = self.level
+				this_fox.controller_data.type = index
+				self.foxes.append(this_fox)
+
 
 			# make hero 2
 			game_pad = self.input.getGamePad(0)
@@ -227,11 +179,7 @@ class PacBun(Game):
 				self.bunny.setGamePad(game_pad)
 			self.bunny.controller_data.level = self.level
 
-			# initialise map
-			for y in range(0,20):
-				for x in range(0,20):
-					back = self.requestNewEntity(self.path_t,pos=Vec3(8+ x*16,8+y*16,1),parent=self,name=f"back{x},{y}")
-					self.level.setEntityForCoord(back,x,y)
+
 
 			# # set up life indicator in top left
 			# for n in range(1, 6):
