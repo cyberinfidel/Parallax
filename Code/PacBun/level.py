@@ -103,11 +103,13 @@ class Level(object):
 	def getFoxStarts(self):
 		return self.fox_starts
 
-	def poo(self, current_tile):
+	def poo(self, current_tile, data):
 		# can poo in a clear tile only
 		current_tile.controller.setState(current_tile.controller_data, current_tile.common_data, tile.eTileStates.poo)
 		self.num_poos+=1
+		data.score+=1
 		if self.num_poos>= self.num_spaces:
+			data.score+=100
 			return True	# signal win
 
 		return False

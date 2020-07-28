@@ -147,11 +147,11 @@ class Controller(controller.Controller):
 			self.queued_vel = Vec3(0.0,0.0,0.0)
 			self.facing = False
 			self.queued_facing = 4
-			self.health = 3
 			common_data.state = entity.eStates.stationary
 			self.queued_state = common_data.state
-			self.invincible_cooldown = 2
-			self.invincible = self.invincible_cooldown
+			self.score = 0
+
+
 
 
 	#####################
@@ -202,7 +202,7 @@ class Controller(controller.Controller):
 
 			if (x_in_tile>6 and x_in_tile<10) and (y_in_tile>6 and y_in_tile<10):
 				if current_tile.common_data.state == tile.eTileStates.clear:
-					if data.level.poo(current_tile):	# returns true if count of poos reaches number of empty spaces
+					if data.level.poo(current_tile, data):	# returns true if count of poos reaches number of empty spaces
 						common_data.game.setGameMode(game.eGameModes.win)
 				elif current_tile.common_data.state == tile.eTileStates.hole:
 					hole = data.level.getNextHole(x,y)

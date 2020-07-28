@@ -26,22 +26,21 @@ def renderTexture(tex, ren, x, y):
 	dst.h = h.value
 	sdl2.SDL_RenderCopy(ren.sdlrenderer, tex, None, dst)
 
-def renderText(message, fontFile, color, fontSize, renderer):
-	"""
-
-	:rtype : SDL_Texture
-	"""
+def initFont(fontFile, renderer, defaultFontSize=10):
 	# Open the font
 	sdl2.SDL_ClearError()
-	font = sdl2.ext.FontManager(fontFile, fontSize)
+	font = sdl2.ext.FontManager(fontFile, defaultFontSize)
 	p = sdl2.SDL_GetError()
 	if font is None or len(p)!=0:
 		print("TTF_OpenFont error: " + str(p))
 		return None
+	return font
+
+def renderText(message, font, renderer, color, size=10 ):
 
 	#We need to first render to a surface as that's what TTF_RenderText
 	#returns, then load that surface into a texture
-	surf = font.render(text = message, color=color)
+	surf = font.render(text = message, color=color, size=size)
 
 	if surf is None:
 		sdl2.sdlttf.TTF_CloseFont(font)
@@ -61,9 +60,9 @@ sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO)
 #Create an application window with the following settings:
 window = sdl2.ext.Window(title="SDL2 TTF Test", size=(640, 480), position=(sdl2.SDL_WINDOWPOS_CENTERED,sdl2.SDL_WINDOWPOS_CENTERED), flags=sdl2.SDL_WINDOW_RESIZABLE)
 
-
 renderer = sdl2.ext.Renderer(window, flags = sdl2.SDL_RENDERER_ACCELERATED | sdl2.SDL_RENDERER_PRESENTVSYNC)
 
+# TTF
 tfi = sdl2.sdlttf.TTF_Init()
 if tfi != 0:
 	print("TTF_Init")
@@ -73,8 +72,9 @@ if tfi != 0:
 #Color is in RGB format
 color = sdl2.SDL_Color(255, 255, 255)
 fontpath = os.path.join(os.path.dirname(__file__), 'space-mono', 'SpaceMono-Bold.ttf')
-image = renderText("TTF fonts are cool!", fontpath,
-									 color, 64, renderer)
+font = initFont(fontpath, renderer)
+image = renderText("TTF fonts are cool!", font, renderer,
+									 color, 64 )
 
 if image is None:
 	exit(1)
@@ -90,12 +90,12 @@ sdl2.SDL_QueryTexture(image, None, None, iW, iH)
 x = screen_width.value / 2 - iW.value / 2
 y = screen_height.value / 2 - iH.value / 2
 
-r = 1
+r = True
 event = sdl2.SDL_Event()
 while r:
 	if sdl2.SDL_PollEvent(event):
 		if event.type == sdl2.SDL_QUIT:
-			r = 0
+			r = False
 		elif event.type == sdl2.SDL_WINDOWEVENT:
 			if event.window.event == sdl2.SDL_WINDOWEVENT_RESIZED:
 				sdl2.SDL_GetRendererOutputSize(renderer.sdlrenderer, ctypes.byref(screen_width), ctypes.byref(screen_height))

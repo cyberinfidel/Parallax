@@ -16,6 +16,8 @@ import graphics
 import sound
 import director
 import enum
+import gc
+
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -45,7 +47,7 @@ class PacBun(Game):
 		# set up graphics layers #
 		##########################
 		self.renlayer = graphics.RenderLayer(self.ren)
-		self.title_renlayer = graphics.RenderLayer(self.ren)
+		self.overlay_renlayer = graphics.RenderLayer(self.ren)
 		self.scroll = False
 		self.quit_cooldown = 0.5
 
@@ -65,7 +67,7 @@ class PacBun(Game):
 		# back.setPos(Vec3(0.0, 0.0, 64.0))
 
 
-		self.title_t = self.entity_manager.makeEntityTemplate(graphics=title.makeGraphics(self.graphics_manager, self.title_renlayer), controller=title.makeController(self.controller_manager))
+		self.title_t = self.entity_manager.makeEntityTemplate(graphics=title.makeGraphics(self.graphics_manager, self.overlay_renlayer), controller=title.makeController(self.controller_manager))
 		self.title = self.requestNewEntity(entity_template=self.title_t, pos=Vec3(36, 250, 50), parent=self, name="Title")
 		self.title.setGamePad(self.input.getGamePad(0))
 
@@ -80,7 +82,7 @@ class PacBun(Game):
 
 
 		# info bar
-		self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heart.makeGraphics(self.graphics_manager,self.title_renlayer), controller=heart.makeController(self.controller_manager))
+		self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heart.makeGraphics(self.graphics_manager, self.overlay_renlayer), controller=heart.makeController(self.controller_manager))
 
 		self.bunny_t = self.entity_manager.makeEntityTemplate(graphics=bunny.makeGraphics(self.graphics_manager, self.renlayer), controller = bunny.makeController(self.controller_manager), collider=bunny.makeCollider(self.collision_manager))
 
@@ -107,6 +109,8 @@ class PacBun(Game):
 			pass
 ##################################################
 		elif self.game_mode==eGameModes.start:
+			gc.enable()
+			gc.collect()
 			# set up new game and clean up anything from last game
 			self.num_monsters = 0
 			self.killPlayEntities()
@@ -215,6 +219,8 @@ class PacBun(Game):
 			# 	heart.common_data.state = eStates.fade
 			# 	heart.controller_data.health_num = n
 
+			gc.collect()
+			gc.disable()
 			self.setGameMode(eGameModes.play)
 		##################################################
 		elif self.game_mode==eGameModes.play:
@@ -300,7 +306,7 @@ class PacBun(Game):
 				drawable.graphics.draw(drawable.graphics_data, drawable.common_data)
 
 		self.renlayer.renderSortedByZThenY()
-		self.title_renlayer.render()
+		self.overlay_renlayer.render()
 
 
 # end draw()

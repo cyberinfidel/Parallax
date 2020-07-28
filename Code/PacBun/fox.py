@@ -336,7 +336,7 @@ class Controller(controller.Controller):
 			# values for each instance
 
 			self.cooldown = -1
-			self.pause = 10
+			self.pause = 7
 			self.vel = Vec3(0.0,0.0,0.0)
 			self.queued_vel = Vec3(0.0,0.0,0.0)
 			self.facing = False
@@ -344,7 +344,7 @@ class Controller(controller.Controller):
 			self.health = 3
 			common_data.state = entity.eStates.stationary
 			self.queued_state = common_data.state
-			self.AI_cooldown = 3+vector.rand_num(10)/5
+			self.AI_cooldown = 1+vector.rand_num(15)/5.
 			self.type = 0
 			self.fox_speed = 1
 
@@ -369,7 +369,7 @@ class Controller(controller.Controller):
 				data.AI_cooldown = data.pause
 				if data.pause>0: data.pause -=1
 				self.setState(data, common_data,
-											[entity.eStates.stationary,eFoxStates.cleanLeft,eFoxStates.cleanRight][vector.rand_num(3)]
+											[entity.eStates.stationary,entity.eStates.stationary,entity.eStates.stationary,entity.eStates.stationary,entity.eStates.stationary,eFoxStates.cleanRight,eFoxStates.cleanLeft][vector.rand_num(7)]
 											)
 			else:
 				data.fox_speed=1
