@@ -118,7 +118,7 @@ class PacBun(Game):
 			self.level = level.Level(self,
 			[
 				"HHHHHHHHHHHHHHHHHHHH",
-				"HF                 H",
+				"H1                 H",
 				"H HHHH HHHHHH HHHH H",
 				"H oHHH HH          H",
 				"H HHHH HH HHHoH HHHH",
@@ -127,7 +127,7 @@ class PacBun(Game):
 				"H HH HHHHHH HHHHHH H",
 				"H HH HHH    HHHHHH H",
 				"H HH HHH HHHHHHHHH H",
-				"H  H       B    oH H",
+				"H 2H       B    oH H",
 				"HH H HHHHHHHHHH HH H",
 				"HH H HHHHHHH    HH H",
 				"H            HH HH H",
@@ -135,9 +135,33 @@ class PacBun(Game):
 				"H HH HHHHHHH HH HH H",
 				"H Ho            HH H",
 				"H HHHHHHHHHHHHHHHH H",
-				"H                 FH",
+				"H                 3H",
 				"HHHHHHHHHHHHHHHHHHHH",
 			])
+
+			# self.level = level.Level(self,
+			# [
+			# 	"HHHHHHHHHHHHHHHHHHHH",
+			# 	"HF                 H",
+			# 	"H HHHH HHHHHH HHHH H",
+			# 	"H oHHH HH          H",
+			# 	"H HHHo HH HHHoH HHHH",
+			# 	"H HHHH HH HHHHH HHHH",
+			# 	"H                  H",
+			# 	"H HH HHHHHH HHHoHH H",
+			# 	"H HH oHH    HHHHHH H",
+			# 	"H HH HHH HHHHHHHHH H",
+			# 	"H  H       B    oH H",
+			# 	"HH H HHHHHHHHHH HH H",
+			# 	"HH H HHHoHHH    Ho H",
+			# 	"H            HH HH H",
+			# 	"H HH HHHHHHH HH HH H",
+			# 	"H HH HHHHHHH HH Ho H",
+			# 	"H Ho            HH H",
+			# 	"H HHHHHHHHHHHHHHHH H",
+			# 	"H                 FH",
+			# 	"HHHHHHHHHHHHHHHHHHHH",
+			# ])
 			#
 			# self.level = level.Level(self,
 			# [
@@ -165,11 +189,11 @@ class PacBun(Game):
 
 			self.bunny = self.requestNewEntity(self.bunny_t, pos=self.level.getBunnyStart(), parent=self, name="Bunny")
 			self.foxes = []
-			for index,fox_start in enumerate(self.level.getFoxStarts()):
-				this_fox = self.requestNewEntity(self.fox_t, pos=fox_start, parent=self, name="Fox")
+			for fox_start in self.level.getFoxStarts():
+				this_fox = self.requestNewEntity(self.fox_t, pos=fox_start[0], parent=self, name="Fox")
 				this_fox.controller_data.bunny = self.bunny
 				this_fox.controller_data.level = self.level
-				this_fox.controller_data.type = index
+				this_fox.controller_data.type = fox_start[1]
 				self.foxes.append(this_fox)
 
 
@@ -275,7 +299,7 @@ class PacBun(Game):
 			if not drawable.common_data.blink:
 				drawable.graphics.draw(drawable.graphics_data, drawable.common_data)
 
-		self.renlayer.renderSorted()
+		self.renlayer.renderSortedByZThenY()
 		self.title_renlayer.render()
 
 

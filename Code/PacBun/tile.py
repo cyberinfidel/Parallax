@@ -52,7 +52,7 @@ def makeGraphics(manager, renlayer):
 				"AnimType": graphics.AnimSingle,
 				"States": [eTileStates.hedge],
 				"Frames":
-					[["Graphics/Hedge/Hedge.png", 8, 8, 0, 0.8]],
+					[["Graphics/Hedge/Hedge.png", 10, 12, -1, 0.8]],
 			},
 
 		]

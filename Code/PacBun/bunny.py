@@ -93,10 +93,10 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.runLeft],
 				"Frames":
 					[
-						["Graphics/Bunny/Run 1.png", 8, 11, 0, 0.1],
-						["Graphics/Bunny/Run 2.png", 8, 11, 0, 0.1],
-						["Graphics/Bunny/Run 3.png", 8, 11, 0, 0.1],
-						["Graphics/Bunny/Run 4.png", 8, 11, 0, 0.15],
+						["Graphics/Bunny/Run 1.png", 8, 14, 0, 0.1],
+						["Graphics/Bunny/Run 2.png", 8, 14, 0, 0.1],
+						["Graphics/Bunny/Run 3.png", 8, 14, 0, 0.1],
+						["Graphics/Bunny/Run 4.png", 8, 14, 0, 0.15],
 					],
 			},
 			{
@@ -105,10 +105,10 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.runRight],
 				"Frames":
 					[
-						["Graphics/Bunny/Right/Run 1.png", 8, 11, 0, 0.1],
-						["Graphics/Bunny/Right/Run 2.png", 8, 11, 0, 0.1],
-						["Graphics/Bunny/Right/Run 3.png", 8, 11, 0, 0.1],
-						["Graphics/Bunny/Right/Run 4.png", 8, 11, 0, 0.15],
+						["Graphics/Bunny/Right/Run 1.png", 8, 14, 0, 0.1],
+						["Graphics/Bunny/Right/Run 2.png", 8, 14, 0, 0.1],
+						["Graphics/Bunny/Right/Run 3.png", 8, 14, 0, 0.1],
+						["Graphics/Bunny/Right/Run 4.png", 8, 14, 0, 0.15],
 					],
 			},
 
@@ -292,6 +292,10 @@ class Collider(collision.Collider):
 		return self.radius
 
 	def getCollisionMessage(self, data, common_data):
-		return(collision.Message(source=common_data.entity))
+		if common_data.state!=entity.eStates.dead:
+			return(collision.Message(source=common_data.entity, damage_hero=1))
+		else:
+			return(collision.Message(source=common_data.entity))
+
 
 

@@ -4,6 +4,7 @@ import entity
 from vector import Vec3
 
 import tile
+import fox
 
 class Hole(object):
 	def __init__(self,pos, exit, direction):
@@ -19,9 +20,7 @@ class Level(object):
 
 		# flip since we draw from bottom left
 		for i in range(0, 10):
-			swap = self.map[i]
-			self.map[i] = self.map[19 - i]
-			self.map[19 - i] = swap
+			self.map[i], self.map[19-i] = self.map[19 - i], self.map[i]
 
 		self.tiles = [None]*20
 		for i in range(0,20):
@@ -66,8 +65,14 @@ class Level(object):
 					else:
 						if self.map[y][x] == "B":
 							self.bunny_start = Vec3(x * 16 + 8, y * 16 + 8, 0)
-						elif self.map[y][x] == "F":
-							self.fox_starts.append(Vec3(x * 16 + 8, y * 16 + 8, 0))
+						elif self.map[y][x] == "1":
+							self.fox_starts.append((Vec3(x * 16 + 8, y * 16 + 8, 0),fox.eFoxTypes.direct))
+						elif self.map[y][x] == "2":
+							self.fox_starts.append((Vec3(x * 16 + 8, y * 16 + 8, 0),fox.eFoxTypes.axis_swap))
+						elif self.map[y][x] == "3":
+							self.fox_starts.append((Vec3(x * 16 + 8, y * 16 + 8, 0),fox.eFoxTypes.ahead))
+						elif self.map[y][x] == "4":
+							self.fox_starts.append((Vec3(x * 16 + 8, y * 16 + 8, 0),fox.eFoxTypes.cowardly))
 						# blank space
 						self.num_spaces += 1
 						this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.clear)
