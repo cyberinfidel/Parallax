@@ -42,6 +42,7 @@ class Image(object):
 			self.height = height
 
 		self.src = sdl2.SDL_Rect(0, 0, self.width, self.height)
+		sdl2.SDL_FreeSurface(surface)
 
 
 	def draw(self, x, y, debug=graphics_debug):
@@ -55,6 +56,9 @@ class Image(object):
 			sdl2.SDL_SetRenderDrawBlendMode(self.renderer,sdl2.SDL_BLENDMODE_ADD)
 
 			sdl2.SDL_RenderDrawRect(self.renderer,sdl2.SDL_Rect(int(round(x)), int(round(y)), self.width, self.height))
+
+	def delete(self):
+		sdl2.SDL_DestroyTexture(self.texture)
 
 
 class Shape(object):
@@ -81,6 +85,9 @@ class Drawable(object):
 
 	def getZ(self):
 		return self.z
+
+	def getZThenY(self):
+		return self.z*1000+self.y
 
 	def getDrawDepth(self):
 		return self.z
@@ -159,6 +166,12 @@ class RenderLayer(object):
 			d.draw(origin=self.origin, screen_height=screen_height)
 		self.drawables = []
 
+	def renderSortedByZThenY(self):
+		screen_height = self.getScreenHeight()
+		for d in sorted(self.drawables, key = Drawable.getZThenY, reverse=True):
+			d.draw(origin=self.origin, screen_height=screen_height)
+		self.drawables = []
+
 	# sets the origin of where the renderlayer draws from i.e. position of layer
 	def setOriginX(self, x):
 		self.origin.x = x
@@ -183,6 +196,9 @@ class RenderLayer(object):
 	def getOrigin(self):
 		return self.origin
 
+	def delete(self):
+		for image in self.images:
+			image.delete()
 
 # Types of graphics components available
 class GraphicsTypes(enum.IntEnum):
@@ -314,13 +330,13 @@ class MultiAnim(Component):
 	def hasShadow(self):
 		return eStates.shadow in self.anims
 
-	def drawShadow(self, data, common_data):
+	def drawShadow(self, data, common_data, shadow_height=0):
 
 		# todo: work out why y=0 doesn't work
 		# todo: shrink shadow the higher y is
 		# todo: allow shadows that aren't all at y=0
 		frame = self.anims[eStates.shadow].getCurrentFrame(data)
-		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, frame.origin_y, common_data.pos.z)
+		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x + shadow_height, frame.origin_y, common_data.pos.z)
 
 
 #####################################################################

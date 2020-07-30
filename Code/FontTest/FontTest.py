@@ -36,25 +36,23 @@ def initFont(fontFile, renderer, defaultFontSize=10):
 		return None
 	return font
 
-def renderText(message, font, renderer, color, size=10 ):
-
+def renderText(message, font, renderer, color, size=10, bgcolor=sdl2.SDL_Color(0,0,0) ):
 	#We need to first render to a surface as that's what TTF_RenderText
 	#returns, then load that surface into a texture
-	surf = font.render(text = message, color=color, size=size)
-
+	surf = font.render(text=message, color=color, size=size, bgcolor=bgcolor)
 	if surf is None:
 		sdl2.sdlttf.TTF_CloseFont(font)
 		print("TTF_RenderText")
 		return None
-
 	texture = sdl2.SDL_CreateTextureFromSurface(renderer.sdlrenderer, surf)
 	if texture is None:
 		print("CreateTexture")
-
 	#Clean up the surface and font
+	width = surf.w
+	height = surf.h
 	sdl2.SDL_FreeSurface(surf)
 	# sdl2.sdlttf.TTF_CloseFont(font)
-	return texture
+	return texture,width,height
 
 sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO)
 #Create an application window with the following settings:
@@ -73,8 +71,8 @@ if tfi != 0:
 color = sdl2.SDL_Color(255, 255, 255)
 fontpath = os.path.join(os.path.dirname(__file__), 'space-mono', 'SpaceMono-Bold.ttf')
 font = initFont(fontpath, renderer)
-image = renderText("TTF fonts are cool!", font, renderer,
-									 color, 64 )
+image,iW,iH = renderText("0123456789", font, renderer,
+									 color, 24, bgcolor=sdl2.SDL_Color(255,0,100) )
 
 if image is None:
 	exit(1)
@@ -84,11 +82,8 @@ screen_height = ctypes.c_int(0)
 sdl2.SDL_GetRendererOutputSize(renderer.sdlrenderer, ctypes.byref(screen_width), ctypes.byref(screen_height))
 #
 # #Get the texture w/h so we can center it in the screen
-iW = ctypes.c_int(0)
-iH = ctypes.c_int(0)
-sdl2.SDL_QueryTexture(image, None, None, iW, iH)
-x = screen_width.value / 2 - iW.value / 2
-y = screen_height.value / 2 - iH.value / 2
+x = screen_width.value / 2 - iW / 2
+y = screen_height.value / 2 - iH / 2
 
 r = True
 event = sdl2.SDL_Event()
@@ -99,8 +94,8 @@ while r:
 		elif event.type == sdl2.SDL_WINDOWEVENT:
 			if event.window.event == sdl2.SDL_WINDOWEVENT_RESIZED:
 				sdl2.SDL_GetRendererOutputSize(renderer.sdlrenderer, ctypes.byref(screen_width), ctypes.byref(screen_height))
-				x = screen_width.value / 2 - iW.value / 2
-				y = screen_height.value / 2 - iH.value / 2
+				x = screen_width.value / 2 - iW / 2
+				y = screen_height.value / 2 - iH / 2
 		if r:
 			sdl2.SDL_RenderClear(renderer.sdlrenderer)
 			#We can draw our message as we do any other texture, since it's been
