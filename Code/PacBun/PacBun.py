@@ -106,6 +106,7 @@ class PacBun(Game):
 
 ##################################################
 		elif self.game_mode==eGameModes.title:
+			self.setClearColour(sdl2.ext.Color(20,90,10))
 			gc.collect()
 		##################################################
 		elif self.game_mode==eGameModes.start:
@@ -117,6 +118,7 @@ class PacBun(Game):
 			self.killPlayEntities()
 			self.cleanUpDead()
 			self.restart_cooldown = 2
+			self.setClearColour(sdl2.ext.Color(219, 182, 85))
 
 			# initialise map
 

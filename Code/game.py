@@ -35,7 +35,7 @@ class Game(object):
 
 
 
-	def __init__(self, title, res_x, res_y, zoom, fullscreen):
+	def __init__(self, title, res_x, res_y, zoom, fullscreen, clear_colour=sdl2.ext.Color(0, 0, 0)):
 		# Initialize the video system - this implicitly initializes some
 		# necessary parts within the SDL2 DLL used by the video module.
 		#
@@ -48,6 +48,7 @@ class Game(object):
 		self.res_y = res_y
 		self.zoom = zoom
 		self.fullscreen = fullscreen
+		self.clear_colour =  clear_colour
 
 		sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_JOYSTICK | sdl2.SDL_INIT_GAMECONTROLLER)
 
@@ -96,7 +97,7 @@ class Game(object):
 		sdl2.SDL_SetWindowFullscreen(self.window.window, self.fullscreen)
 
 	def render(self):
-		self.ren.color = sdl2.ext.Color(0, 0, 0)
+		self.ren.color = self.clear_colour
 		self.ren.clear()
 
 		self.draw()
@@ -178,6 +179,9 @@ class Game(object):
 		return new_entity
 
 # end requestNewEntity()
+
+	def setClearColour(self, colour):
+		self.clear_colour = colour
 
 	def __del__(self):
 		sdl2.sdlmixer.Mix_CloseAudio()
