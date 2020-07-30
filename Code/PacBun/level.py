@@ -2,6 +2,7 @@ import enum
 
 import entity
 from vector import Vec3
+import vector
 
 import tile
 import fox
@@ -39,7 +40,7 @@ class Level(object):
 
 				# set up each tile from what the map says
 				if self.map[y][x]=="H":
-					this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.hedge)
+					this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, [tile.eTileStates.hedge,tile.eTileStates.hedge2,tile.eTileStates.hedge3][vector.rand_num(3)])
 				else:
 					# work out ways out of the space
 					if self.map[y + 1][x] != "H":

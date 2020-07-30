@@ -106,10 +106,11 @@ class PacBun(Game):
 
 ##################################################
 		elif self.game_mode==eGameModes.title:
-			pass
-##################################################
+			gc.collect()
+		##################################################
 		elif self.game_mode==eGameModes.start:
 			gc.enable()
+			if len(gc.garbage)>0: print(gc.garbage)
 			gc.collect()
 			# set up new game and clean up anything from last game
 			self.num_monsters = 0
@@ -131,7 +132,7 @@ class PacBun(Game):
 				"H HH HHHHHH HHHHHH H",
 				"H HH HHH    HHHHHH H",
 				"H HH HHH HHHHHHHHH H",
-				"H 2H       B    oH H",
+				"H 3H       B    oH H",
 				"HH H HHHHHHHHHH HH H",
 				"HH H HHHHHHH    HH H",
 				"H            HH HH H",
@@ -139,7 +140,7 @@ class PacBun(Game):
 				"H HH HHHHHHH HH HH H",
 				"H Ho            HH H",
 				"H HHHHHHHHHHHHHHHH H",
-				"H                 3H",
+				"H                 2H",
 				"HHHHHHHHHHHHHHHHHHHH",
 			])
 

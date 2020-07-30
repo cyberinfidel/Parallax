@@ -16,8 +16,10 @@ import background
 class eTileStates(enum.IntEnum):
 	poo = 3
 	hedge = 4
-	clear = 6
-	hole = 5
+	hedge2 = 5
+	hedge3 = 6
+	clear = 7
+	hole = 8
 
 
 def makeGraphics(manager, renlayer):
@@ -52,7 +54,21 @@ def makeGraphics(manager, renlayer):
 				"AnimType": graphics.AnimSingle,
 				"States": [eTileStates.hedge],
 				"Frames":
-					[["Graphics/Hedge/Hedge.png", 10, 12, -1, 0.8]],
+					[["Graphics/Hedge/Hedge 1.png", 10, 12, -1, 0.8]],
+			},
+			{
+				"Name": "Hedge",
+				"AnimType": graphics.AnimSingle,
+				"States": [eTileStates.hedge2],
+				"Frames":
+					[["Graphics/Hedge/Hedge 2.png", 10, 12, -1, 0.8]],
+			},
+			{
+				"Name": "Hedge",
+				"AnimType": graphics.AnimSingle,
+				"States": [eTileStates.hedge3],
+				"Frames":
+					[["Graphics/Hedge/Hedge 3.png", 10, 12, -1, 0.8]],
 			},
 
 		]
