@@ -299,8 +299,8 @@ class BunnyAdventure(game.Game):
 			# draw shadows first
 			if drawable.graphics.hasShadow():
 				# find where to draw shadow based on what is beneath the entity
-				#shadow_pos = self.collision_manager.getDistanceBelow(drawable.common_data.pos)
-				drawable.graphics.drawShadow(drawable.graphics_data, drawable.common_data)
+				shadow_height = self.collision_manager.getDistanceBelow(drawable.common_data.pos)
+				drawable.graphics.drawShadow(drawable.graphics_data, drawable.common_data, shadow_height)
 			# draw actual things
 			if not drawable.common_data.blink:
 				drawable.graphics.draw(drawable.graphics_data, drawable.common_data)

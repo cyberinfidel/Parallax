@@ -74,6 +74,7 @@ class PacBun(Game):
 		self.collision_manager = CollisionManager(game=self)  # TODO: should this be a ComponentManager() like the others?
 
 		self.setGameMode(eGameModes.title)
+		self.current_level = 0
 
 
 		###################
@@ -90,6 +91,78 @@ class PacBun(Game):
 
 		self.tile_t = self.entity_manager.makeEntityTemplate(graphics=tile.makeGraphics(self.graphics_manager, self.renlayer), controller = tile.makeController(self.controller_manager) )
 
+	# define level maps
+		self.levels = [
+			{
+				"Map":[
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHH B HHHHHHHHH",
+				"HHHHHHHH   HHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+				"HHHHHHHHHHHHHHHHHHHH",
+			]
+			},{
+			"Map":[
+			"HHHHHHHHHHHHHHHHHHHH",
+			"H1                 H",
+			"H HHHH HHHHHH HHHH H",
+			"H oHHH HH          H",
+			"H HHHH HH HHHoH HHHH",
+			"H HHHH HH HHHHH HHHH",
+			"H                  H",
+			"H HH HHHHHH HHHHHH H",
+			"H HH HHH    HHHHHH H",
+			"H HH HHH HHHHHHHHH H",
+			"H 3H           BoH H",
+			"HH H HHHHHHHHHH HH H",
+			"HH H HHHHHHH    HH H",
+			"H            HH HH H",
+			"H HH HHHHHHH HH HH H",
+			"H HH HHHHHHH HH HH H",
+			"H Ho            HH H",
+			"H HHHHHHHHHHHHHHHH H",
+			"H                 2H",
+			"HHHHHHHHHHHHHHHHHHHH",
+			]
+			}, {
+			"Map": [
+			"HHHHHHHHHHHHHHHHHHHH",
+			"H1                 H",
+			"H HoHH HHHHHH HHHH H",
+			"H HHHH HH          H",
+			"H      HH HHHoH HHHH",
+			"H HHHH HH HHHHH HHHH",
+			"H                  H",
+			"H HH H HHHH HH HHH H",
+			"H HH H      HH     H",
+			"H HH H HHHHHHH HHH H",
+			"H H            BoH H",
+			"H H  HH HH HHHH HH H",
+			"H H  HH HH H    HH H",
+			"H            HH HH H",
+			"H HH H HH HH HH HH H",
+			"H HH H HH HH HH HH H",
+			"H Ho            HH H",
+			"H HHHH HHHHHH HHHH H",
+			"H                 2H",
+			"HHHHHHHHHHHHHHHHHHHH",
+		]},
+		]
 
 	# end init()
 
@@ -106,13 +179,14 @@ class PacBun(Game):
 
 ##################################################
 		elif self.game_mode==eGameModes.title:
+			self.current_level = 0
 			self.setClearColour(sdl2.ext.Color(20,90,10))
 			gc.collect()
 		##################################################
 		elif self.game_mode==eGameModes.start:
 			gc.enable()
-			if len(gc.garbage)>0: print(gc.garbage)
 			gc.collect()
+			if len(gc.garbage)>0: print(gc.garbage)
 			# set up new game and clean up anything from last game
 			self.num_monsters = 0
 			self.killPlayEntities()
@@ -121,78 +195,7 @@ class PacBun(Game):
 			self.setClearColour(sdl2.ext.Color(219, 182, 85))
 
 			# initialise map
-
-			self.level = level.Level(self,
-			[
-				"HHHHHHHHHHHHHHHHHHHH",
-				"H1                 H",
-				"H HHHH HHHHHH HHHH H",
-				"H oHHH HH          H",
-				"H HHHH HH HHHoH HHHH",
-				"H HHHH HH HHHHH HHHH",
-				"H                  H",
-				"H HH HHHHHH HHHHHH H",
-				"H HH HHH    HHHHHH H",
-				"H HH HHH HHHHHHHHH H",
-				"H 3H       B    oH H",
-				"HH H HHHHHHHHHH HH H",
-				"HH H HHHHHHH    HH H",
-				"H            HH HH H",
-				"H HH HHHHHHH HH HH H",
-				"H HH HHHHHHH HH HH H",
-				"H Ho            HH H",
-				"H HHHHHHHHHHHHHHHH H",
-				"H                 2H",
-				"HHHHHHHHHHHHHHHHHHHH",
-			])
-
-			# self.level = level.Level(self,
-			# [
-			# 	"HHHHHHHHHHHHHHHHHHHH",
-			# 	"HF                 H",
-			# 	"H HHHH HHHHHH HHHH H",
-			# 	"H oHHH HH          H",
-			# 	"H HHHo HH HHHoH HHHH",
-			# 	"H HHHH HH HHHHH HHHH",
-			# 	"H                  H",
-			# 	"H HH HHHHHH HHHoHH H",
-			# 	"H HH oHH    HHHHHH H",
-			# 	"H HH HHH HHHHHHHHH H",
-			# 	"H  H       B    oH H",
-			# 	"HH H HHHHHHHHHH HH H",
-			# 	"HH H HHHoHHH    Ho H",
-			# 	"H            HH HH H",
-			# 	"H HH HHHHHHH HH HH H",
-			# 	"H HH HHHHHHH HH Ho H",
-			# 	"H Ho            HH H",
-			# 	"H HHHHHHHHHHHHHHHH H",
-			# 	"H                 FH",
-			# 	"HHHHHHHHHHHHHHHHHHHH",
-			# ])
-			#
-			# self.level = level.Level(self,
-			# [
-			# 	"HHHHHHHHHHHHHHHHHHHH",
-			# 	"HHHHHHHHHHHHHHHHHHHH",
-			# 	"HHHHHHHHHHHHHHHHHHHH",
-			# 	"HHHHHHHHHHHHHHHHHHHH",
-			# 	"HHHHHHHHHHHHHHHHHHHH",
-			# 	"HHHHHHHHHHHHHHHHHHHH",
-			# 	"HHHHHHHHHHHHHHHHHHHH",
-			# 	"HHHHHHHHHHHHHHHHHHHH",
-			# 	"HHH HHHHHHHHHHHHHHHH",
-			# 	"HHH HHHH   HHHHHHHHH",
-			# 	"HHH HHHo B oHHHHHHHH",
-			# 	"HHH HHHH   HHHHHHHHH",
-			# 	"HHH HHHHHHHHHHHHHHHH",
-			# 	"HHH HHHHHHHHHHHHHHHH",
-			# 	"HHH HHHHHHHHHHHHHHHH",
-			# 	"HHHHHHHHHHHHHHHHHHHH",
-			# 	"HHHHHHHHHHHHHHHHHHHH",
-			# 	"HHHHHHHHHHHHHHHHHHHH",
-			# 	"HHHHHHHHHHHHHHHHHHHH",
-			# 	"HHHHHHHHHHHHHHHHHHHH",
-			# ])
+			self.level = level.Level(self,self.levels[self.current_level])
 
 			self.bunny = self.requestNewEntity(self.bunny_t, pos=self.level.getBunnyStart(), parent=self, name="Bunny")
 			self.foxes = []
@@ -238,15 +241,19 @@ class PacBun(Game):
 			if self.restart_cooldown<=0:
 				self.setGameMode(eGameModes.title)
 				self.cleanUpDead()
-
 		####################################################
 
 		elif self.game_mode==eGameModes.win:
 			self.restart_cooldown-=dt
 			self.title.setState(title.eTitleStates.win)
 			if self.restart_cooldown<=0:
-				self.setGameMode(eGameModes.title)
+				self.current_level+=1
+				if self.current_level>=len(self.levels):
+					self.setGameMode(eGameModes.game_over)
+				else:
+					self.setGameMode(eGameModes.start)
 				self.cleanUpDead()
+
 
 		####################################################
 

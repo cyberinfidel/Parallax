@@ -69,10 +69,10 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.runDown],
 				"Frames":
 					[
-						["Graphics/Bunny/RunDown 2.png", 8, 11, 0, 0.1],
-						["Graphics/Bunny/RunDown 3.png", 8, 11, 0, 0.1],
-						["Graphics/Bunny/RunDown 4.png", 8, 11, 0, 0.1],
-						["Graphics/Bunny/RunDown 1.png", 8, 11, 0, 0.15],
+						["Graphics/Bunny/RunDown 2.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/RunDown 3.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/RunDown 4.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/RunDown 1.png", 8, 11, 0, 0.075],
 					],
 			},
 			{
@@ -81,10 +81,10 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.runUp],
 				"Frames":
 					[
-						["Graphics/Bunny/RunUp 2.png", 8, 11, 0, 0.1],
-						["Graphics/Bunny/RunUp 3.png", 8, 11, 0, 0.1],
-						["Graphics/Bunny/RunUp 4.png", 8, 11, 0, 0.1],
-						["Graphics/Bunny/RunUp 1.png", 8, 11, 0, 0.15],
+						["Graphics/Bunny/RunUp 2.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/RunUp 3.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/RunUp 4.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/RunUp 1.png", 8, 11, 0, 0.075],
 					],
 			},
 			{
@@ -93,10 +93,10 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.runLeft],
 				"Frames":
 					[
-						["Graphics/Bunny/Run 1.png", 8, 14, 0, 0.1],
-						["Graphics/Bunny/Run 2.png", 8, 14, 0, 0.1],
-						["Graphics/Bunny/Run 3.png", 8, 14, 0, 0.1],
-						["Graphics/Bunny/Run 4.png", 8, 14, 0, 0.15],
+						["Graphics/Bunny/Run 1.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Run 2.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Run 3.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Run 4.png", 8, 14, 0, 0.075],
 					],
 			},
 			{
@@ -105,10 +105,10 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.runRight],
 				"Frames":
 					[
-						["Graphics/Bunny/Right/Run 1.png", 8, 14, 0, 0.1],
-						["Graphics/Bunny/Right/Run 2.png", 8, 14, 0, 0.1],
-						["Graphics/Bunny/Right/Run 3.png", 8, 14, 0, 0.1],
-						["Graphics/Bunny/Right/Run 4.png", 8, 14, 0, 0.15],
+						["Graphics/Bunny/Right/Run 1.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Right/Run 2.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Right/Run 3.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Right/Run 4.png", 8, 14, 0, 0.075],
 					],
 			},
 

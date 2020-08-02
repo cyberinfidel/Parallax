@@ -33,6 +33,7 @@ class CollisionManager(ComponentManager):
 	def getDistanceBelow(self, pos):
 		for collider in self.instances:
 			pass
+		return 0
 
 
 	def cleanUpDead(self):

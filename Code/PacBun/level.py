@@ -1,4 +1,4 @@
-import enum
+import copy
 
 import entity
 from vector import Vec3
@@ -15,9 +15,9 @@ class Hole(object):
 
 class Level(object):
 
-	def __init__(self, game, map):
+	def __init__(self, game, data):
 		self.game = game
-		self.map = map
+		self.map = copy.deepcopy(data['Map'])
 
 		# flip since we draw from bottom left
 		for i in range(0, 10):

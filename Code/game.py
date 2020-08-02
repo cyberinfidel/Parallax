@@ -58,7 +58,7 @@ class Game(object):
 		# etc.) and give it a meaningful title and size. We definitely need
 		# this, if we want to present something to the user.
 		if(self.fullscreen):
-			self.window = sdl2.ext.Window(self.title, size=(self.res_x*self.zoom, self.res_y*self.zoom), flags=sdl2.SDL_WINDOW_FULLSCREEN)
+			self.window = sdl2.ext.Window(self.title, size=(self.res_x, self.res_y), flags=sdl2.SDL_WINDOW_FULLSCREEN)
 		else:
 			self.window = sdl2.ext.Window(self.title, size=(self.res_x*self.zoom, self.res_y*self.zoom))
 
