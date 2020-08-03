@@ -6,16 +6,8 @@ import graphics
 import game
 import game_pad
 
-class eTitleStates(enum.IntEnum):
-	dead = entity.eStates.dead
-	hide = entity.eStates.hide,
-	title = 2,
-	paused = 3,
-	game_over = 4,
-	win = 5,
-	play = 6,
-	quit = 7
-	numTitleStates = 8
+class eTitleStates:
+	dead, hide, title, paused, game_over, win, play, quit, escape, numTitleStates = range(0,10)
 
 
 def makeGraphics(manager, renlayer):
@@ -68,6 +60,16 @@ def makeGraphics(manager, renlayer):
 						"Frames":
 							[
 								["Graphics/Title/Win.png", 4, 4, 0, 2],
+							],
+					},
+					{
+						"Name": "Escape",
+						"AnimType": graphics.AnimLoop,
+						"States": [eTitleStates.escape],
+						"Frames":
+							[
+								["Graphics/Title/Escape.png", 4, -100, 0, 0.5],
+								["Graphics/Title/Escape2.png", 4, -100, 0, 0.5],
 							],
 					},
 					{

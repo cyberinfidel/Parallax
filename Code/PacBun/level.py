@@ -6,7 +6,9 @@ import vector
 
 import tile
 import fox
+import PacBun
 
+# contiainer for information about the holes
 class Hole(object):
 	def __init__(self,pos, exit, direction):
 		self.pos = pos
@@ -111,6 +113,7 @@ class Level(object):
 		data.score+=1
 		if self.num_poos>= self.num_spaces:
 			data.score+=100
+			self.game.setGameMode(PacBun.eGameModes.escape)
 			return True	# signal win
 
 		return False

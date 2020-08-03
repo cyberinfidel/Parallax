@@ -12,9 +12,9 @@ from vector import Vec3
 import vector
 import sound
 import game
+import PacBun
+
 import tile
-
-
 
 def makeSounds(manager, mixer):
 	return manager.makeTemplate({
@@ -167,51 +167,65 @@ class Controller(controller.Controller):
 		# get input and set up an action
 		if data.game_pad:
 			# i.e. this bunny is being controlled by a game_pad
-			# going left
+			# player wants to go left at next opportunity
 			if data.game_pad.actions[game_pad.eActions.left]:
+				# queue up that direction
 				data.queued_facing = entity.eDirections.left
 				data.queued_vel.x = -bunny_speed
 				data.queued_vel.y = 0
-
-			# going right
+				data.queued_state = entity.eStates.runLeft
+			#  right
 			elif data.game_pad.actions[game_pad.eActions.right]:
 				data.queued_facing = entity.eDirections.right
 				data.queued_vel.x = bunny_speed
 				data.queued_vel.y = 0
-
-			# going up
+				data.queued_state = entity.eStates.runRight
+			# up
 			elif data.game_pad.actions[game_pad.eActions.up]:
 				data.queued_facing = entity.eDirections.up
 				data.queued_vel.x = 0
 				data.queued_vel.y = bunny_speed
-
-			# going down
+				data.queued_state = entity.eStates.runUp
+			# down
 			elif data.game_pad.actions[game_pad.eActions.down]:
 				data.queued_facing = entity.eDirections.down
 				data.queued_vel.x = 0
 				data.queued_vel.y = -bunny_speed
+				data.queued_state = entity.eStates.runDown
 
-			data.queued_state = [entity.eStates.runDown, entity.eStates.runLeft, entity.eStates.runUp, entity.eStates.runRight, entity.eStates.stationary][data.queued_facing]
-
+		# what to do if the bunny is moving (i.e. except for the very start)
 		if common_data.state!=entity.eStates.stationary:
+			# get some data to work with
 			x, y = data.level.getCoordFromPos(common_data.pos)
 			current_tile = data.level.getTileFromCoord(x,y)
 			exits = current_tile.controller.getExits(current_tile.controller_data)
 			x_in_tile = common_data.pos.x%16
 			y_in_tile = common_data.pos.y%16
 
+			# decide if bunny is near middle of tile and if we should do womething special with the tile it's in
 			if (x_in_tile>6 and x_in_tile<10) and (y_in_tile>6 and y_in_tile<10):
 				if current_tile.common_data.state == tile.eTileStates.clear:
-					if data.level.poo(current_tile, data):	# returns true if count of poos reaches number of empty spaces
-						common_data.game.setGameMode(game.eGameModes.win)
+					data.level.poo(current_tile, data)	# returns true if count of poos reaches number of empty spaces
 				elif current_tile.common_data.state == tile.eTileStates.hole:
+					# gone down a hole so find the next hole for the bunny to exit from
+					# and setup the direction for the bunny to run from the data for that hole
+					if self.game.game_mode == PacBun.eGameModes.escape:
+						self.game.setGameMode(PacBun.eGameModes.win)
+						self.setState(data, common_data, entity.eStates.dead)
+						common_data.blink = True
 					hole = data.level.getNextHole(x,y)
 					common_data.pos = copy.deepcopy(hole.exit)
 					data.facing = hole.direction
+					# avoid any unexpected turns that were already queued
 					data.queued_facing = hole.direction
-
-
-
+					data.queued_state = (
+						entity.eStates.runDown,
+						entity.eStates.runLeft,
+						entity.eStates.runUp,
+						entity.eStates.runRight
+					)[data.facing]
+					# actually set the state
+					self.setState(data, common_data, data.queued_state)
 
 			if ((
 					(data.facing==entity.eDirections.left and data.queued_facing==entity.eDirections.right)
@@ -240,7 +254,8 @@ class Controller(controller.Controller):
 				data.vel.y = -bunny_speed
 				data.vel.x=0
 
-
+			# if at the centre of a tile then check if there's an exit in the direction the bunny
+			# is running - if not stop the bunny
 			if x_in_tile == 8 and y_in_tile == 8:
 				if ((data.facing == entity.eDirections.left) and not (entity.eDirections.left in exits)) \
 					or ((data.facing == entity.eDirections.right) and not (entity.eDirections.right in exits)):
@@ -252,6 +267,7 @@ class Controller(controller.Controller):
 
 
 		else:
+			# go the (first) queued direction that the player chooses
 			self.setState(data, common_data, data.queued_state)
 
 

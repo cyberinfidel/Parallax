@@ -8,6 +8,7 @@ import sdl2.mouse
 sys.path.append('../')
 # actually import files
 from game import Game, eGameModes
+import game
 from entity import eStates
 import entity
 from collision import CollisionManager
@@ -34,6 +35,9 @@ import fox
 import tile
 import level
 
+
+class eGameModes(game.eGameModes):
+	escape, numGameModes = range(game.eGameModes.numGameModes,game.eGameModes.numGameModes+2)
 
 class PacBun(Game):
 	def __init__(self):
@@ -94,30 +98,56 @@ class PacBun(Game):
 	# define level maps
 		self.levels = [
 			{
+				"Message":"Poo on every path!",
+				"Map": [
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHH   HHHHHH   HHHH",
+					"HHHH H HHHHHH H HHHH",
+					"HHHH  oHHHHHHo  HHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHH B  HHHHHHHH",
+					"HHHHHHHH   oHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHoHHHHHHHHHHHHoHHH",
+					"HHH HHHHHHHHHHHH HHH",
+					"HHH              HHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+				]
+			}, {
+				"Message":"Avoid the fox!",
+				"Map": [
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHB   oHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHH        oHHHHHH",
+					"HHHHH HHHHHH HHHHHHH",
+					"HHHH            HHHH",
+					"HHHH H HHHHH HH HHHH",
+					"HHHH HoHHHHH HH HHHH",
+					"HHHH HHHHHHH HH HHHH",
+					"HHHH          1 HHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+					"HHHHHHHHHHHHHHHHHHHH",
+				]
+			}, {
+				"Message":"Not all foxes think the same way...",
 				"Map":[
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHH B HHHHHHHHH",
-				"HHHHHHHH   HHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-				"HHHHHHHHHHHHHHHHHHHH",
-			]
-			},{
-			"Map":[
 			"HHHHHHHHHHHHHHHHHHHH",
 			"H1                 H",
 			"H HHHH HHHHHH HHHH H",
@@ -140,6 +170,7 @@ class PacBun(Game):
 			"HHHHHHHHHHHHHHHHHHHH",
 			]
 			}, {
+			"Message": "Poo on every path",
 			"Map": [
 			"HHHHHHHHHHHHHHHHHHHH",
 			"H1                 H",
@@ -243,7 +274,13 @@ class PacBun(Game):
 				self.cleanUpDead()
 		####################################################
 
+		elif self.game_mode==eGameModes.escape:
+			self.title.setState(title.eTitleStates.escape)
+
+		####################################################
+
 		elif self.game_mode==eGameModes.win:
+			self.bunny.setState(entity.eStates.dead)
 			self.restart_cooldown-=dt
 			self.title.setState(title.eTitleStates.win)
 			if self.restart_cooldown<=0:

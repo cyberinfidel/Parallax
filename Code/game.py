@@ -19,22 +19,19 @@ def log(msg, new_line=True):
 	else:
 		print(msg, end='')
 
-class eGameModes(enum.IntEnum):
-	quit=0
-	init=1
-	title=2
-	start=3
-	play=4
-	game_over=5
-	win = 6
-	paused = 7
-	numGameModes = 8
+class eGameModes:
+	quit,\
+	init,\
+	title,\
+	start,\
+	play,\
+	game_over,\
+	win,\
+	paused,\
+	numGameModes = range(0,9)
 
 
 class Game(object):
-
-
-
 	def __init__(self, title, res_x, res_y, zoom, fullscreen, clear_colour=sdl2.ext.Color(0, 0, 0)):
 		# Initialize the video system - this implicitly initializes some
 		# necessary parts within the SDL2 DLL used by the video module.

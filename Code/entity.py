@@ -136,7 +136,7 @@ class Entity(object):
 		return self.common_data.parent
 
 	def setState(self,state):
-		self.common_data.state = state
+		self.controller.setState(self.controller_data, self.common_data, state)
 
 	def getState(self):
 		return self.common_data.state
