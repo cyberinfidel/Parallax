@@ -53,6 +53,7 @@ def renderText(message, font, renderer, color, size=10, bgcolor=sdl2.SDL_Color(0
 	sdl2.SDL_FreeSurface(surf)
 	# sdl2.sdlttf.TTF_CloseFont(font)
 	return texture,width,height
+##################################################
 
 sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO)
 #Create an application window with the following settings:
@@ -71,7 +72,7 @@ if tfi != 0:
 color = sdl2.SDL_Color(255, 255, 255)
 fontpath = os.path.join(os.path.dirname(__file__), 'space-mono', 'SpaceMono-Bold.ttf')
 font = initFont(fontpath, renderer)
-image,iW,iH = renderText("0123456789", font, renderer,
+image,iW,iH = renderText("0123456789abcdefghijklmnopqrstuvqxyz\nABCDEFGHIJKLMNOPQRSTUVWXYZ", font, renderer,
 									 color, 24, bgcolor=sdl2.SDL_Color(255,0,100) )
 
 if image is None:

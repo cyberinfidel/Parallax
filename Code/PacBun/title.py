@@ -32,7 +32,7 @@ def makeGraphics(manager, renlayer):
 						"States": [eTitleStates.play],
 						"Frames":
 							[
-								["Graphics/Title/TitleBar.png", -110, 20, 0, 0.9],
+								["Graphics/Title/TitleBar.png", 30, 18, 0, 0.9],
 							],
 					},
 					{

@@ -34,6 +34,8 @@ import bunny
 import fox
 import tile
 import level
+import text
+import score
 
 
 class eGameModes(game.eGameModes):
@@ -55,6 +57,10 @@ class PacBun(Game):
 		self.scroll = False
 		self.quit_cooldown = 0.5
 
+		self.font_manager = text.FontManager(self.ren)
+		self.font_manager.addFontFromFile("Fonts/Silom/Silom.ttf")
+		self.score_image = None
+
 		##########################
 		# set up sound           #
 		##########################
@@ -75,7 +81,9 @@ class PacBun(Game):
 		self.title = self.requestNewEntity(entity_template=self.title_t, pos=Vec3(36, 250, 50), parent=self, name="Title")
 		self.title.setGamePad(self.input.getGamePad(0))
 
-		self.collision_manager = CollisionManager(game=self)  # TODO: should this be a ComponentManager() like the others?
+		# self.score_t = self.entity_manager.makeEntityTemplate(graphics=score.makeGraphics(self.graphics_manager, self.overlay_renlayer), controller=score.makeController(self.controller_manager))
+
+		self.collision_manager = CollisionManager(game=self)
 
 		self.setGameMode(eGameModes.title)
 		self.current_level = 0
@@ -87,7 +95,7 @@ class PacBun(Game):
 
 
 		# info bar
-		self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heart.makeGraphics(self.graphics_manager, self.overlay_renlayer), controller=heart.makeController(self.controller_manager))
+		# self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heart.makeGraphics(self.graphics_manager, self.overlay_renlayer), controller=heart.makeController(self.controller_manager))
 
 		self.bunny_t = self.entity_manager.makeEntityTemplate(graphics=bunny.makeGraphics(self.graphics_manager, self.renlayer), controller = bunny.makeController(self.controller_manager), collider=bunny.makeCollider(self.collision_manager))
 
@@ -195,6 +203,8 @@ class PacBun(Game):
 		]},
 		]
 
+		self.message_x = 0
+
 	# end init()
 
 
@@ -210,8 +220,11 @@ class PacBun(Game):
 
 ##################################################
 		elif self.game_mode==eGameModes.title:
+
+
 			self.current_level = 0
-			self.setClearColour(sdl2.ext.Color(20,90,10))
+			self.current_score = 0
+			self.setClearColour(sdl2.ext.Color(102,129,73))
 			gc.collect()
 		##################################################
 		elif self.game_mode==eGameModes.start:
@@ -237,8 +250,9 @@ class PacBun(Game):
 				this_fox.controller_data.type = fox_start[1]
 				self.foxes.append(this_fox)
 
+			# self.score = self.requestNewEntity(entity_template=self.score_t, pos=Vec3(10, 319, 1), parent=self)
 
-			# make hero 2
+			# make bunny
 			game_pad = self.input.getGamePad(0)
 			if game_pad:
 				self.bunny.setGamePad(game_pad)
@@ -261,7 +275,11 @@ class PacBun(Game):
 			self.setGameMode(eGameModes.play)
 		##################################################
 		elif self.game_mode==eGameModes.play:
-			pass
+			self.message = text.Message.withRender(self.font_manager,"{0:0=4d}".format(self.current_score), size=10)
+			if self.score_image:
+				self.overlay_renlayer.replaceImageFromMessage(message=self.message, old_image=self.score_image)
+			else:
+				self.score_image = self.overlay_renlayer.addImageFromMessage(message=self.message)
 
 		####################################################
 
@@ -298,6 +316,8 @@ class PacBun(Game):
 			self.quit_cooldown-=dt
 			self.title.setState(title.eTitleStates.quit)
 			if self.quit_cooldown<=0:
+				gc.enable()
+				self.font_manager.delete()
 				self.running=False
 				return
 
@@ -335,6 +355,9 @@ class PacBun(Game):
 	def requestTarget(self,pos):
 		return self.bunny.common_data.pos
 
+	def reportScore(self, increment):
+		self.current_score+=increment
+
 	###########
 	#  interp #
 	###########
@@ -353,6 +376,9 @@ class PacBun(Game):
 				drawable.graphics.draw(drawable.graphics_data, drawable.common_data)
 
 		self.renlayer.renderSortedByZThenY()
+
+		if self.score_image and self.game_mode==eGameModes.play:
+			self.overlay_renlayer.queueImage(self.score_image, 100, 317, 0)
 		self.overlay_renlayer.render()
 
 
@@ -371,8 +397,6 @@ class PacBun(Game):
 											 name=False):
 		self.num_monsters+=1
 		self.requestNewEntity(entity_template,pos,parent,name)
-
-
 
 
 

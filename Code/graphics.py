@@ -17,6 +17,7 @@ sdl_image.IMG_Init(sdl_image.IMG_INIT_JPG)
 from entity import eStates, Component
 from vector import Vec3, rand_num
 from log import log
+import text
 
 # globals
 graphics_debug = False
@@ -24,26 +25,36 @@ graphics_debug = False
 # Individual images for use as frames for animations or as part of the background etc.
 # Based on SDL images for the moment with no atlassing etc.
 class Image(object):
-	def __init__(self, ren, file, width=False, height=False):
-		self.renderer = ren.renderer
+	def __init__(self, ren, texture, width, height, file=None):
+		self.renderer = ren
 		self.file = file
+		self.width = width
+		self.height = height
+		self.src = sdl2.SDL_Rect(0, 0, self.width, self.height)
+		self.texture = texture
+
+	@classmethod
+	def fromFile(cls, ren, file, width=None, height=None):
 
 		# get image into surface (don't need to keep this though)
 		surface = sdl_image.IMG_Load(file.encode("ascii"))
 
 		# make a texture from the apple surface (for HW rendering)
-		self.texture = sdl2.SDL_CreateTextureFromSurface(self.renderer, surface)
+		texture = sdl2.SDL_CreateTextureFromSurface(ren.renderer, surface)
 
 		if not (width and height):
-			self.width = surface.contents.w
-			self.height = surface.contents.h
-		else:
-			self.width = width
-			self.height = height
+			width = surface.contents.w
+			height = surface.contents.h
 
-		self.src = sdl2.SDL_Rect(0, 0, self.width, self.height)
 		sdl2.SDL_FreeSurface(surface)
+		return cls(ren.renderer, texture, width, height, file)
 
+	@classmethod
+	def fromTexture(cls, ren, texture, width, height):
+		cls.file = None
+		return cls(ren.renderer, texture, width, height)
+
+############################################################
 
 	def draw(self, x, y, debug=graphics_debug):
 
@@ -57,9 +68,13 @@ class Image(object):
 
 			sdl2.SDL_RenderDrawRect(self.renderer,sdl2.SDL_Rect(int(round(x)), int(round(y)), self.width, self.height))
 
+############################################################
 	def delete(self):
 		sdl2.SDL_DestroyTexture(self.texture)
 
+############################################################
+# end Image
+############################################################
 
 class Shape(object):
 	def __init__(self, ren, origin_x=0, origin_y=0, colour=False):
@@ -110,6 +125,10 @@ class RenderShape(Drawable):
 	def draw(self, origin):
 		self.shape.draw(self.x - origin.x, self.y + self.z - origin.y - origin.z)
 
+class RenderText(Drawable):
+	def __init__(self, message_text, x, y, z):
+		super(RenderText, self).__init__(x,y,z)
+
 # a collection of images that can be added to a list of drawables that will be drawn when told to render
 class RenderLayer(object):
 	def __init__(self, ren):
@@ -120,8 +139,24 @@ class RenderLayer(object):
 
 		self.origin = Vec3(0,0,0)
 
+		self.fontmanager = text.FontManager(self.ren)
+		self.default_font=0
+
+	# add an image from something rendered in the program
+	# e.g. text from a font
+	# note: not so much error checking - this needs to be quick
+	# also: this is intended for text that will be shown more than once
+	def addImageFromMessage(self, message):
+		image = Image.fromTexture(self.ren,message.texture, message.width, message.height)
+		self.images.append(image)
+		return len(self.images) - 1
+
+	def replaceImageFromMessage(self, message, old_image):
+		self.images[old_image].delete()
+		self.images[old_image] = Image.fromTexture(self.ren,message.texture, message.width, message.height)
+
 	# add to the store of images available in this render layer
-	def addImage(self, file):
+	def addImageFromFile(self, file):
 		# find if this file has been loaded before and return that if so
 		filepath = os.path.abspath(file)
 		for index, image in enumerate(self.images):
@@ -130,7 +165,7 @@ class RenderLayer(object):
 
 		# haven't seen this file before so add it and return new index
 		try:
-			self.images.append(Image(self.ren, filepath))
+			self.images.append(Image.fromFile(self.ren, filepath))
 		except Exception as e:
 			log("Problem loading image for frame: "+str(e)+" file:"+filepath)
 		return len(self.images) - 1
@@ -200,19 +235,34 @@ class RenderLayer(object):
 		for image in self.images:
 			image.delete()
 
+# add a font that this Render Layer can use
+	def addFont(self, font_path):
+		self.fonts.append(text.Font(self.ren, "Fonts/space-mono/SpaceMono-Bold.ttf"))
+		return len(self.fonts)-1
+
+	def queueMessageFromText(self, message_text, x, y, font=None, size= None):
+		if not font:
+			font = self.default_font
+		self.addImageFromMessage(text.Message.withRender(font, message_text))
+
+####################################################
+# end of RenderLayer
+####################################################
+
 # Types of graphics components available
 class GraphicsTypes(enum.IntEnum):
 	single_image = 0,
 	single_anim = 1,
 	multi_anim = 2,
-	num_graphics_types = 3
+	text_message = 3,
+	num_graphics_types = 4
 
 # graphics component for a single static image
 class SingleImage(Component):
 	def __init__(self, game, data):
 		super(SingleImage, self).__init__(game)
 		self.rl = data['RenderLayer']
-		self.image = self.rl.addImage(data["Image"][0])
+		self.image = self.rl.addImageFromFile(data["Image"][0])
 		self.origin_x = data["Image"][1]
 		self.origin_y = data["Image"][2]
 		self.origin_z = data["Image"][3]
@@ -237,7 +287,7 @@ class MultiImage(Component):
 		self.rl = data['RenderLayer']
 		self.images = []
 		for image in data["Images"]:
-			self.images.append(AnimFrame(self.rl.addImage(image[0]), image[1], image[2], image[3], 0))
+			self.images.append(AnimFrame(self.rl.addImageFromFile(image[0]), image[1], image[2], image[3], 0))
 
 	def getImage(self):
 		return self.image
@@ -338,6 +388,28 @@ class MultiAnim(Component):
 		frame = self.anims[eStates.shadow].getCurrentFrame(data)
 		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x + shadow_height, frame.origin_y, common_data.pos.z)
 
+# graphics component for a single static image
+class TextMessage(Component):
+	def __init__(self, game, data):
+		super(TextMessage, self).__init__(game)
+		self.rl = data['RenderLayer']
+		self.image = self.rl.addImageFromFile(data["Image"][0])
+		self.origin_x = data["Image"][1]
+		self.origin_y = data["Image"][2]
+		self.origin_z = data["Image"][3]
+		self.name = data["Name"]
+
+	def getImage(self):
+		return self.image
+
+	def draw(self, data, common_data):
+		return self.rl.queueImage(self.image, common_data.pos.x - self.origin_x, common_data.pos.y + self.origin_y, common_data.pos.z + self.origin_z)
+
+	def hasShadow(self):
+		return False
+
+	def update(self, data, common_data, time):
+		pass
 
 #####################################################################
 # Animation code																										#
@@ -352,7 +424,7 @@ class Anim(object):
 
 	def addFrames(self, render_layer, frames):
 		for frame in frames:
-			self.frames.append(AnimFrame(render_layer.addImage(frame[0]), frame[1], frame[2], frame[3], frame[4]))
+			self.frames.append(AnimFrame(render_layer.addImageFromFile(frame[0]), frame[1], frame[2], frame[3], frame[4]))
 
 	def getCurrentFrame(self, data):
 		return self.frames[data.current_frame]

@@ -206,6 +206,7 @@ class Controller(controller.Controller):
 			if (x_in_tile>6 and x_in_tile<10) and (y_in_tile>6 and y_in_tile<10):
 				if current_tile.common_data.state == tile.eTileStates.clear:
 					data.level.poo(current_tile, data)	# returns true if count of poos reaches number of empty spaces
+					common_data.game.reportScore(1)
 				elif current_tile.common_data.state == tile.eTileStates.hole:
 					# gone down a hole so find the next hole for the bunny to exit from
 					# and setup the direction for the bunny to run from the data for that hole
