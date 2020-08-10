@@ -6,6 +6,8 @@ import graphics
 import game
 import game_pad
 
+import PacBun
+
 class eTitleStates:
 	dead, hide, title, paused, game_over, win, play, quit, escape, numTitleStates = range(0,10)
 
@@ -103,6 +105,10 @@ class Controller(controller.Controller):
 	def update(self, data, common_data, dt):
 #		if self.coolDown(data, dt):
 #			self.cooldown = self.delay
+			if common_data.state==eTitleStates.hide:
+				common_data.blink=True
+			else:
+				common_data.blink=False
 
 			if common_data.game.game_mode==game.eGameModes.play:
 				self.setState(data, common_data, eTitleStates.play)
@@ -127,7 +133,8 @@ class Controller(controller.Controller):
 							common_data.game.toggleFullscreen()
 							data.game_pad.actions[game_pad.eActions.fullscreen] = False  # stops repeat
 
-				elif common_data.game.game_mode == game.eGameModes.title:
+				elif common_data.game.game_mode == game.eGameModes.title\
+						or common_data.game.game_mode == PacBun.eGameModes.high_score:
 					self.setState(data, common_data, eTitleStates.title)
 					if data.game_pad:
 						if data.game_pad.actions[game_pad.eActions.jump]:

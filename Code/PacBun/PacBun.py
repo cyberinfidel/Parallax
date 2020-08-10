@@ -12,11 +12,9 @@ import game
 from entity import eStates
 import entity
 from collision import CollisionManager
-from vector import Vec3, rand_num
+from vector import Vec3
 import graphics
 import sound
-import director
-import enum
 import gc
 
 
@@ -29,17 +27,16 @@ def log(msg, new_line=True):
 
 #import PacBun files
 import title
-import heart
 import bunny
 import fox
 import tile
 import level
 import text
-import score
+import high_score
 
 
 class eGameModes(game.eGameModes):
-	escape, numGameModes = range(game.eGameModes.numGameModes,game.eGameModes.numGameModes+2)
+	escape, high_score, numGameModes = range(game.eGameModes.numGameModes,game.eGameModes.numGameModes+3)
 
 class PacBun(Game):
 	def __init__(self):
@@ -56,10 +53,14 @@ class PacBun(Game):
 		self.overlay_renlayer = graphics.RenderLayer(self.ren)
 		self.scroll = False
 		self.quit_cooldown = 0.5
+		self.title_cooldown_time = 1
+		self.title_cooldown = self.title_cooldown_time
 
 		self.font_manager = text.FontManager(self.ren)
-		self.font_manager.addFontFromFile("Fonts/Silom/Silom.ttf")
-		self.score_image = None
+		self.score_font = self.font_manager.addFontFromFile("Fonts/Silom/Silom.ttf", 11)
+		self.current_score = 0
+		self.old_score = -1
+		self.score_image = self.overlay_renlayer.addImageFromString(font_manager=self.font_manager, string="{0:0=4d}".format(self.current_score), font=self.score_font, color=sdl2.SDL_Color(255,255,255,255))
 
 		##########################
 		# set up sound           #
@@ -81,12 +82,26 @@ class PacBun(Game):
 		self.title = self.requestNewEntity(entity_template=self.title_t, pos=Vec3(36, 250, 50), parent=self, name="Title")
 		self.title.setGamePad(self.input.getGamePad(0))
 
-		# self.score_t = self.entity_manager.makeEntityTemplate(graphics=score.makeGraphics(self.graphics_manager, self.overlay_renlayer), controller=score.makeController(self.controller_manager))
+		# high score table
+		self.high_score_t = self.entity_manager.makeEntityTemplate(
+			controller=high_score.makeController(self.controller_manager),
+			graphics=high_score.makeGraphics(manager=self.graphics_manager,
+																	render_layer=self.overlay_renlayer,
+																	font_manager=self.font_manager)
+		)
+		self.high_score = self.requestNewEntity(self.high_score_t, parent=self, name="High Scores")
+		self.high_score.graphics.initScore(self.high_score.common_data)
+
+		# these are the entities that survive a game over
+		# i.e. between games
+		self.persistent_entities = [self.title, self.high_score]
 
 		self.collision_manager = CollisionManager(game=self)
 
 		self.setGameMode(eGameModes.title)
 		self.current_level = 0
+		self.setClearColour(sdl2.ext.Color(102,129,73))
+
 
 
 		###################
@@ -207,120 +222,135 @@ class PacBun(Game):
 
 	# end init()
 
+	def updatePlay(self, dt):
+		# draw score
+		if self.current_score!= self.old_score:
+			self.overlay_renlayer.replaceImageFromString(old_image=self.score_image, font_manager=self.font_manager, string="{0:0=4d}".format(self.current_score), font=self.score_font, color=sdl2.SDL_Color(255,255,255,255))
+			self.old_score = self.current_score
+
+
+		self.collision_manager.doCollisionsWithSingleEntity(self.bunny)  # collisions between monsters
+		# clean up dead entities
+		self.cleanUpDead()
+
+	##################################################
+
+	def updateTitle(self, dt):
+		self.title.setState(title.eTitleStates.title)
+		gc.enable()
+		self.current_level = 0
+		self.current_score = 0
+		self.setClearColour(sdl2.ext.Color(102,129,73))
+		gc.collect()
+		self.title_cooldown-=dt
+		if self.title_cooldown<0:
+			self.title_cooldown = self.title_cooldown_time
+			self.setGameMode(eGameModes.high_score)
+		# log("switching to high score")
+	##################################################
+
+	def updateStart(self, dt):
+		gc.collect()
+		if len(gc.garbage)>0: print(gc.garbage)
+		# set up new game and clean up anything from last game
+		self.num_monsters = 0
+		self.killPlayEntities()
+		self.cleanUpDead()
+		self.restart_cooldown = 2
+		self.setClearColour(sdl2.ext.Color(219, 182, 85))
+
+		# initialise map
+		self.level = level.Level(self,self.levels[self.current_level])
+
+		# initialise creatures
+		self.bunny = self.requestNewEntity(self.bunny_t, pos=self.level.getBunnyStart(), parent=self, name="Bunny")
+		game_pad = self.input.getGamePad(0)
+		if game_pad:
+			self.bunny.setGamePad(game_pad)
+		self.bunny.controller_data.level = self.level
+
+		self.foxes = []
+		for fox_start in self.level.getFoxStarts():
+			this_fox = self.requestNewEntity(self.fox_t, pos=fox_start[0], parent=self, name="Fox")
+			this_fox.controller_data.bunny = self.bunny
+			this_fox.controller_data.level = self.level
+			this_fox.controller_data.type = fox_start[1]
+			self.foxes.append(this_fox)
+
+
+		gc.collect()
+		gc.disable()
+		self.setGameMode(eGameModes.play)
+		####################################################
+
+	def updateGameOver(self, dt):
+		self.restart_cooldown-=dt
+		self.title.setState(title.eTitleStates.game_over)
+		if self.restart_cooldown<=0:
+			self.setGameMode(eGameModes.title)
+			self.cleanUpDead()
+		####################################################
+
+	def updateEscape(self, dt):
+		self.title.setState(title.eTitleStates.escape)
+		####################################################
+
+	def updateWin(self, dt):
+		self.bunny.setState(entity.eStates.dead)
+		self.restart_cooldown-=dt
+		self.title.setState(title.eTitleStates.win)
+		if self.restart_cooldown<=0:
+			self.current_level+=1
+			if self.current_level>=len(self.levels):
+				self.setGameMode(eGameModes.game_over)
+			else:
+				self.setGameMode(eGameModes.start)
+			self.cleanUpDead()
+		####################################################
+
+	def updateQuit(self, dt):
+		self.quit_cooldown-=dt
+		self.title.setState(title.eTitleStates.quit)
+		if self.quit_cooldown<=0:
+			gc.enable()
+			self.font_manager.delete()
+			self.running=False
+			return
+		####################################################
+
+	def updateInit(self, dt):
+		pass
+		####################################################
+
+	def updatePaused(self, dt):
+		self.title.update(dt)
+		####################################################
+
+	def updateHighScore(self, dt):
+		self.title.setState(title.eTitleStates.hide)
+		self.title_cooldown-=dt
+		if self.title_cooldown<0:
+			self.title_cooldown = self.title_cooldown_time
+			self.setGameMode(eGameModes.title)
+			# log("switching to title")
+		####################################################
 
 	###########
 	#  update #
 	###########
-
 	def update(self, dt):
-
-		if self.game_mode==eGameModes.init:
-
-			pass
-
-##################################################
-		elif self.game_mode==eGameModes.title:
-
-
-			self.current_level = 0
-			self.current_score = 0
-			self.setClearColour(sdl2.ext.Color(102,129,73))
-			gc.collect()
-		##################################################
-		elif self.game_mode==eGameModes.start:
-			gc.enable()
-			gc.collect()
-			if len(gc.garbage)>0: print(gc.garbage)
-			# set up new game and clean up anything from last game
-			self.num_monsters = 0
-			self.killPlayEntities()
-			self.cleanUpDead()
-			self.restart_cooldown = 2
-			self.setClearColour(sdl2.ext.Color(219, 182, 85))
-
-			# initialise map
-			self.level = level.Level(self,self.levels[self.current_level])
-
-			self.bunny = self.requestNewEntity(self.bunny_t, pos=self.level.getBunnyStart(), parent=self, name="Bunny")
-			self.foxes = []
-			for fox_start in self.level.getFoxStarts():
-				this_fox = self.requestNewEntity(self.fox_t, pos=fox_start[0], parent=self, name="Fox")
-				this_fox.controller_data.bunny = self.bunny
-				this_fox.controller_data.level = self.level
-				this_fox.controller_data.type = fox_start[1]
-				self.foxes.append(this_fox)
-
-			# self.score = self.requestNewEntity(entity_template=self.score_t, pos=Vec3(10, 319, 1), parent=self)
-
-			# make bunny
-			game_pad = self.input.getGamePad(0)
-			if game_pad:
-				self.bunny.setGamePad(game_pad)
-			self.bunny.controller_data.level = self.level
-
-
-
-			# # set up life indicator in top left
-			# for n in range(1, 6):
-			# 	heart = self.entity_manager.makeEntity(self.heart_t, "Heart")
-			# 	heart.setPos(Vec3(10 * n, 190, 0))
-			# 	self.drawables.append(heart)
-			# 	self.updatables.append(heart)
-			# 	heart.common_data.parent = self.bunny
-			# 	heart.common_data.state = eStates.fade
-			# 	heart.controller_data.health_num = n
-
-			gc.collect()
-			gc.disable()
-			self.setGameMode(eGameModes.play)
-		##################################################
-		elif self.game_mode==eGameModes.play:
-			self.message = text.Message.withRender(self.font_manager,"{0:0=4d}".format(self.current_score), size=10)
-			if self.score_image:
-				self.overlay_renlayer.replaceImageFromMessage(message=self.message, old_image=self.score_image)
-			else:
-				self.score_image = self.overlay_renlayer.addImageFromMessage(message=self.message)
-
-		####################################################
-
-		elif self.game_mode==eGameModes.game_over:
-
-			self.restart_cooldown-=dt
-			self.title.setState(title.eTitleStates.game_over)
-			if self.restart_cooldown<=0:
-				self.setGameMode(eGameModes.title)
-				self.cleanUpDead()
-		####################################################
-
-		elif self.game_mode==eGameModes.escape:
-			self.title.setState(title.eTitleStates.escape)
-
-		####################################################
-
-		elif self.game_mode==eGameModes.win:
-			self.bunny.setState(entity.eStates.dead)
-			self.restart_cooldown-=dt
-			self.title.setState(title.eTitleStates.win)
-			if self.restart_cooldown<=0:
-				self.current_level+=1
-				if self.current_level>=len(self.levels):
-					self.setGameMode(eGameModes.game_over)
-				else:
-					self.setGameMode(eGameModes.start)
-				self.cleanUpDead()
-
-
-		####################################################
-
-		elif self.game_mode==eGameModes.quit:
-			self.quit_cooldown-=dt
-			self.title.setState(title.eTitleStates.quit)
-			if self.quit_cooldown<=0:
-				gc.enable()
-				self.font_manager.delete()
-				self.running=False
-				return
-
+		(
+			self.updateQuit,
+			self.updateInit,
+			self.updateTitle,
+			self.updateStart,
+			self.updatePlay,
+			self.updateGameOver,
+			self.updateWin,
+			self.updatePaused,
+			self.updateEscape,
+			self.updateHighScore,
+		)[self.game_mode](dt)
 
 		# Always do this, unless paused:
 		if self.game_mode!=eGameModes.paused:
@@ -329,13 +359,6 @@ class PacBun(Game):
 			for audible in self.audibles:
 				audible.sounds.play(audible.sounds_data, audible.common_data)
 
-			if self.game_mode==eGameModes.play:
-				self.collision_manager.doCollisionsWithSingleEntity(self.bunny) # collisions between monsters
-			# clean up dead entities
-			self.cleanUpDead()
-
-		else:
-			self.title.update(dt)
 
 # end update() #################################################################
 
@@ -347,7 +370,7 @@ class PacBun(Game):
 
 	def killPlayEntities(self):
 		for updatable in self.updatables:
-			if not (updatable is self.title):
+			if not (updatable in self.persistent_entities):
 				updatable.common_data.state = eStates.dead
 		self.cleanUpDead()
 
@@ -377,8 +400,8 @@ class PacBun(Game):
 
 		self.renlayer.renderSortedByZThenY()
 
-		if self.score_image and self.game_mode==eGameModes.play:
-			self.overlay_renlayer.queueImage(self.score_image, 100, 317, 0)
+		if self.game_mode==eGameModes.play:
+			self.overlay_renlayer.queueImage(self.score_image, 99, 318, 0)
 		self.overlay_renlayer.render()
 
 

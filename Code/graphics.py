@@ -147,11 +147,20 @@ class RenderLayer(object):
 	# note: not so much error checking - this needs to be quick
 	# also: this is intended for text that will be shown more than once
 	def addImageFromMessage(self, message):
-		image = Image.fromTexture(self.ren,message.texture, message.width, message.height)
-		self.images.append(image)
+		self.images.append(Image.fromTexture(self.ren,message.texture, message.width, message.height))
 		return len(self.images) - 1
 
-	def replaceImageFromMessage(self, message, old_image):
+	def addImageFromString(self, font_manager, string, font=0, color=sdl2.SDL_Color(255,255,255,255)):
+		message = text.Message.withRender(font_manager=font_manager, font=font, string=string, color=color)
+		self.images.append(Image.fromTexture(self.ren,message.texture, message.width, message.height))
+		return len(self.images) - 1
+
+	def replaceImageFromMessage(self, old_image,  message):
+		self.images[old_image].delete()
+		self.images[old_image] = Image.fromTexture(self.ren,message.texture, message.width, message.height)
+
+	def replaceImageFromString(self, old_image, font_manager, string, font=0, color=sdl2.SDL_Color(255,255,255,255)):
+		message = text.Message.withRender(font_manager=font_manager, string=string, font=font, color=color)
 		self.images[old_image].delete()
 		self.images[old_image] = Image.fromTexture(self.ren,message.texture, message.width, message.height)
 
@@ -428,7 +437,6 @@ class Anim(object):
 
 	def getCurrentFrame(self, data):
 		return self.frames[data.current_frame]
-
 
 # trivial, single frame animation
 class AnimSingle(Anim):
