@@ -41,6 +41,22 @@ class ScoreTable(entity.Component):
 		else:
 			common_data.blink=True
 
+	def formatScore(self, index, initials, score):
+		r, g, b = (
+			(255, 255, 0),
+			(255, 0, 255),
+			(0, 255, 255),
+			(255, 0, 0),
+			(0, 255, 0),
+			(0, 0, 255),
+			(255, 255, 255),
+			(128, 128, 255),
+			(255, 128, 128),
+			(128, 255, 128),
+		)[index]
+		return "{0:0=2d}: ".format(index+1) + " {0:0=4d} ".format(score) + str(initials), r,g,b
+
+
 	def initScore(self, common_data):
 		common_data.blink=True
 		graphics_data = common_data.entity.graphics_data
@@ -50,34 +66,21 @@ class ScoreTable(entity.Component):
 			self.render_layer.addImageFromString(font_manager=self.font_manager, string="     Best Buns", font=self.font,
 																					 color=sdl2.SDL_Color(0, 0, 0, 255)))
 
-		graphics_data.scores_data = common_data.entity.controller_data.scores_data	# hold a pointer to the scores in the controller
+		scores_data = common_data.entity.controller_data.scores_data	# hold a pointer to the scores in the controller
 		for i in range(0,10):
-			r,g,b = (
-				(255,255,0),
-				(255, 0, 255),
-				(0, 255, 255),
-				(255, 0, 0),
-				(0, 255, 0),
-				(0, 0, 255),
-				(255, 255, 255),
-				(128, 128, 255),
-				(255, 128, 128),
-				(128, 255, 128),
-			)[i]
-			score = "{0:0=2d}: ".format(i+1) + " {0:0=4d} ".format(graphics_data.scores_data[i][1]) + str(graphics_data.scores_data[i][0])
+			score, r, g, b = self.formatScore(i,scores_data[i][0],scores_data[i][1])
 			graphics_data.images.append(self.render_layer.addImageFromString(font_manager= self.font_manager, string=score, font=self.font, color=sdl2.SDL_Color(r,g,b,255)))
 
 
 
-	def updateImages(self):
-		pass
-		# self.scores = []
-		# for i in range(0,10):
-		# 	self.scores.append(Score(f"{self.score_data[i].initials}: "+ "{0:0=4d}".format(self.current_score)), None)
-		# # render the scores
-		# for index, score in enumerate(self.scores):
-		# 	self.render_layer.replaceImageFromString(self.font_manager, "{0:0=4d}".format(self.current_score), size=10)
-		# 	self.overlay_renlayer.replaceImageFromMessage(message=self.message, old_image=self.score_image)
+	def updateScores(self, entity):
+		scores_data = entity.controller_data.scores_data	# hold a pointer to the scores in the controller
+
+		for i in range(0,10):
+			score, r, g, b = self.formatScore(i,scores_data[i][0],scores_data[i][1])
+			self.render_layer.replaceImageFromString(entity.graphics_data.images[i+1], # skip "Best Buns"
+				font_manager=self.font_manager, string=score, font=self.font, color=sdl2.SDL_Color(r, g, b, 255))
+
 
 def makeGraphics(manager, render_layer, font_manager):
 	return manager.makeTemplate({
@@ -86,6 +89,8 @@ def makeGraphics(manager, render_layer, font_manager):
 			"RenderLayer": render_layer,
 			"FontManager": font_manager,
 		})
+
+###########################################################
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
@@ -112,8 +117,31 @@ class Controller(controller.Controller):
 	def update(self, data, common_data, dt):
 		pass
 
-	def updateScores(self, data, common_data, new_score):
-		pass
+	def isHighScore(self, entity, new_score):
+		score_data = entity.controller_data.scores_data
+		if new_score>score_data[9][1]:
+			entity.controller_data.scores_data = self.updateScores(score_data=score_data, initials="NEW", new_score=new_score)
+			return True
+		return False
 
+	def updateScores(self, score_data, initials, new_score):
+		for i in range(0,10):
+			if new_score > score_data[i][1]:
+				score_data[i:i] = [[initials,new_score]]
+				return score_data[:10]
+		return score_data[:10]
+
+	# def isHighScore(self, entity, new_score):
+	# 	data = entity.controller_data
+	# 	if new_score>data.scores_data[9][1]:
+	# 		print("High score!!!")
+	# 		self.updateScores(data=data, initials="NEW", new_score=new_score)
+	#
+	# def updateScores(self, data, initials, new_score):
+	# 	for i in range(0,10):
+	# 		if new_score > data.scores_data[i][1]:
+	# 			data.scores_data.insert(i,[initials,new_score])
+	# 		data.scores_data=data.scores_data[:10]
+	# 	print(data.scores_data)
 
 

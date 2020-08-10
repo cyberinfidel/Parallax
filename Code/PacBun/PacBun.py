@@ -130,7 +130,7 @@ class PacBun(Game):
 					"HHHHHHHHHHHHHHHHHHHH",
 					"HH   HHHHHHHHHH   HH",
 					"HH H HHHHHHHHHH H HH",
-					"HH  oHHHHHHHHHHo  HH",
+					"HH 1oHHHHHHHHHHo  HH",
 					"HHHHHHHHHHHHHHHHHHHH",
 					"HHHHHHHHHHHHHHHHHHHH",
 					"HHHHHHH  B  HHHHHHHH",
@@ -287,6 +287,11 @@ class PacBun(Game):
 		self.restart_cooldown-=dt
 		self.title.setState(title.eTitleStates.game_over)
 		if self.restart_cooldown<=0:
+
+			# do high scoreness
+			if self.high_score.controller.isHighScore(self.high_score, self.current_score):
+				self.high_score.graphics.updateScores(self.high_score)
+
 			self.setGameMode(eGameModes.title)
 			self.cleanUpDead()
 		####################################################
