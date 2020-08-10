@@ -29,31 +29,34 @@ def renderTexture(tex, ren, x, y):
 def initFont(fontFile, renderer, defaultFontSize=10):
 	# Open the font
 	sdl2.SDL_ClearError()
-	font_manager = sdl2.ext.FontManager(fontFile, defaultFontSize)
+	font = sdl2.sdlttf.TTF_OpenFont(fontFile.encode('utf-8'), defaultFontSize)
 	p = sdl2.SDL_GetError()
-	if font_manager is None or len(p)!=0:
+	if font is None or len(p)!=0:
 		print("TTF_OpenFont error: " + str(p))
 		return None
-	return font_manager
+	return font
 
 def renderText(message, font, renderer, color, size=10, bgcolor=sdl2.SDL_Color(0,0,0) ):
 	#We need to first render to a surface as that's what TTF_RenderText
 	#returns, then load that surface into a texture
-	surf = font.render(text=message, color=color, size=size, bgcolor=bgcolor)
+	surf = sdl2.sdlttf.TTF_RenderUTF8_Solid(font, message.encode('utf-8'), color)
+
+	sdl2.sdlttf.TTF_CloseFont(font)
 	if surf is None:
-		sdl2.sdlttf.TTF_CloseFont(font)
 		print("TTF_RenderText")
 		return None
 	texture = sdl2.SDL_CreateTextureFromSurface(renderer.sdlrenderer, surf)
 	if texture is None:
 		print("CreateTexture")
 	#Clean up the surface and font
-	width = surf.w
-	height = surf.h
+	width = surf.contents.w
+	height = surf.contents.h
 	sdl2.SDL_FreeSurface(surf)
 	# sdl2.sdlttf.TTF_CloseFont(font)
 	return texture,width,height
 ##################################################
+
+
 if __name__ == "__main__":
 
 	sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO)
@@ -73,14 +76,14 @@ if __name__ == "__main__":
 	color = sdl2.SDL_Color(255, 255, 255)
 	# font 1
 	fontpath = os.path.join(os.path.dirname(__file__), 'space-mono', 'SpaceMono-Bold.ttf')
-	font_manager = initFont(fontpath, renderer)
-	image,iW,iH = renderText("0123456789abcdefghijklmnopqrstuvqxyz\nABCDEFGHIJKLMNOPQRSTUVWXYZ", font_manager, renderer,
-													 color, 24, bgcolor=sdl2.SDL_Color(255,0,100))
+	font = initFont(fontpath, renderer, 20)
+	image,iW,iH = renderText("0123456789abcdefghijklmnopqrstuvqxyz\nABCDEFGHIJKLMNOPQRSTUVWXYZ", font, renderer,
+													 color, 24, bgcolor=sdl2.SDL_Color(255,0,0))
 	# font 2
 	fontpath = os.path.join(os.path.dirname(__file__), 'Silom', 'Silom.ttf')
-	font_manager = initFont(fontpath, renderer)
-	image2,iW2,iH2 = renderText("0123456789abcdefghijklmnopqrstuvqxyz\nABCDEFGHIJKLMNOPQRSTUVWXYZ", font_manager, renderer,
-													 color, 24, bgcolor=sdl2.SDL_Color(255,0,100))
+	font = initFont(fontpath, renderer, 32)
+	image2,iW2,iH2 = renderText("0123456789abcdefghijklmnopqrstuvqxyz\nABCDEFGHIJKLMNOPQRSTUVWXYZ", font, renderer,
+															color, 24, bgcolor=sdl2.SDL_Color(255,0,100))
 
 	if image is None:
 		exit(1)
