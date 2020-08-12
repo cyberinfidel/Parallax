@@ -33,10 +33,11 @@ import tile
 import level
 import text
 import high_score
+import new_high_score
 
 
 class eGameModes(game.eGameModes):
-	escape, high_score, numGameModes = range(game.eGameModes.numGameModes,game.eGameModes.numGameModes+3)
+	escape, high_score, new_high_score, numGameModes = range(game.eGameModes.numGameModes,game.eGameModes.numGameModes+4)
 
 class PacBun(Game):
 	def __init__(self):
@@ -53,7 +54,7 @@ class PacBun(Game):
 		self.overlay_renlayer = graphics.RenderLayer(self.ren)
 		self.scroll = False
 		self.quit_cooldown = 0.5
-		self.title_cooldown_time = 1
+		self.title_cooldown_time = 3
 		self.title_cooldown = self.title_cooldown_time
 
 		self.font_manager = text.FontManager(self.ren)
@@ -91,6 +92,15 @@ class PacBun(Game):
 		)
 		self.high_score = self.requestNewEntity(self.high_score_t, parent=self, name="High Scores")
 		self.high_score.graphics.initScore(self.high_score.common_data)
+
+		# entity for getting initials on a new high score
+		self.new_high_score_t = self.entity_manager.makeEntityTemplate(
+			controller=new_high_score.makeController(self.controller_manager),
+			graphics=new_high_score.makeGraphics(manager=self.graphics_manager,
+																	render_layer=self.overlay_renlayer,
+																	font_manager=self.font_manager)
+		)
+
 
 		# these are the entities that survive a game over
 		# i.e. between games
@@ -281,24 +291,41 @@ class PacBun(Game):
 		gc.collect()
 		gc.disable()
 		self.setGameMode(eGameModes.play)
+		self.updatePlay(dt)
 		####################################################
 
 	def updateGameOver(self, dt):
 		self.restart_cooldown-=dt
 		self.title.setState(title.eTitleStates.game_over)
 		if self.restart_cooldown<=0:
+			self.killPlayEntities()
+			self.cleanUpDead()
 
 			# do high scoreness
 			if self.high_score.controller.isHighScore(self.high_score, self.current_score):
-				self.high_score.graphics.updateScores(self.high_score)
+
+				self.new_high_score = self.requestNewEntity(self.new_high_score_t, parent=self, name="New High Score")
+				game_pad = self.input.getGamePad(0)
+				if game_pad:
+					self.new_high_score.setGamePad(game_pad)
+
+				self.setGameMode(eGameModes.new_high_score)
+				self.title.setState(title.eTitleStates.new_high_score)
+				return
 
 			self.setGameMode(eGameModes.title)
-			self.cleanUpDead()
 		####################################################
 
 	def updateEscape(self, dt):
 		self.title.setState(title.eTitleStates.escape)
+
 		####################################################
+	def updateNewHighScore(self, dt):
+
+
+		pass
+
+	####################################################
 
 	def updateWin(self, dt):
 		self.bunny.setState(entity.eStates.dead)
@@ -332,7 +359,6 @@ class PacBun(Game):
 		####################################################
 
 	def updateHighScore(self, dt):
-		self.title.setState(title.eTitleStates.hide)
 		self.title_cooldown-=dt
 		if self.title_cooldown<0:
 			self.title_cooldown = self.title_cooldown_time
@@ -355,6 +381,7 @@ class PacBun(Game):
 			self.updatePaused,
 			self.updateEscape,
 			self.updateHighScore,
+			self.updateNewHighScore
 		)[self.game_mode](dt)
 
 		# Always do this, unless paused:
@@ -372,6 +399,7 @@ class PacBun(Game):
 		self.collision_manager.cleanUpDead()
 		self.drawables[:] = [x for x in self.drawables if x.getState() != eStates.dead]
 		self.audibles[:] = [x for x in self.audibles if x.getState() != eStates.dead]
+		# self.entity_manager.deleteDead()
 
 	def killPlayEntities(self):
 		for updatable in self.updatables:
@@ -426,7 +454,10 @@ class PacBun(Game):
 		self.num_monsters+=1
 		self.requestNewEntity(entity_template,pos,parent,name)
 
-
+	def addNewHighScore(self, initials):
+		self.high_score.controller.updateScores(score_data=self.high_score.controller_data.scores_data, initials=initials, new_score=self.current_score)
+		self.high_score.graphics.updateScores(self.high_score)
+		self.setGameMode(eGameModes.title)
 
 
 def run(tests=False):

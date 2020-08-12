@@ -9,7 +9,7 @@ import game_pad
 import PacBun
 
 class eTitleStates:
-	dead, hide, title, paused, game_over, win, play, quit, escape, numTitleStates = range(0,10)
+	dead, hide, title, paused, game_over, win, play, quit, escape, high_score, new_high_score, numTitleStates = range(0,12)
 
 
 def makeGraphics(manager, renlayer):
@@ -56,12 +56,32 @@ def makeGraphics(manager, renlayer):
 							],
 					},
 					{
+						"Name": "New High Score",
+						"AnimType": graphics.AnimLoop,
+						"States": [eTitleStates.new_high_score],
+						"Frames":
+							[
+								["Graphics/Title/NewHighScore.png", -10, -24, 0, 0.2],
+							],
+					},
+					{
 						"Name": "Win",
 						"AnimType": graphics.AnimNoLoop,
 						"States": [eTitleStates.win],
 						"Frames":
 							[
 								["Graphics/Title/Win.png", 4, 4, 0, 2],
+							],
+					},
+					{
+						"Name": "High Score Table",
+						"AnimType": graphics.AnimLoop,
+						"States": [eTitleStates.high_score],
+						"Frames":
+							[
+								["Graphics/Title/HighScore1.png", -35, -5, 0, 1],
+								["Graphics/Title/HighScore2.png", -35, -5, 0, 1],
+								["Graphics/Title/HighScore3.png", -35, -5, 0, 1],
 							],
 					},
 					{
@@ -115,8 +135,8 @@ class Controller(controller.Controller):
 				if data.game_pad.actions[game_pad.eActions.pause]:
 					common_data.game.setGameMode(game.eGameModes.paused)
 					self.setState(data, common_data, eTitleStates.paused)
-					data.game_pad.actions[game_pad.eActions.pause] = False  # stops complete quite
-					data.game_pad.actions[game_pad.eActions.quit] = False  # stops complete quite
+					data.game_pad.actions[game_pad.eActions.pause] = False  # stops complete quit
+					data.game_pad.actions[game_pad.eActions.quit] = False  # stops complete quit
 			else:
 				if common_data.game.game_mode == game.eGameModes.paused:
 					if data.game_pad:
@@ -128,14 +148,15 @@ class Controller(controller.Controller):
 							common_data.game.setGameMode(game.eGameModes.title)
 							common_data.game.killPlayEntities()
 							self.setState(data, common_data, eTitleStates.title)
-							data.game_pad.actions[game_pad.eActions.quit]=False # stops complete quite
+							data.game_pad.actions[game_pad.eActions.quit]=False # stops complete quit
 						if data.game_pad.actions[game_pad.eActions.fullscreen]:
 							common_data.game.toggleFullscreen()
 							data.game_pad.actions[game_pad.eActions.fullscreen] = False  # stops repeat
 
 				elif common_data.game.game_mode == game.eGameModes.title\
 						or common_data.game.game_mode == PacBun.eGameModes.high_score:
-					self.setState(data, common_data, eTitleStates.title)
+					self.setState(data, common_data,
+												eTitleStates.title if common_data.game.game_mode==game.eGameModes.title else eTitleStates.high_score)
 					if data.game_pad:
 						if data.game_pad.actions[game_pad.eActions.jump]:
 							common_data.game.setGameMode(game.eGameModes.start)
@@ -145,7 +166,7 @@ class Controller(controller.Controller):
 							common_data.game.setGameMode(game.eGameModes.quit)
 							common_data.game.killPlayEntities()
 							self.setState(data, common_data, eTitleStates.quit)
-							data.game_pad.actions[game_pad.eActions.quit] = False  # stops complete quite
+							data.game_pad.actions[game_pad.eActions.quit] = False  # stops complete quit
 						if data.game_pad.actions[game_pad.eActions.fullscreen]:
 							common_data.game.toggleFullscreen()
 							data.game_pad.actions[game_pad.eActions.fullscreen] = False  # stops repeat

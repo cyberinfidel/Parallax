@@ -62,10 +62,6 @@ class ScoreTable(entity.Component):
 		graphics_data = common_data.entity.graphics_data
 		graphics_data.images = []
 
-		graphics_data.images.append(
-			self.render_layer.addImageFromString(font_manager=self.font_manager, string="     Best Buns", font=self.font,
-																					 color=sdl2.SDL_Color(0, 0, 0, 255)))
-
 		scores_data = common_data.entity.controller_data.scores_data	# hold a pointer to the scores in the controller
 		for i in range(0,10):
 			score, r, g, b = self.formatScore(i,scores_data[i][0],scores_data[i][1])
@@ -78,7 +74,7 @@ class ScoreTable(entity.Component):
 
 		for i in range(0,10):
 			score, r, g, b = self.formatScore(i,scores_data[i][0],scores_data[i][1])
-			self.render_layer.replaceImageFromString(entity.graphics_data.images[i+1], # skip "Best Buns"
+			self.render_layer.replaceImageFromString(entity.graphics_data.images[i],
 				font_manager=self.font_manager, string=score, font=self.font, color=sdl2.SDL_Color(r, g, b, 255))
 
 
@@ -109,7 +105,6 @@ class Controller(controller.Controller):
 				scores_data = json.load(json_file)
 				for i in range(0,10):
 					self.scores_data.append(scores_data["scores"][i])
-					print(self.scores_data[i])
 
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
@@ -120,7 +115,6 @@ class Controller(controller.Controller):
 	def isHighScore(self, entity, new_score):
 		score_data = entity.controller_data.scores_data
 		if new_score>score_data[9][1]:
-			entity.controller_data.scores_data = self.updateScores(score_data=score_data, initials="NEW", new_score=new_score)
 			return True
 		return False
 
