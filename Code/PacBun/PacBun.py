@@ -399,7 +399,7 @@ class PacBun(Game):
 		self.collision_manager.cleanUpDead()
 		self.drawables[:] = [x for x in self.drawables if x.getState() != eStates.dead]
 		self.audibles[:] = [x for x in self.audibles if x.getState() != eStates.dead]
-		# self.entity_manager.deleteDead()
+		self.entity_manager.deleteDead()
 
 	def killPlayEntities(self):
 		for updatable in self.updatables:

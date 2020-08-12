@@ -67,6 +67,10 @@ class NewScore(entity.Component):
 		for i in range(0, 3):
 				self.render_layer.replaceImageFromString(old_image=self.initial_images[i], font_manager=self.font_manager, string=entity.controller_data.initials[i], font=self.font, color=colours[i])
 
+	def delete(self, data):
+		for image in self.initial_images:
+			self.render_layer.releaseImage
+
 def makeGraphics(manager, render_layer, font_manager):
 	return manager.makeTemplate({
 			"Name": "Scoreboard",

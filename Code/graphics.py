@@ -32,6 +32,7 @@ class Image(object):
 		self.height = height
 		self.src = sdl2.SDL_Rect(0, 0, self.width, self.height)
 		self.texture = texture
+		self.ref_count = 1
 
 	@classmethod
 	def fromFile(cls, ren, file, width=None, height=None):
@@ -69,8 +70,22 @@ class Image(object):
 			sdl2.SDL_RenderDrawRect(self.renderer,sdl2.SDL_Rect(int(round(x)), int(round(y)), self.width, self.height))
 
 ############################################################
+
+	# try to delete (with ref counting)
+	# if actually deleted returns True
+	def release(self):
+		self.ref_count -=1
+		if self.ref_count<=0:
+			self.delete()
+			return True
+		return False
+
+
+	# actually delete, no ref counting
 	def delete(self):
 		sdl2.SDL_DestroyTexture(self.texture)
+		self.ref_count=0
+
 
 ############################################################
 # end Image
@@ -142,18 +157,28 @@ class RenderLayer(object):
 		self.fontmanager = text.FontManager(self.ren)
 		self.default_font=0
 
+	def _getNextEmptySlot(self):
+		for index, image in enumerate(self.images):
+			if not image:			# empty slot
+				return index
+		self.images.append(None)
+		return len(self.images)-1
+
+
 	# add an image from something rendered in the program
 	# e.g. text from a font
 	# note: not so much error checking - this needs to be quick
 	# also: this is intended for text that will be shown more than once
 	def addImageFromMessage(self, message):
-		self.images.append(Image.fromTexture(self.ren,message.texture, message.width, message.height))
-		return len(self.images) - 1
+		index = self._getNextEmptySlot()
+		self.images[index] = Image.fromTexture(self.ren,message.texture, message.width, message.height)
+		return index
 
 	def addImageFromString(self, font_manager, string, font=0, color=sdl2.SDL_Color(255,255,255,255)):
 		message = text.Message.withRender(font_manager=font_manager, font=font, string=string, color=color)
-		self.images.append(Image.fromTexture(self.ren,message.texture, message.width, message.height))
-		return len(self.images) - 1
+		index = self._getNextEmptySlot()
+		self.images[index] = Image.fromTexture(self.ren,message.texture, message.width, message.height)
+		return index
 
 	def replaceImageFromMessage(self, old_image,  message):
 		self.images[old_image].delete()
@@ -167,17 +192,22 @@ class RenderLayer(object):
 	# add to the store of images available in this render layer
 	def addImageFromFile(self, file):
 		# find if this file has been loaded before and return that if so
+		# also check if there's an index that is empty and can be re-used
 		filepath = os.path.abspath(file)
 		for index, image in enumerate(self.images):
-			if image.file == filepath:
-				return index
+			if image:
+				if image.file == filepath:
+					image.ref_count+=1
+					return index
 
-		# haven't seen this file before so add it and return new index
+		# otherwise find next empty slot (or append)
+		index = self._getNextEmptySlot()
 		try:
-			self.images.append(Image.fromFile(self.ren, filepath))
+			self.images[index] = Image.fromFile(self.ren, filepath)
 		except Exception as e:
-			log("Problem loading image for frame: "+str(e)+" file:"+filepath)
-		return len(self.images) - 1
+			log("Problem loading image for frame: " + str(e) + " file:" + filepath)
+
+		return index
 
 	# empty the list of drawables for this layer so nothing is set to be drawn on a render event
 	def clear(self):
@@ -240,6 +270,11 @@ class RenderLayer(object):
 	def getOrigin(self):
 		return self.origin
 
+	# releases an image with ref counting
+	def releaseImage(self, index):
+		self.images[index].release()
+
+	# kills whole render layer and all images, dead
 	def delete(self):
 		for image in self.images:
 			image.delete()
@@ -355,6 +390,10 @@ class MultiAnim(Component):
 				self.current_anim =  eStates.stationary
 				self.current_state = eStates.stationary
 
+	def delete(self, data):
+		for anim in self.anims:
+			self.anims[anim].delete()
+
 	def __init__(self, game, data):
 		super(MultiAnim, self).__init__(game)
 		self.rl = data['RenderLayer']
@@ -425,8 +464,9 @@ class TextMessage(Component):
 #####################################################################
 
 class Anim(object):
-	def __init__(self):
+	def __init__(self, render_layer):
 		self.frames = []
+		self.render_layer = render_layer
 
 	def addFrame(self, image, duration):
 		self.frames.append(AnimFrame(image, duration))
@@ -438,10 +478,14 @@ class Anim(object):
 	def getCurrentFrame(self, data):
 		return self.frames[data.current_frame]
 
+	def delete(self):
+		for frame in self.frames:
+			self.render_layer.releaseImage(frame.image)
+
 # trivial, single frame animation
 class AnimSingle(Anim):
 	def __init__(self, rl, frames):
-		super(AnimSingle, self).__init__()
+		super(AnimSingle, self).__init__(rl)
 		self.addFrames(rl, frames)
 
 	def getCurrentFrame(self, data):
@@ -454,7 +498,7 @@ class AnimSingle(Anim):
 # simple looping animation
 class AnimLoop(Anim):
 	def __init__(self, rl, frames):
-		super(AnimLoop, self).__init__()
+		super(AnimLoop, self).__init__(rl)
 		self.addFrames(rl, frames)
 
 	def advanceAnim(self, anim_instance, time):
@@ -468,7 +512,7 @@ class AnimLoop(Anim):
 # simple non-looping animation
 class AnimNoLoop(Anim):
 	def __init__(self, rl, frames):
-		super(AnimNoLoop, self).__init__()
+		super(AnimNoLoop, self).__init__(rl)
 		self.addFrames(rl, frames)
 
 	def advanceAnim(self, anim_instance, time):
@@ -482,7 +526,7 @@ class AnimNoLoop(Anim):
 # simple choose a frame at random animation
 class AnimRandom(Anim):
 	def __init__(self, rl, frames):
-		super(AnimRandom, self).__init__()
+		super(AnimRandom, self).__init__(rl)
 		self.addFrames(rl, frames)
 
 	def advanceAnim(self, anim_instance, time):
@@ -500,6 +544,8 @@ class AnimFrame:
 		self.origin_z = origin_z
 		self.time = time
 
+
+####################################################################################
 def runTests():
 
 
