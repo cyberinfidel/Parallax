@@ -114,9 +114,9 @@ class PacBun(Game):
 
 
 
-		###################
-		# make components #
-		###################
+		############################
+		# make ingame components   #
+		############################
 
 
 		# info bar
@@ -127,6 +127,9 @@ class PacBun(Game):
 		self.fox_t = self.entity_manager.makeEntityTemplate(graphics=fox.makeGraphics(self.graphics_manager, self.renlayer), controller = fox.makeController(self.controller_manager), collider=fox.makeCollider(self.collision_manager))
 
 		self.tile_t = self.entity_manager.makeEntityTemplate(graphics=tile.makeGraphics(self.graphics_manager, self.renlayer), controller = tile.makeController(self.controller_manager) )
+
+		self.renlayer.makeAtlas()
+		self.renlayer.dumpAtlasToFiles("TA_images.png","TA_data")
 
 	# define level maps
 		self.levels = [
@@ -261,6 +264,7 @@ class PacBun(Game):
 	##################################################
 
 	def updateStart(self, dt):
+
 		gc.collect()
 		if len(gc.garbage)>0: print(gc.garbage)
 		# set up new game and clean up anything from last game

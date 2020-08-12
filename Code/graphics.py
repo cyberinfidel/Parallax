@@ -38,7 +38,7 @@ class Image(object):
 	def fromFile(cls, ren, file, width=None, height=None):
 
 		# get image into surface (don't need to keep this though)
-		surface = sdl_image.IMG_Load(file.encode("ascii"))
+		surface = sdl_image.IMG_Load(file.encode("utf-8"))
 
 		# make a texture from the apple surface (for HW rendering)
 		texture = sdl2.SDL_CreateTextureFromSurface(ren.renderer, surface)
@@ -60,7 +60,7 @@ class Image(object):
 	def draw(self, x, y, debug=graphics_debug):
 
 		sdl2.SDL_RenderCopy(self.renderer, self.texture, self.src,
-												sdl2.SDL_Rect(int(round(x)), int(round(y)), self.width, self.height))
+												sdl2.SDL_Rect(int(x), int(y), self.width, self.height))
 
 		if debug:
 			# draw the outline of the image for debugging purposes
@@ -289,6 +289,48 @@ class RenderLayer(object):
 			font = self.default_font
 		self.addImageFromMessage(text.Message.withRender(font, message_text))
 
+	def makeAtlas(self):
+		# takes all textures already submitted and makes into an atlas
+		# uses dumbest algorithm possible atm
+
+		# get texture ready for drawing to
+		# todo: work out a clever way to get the right size for the TA texture
+		self.TA = sdl2.SDL_CreateTexture(self.ren.renderer, sdl2.SDL_PIXELFORMAT_RGBA8888, sdl2.SDL_TEXTUREACCESS_TARGET, 2048, 2048)
+		# point drawing at the atlas
+		sdl2.SDL_SetRenderTarget(self.ren.renderer, self.TA)
+
+		for index, image in enumerate(self.images):
+			image.draw(index*8, 20)
+			# draw into atlas
+
+			# and remember where the image went
+
+		# point drawing at screen again
+		sdl2.SDL_SetRenderTarget(self.ren.renderer, None)
+
+	def dumpAtlasToFiles(self, image_file, data_file):
+		format = sdl2.SDL_PIXELFORMAT_ARGB8888
+
+		surface = sdl2.SDL_CreateRGBSurfaceWithFormat(0, 2048, 2048, 32, format)
+		print(sdl2.SDL_MUSTLOCK(surface.contents))
+		sdl2.SDL_LockSurface(surface)
+		sdl2.SDL_SetRenderTarget(self.ren.renderer, self.TA)
+		result = sdl2.SDL_RenderReadPixels(self.ren.renderer,
+																			 sdl2.SDL_Rect(0,0,2048,2048),
+																			 format,
+																			 surface.contents.pixels,
+																			 surface.contents.pitch)
+
+		print(result)
+		sdl2.SDL_UnlockSurface(surface)
+
+
+		sdl_image.IMG_SavePNG(surface.contents, image_file.encode("utf-8"))
+		sdl2.SDL_SetRenderTarget(self.ren.renderer, None)
+
+	def loadAtlasFromFiles(self, image_file, data_file):
+		pass
+
 ####################################################
 # end of RenderLayer
 ####################################################
@@ -418,12 +460,8 @@ class MultiAnim(Component):
 		data.current_frame = frame
 
 	def draw(self, data, common_data):
-		try:
-			frame = self.anims[data.current_anim].getCurrentFrame(data)
-			return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, common_data.pos.y + frame.origin_y, common_data.pos.z + frame.origin_z)
-		except Exception as e:
-			log(e)
-			exit(1)
+		frame = self.anims[data.current_anim].getCurrentFrame(data)
+		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, common_data.pos.y + frame.origin_y, common_data.pos.z + frame.origin_z)
 
 	def hasShadow(self):
 		return eStates.shadow in self.anims
