@@ -102,9 +102,7 @@ class Controller(controller.Controller):
 
 			# load high score from json file
 			with open('scores.json') as json_file:
-				scores_data = json.load(json_file)
-				for i in range(0,10):
-					self.scores_data.append(scores_data["scores"][i])
+				self.scores_data = json.load(json_file)
 
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
@@ -122,8 +120,15 @@ class Controller(controller.Controller):
 		for i in range(0,10):
 			if new_score > score_data[i][1]:
 				score_data[i:i] = [[initials,new_score]]
-				return score_data[:10]
-		return score_data[:10]
+				break
+
+		score_data = score_data[:10]	# chop of last place score
+
+		# write scores back to disk
+		with open('scores.json', 'w') as outfile:
+			json.dump(score_data, outfile)
+
+		return score_data
 
 	# def isHighScore(self, entity, new_score):
 	# 	data = entity.controller_data

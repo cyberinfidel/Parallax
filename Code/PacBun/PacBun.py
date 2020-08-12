@@ -246,6 +246,7 @@ class PacBun(Game):
 	##################################################
 
 	def updateTitle(self, dt):
+
 		self.title.setState(title.eTitleStates.title)
 		gc.enable()
 		self.current_level = 0
@@ -303,8 +304,8 @@ class PacBun(Game):
 
 			# do high scoreness
 			if self.high_score.controller.isHighScore(self.high_score, self.current_score):
-
 				self.new_high_score = self.requestNewEntity(self.new_high_score_t, parent=self, name="New High Score")
+				self.new_high_score.graphics.updateInitials(self.new_high_score)
 				game_pad = self.input.getGamePad(0)
 				if game_pad:
 					self.new_high_score.setGamePad(game_pad)
@@ -457,6 +458,7 @@ class PacBun(Game):
 	def addNewHighScore(self, initials):
 		self.high_score.controller.updateScores(score_data=self.high_score.controller_data.scores_data, initials=initials, new_score=self.current_score)
 		self.high_score.graphics.updateScores(self.high_score)
+		self.new_high_score.common_data.state = entity.eStates.dead
 		self.setGameMode(eGameModes.title)
 
 

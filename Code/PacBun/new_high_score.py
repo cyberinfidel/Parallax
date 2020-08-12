@@ -91,7 +91,7 @@ class Controller(controller.Controller):
 			else:
 				pass
 
-			self.initials = ['A','A','A']
+			self.initials = ['B','U','N']
 			self.current_initial = 0
 			self.blink_time = 0.25
 			self.blink_cool = self.blink_time
@@ -133,8 +133,8 @@ class Controller(controller.Controller):
 			data.blink_cool = data.blink_time
 			data.blink = not data.blink
 
-		data.initials[data.current_initial] = chr(initial_value)
 		if redraw:
+			data.initials[data.current_initial] = chr(initial_value)
 			common_data.entity.graphics.updateInitials(common_data.entity)
 
 

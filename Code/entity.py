@@ -73,6 +73,8 @@ class Component(object):
 	def makeData(self, common_data):
 		return self.Data(common_data)
 
+	def delete(self, data):
+		log(f"Missing delete function for Component:{type(self)}")
 
 class EntityManager(object):
 	def __init__(self, game):
@@ -87,6 +89,9 @@ class EntityManager(object):
 	def makeEntity(self, entity_t_index, name = False):
 		self.entities.append( self.templates[entity_t_index].instanceEntity(name))
 		return self.entities[-1]
+
+	def deleteDead(self):
+		self.entities[:] = [x for x in self.entities if x.getState() != eStates.dead]
 
 class Entity(object):
 	class Data():
@@ -119,6 +124,19 @@ class Entity(object):
 		self.collider = collider
 		if self.collider:
 			self.collider_data = collider.makeData(self.common_data)	# store data for this instance
+
+	def delete(self):
+		if self.graphics:
+			self.graphics.delete(self.graphics_data)
+
+		if self.sounds:
+			self.sounds.delete(self.sounds_data)
+
+		if self.controller:
+			self.controller.delete(self.controller_data)
+
+		if self.collider:
+			self.collider.delete(self.collider)
 
 	def getName(self):
 		return self.common_data.name
@@ -182,6 +200,8 @@ class EntityTemplate(object):
 	def instanceEntity(self, name):
 		return Entity(name, game = self.game, graphics=self.graphics, sounds=self.sounds, controller = self.controller, collider = self.collider)
 
+	def delete(self):
+		print("delete template")
 
 class ComponentManager(object):
 	def __init__(self, game):

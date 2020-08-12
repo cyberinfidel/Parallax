@@ -30,6 +30,12 @@ class SoundMixer(object):
 		if sdlmixer.Mix_AllocateChannels(64) !=64:
 			raise RuntimeError("Cannot allocate audio channels: {}".format(sdlmixer.Mix_GetError()))
 
+	def _getNextEmptySlot(self):
+		for index, sound in enumerate(self.sounds):
+			if not sound:			# empty slot
+				return index
+		self.sounds.append(None)
+		return len(self.sounds)-1
 
 
 	def loadSound(self, file):
@@ -39,11 +45,13 @@ class SoundMixer(object):
 			if sound.path == filepath:
 				return index
 		# haven't seen this file before so add it and return new index
+
+		index = self._getNextEmptySlot()
 		try:
 			sample = sdlmixer.Mix_LoadWAV(sdl2.ext.compat.byteify(filepath, "utf-8"))
 			if sample is None:
 				raise RuntimeError("Cannot open audio file: {}".format(sdlmixer.Mix_GetError()))
-			self.sounds.append(Sample(filepath, sample))
+			self.sounds[index] =  Sample(filepath, sample)
 		except Exception as e:
 			log(f"Problem loading sound: {str(e)} file: {filepath}")
 
@@ -55,6 +63,15 @@ class SoundMixer(object):
 	def play(self, sample, loops):
 		if not self.mute:
 			return self.sounds[sample].play(loops)
+
+	# releases a sound with ref counting
+	def releaseSound(self, index):
+		self.sounds[index].release()
+
+	# kills whole render layer and all images, dead
+	def delete(self):
+		for image in self.sounds:
+			image.delete()
 
 
 class SoundTypes(enum.IntEnum):
@@ -123,6 +140,21 @@ class Sample(object):
 		super(Sample, self).__init__()
 		self.path = path
 		self.sample = sample
+		self.ref_count = 1
+
+	# try to delete (with ref counting)
+	# if actually deleted returns True
+	def release(self):
+		self.ref_count -=1
+		if self.ref_count<=0:
+			self.delete()
+			return True
+		return False
+
+	# actually delete, no ref counting
+	def delete(self):
+		sdl2.SDL_DestroyTexture(self.texture)
+		self.ref_count=0
 
 	def play(self, loops):
 		channel = sdlmixer.Mix_PlayChannel(channel=-1, chunk=self.sample, loops=loops)
