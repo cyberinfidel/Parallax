@@ -13,7 +13,7 @@ import sound
 from vector import rand_num
 
 # Knightfight
-from strike import Strike, HitController, HitCollider
+import strike
 
 
 class eStrikes(enum.IntEnum):

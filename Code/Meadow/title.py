@@ -17,8 +17,8 @@ class eTitleStates(enum.IntEnum):
 	numTitleStates = 8
 
 
-def titleGraphics(renlayer):
-	return{
+def makeGraphics(manager, renlayer):
+	return manager.makeTemplate({
 			"Name": "Title Animations",
 			"Template": MultiAnim,
 			"RenderLayer": renlayer,
@@ -30,7 +30,7 @@ def titleGraphics(renlayer):
 						"States": [eTitleStates.title],
 						"Frames":
 							[
-								["Graphics/Title/Title.png", 4, 4, 0.9],
+								["Graphics/Title/Title.png", 4, 4, 0, 0.9],
 							],
 					},
 					{
@@ -39,7 +39,7 @@ def titleGraphics(renlayer):
 						"States": [eTitleStates.play],
 						"Frames":
 							[
-								["Graphics/Title/TitleBar.png", 4, 4, 0.9],
+								["Graphics/Title/TitleBar.png", 4, 4, 0, 0.9],
 							],
 					},
 					{
@@ -48,7 +48,7 @@ def titleGraphics(renlayer):
 						"States": [eTitleStates.paused],
 						"Frames":
 							[
-								["Graphics/Title/Paused.png", 4, 4, 0.2],
+								["Graphics/Title/Paused.png", 4, 4, 0, 0.2],
 							],
 					},
 					{
@@ -57,7 +57,7 @@ def titleGraphics(renlayer):
 						"States": [eTitleStates.game_over],
 						"Frames":
 							[
-								["Graphics/Title/GameOver.png", 4, 4, 0.2],
+								["Graphics/Title/GameOver.png", 4, 4, 0, 0.2],
 							],
 					},
 					{
@@ -66,7 +66,7 @@ def titleGraphics(renlayer):
 						"States": [eTitleStates.win],
 						"Frames":
 							[
-								["Graphics/Title/Win 0.png", 4, 4, 2],
+								["Graphics/Title/Win 0.png", 4, 4, 0, 2],
 							],
 					},
 					{
@@ -75,13 +75,15 @@ def titleGraphics(renlayer):
 						"States": [eTitleStates.quit],
 						"Frames":
 							[
-								["Graphics/Title/Quit.png", 4, 4, 2],
+								["Graphics/Title/Quit.png", 4, 4, 0, 2],
 							],
 					},
 				]
-	}
+	})
 
-class TitleController(Controller):
+def makeController(manager):
+	return manager.makeTemplate({"Template": Controller})
+class Controller(Controller):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -93,7 +95,7 @@ class TitleController(Controller):
 			self.delay = 2
 
 	def __init__(self, game, data):
-		super(TitleController, self).__init__(game)
+		super(Controller, self).__init__(game)
 
 	def update(self, data, common_data, dt):
 #		if self.coolDown(data, dt):

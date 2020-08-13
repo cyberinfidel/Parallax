@@ -14,7 +14,7 @@ from vector import Vec3, rand_num
 import controller
 import graphics
 import sound
-from director import DirectorController, Delay, SpawnEntity, EndGame
+from director import Controller, Delay, SpawnEntity, EndGame
 
 
 # disable to remove logging
@@ -27,7 +27,7 @@ def log(msg, new_line=True):
 #import Meadow files
 import Meadow.bunny as bunny
 import Meadow.background as back
-from Meadow.title import titleGraphics, TitleController, eTitleStates
+import title
 from Meadow.rain import rainGraphics, RainController
 import Meadow.present as present
 import Meadow.butterfly as butterfly
@@ -37,7 +37,7 @@ class Meadow(Game):
 		# do bare minimum to set up
 		# most set up is in first update
 		# this way I can restart the game
-		super(Meadow, self).__init__("Meadow", res_x= 640, res_y= 400, zoom = 3, fullscreen=True)
+		super(Meadow, self).__init__("Meadow", res_x= 640, res_y= 400, zoom = 3, fullscreen=False)
 		sdl2.mouse.SDL_ShowCursor(False)
 
 		self.collision_manager = CollisionManager(game=self)  # TODO: should this be a ComponentManager() like the others?
@@ -58,9 +58,10 @@ class Meadow(Game):
 		# set up background and title #
 		###############################
 
-		title_graphics = self.graphics_manager.makeTemplate(titleGraphics(self.title_renlayer))
-		title_controller = self.controller_manager.makeTemplate({"Template": TitleController})
-		self.title_t = self.entity_manager.makeEntityTemplate(graphics=title_graphics, controller=title_controller)
+		self.title_t = self.entity_manager.makeEntityTemplate(
+			graphics=title.makeGraphics(self.graphics_manager, self.title_renlayer),
+			controller=title.makeController(self.controller_manager)
+		)
 		self.title = self.requestNewEntity(entity_template=self.title_t, pos=Vec3(80, 400, -50), parent=self, name="Title")
 		self.title.setGamePad(self.input.getGamePad(0))
 
@@ -114,6 +115,10 @@ class Meadow(Game):
 		# director
 		director_controller = self.controller_manager.makeTemplate({"Template":DirectorController})
 		self.director_t = self.entity_manager.makeEntityTemplate(controller=director_controller)
+
+		self.renlayer.makeAtlas()
+		self.renlayer.dumpAtlasToFiles("TA.png", "TA.json")
+
 	# end init()
 
 
