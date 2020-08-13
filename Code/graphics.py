@@ -37,6 +37,8 @@ class Image(object):
 		self.texture = texture
 		self.ref_count = 1
 
+	# factories ###########################################################
+
 	@classmethod
 	def fromFile(cls, ren, file, width=None, height=None):
 
@@ -58,7 +60,12 @@ class Image(object):
 		cls.file = None
 		return cls(ren.renderer, texture, width, height)
 
-	############################################################
+	# get/sets ###########################################################
+	# only really for sorting
+	def getHeight(self):
+		return self.height
+
+	# draw ###########################################################
 
 	def draw(self, x, y, debug=graphics_debug):
 
@@ -72,7 +79,7 @@ class Image(object):
 
 			sdl2.SDL_RenderDrawRect(self.renderer,sdl2.SDL_Rect(int(round(x)), int(round(y)), self.width, self.height))
 
-	############################################################
+	# destructors ###########################################################
 
 	# try to delete (with ref counting)
 	# if actually deleted returns True
@@ -313,7 +320,11 @@ class RenderLayer(object):
 	def _renderAtlas(self, atlas_dim, dry_run, gap=0):
 		if not dry_run:
 			# make the atlas texture
-			self.TA = sdl2.SDL_CreateTexture(self.ren.renderer, sdl2.SDL_PIXELFORMAT_RGBA8888, sdl2.SDL_TEXTUREACCESS_TARGET, atlas_dim, atlas_dim)
+			self.TA = sdl2.SDL_CreateTexture(self.ren.renderer,
+																			 sdl2.SDL_PIXELFORMAT_RGBA8888,
+																			 sdl2.SDL_TEXTUREACCESS_TARGET,
+																			 atlas_dim,
+																			 atlas_dim)
 			# point drawing at the atlas and clear it
 			sdl2.SDL_SetRenderTarget(self.ren.renderer, self.TA)
 			sdl2.SDL_SetRenderDrawColor(self.ren.renderer, 0, 0, 0, 0)
@@ -324,25 +335,21 @@ class RenderLayer(object):
 		accum_x=0 # where we've got to across TA
 		max_y = 0 # how tall the row is so we know where to start the next one
 		accum_y=0	# how far down the current row is
-		for index, image in enumerate(self.images):
+		for image in sorted(self.images, key = Image.getHeight, reverse=True):
 			if accum_x+image.width+gap>atlas_dim:	# will this image go off right of atlas?
 				accum_x=0
 				# push down
 				accum_y+=max(max_y,image.height)+gap # in case this is the tallest image
 				max_y=0
 
-			if not dry_run: # draw into atlas
-				# and update the image to point to where it went in the atlas
+			if not dry_run:
+				# draw into atlas and kill old texture
 				image.draw(accum_x, accum_y)
-				# replace Image object with one that points to TA
-				# could just update in place, but this seems as easy
-				self.images[index]= Image(self.ren.renderer,
-																		self.TA,
-																		width=image.width,
-																		height=image.height,
-																		file=image.file,
-																		src=sdl2.SDL_Rect(accum_x, accum_y, image.width, image.height))
-				image.delete()	# kill off old image
+				sdl2.SDL_DestroyTexture(image.texture)
+				# and update the image to point to where it went in the atlas
+				# update in place to avoid re-doing indexes
+				image.texture =  self.TA
+				image.src = sdl2.SDL_Rect(accum_x, accum_y, image.width, image.height)
 
 			accum_x+=image.width+gap
 			max_y=max(max_y,image.height)
