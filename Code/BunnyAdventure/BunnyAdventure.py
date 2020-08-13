@@ -16,6 +16,7 @@ import controller
 import graphics
 import sound
 import director
+import text
 
 
 # disable to remove logging
@@ -50,7 +51,7 @@ class BunnyAdventure(game.Game):
 		# set up graphics layers #
 		##########################
 		self.renlayer = graphics.RenderLayer(self.ren)
-		self.title_renlayer = graphics.RenderLayer(self.ren)
+		self.overlay_renlayer = graphics.RenderLayer(self.ren)
 		self.scroll = True
 		self.quit_cooldown = 0.5
 
@@ -58,11 +59,12 @@ class BunnyAdventure(game.Game):
 		# set up sound           #
 		##########################
 		self.sound_mixer = sound.SoundMixer(self)
+
 		###############################
 		# set up background and title #
 		###############################
 
-		title_graphics = title.makeGraphics(self.graphics_manager, self.title_renlayer)
+		title_graphics = title.makeGraphics(self.graphics_manager, self.overlay_renlayer)
 		title_controller = title.makeController(self.controller_manager)
 		self.title_t = self.entity_manager.makeEntityTemplate(graphics=title_graphics, controller=title_controller)
 		self.title = self.requestNewEntity(entity_template=self.title_t, pos=Vec3(80, -50, 400), parent=self, name="Title")
@@ -71,7 +73,7 @@ class BunnyAdventure(game.Game):
 		self.raining = False
 		self.setGameMode(game.eGameModes.title)
 
-		self.back_t = self.entity_manager.makeEntityTemplate(graphics=back.makeGraphics(self.graphics_manager,self.renlayer))
+		self.back_t = self.entity_manager.makeEntityTemplate(graphics=back.makeGraphics(self.graphics_manager, self.renlayer))
 		self.platform_t = self.entity_manager.makeEntityTemplate(graphics=plat.makeGraphics(self.graphics_manager,self.renlayer),
 																												 controller=plat.makeController(self.controller_manager),
 																												 collider=plat.makeCollider(self.collision_manager)
@@ -123,7 +125,13 @@ class BunnyAdventure(game.Game):
 
 		# director
 		self.director_t = self.entity_manager.makeEntityTemplate(controller=director.makeController(self.controller_manager))
+
+		# put all separate images into a crude texture atlas for efficient rendering
+		self.renlayer.makeAtlas()
+		# self.renlayer.dumpAtlasToFiles("TA.png", "TA.json")
+
 	# end init()
+
 
 
 	###########
@@ -308,7 +316,7 @@ class BunnyAdventure(game.Game):
 		self.renlayer.renderSorted()
 
 		sdl2.SDL_RenderSetLogicalSize(self.ren.sdlrenderer, int(self.res_x), int(self.res_y))
-		self.title_renlayer.render()
+		self.overlay_renlayer.render()
 
 
 # end draw()
