@@ -309,6 +309,8 @@ class RenderLayer(object):
 		atlas_dim=start_size
 		while not self._renderAtlas(atlas_dim, dry_run=True):
 			atlas_dim=int( atlas_dim + 256)
+			if atlas_dim>4096:
+				log("WARNING: a texture atlas dimension bigger than 4K may not work on some machines")
 
 		# actually render atlas - do again with rendering and updating the image records
 		self._renderAtlas(atlas_dim, dry_run=False)
