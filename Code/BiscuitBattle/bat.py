@@ -1,6 +1,6 @@
 from entity import eStates, eDirections
 from vector import Vec3, rand_num
-from controller import Controller, basic_gravity, basic_physics, restrictToArena, friction
+from controller import Controller, basic_gravity, basic_physics, friction
 from collision import Collider, Message
 from graphics import AnimLoop, MultiAnim, AnimSingle
 

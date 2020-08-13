@@ -9,7 +9,7 @@ from game import Game, eGameModes
 from entity import eStates
 from collision import CollisionManager
 from vector import Vec3, Line, rand_num
-from director import DirectorController, Delay, SpawnEntity, EndGame
+from director import Delay, SpawnEntity, EndGame
 
 # disable to remove logging
 def log(msg, new_line=True):
