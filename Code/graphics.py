@@ -58,7 +58,7 @@ class Image(object):
 		cls.file = None
 		return cls(ren.renderer, texture, width, height)
 
-############################################################
+	############################################################
 
 	def draw(self, x, y, debug=graphics_debug):
 
@@ -72,7 +72,7 @@ class Image(object):
 
 			sdl2.SDL_RenderDrawRect(self.renderer,sdl2.SDL_Rect(int(round(x)), int(round(y)), self.width, self.height))
 
-############################################################
+	############################################################
 
 	# try to delete (with ref counting)
 	# if actually deleted returns True
@@ -92,18 +92,6 @@ class Image(object):
 
 ############################################################
 # end Image
-############################################################
-
-
-
-class TextureAtlas(object):
-	def __init__(self):
-		pass
-
-
-
-############################################################
-# end TextureAtlas
 ############################################################
 
 class Shape(object):
@@ -306,33 +294,36 @@ class RenderLayer(object):
 			font = self.default_font
 		self.addImageFromMessage(text.Message.withRender(font, message_text))
 
-		# takes all textures already submitted and makes into an atlas
-		# uses dumbest algorithm possible atm
-		# speed up success by giving the correct start size for the atlas
+	# takes all textures already submitted and makes into an atlas
+	# uses dumbest algorithm possible atm
+	# speed up success by giving the correct start size for the atlas
 	def makeAtlas(self, start_size=256):
-		# tries this size and increases dimensions until fits
+		# tries this size and increases dimensions until the images all fit
 		atlas_dim=start_size
 		while not self._renderAtlas(atlas_dim, dry_run=True):
 			atlas_dim=int( atlas_dim + 256)
 
-		# actually render atlas
+		# actually render atlas - do again with rendering and updating the image records
 		self._renderAtlas(atlas_dim, dry_run=False)
 		self.atlas_dim = atlas_dim
-		log(f"Atlas created at size: {self.atlas_dim}")
+		log(f"Graphics|RenderLayer:Atlas created at size: {self.atlas_dim}")
 
+	# adds all existing images to a texture atlas. Updates the image objects to point to the
+	# atlas texture and their src variables to where in the texture they are
 	def _renderAtlas(self, atlas_dim, dry_run, gap=0):
 		if not dry_run:
+			# make the atlas texture
 			self.TA = sdl2.SDL_CreateTexture(self.ren.renderer, sdl2.SDL_PIXELFORMAT_RGBA8888, sdl2.SDL_TEXTUREACCESS_TARGET, atlas_dim, atlas_dim)
-			# point drawing at the atlas
+			# point drawing at the atlas and clear it
 			sdl2.SDL_SetRenderTarget(self.ren.renderer, self.TA)
 			sdl2.SDL_SetRenderDrawColor(self.ren.renderer, 0, 0, 0, 0)
 			sdl2.SDL_RenderClear(self.ren.renderer)
-			sdl2.SDL_SetRenderDrawColor(self.ren.renderer,0,0,0,0)
 			sdl2.SDL_SetRenderDrawColor(self.ren.renderer,255,255,255,255)
 
-		accum_x=0
-		max_y = 0
-		accum_y=0
+		# draws textures in rows, left to right, then top to bottom
+		accum_x=0 # where we've got to across TA
+		max_y = 0 # how tall the row is so we know where to start the next one
+		accum_y=0	# how far down the current row is
 		for index, image in enumerate(self.images):
 			if accum_x+image.width+gap>atlas_dim:	# will this image go off right of atlas?
 				accum_x=0
@@ -343,15 +334,15 @@ class RenderLayer(object):
 			if not dry_run: # draw into atlas
 				# and update the image to point to where it went in the atlas
 				image.draw(accum_x, accum_y)
-				old_texture = image.texture
-
+				# replace Image object with one that points to TA
+				# could just update in place, but this seems as easy
 				self.images[index]= Image(self.ren.renderer,
 																		self.TA,
 																		width=image.width,
 																		height=image.height,
-																		file=None,
+																		file=image.file,
 																		src=sdl2.SDL_Rect(accum_x, accum_y, image.width, image.height))
-				sdl2.SDL_DestroyTexture(old_texture)
+				image.delete()	# kill off old image
 
 			accum_x+=image.width+gap
 			max_y=max(max_y,image.height)
