@@ -203,7 +203,7 @@ class Controller(controller.Controller):
 			y_in_tile = common_data.pos.y%16
 
 			# decide if bunny is near middle of tile and if we should do womething special with the tile it's in
-			if (x_in_tile>6 and x_in_tile<10) and (y_in_tile>6 and y_in_tile<10):
+			if (6 < x_in_tile < 10) and (6 < y_in_tile <10):
 				if current_tile.common_data.state == tile.eTileStates.clear:
 					data.level.poo(current_tile, data)	# returns true if count of poos reaches number of empty spaces
 					common_data.game.reportScore(1)
