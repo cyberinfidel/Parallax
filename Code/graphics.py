@@ -25,12 +25,15 @@ graphics_debug = False
 # Individual images for use as frames for animations or as part of the background etc.
 # Based on SDL images for the moment with no atlassing etc.
 class Image(object):
-	def __init__(self, ren, texture, width, height, file=None):
+	def __init__(self, ren, texture, width, height, file=None, src=None):
 		self.renderer = ren
 		self.file = file
 		self.width = width
 		self.height = height
-		self.src = sdl2.SDL_Rect(0, 0, self.width, self.height)
+		if src:
+			self.src = src
+		else:
+			self.src = sdl2.SDL_Rect(0, 0, self.width, self.height)
 		self.texture = texture
 		self.ref_count = 1
 
@@ -89,6 +92,18 @@ class Image(object):
 
 ############################################################
 # end Image
+############################################################
+
+
+
+class TextureAtlas(object):
+	def __init__(self):
+		pass
+
+
+
+############################################################
+# end TextureAtlas
 ############################################################
 
 class Shape(object):
@@ -156,6 +171,8 @@ class RenderLayer(object):
 
 		self.fontmanager = text.FontManager(self.ren)
 		self.default_font=0
+
+
 
 	def _getNextEmptySlot(self):
 		for index, image in enumerate(self.images):
@@ -289,44 +306,82 @@ class RenderLayer(object):
 			font = self.default_font
 		self.addImageFromMessage(text.Message.withRender(font, message_text))
 
-	def makeAtlas(self):
 		# takes all textures already submitted and makes into an atlas
 		# uses dumbest algorithm possible atm
+		# speed up success by giving the correct start size for the atlas
+	def makeAtlas(self, start_size=256):
+		# tries this size and increases dimensions until fits
+		atlas_dim=start_size
+		while not self._renderAtlas(atlas_dim, dry_run=True):
+			atlas_dim=int( atlas_dim + 256)
 
-		# get texture ready for drawing to
-		# todo: work out a clever way to get the right size for the TA texture
-		self.TA = sdl2.SDL_CreateTexture(self.ren.renderer, sdl2.SDL_PIXELFORMAT_RGBA8888, sdl2.SDL_TEXTUREACCESS_TARGET, 2048, 2048)
-		# point drawing at the atlas
-		sdl2.SDL_SetRenderTarget(self.ren.renderer, self.TA)
+		# actually render atlas
+		self._renderAtlas(atlas_dim, dry_run=False)
+		self.atlas_dim = atlas_dim
+		log(f"Atlas created at size: {self.atlas_dim}")
 
+	def _renderAtlas(self, atlas_dim, dry_run, gap=0):
+		if not dry_run:
+			self.TA = sdl2.SDL_CreateTexture(self.ren.renderer, sdl2.SDL_PIXELFORMAT_RGBA8888, sdl2.SDL_TEXTUREACCESS_TARGET, atlas_dim, atlas_dim)
+			# point drawing at the atlas
+			sdl2.SDL_SetRenderTarget(self.ren.renderer, self.TA)
+			sdl2.SDL_SetRenderDrawColor(self.ren.renderer, 0, 0, 0, 0)
+			sdl2.SDL_RenderClear(self.ren.renderer)
+			sdl2.SDL_SetRenderDrawColor(self.ren.renderer,0,0,0,0)
+			sdl2.SDL_SetRenderDrawColor(self.ren.renderer,255,255,255,255)
+
+		accum_x=0
+		max_y = 0
+		accum_y=0
 		for index, image in enumerate(self.images):
-			image.draw(index*8, 20)
-			# draw into atlas
+			if accum_x+image.width+gap>atlas_dim:	# will this image go off right of atlas?
+				accum_x=0
+				# push down
+				accum_y+=max(max_y,image.height)+gap # in case this is the tallest image
+				max_y=0
 
-			# and remember where the image went
+			if not dry_run: # draw into atlas
+				# and update the image to point to where it went in the atlas
+				image.draw(accum_x, accum_y)
+				old_texture = image.texture
 
-		# point drawing at screen again
-		sdl2.SDL_SetRenderTarget(self.ren.renderer, None)
+				self.images[index]= Image(self.ren.renderer,
+																		self.TA,
+																		width=image.width,
+																		height=image.height,
+																		file=None,
+																		src=sdl2.SDL_Rect(accum_x, accum_y, image.width, image.height))
+				sdl2.SDL_DestroyTexture(old_texture)
+
+			accum_x+=image.width+gap
+			max_y=max(max_y,image.height)
+			if accum_y+max_y>atlas_dim:
+				log(f"Atlas overflow at size {atlas_dim}")
+				return False
+
+		if not dry_run:
+			# point drawing at screen again
+			sdl2.SDL_SetRenderTarget(self.ren.renderer, None)
+			sdl2.SDL_SetTextureBlendMode(self.TA, sdl2.SDL_BLENDMODE_BLEND)
+		return True
 
 	def dumpAtlasToFiles(self, image_file, data_file):
-		format = sdl2.SDL_PIXELFORMAT_ARGB8888
+		format = sdl2.SDL_PIXELFORMAT_RGBA8888
 
-		surface = sdl2.SDL_CreateRGBSurfaceWithFormat(0, 2048, 2048, 32, format)
-		print(sdl2.SDL_MUSTLOCK(surface.contents))
+		surface = sdl2.SDL_CreateRGBSurfaceWithFormat(0, self.atlas_dim, self.atlas_dim, 32, format)
 		sdl2.SDL_LockSurface(surface)
 		sdl2.SDL_SetRenderTarget(self.ren.renderer, self.TA)
-		result = sdl2.SDL_RenderReadPixels(self.ren.renderer,
-																			 sdl2.SDL_Rect(0,0,2048,2048),
+		sdl2.SDL_RenderReadPixels(self.ren.renderer,
+																			 sdl2.SDL_Rect(0,0,self.atlas_dim,self.atlas_dim),
 																			 format,
 																			 surface.contents.pixels,
 																			 surface.contents.pitch)
-
-		print(result)
 		sdl2.SDL_UnlockSurface(surface)
 
 
 		sdl_image.IMG_SavePNG(surface.contents, image_file.encode("utf-8"))
 		sdl2.SDL_SetRenderTarget(self.ren.renderer, None)
+		return True
 
 	def loadAtlasFromFiles(self, image_file, data_file):
 		pass
