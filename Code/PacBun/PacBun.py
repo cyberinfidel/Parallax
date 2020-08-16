@@ -129,7 +129,7 @@ class PacBun(Game):
 		self.tile_t = self.entity_manager.makeEntityTemplate(graphics=tile.makeGraphics(self.graphics_manager, self.renlayer), controller = tile.makeController(self.controller_manager) )
 
 		# put all separate images into a crude texture atlas for efficient rendering
-		self.renlayer.makeAtlas(384)
+		self.renlayer.makeAtlas(320)
 		# self.renlayer.dumpAtlasToFiles("TA.png", "TA.json")
 
 	# define level maps

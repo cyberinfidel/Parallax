@@ -25,11 +25,13 @@ graphics_debug = False
 # Individual images for use as frames for animations or as part of the background etc.
 # Based on SDL images for the moment with no atlassing etc.
 class Image(object):
-	def __init__(self, ren, texture, width, height, file=None, src=None):
+	def __init__(self, ren, texture, width, height, trim_x=0, trim_y=0, file=None, src=None):
 		self.renderer = ren
 		self.file = file
 		self.width = width
 		self.height = height
+		self.trim_x = trim_x
+		self.trim_y = trim_y
 		if src:
 			self.src = src
 		else:
@@ -40,20 +42,77 @@ class Image(object):
 	# factories ###########################################################
 
 	@classmethod
-	def fromFile(cls, ren, file, width=None, height=None):
+	def fromFile(cls, ren, file, width=None, height=None, trim=False):
 
 		# get image into surface (don't need to keep this though)
 		surface = sdl_image.IMG_Load(file.encode("utf-8"))
 
-		# make a texture from the apple surface (for HW rendering)
-		texture = sdl2.SDL_CreateTextureFromSurface(ren.renderer, surface)
+		texture=None
+		trim_x=0
+		trim_y=0
+
+		if trim:
+			# grab the pixel values
+			# scrub through them
+			# set the left to be the least value of x that isn't empty by
+			# setting the initial value to the far right
+			# and updating it every time we hit a non-zero pixel that has
+			# has a further left i.e. lower x value
+			# set the top to be the least value of y that isn't empty
+			# set the right to be the highest value of y that isn't empty
+			# by setting the initial value to be the left (0)
+			# set the bottom to be the highest value of y that isn't empty
+			h = surface.contents.h
+			w = surface.contents.w
+			blank=True
+			top=h-1
+			bottom=0
+			right = 0
+			left = w-1
+			pixels = sdl2.ext.PixelView(surface.contents)
+			# top
+			for y in range(0,h):
+				for x in range(0,w):
+					if pixels[y][x]!=0:
+						if top>y: top=y
+						if bottom<y: bottom=y
+						if left>x: left=x
+						if right<x: right = x
+
+			# print(f"file: {file}")
+			# print(f"top {top}, bottom {bottom}")
+			# print(f"left {left}, right {right}")
+
+			new_w = right-left+1
+			new_h = bottom-top+1
+			if not( new_w>=w and new_h>=h):
+				width = min(new_w,w)
+				height = min(new_h,h)
+				trim_x = max(0,left)
+				trim_y = max(0,top)
+				# there's space around the sprite so trim it
+				trim_surface = sdl2.SDL_CreateRGBSurfaceFrom(surface.contents.pixels+left*4+top*w*4,
+																			new_w,
+																			new_h,
+																			32,
+																			w*4,
+																			0xff0000,0xff00,0xff,0xff000000
+																			)
+				if not trim_surface:
+					print("SDL_CreateRGBSurfaceFrom failed")
+					exit(1)
+				texture = sdl2.SDL_CreateTextureFromSurface(ren.sdlrenderer, trim_surface)
+
+		# make a texture from the sdl surface (for HW rendering)
+		if not texture:
+			texture = sdl2.SDL_CreateTextureFromSurface(ren.sdlrenderer, surface)
 
 		if not (width and height):
 			width = surface.contents.w
 			height = surface.contents.h
 
-		sdl2.SDL_FreeSurface(surface)
-		return cls(ren.renderer, texture, width, height, file)
+		if not trim: sdl2.SDL_FreeSurface(surface)
+		return cls(ren=ren.sdlrenderer, texture=texture, width=width, height=height, file=file, trim_x=trim_x, trim_y=trim_y)
 
 	@classmethod
 	def fromTexture(cls, ren, texture, width, height):
@@ -202,7 +261,7 @@ class RenderLayer(object):
 		self.images[old_image] = Image.fromTexture(self.ren,message.texture, message.width, message.height)
 
 	# add to the store of images available in this render layer
-	def addImageFromFile(self, file):
+	def addImageFromFile(self, file, trim=False):
 		# find if this file has been loaded before and return that if so
 		# also check if there's an index that is empty and can be re-used
 		filepath = os.path.abspath(file)
@@ -210,16 +269,16 @@ class RenderLayer(object):
 			if image:
 				if image.file == filepath:
 					image.ref_count+=1
-					return index
+					return index, image.trim_x, image.trim_y
 
 		# otherwise find next empty slot (or append)
 		index = self._getNextEmptySlot()
 		try:
-			self.images[index] = Image.fromFile(self.ren, filepath)
+			self.images[index] = Image.fromFile(self.ren, filepath, width=None, height=None, trim=trim)
+			return index, self.images[index].trim_x, self.images[index].trim_y
 		except Exception as e:
 			log("Problem loading image for frame: " + str(e) + " file:" + filepath)
 
-		return index
 
 	# empty the list of drawables for this layer so nothing is set to be drawn on a render event
 	def clear(self):
@@ -304,11 +363,12 @@ class RenderLayer(object):
 	# takes all textures already submitted and makes into an atlas
 	# uses dumbest algorithm possible atm
 	# speed up success by giving the correct start size for the atlas
+	# will add 64 on each attempt until success
 	def makeAtlas(self, start_size=256):
 		# tries this size and increases dimensions until the images all fit
 		atlas_dim=start_size
 		while not self._renderAtlas(atlas_dim, dry_run=True):
-			atlas_dim=int( atlas_dim + 256)
+			atlas_dim=int( atlas_dim + 64)
 			if atlas_dim>4096:
 				log("WARNING: a texture atlas dimension bigger than 4K may not work on some machines")
 
@@ -566,7 +626,14 @@ class Anim(object):
 
 	def addFrames(self, render_layer, frames):
 		for frame in frames:
-			self.frames.append(AnimFrame(render_layer.addImageFromFile(frame[0]), frame[1], frame[2], frame[3], frame[4]))
+			# frame:
+			# 0: file path
+			# 1: x origin
+			# 2: y origin
+			# 3: z origin
+			# 4: frame time
+			image, trim_x, trim_y = render_layer.addImageFromFile(frame[0], trim=True)
+			self.frames.append(AnimFrame(image, frame[1]-trim_x, frame[2]-trim_y, frame[3], frame[4]))
 
 	def getCurrentFrame(self, data):
 		return self.frames[data.current_frame]
@@ -672,7 +739,7 @@ def runTests():
 	# makes zoomed graphics blocky (for retro effect)
 	sdl2.SDL_SetHint(sdl2.SDL_HINT_RENDER_SCALE_QUALITY, b"nearest")
 	# makes the graphics look and act like Atari ST screen size, even though rendered much larger
-	sdl2.SDL_RenderSetLogicalSize(ren.renderer, res_x, res_y)
+	sdl2.SDL_RenderSetLogicalSize(ren.sdlrenderer, res_x, res_y)
 
 	# test 1 example
 	# if not (a+b)==Vec3(2,3,4):
@@ -689,6 +756,7 @@ def runTests():
 	if(rl.getOrigin()!=Vec3(1,2,3)):
 		fails.append(2)
 
+	rl.addImageFromFile("GraphicsTest/test.png")
 
 
 	return fails
