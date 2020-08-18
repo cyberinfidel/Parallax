@@ -17,10 +17,35 @@ sdl_image.IMG_Init(sdl_image.IMG_INIT_JPG)
 from entity import eStates, Component
 from vector import Vec3, rand_num
 from log import log
-import text
 
 # globals
 graphics_debug = False
+
+
+# color class where components are between 0 and 1
+# as intended by nature
+class Color(object):
+	def __init__(self, r,g,b,a=1):
+		self.r = r
+		self.g = g
+		self.b = b
+		self.a = a
+
+	def toSDLColor(self):
+		return sdl2.SDL_Color(int(self.r*255),
+													int(self.g * 255),
+													int(self.b * 255),
+													int(self.a * 255))
+
+	def __mul__(self, other):
+		return Color(
+			self.r*other.r,
+			self.g * other.g,
+			self.b * other.b,
+			self.a * other.a
+		)
+
+import text
 
 # Individual images for use as frames for animations or as part of the background etc.
 # Based on SDL images for the moment with no atlassing etc.
@@ -126,7 +151,11 @@ class Image(object):
 
 	# draw ###########################################################
 
-	def draw(self, x, y, debug=graphics_debug):
+	def draw(self, x, y, color=Color(1, 1, 1, 1), debug=graphics_debug):
+
+		sdl_color = color.toSDLColor()
+		sdl2.SDL_SetTextureColorMod(self.texture, sdl_color.r, sdl_color.g, sdl_color.b)
+		sdl2.SDL_SetTextureAlphaMod(self.texture, sdl_color.a)
 
 		sdl2.SDL_RenderCopy(self.renderer, self.texture, self.src,
 												sdl2.SDL_Rect(int(x), int(y), self.width, self.height))
@@ -161,9 +190,9 @@ class Image(object):
 ############################################################
 
 class Shape(object):
-	def __init__(self, ren, origin_x=0, origin_y=0, colour=False):
+	def __init__(self, ren, origin_x=0, origin_y=0, color=False):
 		self.renderer = ren
-		self.colour = colour
+		self.color = color
 		self.origin_x = origin_x
 		self.origin_y = origin_y
 
@@ -192,13 +221,17 @@ class Drawable(object):
 		return self.z
 
 class RenderImage(Drawable):
-	def __init__(self, image, x, y, z):
+	def __init__(self, image, x, y, z, color_cast=Color(1, 1, 1, 1)):
 		super(RenderImage, self).__init__(x,y,z)
 		self.image = image
+		self.color_cast = color_cast
 
 	# draws an image paying attention to the passed origin (should be the render layer origin, not the image's)
 	def draw(self, origin, screen_height):
-		self.image.draw(self.x - origin.x, screen_height - (self.y + self.z - origin.y - origin.z))
+		self.image.draw(x=self.x - origin.x,
+										y=screen_height - (self.y + self.z - origin.y - origin.z),
+										color=self.color_cast
+										)
 
 class RenderShape(Drawable):
 	def __init__(self, shape, x, y, z):
@@ -226,6 +259,8 @@ class RenderLayer(object):
 		self.fontmanager = text.FontManager(self.ren)
 		self.default_font=0
 
+		# Color cast used for fading and other effects
+		self.color_cast = Color(1, 1, 1, 1)
 
 
 	def _getNextEmptySlot(self):
@@ -245,7 +280,11 @@ class RenderLayer(object):
 		self.images[index] = Image.fromTexture(self.ren,message.texture, message.width, message.height)
 		return index
 
-	def addImageFromString(self, font_manager, string, font=0, color=sdl2.SDL_Color(255,255,255,255)):
+	def addImageFromString(self,
+												 font_manager,
+												 string,
+												 font=0,
+												 color=Color(1, 1, 1, 1)):
 		message = text.Message.withRender(font_manager=font_manager, font=font, string=string, color=color)
 		index = self._getNextEmptySlot()
 		self.images[index] = Image.fromTexture(self.ren,message.texture, message.width, message.height)
@@ -255,7 +294,12 @@ class RenderLayer(object):
 		self.images[old_image].delete()
 		self.images[old_image] = Image.fromTexture(self.ren,message.texture, message.width, message.height)
 
-	def replaceImageFromString(self, old_image, font_manager, string, font=0, color=sdl2.SDL_Color(255,255,255,255)):
+	def replaceImageFromString(self,
+														 old_image,
+														 font_manager,
+														 string,
+														 font=0,
+														 color=Color(1, 1, 1, 1)):
 		message = text.Message.withRender(font_manager=font_manager, string=string, font=font, color=color)
 		self.images[old_image].delete()
 		self.images[old_image] = Image.fromTexture(self.ren,message.texture, message.width, message.height)
@@ -285,8 +329,9 @@ class RenderLayer(object):
 		self.drawables = []  # note this replaces list with empty list and doesn't delete any of the contents of list
 
 	# add an image to the list of drawables to be drawn on a render
-	def queueImage(self, image, x, y, z):
-		self.drawables.append(RenderImage(self.images[image], x, y, z))
+	def queueImage(self, image, x, y, z, color=Color(1, 1, 1, 1)):
+		self.drawables.append(RenderImage(self.images[image], x, y, z, self.color_cast*color))
+
 
 	def getScreenHeight(self):
 		# get screen dimensions entirely so can draw from bottom left instead of top left
@@ -340,6 +385,9 @@ class RenderLayer(object):
 		return self.origin.z
 	def getOrigin(self):
 		return self.origin
+
+	def setColorCast(self,color):
+		self.color_cast = color
 
 	# releases an image with ref counting
 	def releaseImage(self, index):
@@ -443,6 +491,28 @@ class RenderLayer(object):
 		sdl2.SDL_SetRenderTarget(self.ren.renderer, None)
 		return True
 
+######################################################
+	def dumpImageToFile(self, image, image_file):
+		format = sdl2.SDL_PIXELFORMAT_RGBA8888
+		width = self.images[image].width
+		height = self.images[image].height
+
+		surface = sdl2.SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, format)
+		sdl2.SDL_LockSurface(surface)
+		sdl2.SDL_SetRenderTarget(self.ren.renderer, self.images[image].texture)
+		sdl2.SDL_RenderReadPixels(self.ren.renderer,
+																			 sdl2.SDL_Rect(0,0,width,height),
+																			 format,
+																			 surface.contents.pixels,
+																			 surface.contents.pitch)
+		sdl2.SDL_UnlockSurface(surface)
+
+
+		sdl_image.IMG_SavePNG(surface.contents, image_file.encode("utf-8"))
+		sdl2.SDL_SetRenderTarget(self.ren.renderer, None)
+		return True
+
+	# todo
 	def loadAtlasFromFiles(self, image_file, data_file):
 		pass
 
@@ -463,9 +533,9 @@ class SingleImage(Component):
 	def __init__(self, game, data):
 		super(SingleImage, self).__init__(game)
 		self.rl = data['RenderLayer']
-		self.image = self.rl.addImageFromFile(data["Image"][0])
-		self.origin_x = data["Image"][1]
-		self.origin_y = data["Image"][2]
+		self.image, trim_x, trim_y = self.rl.addImageFromFile(data["Image"][0])
+		self.origin_x = data["Image"][1]-trim_x
+		self.origin_y = data["Image"][2]-trim_y
 		self.origin_z = data["Image"][3]
 		self.name = data["Name"]
 
@@ -488,7 +558,8 @@ class MultiImage(Component):
 		self.rl = data['RenderLayer']
 		self.images = []
 		for image in data["Images"]:
-			self.images.append(AnimFrame(self.rl.addImageFromFile(image[0]), image[1], image[2], image[3], 0))
+			image_object, trim_x, trim_y = self.rl.addImageFromFile(image[0])
+			self.images.append(AnimFrame(image_object, image[1]-trim_x, image[2]-trim_y, image[3], 0))
 
 	def getImage(self):
 		return self.image
@@ -589,28 +660,6 @@ class MultiAnim(Component):
 		frame = self.anims[eStates.shadow].getCurrentFrame(data)
 		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x + shadow_height, frame.origin_y, common_data.pos.z)
 
-# graphics component for a single static image
-class TextMessage(Component):
-	def __init__(self, game, data):
-		super(TextMessage, self).__init__(game)
-		self.rl = data['RenderLayer']
-		self.image = self.rl.addImageFromFile(data["Image"][0])
-		self.origin_x = data["Image"][1]
-		self.origin_y = data["Image"][2]
-		self.origin_z = data["Image"][3]
-		self.name = data["Name"]
-
-	def getImage(self):
-		return self.image
-
-	def draw(self, data, common_data):
-		return self.rl.queueImage(self.image, common_data.pos.x - self.origin_x, common_data.pos.y + self.origin_y, common_data.pos.z + self.origin_z)
-
-	def hasShadow(self):
-		return False
-
-	def update(self, data, common_data, time):
-		pass
 
 #####################################################################
 # Animation code																										#
@@ -733,12 +782,13 @@ def runTests():
 	window.show()
 
 	# set up a renderer to draw stuff. This is a HW accelerated one.
-	# Switch on VSync to avoid running too fast
+	# Switch on VSync to avoid running too fast, nasty artefacts
 	# and wasting power and keep graphics nice and clean
 	ren = sdl2.ext.Renderer(window, flags=sdl2.SDL_RENDERER_ACCELERATED | sdl2.SDL_RENDERER_PRESENTVSYNC)
 	# makes zoomed graphics blocky (for retro effect)
 	sdl2.SDL_SetHint(sdl2.SDL_HINT_RENDER_SCALE_QUALITY, b"nearest")
-	# makes the graphics look and act like Atari ST screen size, even though rendered much larger
+	# makes the graphics look and act like the requested screen size, even though
+	# they may be rendered much larger
 	sdl2.SDL_RenderSetLogicalSize(ren.sdlrenderer, res_x, res_y)
 
 	# test 1 example

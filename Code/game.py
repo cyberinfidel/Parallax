@@ -11,6 +11,7 @@ import sdl2.sdlmixer
 import entity
 import game_pad
 import vector
+import graphics
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -32,7 +33,7 @@ class eGameModes:
 
 
 class Game(object):
-	def __init__(self, title, res_x, res_y, zoom, fullscreen, clear_colour=sdl2.ext.Color(0, 0, 0)):
+	def __init__(self, title, res_x, res_y, zoom, fullscreen, clear_color=graphics.Color(0, 0, 0)):
 		# Initialize the video system - this implicitly initializes some
 		# necessary parts within the SDL2 DLL used by the video module.
 		#
@@ -45,7 +46,7 @@ class Game(object):
 		self.res_y = res_y
 		self.zoom = zoom
 		self.fullscreen = fullscreen
-		self.clear_colour =  clear_colour
+		self.clear_color =  clear_color
 
 		sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_JOYSTICK | sdl2.SDL_INIT_GAMECONTROLLER)
 
@@ -94,7 +95,7 @@ class Game(object):
 		sdl2.SDL_SetWindowFullscreen(self.window.window, self.fullscreen)
 
 	def render(self):
-		self.ren.color = self.clear_colour
+		self.ren.color = self.clear_color.toSDLColor()
 		self.ren.clear()
 
 		self.draw()
@@ -177,8 +178,8 @@ class Game(object):
 
 # end requestNewEntity()
 
-	def setClearColour(self, colour):
-		self.clear_colour = colour
+	def setClearColor(self, color):
+		self.clear_color = color
 
 	def __del__(self):
 		sdl2.sdlmixer.Mix_CloseAudio()

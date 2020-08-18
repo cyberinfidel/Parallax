@@ -33,16 +33,16 @@ class NewScore(entity.Component):
 		self.font_manager = data["FontManager"]
 		self.font = self.font_manager.addFontFromFile("Fonts/Silom/Silom.ttf", 48)
 		self.initial_images = []
-		colours = (
-			sdl2.SDL_Color(255, 255, 0, 255),
-			sdl2.SDL_Color(0, 255, 255, 255),
-			sdl2.SDL_Color(255, 0, 255, 255),
+		colors = (
+			graphics.Color(1, 1, 0, 1),
+			graphics.Color(0, 1, 1, 1),
+			graphics.Color(1, 0, 1, 1),
 		)
 
 		for i in range(0, 3):
 			self.initial_images.append(
 				self.render_layer.addImageFromString(font_manager=self.font_manager, string="A", font=self.font,
-																						 color=colours[i]))
+																						 color=colors[i]))
 
 	def draw(self, data, common_data):
 		controller_data = common_data.entity.controller_data
@@ -58,14 +58,14 @@ class NewScore(entity.Component):
 	def updateInitials(self, entity):
 		# no checking for which one is updated
 		# just draws them all again
-		colours = (
-			sdl2.SDL_Color(255, 255, 0, 255),
-			sdl2.SDL_Color(0, 255, 255, 255),
-			sdl2.SDL_Color(255, 0, 255, 255),
+		colors = (
+			graphics.Color(1, 1, 0, 1),
+			graphics.Color(0, 1, 1, 1),
+			graphics.Color(1, 0, 1, 1),
 		)
 
 		for i in range(0, 3):
-				self.render_layer.replaceImageFromString(old_image=self.initial_images[i], font_manager=self.font_manager, string=entity.controller_data.initials[i], font=self.font, color=colours[i])
+				self.render_layer.replaceImageFromString(old_image=self.initial_images[i], font_manager=self.font_manager, string=entity.controller_data.initials[i], font=self.font, color=colors[i])
 
 	def delete(self, data):
 		for image in self.initial_images:

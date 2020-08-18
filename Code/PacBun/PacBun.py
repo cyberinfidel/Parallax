@@ -18,12 +18,7 @@ import sound
 import gc
 
 
-# disable to remove logging
-def log(msg, new_line=True):
-	if new_line:
-		print(msg)
-	else:
-		print(msg, end='')
+import log
 
 #import PacBun files
 import title
@@ -34,17 +29,19 @@ import level
 import text
 import high_score
 import new_high_score
+import message_box
 
 
 class eGameModes(game.eGameModes):
 	escape, high_score, new_high_score, numGameModes = range(game.eGameModes.numGameModes,game.eGameModes.numGameModes+4)
 
 class PacBun(Game):
+
 	def __init__(self):
 		# do bare minimum to set up
 		# most set up is in first update
 		# this way I can restart the game
-		super(PacBun, self).__init__("PacBun", res_x= 320, res_y= 320, zoom = 3, fullscreen= False)
+		super(PacBun, self).__init__("PacBun", res_x= 320, res_y= 320, zoom = 2, fullscreen= False)
 		sdl2.mouse.SDL_ShowCursor(False)
 
 		##########################
@@ -52,16 +49,18 @@ class PacBun(Game):
 		##########################
 		self.renlayer = graphics.RenderLayer(self.ren)
 		self.overlay_renlayer = graphics.RenderLayer(self.ren)
+		self.setClearColor(graphics.Color(102 / 255, 129 / 255, 73 / 255))
+
 		self.scroll = False
 		self.quit_cooldown = 0.5
 		self.title_cooldown_time = 3
 		self.title_cooldown = self.title_cooldown_time
 
 		self.font_manager = text.FontManager(self.ren)
-		self.score_font = self.font_manager.addFontFromFile("Fonts/Silom/Silom.ttf", 11)
+		self.score_font = self.font_manager.addFontFromFile("Fonts/PacBun/PacBun.ttf", 15)
 		self.current_score = 0
 		self.old_score = -1
-		self.score_image = self.overlay_renlayer.addImageFromString(font_manager=self.font_manager, string="{0:0=4d}".format(self.current_score), font=self.score_font, color=sdl2.SDL_Color(255,255,255,255))
+		self.score_image = self.overlay_renlayer.addImageFromString(font_manager=self.font_manager, string="{0:0=4d}".format(self.current_score), font=self.score_font, color=graphics.Color(1, 1, 1, 1))
 
 		##########################
 		# set up sound           #
@@ -110,7 +109,6 @@ class PacBun(Game):
 
 		self.setGameMode(eGameModes.title)
 		self.current_level = 0
-		self.setClearColour(sdl2.ext.Color(102,129,73))
 
 
 
@@ -121,8 +119,42 @@ class PacBun(Game):
 
 		# info bar
 		# self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heart.makeGraphics(self.graphics_manager, self.overlay_renlayer), controller=heart.makeController(self.controller_manager))
+		bunny_controller_t = bunny.makeController(self.controller_manager)
+		bunny_collider_t = bunny.makeCollider(self.collision_manager)
+		self.bunny_yellow_t = self.entity_manager.makeEntityTemplate(graphics=bunny.makeGraphicsYellow(self.graphics_manager, self.renlayer), controller = bunny_controller_t, collider=bunny_collider_t)
+		self.bunny_pink_t = self.entity_manager.makeEntityTemplate(graphics=bunny.makeGraphicsPink(self.graphics_manager, self.renlayer), controller = bunny_controller_t, collider=bunny_collider_t)
+		self.bunny_blue_t = self.entity_manager.makeEntityTemplate(graphics=bunny.makeGraphicsBlue(self.graphics_manager, self.renlayer), controller = bunny_controller_t, collider=bunny_collider_t)
+		self.bunny_white_t = self.entity_manager.makeEntityTemplate(graphics=bunny.makeGraphicsWhite(self.graphics_manager, self.renlayer), controller = bunny_controller_t, collider=bunny_collider_t)
 
-		self.bunny_t = self.entity_manager.makeEntityTemplate(graphics=bunny.makeGraphics(self.graphics_manager, self.renlayer), controller = bunny.makeController(self.controller_manager), collider=bunny.makeCollider(self.collision_manager))
+		# components = {
+		# 	"controllers" : {
+		# 		'bunny_controller' : bunny.makeController,
+		# 		'fox_controller' : fox.makeController
+		#
+		# 	},
+		# 	"graphics" : {
+		# 		'bunny_yellow_graphics' : bunny.makeGraphicsYellow,
+		# 		'fox_graphics': fox.makeGraphics,
+		# 	}
+		# }
+		# templates = {
+		# 	'pacbun': {
+		# 		'controller': components['controllers']['bunny_controller'],
+		# 		'graphics': components['graphics']['bunny_yellow_graphics'],
+		# 	},
+		# 	'fox': {
+		# 		'controller': components['controllers']['fox_controller'],
+		# 		'graphics': components['graphics']['fox_graphics']
+		# 	}
+		# }
+		#
+		# for template in templates:
+		# 	templates[template]['template'] = self.entity_manager.makeEntityTemplate(
+		# 		templates[template]['controller'](self.controller_manager),
+		# 		templates[template]['graphics'](self.graphics_manager, self.renlayer)
+		# 	)
+
+
 
 		self.fox_t = self.entity_manager.makeEntityTemplate(graphics=fox.makeGraphics(self.graphics_manager, self.renlayer), controller = fox.makeController(self.controller_manager), collider=fox.makeCollider(self.collision_manager))
 
@@ -130,12 +162,12 @@ class PacBun(Game):
 
 		# put all separate images into a crude texture atlas for efficient rendering
 		self.renlayer.makeAtlas(320)
-		# self.renlayer.dumpAtlasToFiles("TA.png", "TA.json")
+		self.renlayer.dumpAtlasToFiles("TA.png", "TA.json")
 
 	# define level maps
 		self.levels = [
 			{
-				"Message":"Poo on every path!",
+				"Message":"Poo. Everywhere.",
 				"Map": [
 					"HHHHHHHHHHHHHHHHHHHH",
 					"HHHHHHHHHHHHHHHHHHHH",
@@ -144,11 +176,11 @@ class PacBun(Game):
 					"HHHHHHHHHHHHHHHHHHHH",
 					"HH   HHHHHHHHHH   HH",
 					"HH H HHHHHHHHHH H HH",
-					"HH 1oHHHHHHHHHHo  HH",
+					"HH  oHHHHHHHHHHo  HH",
 					"HHHHHHHHHHHHHHHHHHHH",
 					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHH  B  HHHHHHHH",
-					"HHHHHHHH   HHHHHHHHH",
+					"HHHHHHH     HHHHHHHH",
+					"HHHHHHHH B HHHHHHHHH",
 					"HHHHHHHHH HHHHHHHHHH",
 					"HHHHHHHHH HHHHHHHHHH",
 					"HHHoHHHHH HHHHHHoHHH",
@@ -234,28 +266,34 @@ class PacBun(Game):
 
 		self.message_x = 0
 
+		self.message_t = self.entity_manager.makeEntityTemplate(
+			graphics=message_box.makeGraphics(self.graphics_manager, self.overlay_renlayer, self.font_manager),
+			controller=message_box.makeController(self.controller_manager)
+																														)
+
 	# end init()
 
 	def updatePlay(self, dt):
 		# draw score
+		self.renlayer.setColorCast(graphics.Color(1, 1, 1, 1))
+		self.setClearColor(graphics.Color(219 / 255, 182 / 255, 85 / 255))
 		if self.current_score!= self.old_score:
-			self.overlay_renlayer.replaceImageFromString(old_image=self.score_image, font_manager=self.font_manager, string="{0:0=4d}".format(self.current_score), font=self.score_font, color=sdl2.SDL_Color(255,255,255,255))
+			self.overlay_renlayer.replaceImageFromString(old_image=self.score_image, font_manager=self.font_manager, string="{0:0=4d}".format(self.current_score), font=self.score_font, color=graphics.Color(1, 1, 1, 1))
 			self.old_score = self.current_score
 
 
 		self.collision_manager.doCollisionsWithSingleEntity(self.bunny)  # collisions between monsters
-		# clean up dead entities
-		self.cleanUpDead()
 
 	##################################################
 
 	def updateTitle(self, dt):
 
+
 		self.title.setState(title.eTitleStates.title)
 		gc.enable()
 		self.current_level = 0
 		self.current_score = 0
-		self.setClearColour(sdl2.ext.Color(102,129,73))
+		self.setClearColor(graphics.Color(102 / 255, 129 / 255, 73 / 255))
 		gc.collect()
 		self.title_cooldown-=dt
 		if self.title_cooldown<0:
@@ -273,13 +311,12 @@ class PacBun(Game):
 		self.killPlayEntities()
 		self.cleanUpDead()
 		self.restart_cooldown = 2
-		self.setClearColour(sdl2.ext.Color(219, 182, 85))
 
 		# initialise map
 		self.level = level.Level(self,self.levels[self.current_level])
 
 		# initialise creatures
-		self.bunny = self.requestNewEntity(self.bunny_t, pos=self.level.getBunnyStart(), parent=self, name="Bunny")
+		self.bunny = self.requestNewEntity(self.bunny_white_t, pos=self.level.getBunnyStart(), parent=self, name="Bunny")
 		game_pad = self.input.getGamePad(0)
 		if game_pad:
 			self.bunny.setGamePad(game_pad)
@@ -293,6 +330,7 @@ class PacBun(Game):
 			this_fox.controller_data.type = fox_start[1]
 			self.foxes.append(this_fox)
 
+		self.message(self.level.message, Vec3(20,20,0), duration=10, color=graphics.Color(1,1,1))
 
 		gc.collect()
 		gc.disable()
@@ -302,7 +340,18 @@ class PacBun(Game):
 
 	def updateGameOver(self, dt):
 		self.restart_cooldown-=dt
+
+		# fade to black
 		self.title.setState(title.eTitleStates.game_over)
+		fade_factor = max(0,min(1,self.restart_cooldown-0.5))
+		self.renlayer.setColorCast(graphics.Color(fade_factor,
+																							fade_factor,
+																							fade_factor,
+																							fade_factor))
+		self.setClearColor(graphics.Color((220 / 255) * fade_factor,
+																			(182/255) * fade_factor,
+																			(85/255) * fade_factor))
+
 		if self.restart_cooldown<=0:
 			self.killPlayEntities()
 			self.cleanUpDead()
@@ -361,6 +410,8 @@ class PacBun(Game):
 		####################################################
 
 	def updatePaused(self, dt):
+		self.renlayer.setColorCast(graphics.Color(0.5, 0.5, 0.5, 1))
+		self.setClearColor(graphics.Color(110 / 255, 91 / 255, 43 / 255))
 		self.title.update(dt)
 		####################################################
 
@@ -392,10 +443,12 @@ class PacBun(Game):
 
 		# Always do this, unless paused:
 		if self.game_mode!=eGameModes.paused:
-			for index, updatable in reversed(list(enumerate(self.updatables))):
+			for updatable in self.updatables:
 				updatable.update(dt)
 			for audible in self.audibles:
 				audible.sounds.play(audible.sounds_data, audible.common_data)
+
+			self.cleanUpDead()
 
 
 # end update() #################################################################
@@ -419,6 +472,21 @@ class PacBun(Game):
 
 	def reportScore(self, increment):
 		self.current_score+=increment
+
+	def message(self, text, pos, color=graphics.Color(1, 1, 1, 1), duration=0):
+		message = self.requestNewEntity(entity_template=self.message_t,
+													pos=pos,
+													parent=self,
+													name= f"message: {text}"
+		)
+		message.graphics.init(data = message.graphics_data,
+													ren_layer = self.overlay_renlayer,
+													font_manager = self.font_manager,
+													message=text,
+													font=0,
+													color = color,
+													duration=duration
+													)
 
 	###########
 	#  interp #

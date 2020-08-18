@@ -38,7 +38,7 @@ def makeSounds(manager, mixer):
 			]
 	})
 
-def makeGraphics(manager, renlayer):
+def makeGraphicsYellow(manager, renlayer):
 	return manager.makeTemplate({
 		"Name": "Bunny Animations",
 		"Template": graphics.MultiAnim,
@@ -50,17 +50,17 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.stationary],
 				"Frames":
 					[
-						["Graphics/Bunny/Idle 1.png", 8, 11, 0, 0.8],
-						["Graphics/Bunny/Idle 2.png", 8, 11, 0, 0.2],
-						["Graphics/Bunny/Idle 1.png", 8, 11, 0, 0.8],
-						["Graphics/Bunny/Idle 2.png", 8, 11, 0, 0.2],
-						["Graphics/Bunny/Idle 1.png", 8, 11, 0, 0.8],
-						["Graphics/Bunny/Idle 2.png", 8, 11, 0, 0.2],
-						["Graphics/Bunny/Idle 1.png", 8, 11, 0, 0.8],
-						["Graphics/Bunny/Idle 2.png", 8, 11, 0, 0.2],
-						["Graphics/Bunny/Idle 1.png", 8, 11, 0, 0.8],
-						["Graphics/Bunny/Idle 2.png", 8, 11, 0, 0.2],
-						["Graphics/Bunny/Idle 3.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Yellow/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Yellow/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Yellow/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Yellow/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Yellow/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Yellow/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Yellow/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Yellow/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Yellow/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Yellow/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Yellow/Idle 3.png", 8, 11, 0, 0.2],
 					]
 			},
 			{
@@ -69,10 +69,10 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.runDown],
 				"Frames":
 					[
-						["Graphics/Bunny/RunDown 2.png", 8, 11, 0, 0.05],
-						["Graphics/Bunny/RunDown 3.png", 8, 11, 0, 0.05],
-						["Graphics/Bunny/RunDown 4.png", 8, 11, 0, 0.05],
-						["Graphics/Bunny/RunDown 1.png", 8, 11, 0, 0.075],
+						["Graphics/Bunny/Yellow/RunDown 2.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Yellow/RunDown 3.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Yellow/RunDown 4.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Yellow/RunDown 1.png", 8, 11, 0, 0.075],
 					],
 			},
 			{
@@ -81,10 +81,10 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.runUp],
 				"Frames":
 					[
-						["Graphics/Bunny/RunUp 2.png", 8, 11, 0, 0.05],
-						["Graphics/Bunny/RunUp 3.png", 8, 11, 0, 0.05],
-						["Graphics/Bunny/RunUp 4.png", 8, 11, 0, 0.05],
-						["Graphics/Bunny/RunUp 1.png", 8, 11, 0, 0.075],
+						["Graphics/Bunny/Yellow/RunUp 2.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Yellow/RunUp 3.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Yellow/RunUp 4.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Yellow/RunUp 1.png", 8, 11, 0, 0.075],
 					],
 			},
 			{
@@ -93,10 +93,10 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.runLeft],
 				"Frames":
 					[
-						["Graphics/Bunny/Run 1.png", 8, 14, 0, 0.05],
-						["Graphics/Bunny/Run 2.png", 8, 14, 0, 0.05],
-						["Graphics/Bunny/Run 3.png", 8, 14, 0, 0.05],
-						["Graphics/Bunny/Run 4.png", 8, 14, 0, 0.075],
+						["Graphics/Bunny/Yellow/RunLeft 1.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Yellow/RunLeft 2.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Yellow/RunLeft 3.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Yellow/RunLeft 4.png", 8, 14, 0, 0.075],
 					],
 			},
 			{
@@ -105,10 +105,10 @@ def makeGraphics(manager, renlayer):
 				"States": [entity.eStates.runRight],
 				"Frames":
 					[
-						["Graphics/Bunny/Right/Run 1.png", 8, 14, 0, 0.05],
-						["Graphics/Bunny/Right/Run 2.png", 8, 14, 0, 0.05],
-						["Graphics/Bunny/Right/Run 3.png", 8, 14, 0, 0.05],
-						["Graphics/Bunny/Right/Run 4.png", 8, 14, 0, 0.075],
+						["Graphics/Bunny/Yellow/RunRight 1.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Yellow/RunRight 2.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Yellow/RunRight 3.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Yellow/RunRight 4.png", 8, 14, 0, 0.075],
 					],
 			},
 
@@ -116,6 +116,241 @@ def makeGraphics(manager, renlayer):
 
 	})
 
+
+
+def makeGraphicsPink(manager, renlayer):
+	return manager.makeTemplate({
+		"Name": "Bunny Animations",
+		"Template": graphics.MultiAnim,
+		"RenderLayer": renlayer,
+		"Anims": [
+			{
+				"Name": "Bunny Stands",
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.stationary],
+				"Frames":
+					[
+						["Graphics/Bunny/Pink/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Pink/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Pink/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Pink/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Pink/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Pink/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Pink/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Pink/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Pink/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Pink/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Pink/Idle 3.png", 8, 11, 0, 0.2],
+					]
+			},
+			{
+				"Name": "Bunny Runs Down",
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.runDown],
+				"Frames":
+					[
+						["Graphics/Bunny/Pink/RunDown 2.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Pink/RunDown 3.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Pink/RunDown 4.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Pink/RunDown 1.png", 8, 11, 0, 0.075],
+					],
+			},
+			{
+				"Name": "Bunny Runs Up",
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.runUp],
+				"Frames":
+					[
+						["Graphics/Bunny/Pink/RunUp 2.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Pink/RunUp 3.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Pink/RunUp 4.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Pink/RunUp 1.png", 8, 11, 0, 0.075],
+					],
+			},
+			{
+				"Name": "Bunny Runs Left",
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.runLeft],
+				"Frames":
+					[
+						["Graphics/Bunny/Pink/RunLeft 1.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Pink/RunLeft 2.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Pink/RunLeft 3.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Pink/RunLeft 4.png", 8, 14, 0, 0.075],
+					],
+			},
+			{
+				"Name": "Bunny Runs Right",
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.runRight],
+				"Frames":
+					[
+						["Graphics/Bunny/Pink/RunRight 1.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Pink/RunRight 2.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Pink/RunRight 3.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Pink/RunRight 4.png", 8, 14, 0, 0.075],
+					],
+			},
+
+		]
+
+	})
+
+def makeGraphicsBlue(manager, renlayer):
+	return manager.makeTemplate({
+		"Name": "Bunny Animations",
+		"Template": graphics.MultiAnim,
+		"RenderLayer": renlayer,
+		"Anims": [
+			{
+				"Name": "Bunny Stands",
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.stationary],
+				"Frames":
+					[
+						["Graphics/Bunny/Blue/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Blue/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Blue/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Blue/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Blue/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Blue/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Blue/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Blue/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Blue/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Blue/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Blue/Idle 3.png", 8, 11, 0, 0.2],
+					]
+			},
+			{
+				"Name": "Bunny Runs Down",
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.runDown],
+				"Frames":
+					[
+						["Graphics/Bunny/Blue/RunDown 2.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Blue/RunDown 3.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Blue/RunDown 4.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Blue/RunDown 1.png", 8, 11, 0, 0.075],
+					],
+			},
+			{
+				"Name": "Bunny Runs Up",
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.runUp],
+				"Frames":
+					[
+						["Graphics/Bunny/Blue/RunUp 2.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Blue/RunUp 3.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Blue/RunUp 4.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/Blue/RunUp 1.png", 8, 11, 0, 0.075],
+					],
+			},
+			{
+				"Name": "Bunny Runs Left",
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.runLeft],
+				"Frames":
+					[
+						["Graphics/Bunny/Blue/RunLeft 1.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Blue/RunLeft 2.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Blue/RunLeft 3.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Blue/RunLeft 4.png", 8, 14, 0, 0.075],
+					],
+			},
+			{
+				"Name": "Bunny Runs Right",
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.runRight],
+				"Frames":
+					[
+						["Graphics/Bunny/Blue/RunRight 1.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Blue/RunRight 2.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Blue/RunRight 3.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/Blue/RunRight 4.png", 8, 14, 0, 0.075],
+					],
+			},
+
+		]
+
+	})
+
+def makeGraphicsWhite(manager, renlayer):
+	return manager.makeTemplate({
+		"Name": "Bunny Animations",
+		"Template": graphics.MultiAnim,
+		"RenderLayer": renlayer,
+		"Anims": [
+			{
+				"Name": "Bunny Stands",
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.stationary],
+				"Frames":
+					[
+						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/White/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/White/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/White/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/White/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/White/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/White/Idle 3.png", 8, 11, 0, 0.2],
+					]
+			},
+			{
+				"Name": "Bunny Runs Down",
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.runDown],
+				"Frames":
+					[
+						["Graphics/Bunny/White/RunDown 2.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/White/RunDown 3.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/White/RunDown 4.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/White/RunDown 1.png", 8, 11, 0, 0.075],
+					],
+			},
+			{
+				"Name": "Bunny Runs Up",
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.runUp],
+				"Frames":
+					[
+						["Graphics/Bunny/White/RunUp 2.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/White/RunUp 3.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/White/RunUp 4.png", 8, 11, 0, 0.05],
+						["Graphics/Bunny/White/RunUp 1.png", 8, 11, 0, 0.075],
+					],
+			},
+			{
+				"Name": "Bunny Runs Left",
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.runLeft],
+				"Frames":
+					[
+						["Graphics/Bunny/White/RunLeft 1.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/White/RunLeft 2.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/White/RunLeft 3.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/White/RunLeft 4.png", 8, 14, 0, 0.075],
+					],
+			},
+			{
+				"Name": "Bunny Runs Right",
+				"AnimType": graphics.AnimLoop,
+				"States": [entity.eStates.runRight],
+				"Frames":
+					[
+						["Graphics/Bunny/White/RunRight 1.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/White/RunRight 2.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/White/RunRight 3.png", 8, 14, 0, 0.05],
+						["Graphics/Bunny/White/RunRight 4.png", 8, 14, 0, 0.075],
+					],
+			},
+
+		]
+
+	})
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
@@ -313,6 +548,4 @@ class Collider(collision.Collider):
 			return(collision.Message(source=common_data.entity, damage_hero=1))
 		else:
 			return(collision.Message(source=common_data.entity))
-
-
 

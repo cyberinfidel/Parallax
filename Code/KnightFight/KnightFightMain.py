@@ -148,7 +148,7 @@ class KnightFight(Game):
 
 		self.director_t = self.entity_manager.makeEntityTemplate(controller=director_controller)
 
-		self.renlayer.makeAtlas()
+		self.renlayer.makeAtlas(512)
 		# self.renlayer.dumpAtlasToFiles("TA.png", "TA.json")
 
 	# end init()

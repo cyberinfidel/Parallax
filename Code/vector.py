@@ -8,6 +8,10 @@ def log(msg, new_line=True):
 	else:
 		print(msg, end='')
 
+
+def clamp(low, value, high):
+	return max(min(high, value),low)
+
 x,y,z = 0,1,2
 
 class Plane:

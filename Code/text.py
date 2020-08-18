@@ -4,6 +4,8 @@ import sdl2
 import sdl2.ext
 import sdl2.sdlttf
 
+import graphics
+
 from log import log
 
 # example
@@ -13,7 +15,7 @@ from log import log
 
 
 class Message(object):
-	def __init__(self, font_manager, string, font=0, color=sdl2.SDL_Color(255, 255, 255, 255), size=12):
+	def __init__(self, font_manager, string, font=0, color=graphics.Color(1, 1, 1, 1), size=12):
 		self.string = string
 		self.font_manager = font_manager
 		self.font = font
@@ -21,7 +23,7 @@ class Message(object):
 		self.size = size
 
 	@classmethod
-	def withRender(cls, font_manager, string, font=0, color=sdl2.SDL_Color(255, 255, 255, 255), size=12):
+	def withRender(cls, font_manager, string, font=0, color=graphics.Color(1, 1, 1, 1), size=12):
 		message = Message(font_manager, string, font, color, size)
 		message.renderToTexture()
 		return message
@@ -67,9 +69,9 @@ class FontManager(object):
 		new_font = SDLFont(os.path.abspath(font_file),font_size)
 
 		# check if this really is a new font or and return the existing one if it isn't
-		for font in self.sdl_fonts:
+		for index, font in enumerate(self.sdl_fonts):
 			if font == new_font:
-				return font
+				return index
 
 		new_font.open()
 		self.sdl_fonts.append(new_font)
@@ -88,11 +90,20 @@ class FontManager(object):
 	def setCurrentFont(self, font_index):
 		self.current_font = font_index
 
-	def renderText(self, string, font=False, color=sdl2.SDL_Color(255,255,255,255)):
+	# todo: make this actually work
+	def renderTextToSurfaceAndSave(self, file, string, font=False, color=graphics.Color(1, 1, 1, 1)):
+		surf = sdl2.sdlttf.TTF_RenderUTF8_Solid(self.sdl_fonts[font].font, string.encode('utf-8'), color)
+		if surf is None:
+			log(f"TTF_RenderText failed: {string}")
+		width = surf.contents.w
+		height = surf.contents.h
+		return width, height
+
+	def renderText(self, string, font=False, color=graphics.Color(1, 1, 1, 1)):
 		#We need to first render to a surface as that's what TTF_RenderText
 		#returns, then load that surface into a texture
 
-		surf = sdl2.sdlttf.TTF_RenderUTF8_Blended(self.sdl_fonts[font].font, string.encode('utf-8'), color)
+		surf = sdl2.sdlttf.TTF_RenderUTF8_Solid(self.sdl_fonts[font].font, string.encode('utf-8'), color.toSDLColor())
 		if surf is None:
 			log(f"TTF_RenderText failed: {string}")
 			return None
