@@ -4,6 +4,7 @@ Code/.DS_Store
 *.bin
 *.exe
 *.zip
+*.png
 venv
 Code/python38.dll
 Code/KnightFight/python38.dll
@@ -11,7 +12,8 @@ Code/KnightFight/KnightFightMain.build/
 Code/Meadow/MeadowMain.build/
 Code/BunnyAdventure/Graphics/
 Code/PacBun/Graphics
+Code/PacBun/Sounds
+Code/PacBun/Fonts
 Code/PyBulletTest
-Code/PacBun/scores.json
 Code/PacBun/high_score.py
 Code/PacBun/scores.json
