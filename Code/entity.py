@@ -216,8 +216,11 @@ class ComponentManager(object):
 	def pop(self, index):
 		return self.instances.pop(index)
 
-
-	def makeTemplate(self, template_data):
+	# extras is a dictionary that can be added to the template_data
+	# e.g. for injecting contextual stuff like the RenderLayer for graphics
+	def makeTemplate(self, template_data, extras=None):
+		if extras:
+				template_data.update(extras)
 		template = template_data['Template'](self.game, template_data)
 		self.templates.append(template)
 		return self.templates[-1]

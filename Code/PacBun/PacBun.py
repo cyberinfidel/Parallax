@@ -1,5 +1,6 @@
 # import python libs
 import sys
+import gc
 
 import sdl2.mouse
 
@@ -15,8 +16,7 @@ from collision import CollisionManager
 from vector import Vec3
 import graphics
 import sound
-import gc
-
+import utility
 
 import log
 
@@ -113,134 +113,24 @@ class PacBun(Game):
 		# get templates from config file   #
 		####################################
 
-		templates_data = {}	# to hold the data from the files
-		self.templates = {}	# to hold the actual handles from the entity manager
-		ldic = locals()
-		with open('PB_templates.config') as templates_file:
-			code = compile(source=templates_file.read(),filename='<string>',mode='exec')
-			exec(code,globals(),ldic)
-			templates_data = ldic['templates']
-			pass
+		templates_data = utility.getDictDataFromFile('PB_templates.config',"templates")
 
 		# build templates
+		self.templates = {}	# to hold the actual handles from the entity manager
 		for template in templates_data:
 			self.templates[template]= self.entity_manager.makeEntityTemplate(
 				controller=templates_data[template]['controller'](self.controller_manager),
 				collider=templates_data[template]['collider'](self.controller_manager),
-				graphics=self.graphics_manager.makeTemplate(templates_data[template]['graphics'])
+				graphics=self.graphics_manager.makeTemplate(templates_data[template]['graphics'],{'RenderLayer': self.renlayer})
 			)
 
+		self.levels = utility.getListDataFromFile("PB_levels.config", "levels")
 
 
-		# self.fox_t = self.entity_manager.makeEntityTemplate(graphics=fox.makeGraphics(self.graphics_manager, self.renlayer), controller = fox.makeController(self.controller_manager), collider=fox.makeCollider(self.collision_manager))
-
-		# self.bunny_pink_t = self.entity_manager.makeEntityTemplate(
-		# 		controller=templates['pinkie']['controller'](self.controller_manager),
-		# 		collider=templates['pinkie']['collider'](self.controller_manager),
-		# 		graphics=templates['pinkie']['graphics'](self.graphics_manager, self.renlayer))
-		#
-		# self.fox_t = self.entity_manager.makeEntityTemplate(
-		# 		controller=templates['fox']['controller'](self.controller_manager),
-		# 		collider=templates['fox']['collider'](self.controller_manager),
-		# 		graphics=templates['fox']['graphics'](self.graphics_manager, self.renlayer))
-		#
-		# self.tile_t = self.entity_manager.makeEntityTemplate(graphics=tile.makeGraphics(self.graphics_manager, self.renlayer), controller = tile.makeController(self.controller_manager) )
-
-		# put all separate images into a crude texture atlas for efficient rendering
+		# put all separate images into a texture atlas for (more) efficient rendering
 		self.renlayer.makeAtlas(320)
-		self.renlayer.dumpAtlasToFiles("TA.png", "TA.json")
+		# self.renlayer.dumpAtlasToFiles("TA.png", "TA.json")
 
-	# define level maps
-		self.levels = [
-			{
-				"Message":"Poo. Everywhere.",
-				"Map": [
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HH   HHHHHHHHHH   HH",
-					"HH H HHHHHHHHHH H HH",
-					"HH  oHHHHHHHHHHo  HH",
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHH     HHHHHHHH",
-					"HHHHHHHH B HHHHHHHHH",
-					"HHHHHHHHH HHHHHHHHHH",
-					"HHHHHHHHH HHHHHHHHHH",
-					"HHHoHHHHH HHHHHHoHHH",
-					"HHH HHHHH HHHHHH HHH",
-					"HHH              HHH",
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHHHHHHHHHHHHHHH",
-				]
-			}, {
-				"Message":"Avoid the fox!",
-				"Map": [
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHHB   oHHHHHHHH",
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHH        oHHHHHH",
-					"HHHHH HHHHHH HHHHHHH",
-					"HHHH            HHHH",
-					"HHHH H HHHHH HH HHHH",
-					"HHHH HoHHHHH HH HHHH",
-					"HHHH HHHHHHH HH HHHH",
-					"HHHH          1 HHHH",
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHHHHHHHHHHHHHHH",
-				]
-			}, {
-				"Message":"Not all foxes think the same way...",
-				"Map":[
-			"HHHHHHHHHHHHHHHHHHHH",
-			"H1                 H",
-			"H HHHH HHHHHH HHHH H",
-			"H oHHH HH          H",
-			"H HHHH HH HHHoH HHHH",
-			"H                  H",
-			"H HH HHHHHH HHHHHH H",
-			"H HH HHH    HHHHHH H",
-			"H HH HHH HHHHHHHHH H",
-			"H 3H           BoH H",
-			"HH H HHHHHHHHHH HH H",
-			"HH H HHHHHHH    HH H",
-			"H            HH HH H",
-			"H HH HHHHHHH HH HH H",
-			"H Ho            HH H",
-			"H HHHHHHHHHHHHHHHH H",
-			"H                 2H",
-			"HHHHHHHHHHHHHHHHHHHH",
-			]
-			}, {
-			"Message": "Poo on every path",
-			"Map": [
-			"HHHHHHHHHHHHHHHHHHHH",
-			"H1                 H",
-			"H HoHH HHHHHH HHHH H",
-			"H HHHH HH          H",
-			"H HHoH HH HHHHH HHHH",
-			"H                  H",
-			"H HH H HHHH HH HHH H",
-			"H HH H      HH     H",
-			"H HH H HHHHHHH HHH H",
-			"H H            BoH H",
-			"H H  HH HH HHHH HH H",
-			"H H  HH HH H    HH H",
-			"H            HH HH H",
-			"H HH H HH HH HH HH H",
-			"H Ho            HH H",
-			"H HHHH HHHHHH HHHH H",
-			"H                 2H",
-			"HHHHHHHHHHHHHHHHHHHH",
-		]},
-		]
 
 		self.message_x = 0
 
