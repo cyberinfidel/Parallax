@@ -17,17 +17,17 @@ class Hole(object):
 
 class Level(object):
 
-	def __init__(self, game, data):
+	def __init__(self, game, data, tile_t):
 		self.game = game
 		self.map = copy.deepcopy(data['Map'])
 		self.message = data['Message']
 
 		# flip since we draw from bottom left
-		for i in range(0, 10):
-			self.map[i], self.map[19-i] = self.map[19 - i], self.map[i]
+		for i in range(0, 9):
+			self.map[i], self.map[17-i] = self.map[17 - i], self.map[i]
 
-		self.tiles = [None]*20
-		for i in range(0,20):
+		self.tiles = [None]*18
+		for i in range(0,18):
 			self.tiles[i] = [None]*20
 
 		self.holes = []
@@ -35,10 +35,13 @@ class Level(object):
 
 		self.num_spaces=0
 		self.num_poos=0
-		for y in range(0,20):
+		for y in range(0,18):
 			for x in range(0,20):
 				# create tile for each square
-				this_tile = self.game.requestNewEntity(self.game.tile_t, pos=Vec3(8 + x * 16, 8 + y * 16, 1), parent=self, name=f"back{x},{y}")
+				this_tile = self.game.requestNewEntity(tile_t,
+																							 pos=Vec3(8 + x * 16, 8 + y * 16, 1),
+																							 parent=self,
+																							 name=f"back{x},{y}")
 				self.tiles[y][x]=this_tile
 
 				# set up each tile from what the map says

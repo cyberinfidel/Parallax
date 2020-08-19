@@ -21,61 +21,6 @@ class eTileStates(enum.IntEnum):
 	clear = 7
 	hole = 8
 
-
-def makeGraphics(manager, renlayer):
-	return manager.makeTemplate({
-		"Name": "Path Graphics",
-		"Template": graphics.MultiAnim,
-		"RenderLayer": renlayer,
-		"Anims": [
-			{
-				"Name": "Path without Poo",
-				"AnimType": graphics.AnimSingle,
-				"States": [eTileStates.clear],
-				"Frames":
-						[["Graphics/Path/Path.png", 8, 8, 0, 0.8]],
-			},
-			{
-				"Name": "Path with Poo",
-				"AnimType": graphics.AnimSingle,
-				"States": [eTileStates.poo],
-				"Frames":
-						[["Graphics/Path/Path Poo.png", 8, 8, 0, 0.8]],
-			},
-			{
-				"Name": "Path with Hole",
-				"AnimType": graphics.AnimSingle,
-				"States": [eTileStates.hole],
-				"Frames":
-						[["Graphics/Path/Path Hole.png", 8, 8, 0, 0.8]],
-			},
-			{
-				"Name": "Hedge",
-				"AnimType": graphics.AnimSingle,
-				"States": [eTileStates.hedge],
-				"Frames":
-					[["Graphics/Hedge/Hedge 1.png", 10, 12, -1, 0.8]],
-			},
-			{
-				"Name": "Hedge",
-				"AnimType": graphics.AnimSingle,
-				"States": [eTileStates.hedge2],
-				"Frames":
-					[["Graphics/Hedge/Hedge 2.png", 10, 12, -1, 0.8]],
-			},
-			{
-				"Name": "Hedge",
-				"AnimType": graphics.AnimSingle,
-				"States": [eTileStates.hedge3],
-				"Frames":
-					[["Graphics/Hedge/Hedge 3.png", 10, 12, -1, 0.8]],
-			},
-
-		]
-
-	})
-
-
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
 class Controller(controller.Controller):

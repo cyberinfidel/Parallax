@@ -22,9 +22,6 @@ import log
 
 #import PacBun files
 import title
-import bunny
-import fox
-import tile
 import level
 import text
 import high_score
@@ -41,7 +38,7 @@ class PacBun(Game):
 		# do bare minimum to set up
 		# most set up is in first update
 		# this way I can restart the game
-		super(PacBun, self).__init__("PacBun", res_x= 320, res_y= 320, zoom = 2, fullscreen= False)
+		super(PacBun, self).__init__("PacBun", res_x= 320, res_y= 288, zoom = 4, fullscreen= False)
 		sdl2.mouse.SDL_ShowCursor(False)
 
 		##########################
@@ -112,53 +109,42 @@ class PacBun(Game):
 
 
 
-		############################
-		# make ingame components   #
-		############################
+		####################################
+		# get templates from config file   #
+		####################################
+
+		templates_data = {}	# to hold the data from the files
+		self.templates = {}	# to hold the actual handles from the entity manager
+		ldic = locals()
+		with open('PB_templates.config') as templates_file:
+			code = compile(source=templates_file.read(),filename='<string>',mode='exec')
+			exec(code,globals(),ldic)
+			templates_data = ldic['templates']
+			pass
+
+		# build templates
+		for template in templates_data:
+			self.templates[template]= self.entity_manager.makeEntityTemplate(
+				controller=templates_data[template]['controller'](self.controller_manager),
+				collider=templates_data[template]['collider'](self.controller_manager),
+				graphics=self.graphics_manager.makeTemplate(templates_data[template]['graphics'])
+			)
 
 
-		# info bar
-		# self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heart.makeGraphics(self.graphics_manager, self.overlay_renlayer), controller=heart.makeController(self.controller_manager))
-		bunny_controller_t = bunny.makeController(self.controller_manager)
-		bunny_collider_t = bunny.makeCollider(self.collision_manager)
-		self.bunny_yellow_t = self.entity_manager.makeEntityTemplate(graphics=bunny.makeGraphicsYellow(self.graphics_manager, self.renlayer), controller = bunny_controller_t, collider=bunny_collider_t)
-		self.bunny_pink_t = self.entity_manager.makeEntityTemplate(graphics=bunny.makeGraphicsPink(self.graphics_manager, self.renlayer), controller = bunny_controller_t, collider=bunny_collider_t)
-		self.bunny_blue_t = self.entity_manager.makeEntityTemplate(graphics=bunny.makeGraphicsBlue(self.graphics_manager, self.renlayer), controller = bunny_controller_t, collider=bunny_collider_t)
-		self.bunny_white_t = self.entity_manager.makeEntityTemplate(graphics=bunny.makeGraphicsWhite(self.graphics_manager, self.renlayer), controller = bunny_controller_t, collider=bunny_collider_t)
 
-		# components = {
-		# 	"controllers" : {
-		# 		'bunny_controller' : bunny.makeController,
-		# 		'fox_controller' : fox.makeController
+		# self.fox_t = self.entity_manager.makeEntityTemplate(graphics=fox.makeGraphics(self.graphics_manager, self.renlayer), controller = fox.makeController(self.controller_manager), collider=fox.makeCollider(self.collision_manager))
+
+		# self.bunny_pink_t = self.entity_manager.makeEntityTemplate(
+		# 		controller=templates['pinkie']['controller'](self.controller_manager),
+		# 		collider=templates['pinkie']['collider'](self.controller_manager),
+		# 		graphics=templates['pinkie']['graphics'](self.graphics_manager, self.renlayer))
 		#
-		# 	},
-		# 	"graphics" : {
-		# 		'bunny_yellow_graphics' : bunny.makeGraphicsYellow,
-		# 		'fox_graphics': fox.makeGraphics,
-		# 	}
-		# }
-		# templates = {
-		# 	'pacbun': {
-		# 		'controller': components['controllers']['bunny_controller'],
-		# 		'graphics': components['graphics']['bunny_yellow_graphics'],
-		# 	},
-		# 	'fox': {
-		# 		'controller': components['controllers']['fox_controller'],
-		# 		'graphics': components['graphics']['fox_graphics']
-		# 	}
-		# }
+		# self.fox_t = self.entity_manager.makeEntityTemplate(
+		# 		controller=templates['fox']['controller'](self.controller_manager),
+		# 		collider=templates['fox']['collider'](self.controller_manager),
+		# 		graphics=templates['fox']['graphics'](self.graphics_manager, self.renlayer))
 		#
-		# for template in templates:
-		# 	templates[template]['template'] = self.entity_manager.makeEntityTemplate(
-		# 		templates[template]['controller'](self.controller_manager),
-		# 		templates[template]['graphics'](self.graphics_manager, self.renlayer)
-		# 	)
-
-
-
-		self.fox_t = self.entity_manager.makeEntityTemplate(graphics=fox.makeGraphics(self.graphics_manager, self.renlayer), controller = fox.makeController(self.controller_manager), collider=fox.makeCollider(self.collision_manager))
-
-		self.tile_t = self.entity_manager.makeEntityTemplate(graphics=tile.makeGraphics(self.graphics_manager, self.renlayer), controller = tile.makeController(self.controller_manager) )
+		# self.tile_t = self.entity_manager.makeEntityTemplate(graphics=tile.makeGraphics(self.graphics_manager, self.renlayer), controller = tile.makeController(self.controller_manager) )
 
 		# put all separate images into a crude texture atlas for efficient rendering
 		self.renlayer.makeAtlas(320)
@@ -169,7 +155,6 @@ class PacBun(Game):
 			{
 				"Message":"Poo. Everywhere.",
 				"Map": [
-					"HHHHHHHHHHHHHHHHHHHH",
 					"HHHHHHHHHHHHHHHHHHHH",
 					"HHHHHHHHHHHHHHHHHHHH",
 					"HHHHHHHHHHHHHHHHHHHH",
@@ -186,7 +171,6 @@ class PacBun(Game):
 					"HHHoHHHHH HHHHHHoHHH",
 					"HHH HHHHH HHHHHH HHH",
 					"HHH              HHH",
-					"HHHHHHHHHHHHHHHHHHHH",
 					"HHHHHHHHHHHHHHHHHHHH",
 					"HHHHHHHHHHHHHHHHHHHH",
 				]
@@ -211,8 +195,6 @@ class PacBun(Game):
 					"HHHHHHHHHHHHHHHHHHHH",
 					"HHHHHHHHHHHHHHHHHHHH",
 					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHHHHHHHHHHHHHHH",
-					"HHHHHHHHHHHHHHHHHHHH",
 				]
 			}, {
 				"Message":"Not all foxes think the same way...",
@@ -222,7 +204,6 @@ class PacBun(Game):
 			"H HHHH HHHHHH HHHH H",
 			"H oHHH HH          H",
 			"H HHHH HH HHHoH HHHH",
-			"H HHHH HH HHHHH HHHH",
 			"H                  H",
 			"H HH HHHHHH HHHHHH H",
 			"H HH HHH    HHHHHH H",
@@ -231,7 +212,6 @@ class PacBun(Game):
 			"HH H HHHHHHHHHH HH H",
 			"HH H HHHHHHH    HH H",
 			"H            HH HH H",
-			"H HH HHHHHHH HH HH H",
 			"H HH HHHHHHH HH HH H",
 			"H Ho            HH H",
 			"H HHHHHHHHHHHHHHHH H",
@@ -245,8 +225,7 @@ class PacBun(Game):
 			"H1                 H",
 			"H HoHH HHHHHH HHHH H",
 			"H HHHH HH          H",
-			"H      HH HHHoH HHHH",
-			"H HHHH HH HHHHH HHHH",
+			"H HHoH HH HHHHH HHHH",
 			"H                  H",
 			"H HH H HHHH HH HHH H",
 			"H HH H      HH     H",
@@ -255,7 +234,6 @@ class PacBun(Game):
 			"H H  HH HH HHHH HH H",
 			"H H  HH HH H    HH H",
 			"H            HH HH H",
-			"H HH H HH HH HH HH H",
 			"H HH H HH HH HH HH H",
 			"H Ho            HH H",
 			"H HHHH HHHHHH HHHH H",
@@ -313,10 +291,10 @@ class PacBun(Game):
 		self.restart_cooldown = 2
 
 		# initialise map
-		self.level = level.Level(self,self.levels[self.current_level])
+		self.level = level.Level(self,self.levels[self.current_level], self.templates['tile'])
 
 		# initialise creatures
-		self.bunny = self.requestNewEntity(self.bunny_white_t, pos=self.level.getBunnyStart(), parent=self, name="Bunny")
+		self.bunny = self.requestNewEntity(self.templates['pacbun'], pos=self.level.getBunnyStart(), parent=self, name="Bunny")
 		game_pad = self.input.getGamePad(0)
 		if game_pad:
 			self.bunny.setGamePad(game_pad)
@@ -324,7 +302,7 @@ class PacBun(Game):
 
 		self.foxes = []
 		for fox_start in self.level.getFoxStarts():
-			this_fox = self.requestNewEntity(self.fox_t, pos=fox_start[0], parent=self, name="Fox")
+			this_fox = self.requestNewEntity(self.templates['fox'], pos=fox_start[0], parent=self, name="Fox")
 			this_fox.controller_data.bunny = self.bunny
 			this_fox.controller_data.level = self.level
 			this_fox.controller_data.type = fox_start[1]
