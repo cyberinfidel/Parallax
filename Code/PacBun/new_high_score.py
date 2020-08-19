@@ -30,8 +30,7 @@ class NewScore(entity.Component):
 	def __init__(self,game, data):
 		super(NewScore, self).__init__(game)
 		self.render_layer = data["RenderLayer"]
-		self.font_manager = data["FontManager"]
-		self.font = self.font_manager.addFontFromFile("Fonts/Silom/Silom.ttf", 48)
+		self.font = self.render_layer.addFont("Fonts/Silom/Silom.ttf", 48)
 		self.initial_images = []
 		colors = (
 			graphics.Color(1, 1, 0, 1),
@@ -41,7 +40,7 @@ class NewScore(entity.Component):
 
 		for i in range(0, 3):
 			self.initial_images.append(
-				self.render_layer.addImageFromString(font_manager=self.font_manager, string="A", font=self.font,
+				self.render_layer.addImageFromString(string="A", font=self.font,
 																						 color=colors[i]))
 
 	def draw(self, data, common_data):
@@ -65,18 +64,17 @@ class NewScore(entity.Component):
 		)
 
 		for i in range(0, 3):
-				self.render_layer.replaceImageFromString(old_image=self.initial_images[i], font_manager=self.font_manager, string=entity.controller_data.initials[i], font=self.font, color=colors[i])
+				self.render_layer.replaceImageFromString(old_image=self.initial_images[i], string=entity.controller_data.initials[i], font=self.font, color=colors[i])
 
 	def delete(self, data):
 		for image in self.initial_images:
 			self.render_layer.releaseImage
 
-def makeGraphics(manager, render_layer, font_manager):
+def makeGraphics(manager, render_layer):
 	return manager.makeTemplate({
 			"Name": "Scoreboard",
 			"Template": NewScore,
 			"RenderLayer": render_layer,
-			"FontManager": font_manager,
 		})
 
 ###########################################################

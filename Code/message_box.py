@@ -21,9 +21,8 @@ class MessageBox(entity.Component):
 		def __init__(self, common_data, init=False):
 			self.image = None
 
-	def init(self, data, ren_layer, font_manager, message, font=0, color=graphics.Color(1, 1, 1, 1), duration=0):
+	def init(self, data, ren_layer, message, font=0, color=graphics.Color(1, 1, 1, 1), duration=0):
 		data.ren_layer = ren_layer
-		data.font_manager = font_manager
 		# data.message = message
 		data.color = color
 		data.duration = duration
@@ -39,14 +38,12 @@ class MessageBox(entity.Component):
 	def _renderMessage(self, data):
 		# draw message and add to/replace in render layer's images
 		if not data.image:
-			data.image = data.ren_layer.addImageFromString(font_manager=data.font_manager,
-																										 string = data.message,
+			data.image = data.ren_layer.addImageFromString(string = data.message,
 																										 font=data.font,
 																										 color=data.color
 																											 )
 		else:
 			data.ren_layer.replaceImageFromString(old_image = data.image,
-																					font_manager=data.font_manager,
 																				string=data.message,
 																				font=data.font,
 																				color=data.color
@@ -84,12 +81,11 @@ class MessageBox(entity.Component):
 
 
 
-def makeGraphics(manager, render_layer, font_manager):
+def makeGraphics(manager, render_layer):
 	return manager.makeTemplate({
 		"Name": "Message",
 		"Template": MessageBox,
 		"RenderLayer": render_layer,
-		"FontManager": font_manager
 	})
 
 

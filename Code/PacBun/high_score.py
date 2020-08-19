@@ -27,8 +27,7 @@ class ScoreTable(entity.Component):
 	def __init__(self,game, data):
 		super(ScoreTable, self).__init__(game)
 		self.render_layer = data["RenderLayer"]
-		self.font_manager = data["FontManager"]
-		self.font = self.font_manager.addFontFromFile("Fonts/PacBun/PacBun.ttf", 32)
+		self.font = self.render_layer.addFont("Fonts/PacBun/PacBun.ttf", 32)
 
 
 	def draw(self, data, common_data):
@@ -65,7 +64,7 @@ class ScoreTable(entity.Component):
 		scores_data = common_data.entity.controller_data.scores_data	# hold a pointer to the scores in the controller
 		for i in range(0,10):
 			score, r, g, b = self.formatScore(i,scores_data[i][0],scores_data[i][1])
-			graphics_data.images.append(self.render_layer.addImageFromString(font_manager= self.font_manager, string=score, font=self.font, color=graphics.Color(r, g, b, 1)))
+			graphics_data.images.append(self.render_layer.addImageFromString(string=score, font=self.font, color=graphics.Color(r, g, b, 1)))
 
 
 
@@ -74,16 +73,14 @@ class ScoreTable(entity.Component):
 
 		for i in range(0,10):
 			score, r, g, b = self.formatScore(i,scores_data[i][0],scores_data[i][1])
-			self.render_layer.replaceImageFromString(entity.graphics_data.images[i],
-																							 font_manager=self.font_manager, string=score, font=self.font, color=graphics.Color(r, g, b, 255))
+			self.render_layer.replaceImageFromString(entity.graphics_data.images[i], string=score, font=self.font, color=graphics.Color(r, g, b, 255))
 
 
-def makeGraphics(manager, render_layer, font_manager):
+def makeGraphics(manager, render_layer):
 	return manager.makeTemplate({
 			"Name": "Scoreboard",
 			"Template": ScoreTable,
 			"RenderLayer": render_layer,
-			"FontManager": font_manager,
 		})
 
 ###########################################################

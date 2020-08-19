@@ -53,49 +53,37 @@ class PacBun(Game):
 		self.title_cooldown_time = 3
 		self.title_cooldown = self.title_cooldown_time
 
-		self.font_manager = text.FontManager(self.ren)
-		self.score_font = self.font_manager.addFontFromFile("Fonts/PacBun/PacBun.ttf", 15)
+		self.score_font = self.overlay_renlayer.addFont("Fonts/PacBun/PacBun.ttf", 15)
 		self.current_score = 0
 		self.old_score = -1
-		self.score_image = self.overlay_renlayer.addImageFromString(font_manager=self.font_manager, string="{0:0=4d}".format(self.current_score), font=self.score_font, color=graphics.Color(1, 1, 1, 1))
+		self.score_image = self.overlay_renlayer.addImageFromString(string="{0:0=4d}".format(self.current_score), font=self.score_font, color=graphics.Color(1, 1, 1, 1))
 
 		##########################
 		# set up sound           #
 		##########################
 		self.sound_mixer = sound.SoundMixer(self)
-		###############################
-		# set up background and title #
-		###############################
-		# back_controller = background.makeController(self.controller_manager)
-		# back = self.entity_manager.makeEntity(
-		# 	self.entity_manager.makeEntityTemplate(
-		# 		graphics=self.graphics_manager.makeTemplate(background.makeGraphics(self.renlayer)),
-		# 		controller= back_controller)
-		# )
-		# back.setPos(Vec3(0.0, 0.0, 64.0))
+		#################
+		# set up titles #
+		#################
 
+		####################################
+		# get templates from config file   #
+		####################################
 
-		self.title_t = self.entity_manager.makeEntityTemplate(graphics=title.makeGraphics(self.graphics_manager, self.overlay_renlayer), controller=title.makeController(self.controller_manager))
-		self.title = self.requestNewEntity(entity_template=self.title_t, pos=Vec3(36, 250, 50), parent=self, name="Title")
+		templates_data = utility.getDictDataFromFile('PB_templates.config',"templates")
+		self.templates = self.makeTemplates(templates_data, self.renlayer)
+
+		overlay_templates_data = utility.getDictDataFromFile('PB_templates.config','title_templates')
+		self.templates.update(self.makeTemplates(overlay_templates_data, self.overlay_renlayer))
+
+		self.levels = utility.getListDataFromFile("PB_levels.config", "levels")
+
+		self.title = self.requestNewEntity(entity_template=self.templates['title'], pos=Vec3(36, 250, 50), parent=self, name="Title")
 		self.title.setGamePad(self.input.getGamePad(0))
 
 		# high score table
-		self.high_score_t = self.entity_manager.makeEntityTemplate(
-			controller=high_score.makeController(self.controller_manager),
-			graphics=high_score.makeGraphics(manager=self.graphics_manager,
-																	render_layer=self.overlay_renlayer,
-																	font_manager=self.font_manager)
-		)
-		self.high_score = self.requestNewEntity(self.high_score_t, parent=self, name="High Scores")
+		self.high_score = self.requestNewEntity(self.templates['high_score'], parent=self, name="High Scores")
 		self.high_score.graphics.initScore(self.high_score.common_data)
-
-		# entity for getting initials on a new high score
-		self.new_high_score_t = self.entity_manager.makeEntityTemplate(
-			controller=new_high_score.makeController(self.controller_manager),
-			graphics=new_high_score.makeGraphics(manager=self.graphics_manager,
-																	render_layer=self.overlay_renlayer,
-																	font_manager=self.font_manager)
-		)
 
 
 		# these are the entities that survive a game over
@@ -109,44 +97,31 @@ class PacBun(Game):
 
 
 
-		####################################
-		# get templates from config file   #
-		####################################
-
-		templates_data = utility.getDictDataFromFile('PB_templates.config',"templates")
-
-		# build templates
-		self.templates = {}	# to hold the actual handles from the entity manager
-		for template in templates_data:
-			self.templates[template]= self.entity_manager.makeEntityTemplate(
-				controller=templates_data[template]['controller'](self.controller_manager),
-				collider=templates_data[template]['collider'](self.controller_manager),
-				graphics=self.graphics_manager.makeTemplate(templates_data[template]['graphics'],{'RenderLayer': self.renlayer})
-			)
-
-		self.levels = utility.getListDataFromFile("PB_levels.config", "levels")
 
 
 		# put all separate images into a texture atlas for (more) efficient rendering
 		self.renlayer.makeAtlas(320)
 		# self.renlayer.dumpAtlasToFiles("TA.png", "TA.json")
 
-
-		self.message_x = 0
-
-		self.message_t = self.entity_manager.makeEntityTemplate(
-			graphics=message_box.makeGraphics(self.graphics_manager, self.overlay_renlayer, self.font_manager),
-			controller=message_box.makeController(self.controller_manager)
-																														)
-
 	# end init()
+
+	def makeTemplates(self, templates_data, render_layer):
+		templates = {}	# to hold the actual handles from the entity manager
+		for template in templates_data:
+			templates[template] = self.entity_manager.makeEntityTemplate(
+				controller=templates_data[template]['controller'](self.controller_manager),
+				collider=templates_data[template]['collider'](self.controller_manager),
+				graphics=self.graphics_manager.makeTemplate(templates_data[template]['graphics'],
+																										{'RenderLayer': render_layer})
+			)
+		return templates
 
 	def updatePlay(self, dt):
 		# draw score
 		self.renlayer.setColorCast(graphics.Color(1, 1, 1, 1))
 		self.setClearColor(graphics.Color(219 / 255, 182 / 255, 85 / 255))
 		if self.current_score!= self.old_score:
-			self.overlay_renlayer.replaceImageFromString(old_image=self.score_image, font_manager=self.font_manager, string="{0:0=4d}".format(self.current_score), font=self.score_font, color=graphics.Color(1, 1, 1, 1))
+			self.overlay_renlayer.replaceImageFromString(old_image=self.score_image, string="{0:0=4d}".format(self.current_score), font=self.score_font, color=graphics.Color(1, 1, 1, 1))
 			self.old_score = self.current_score
 
 
@@ -226,7 +201,7 @@ class PacBun(Game):
 
 			# do high scoreness
 			if self.high_score.controller.isHighScore(self.high_score, self.current_score):
-				self.new_high_score = self.requestNewEntity(self.new_high_score_t, parent=self, name="New High Score")
+				self.new_high_score = self.requestNewEntity(self.templates['new_high_score'], parent=self, name="New High Score")
 				self.new_high_score.graphics.updateInitials(self.new_high_score)
 				game_pad = self.input.getGamePad(0)
 				if game_pad:
@@ -268,7 +243,6 @@ class PacBun(Game):
 		self.title.setState(title.eTitleStates.quit)
 		if self.quit_cooldown<=0:
 			gc.enable()
-			self.font_manager.delete()
 			self.running=False
 			return
 		####################################################
@@ -342,14 +316,13 @@ class PacBun(Game):
 		self.current_score+=increment
 
 	def message(self, text, pos, color=graphics.Color(1, 1, 1, 1), duration=0):
-		message = self.requestNewEntity(entity_template=self.message_t,
+		message = self.requestNewEntity(entity_template=self.templates['message'],
 													pos=pos,
 													parent=self,
 													name= f"message: {text}"
 		)
 		message.graphics.init(data = message.graphics_data,
 													ren_layer = self.overlay_renlayer,
-													font_manager = self.font_manager,
 													message=text,
 													font=0,
 													color = color,

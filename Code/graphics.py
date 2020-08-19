@@ -256,7 +256,7 @@ class RenderLayer(object):
 
 		self.origin = Vec3(0,0,0)
 
-		self.fontmanager = text.FontManager(self.ren)
+		self.font_manager = text.FontManager(self.ren)
 		self.default_font=0
 
 		# Color cast used for fading and other effects
@@ -281,11 +281,10 @@ class RenderLayer(object):
 		return index
 
 	def addImageFromString(self,
-												 font_manager,
 												 string,
 												 font=0,
 												 color=Color(1, 1, 1, 1)):
-		message = text.Message.withRender(font_manager=font_manager, font=font, string=string, color=color)
+		message = text.Message.withRender(font_manager=self.font_manager, font=font, string=string, color=color)
 		index = self._getNextEmptySlot()
 		self.images[index] = Image.fromTexture(self.ren,message.texture, message.width, message.height)
 		return index
@@ -296,11 +295,10 @@ class RenderLayer(object):
 
 	def replaceImageFromString(self,
 														 old_image,
-														 font_manager,
 														 string,
 														 font=0,
 														 color=Color(1, 1, 1, 1)):
-		message = text.Message.withRender(font_manager=font_manager, string=string, font=font, color=color)
+		message = text.Message.withRender(font_manager=self.font_manager, string=string, font=font, color=color)
 		self.images[old_image].delete()
 		self.images[old_image] = Image.fromTexture(self.ren,message.texture, message.width, message.height)
 
@@ -399,9 +397,8 @@ class RenderLayer(object):
 			image.delete()
 
 # add a font that this Render Layer can use
-	def addFont(self, font_path):
-		self.fonts.append(text.Font(self.ren, "Fonts/space-mono/SpaceMono-Bold.ttf"))
-		return len(self.fonts)-1
+	def addFont(self, font_path, size):
+		return self.font_manager.addFontFromFile(font_path, size)
 
 	def queueMessageFromText(self, message_text, x, y, font=None, size= None):
 		if not font:
