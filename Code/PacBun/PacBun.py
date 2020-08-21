@@ -121,11 +121,12 @@ class PacBun(Game):
 		self.renlayer.setColorCast(graphics.Color(1, 1, 1, 1))
 		self.setClearColor(graphics.Color(219 / 255, 182 / 255, 85 / 255))
 		if self.current_score!= self.old_score:
+			# update score since it's changed
 			self.overlay_renlayer.replaceImageFromString(old_image=self.score_image, string="{0:0=4d}".format(self.current_score), font=self.score_font, color=graphics.Color(1, 1, 1, 1))
 			self.old_score = self.current_score
 
-
-		self.collision_manager.doCollisionsWithSingleEntity(self.bunny)  # collisions between monsters
+		for bunny in self.bunnies:
+			self.collision_manager.doCollisionsWithSingleEntity(bunny)  # collisions between monsters
 
 	##################################################
 
@@ -158,19 +159,24 @@ class PacBun(Game):
 		# initialise map
 		self.level = level.Level(self,self.levels[self.current_level], self.templates['tile'])
 
+		self.num_bunnies = 4
+
 		# initialise creatures
-		self.bunny = self.requestNewEntity(self.templates['pacbun'], pos=self.level.getBunnyStart(), parent=self, name="Bunny")
-		game_pad = self.input.getGamePad(0)
-		if game_pad:
-			self.bunny.setGamePad(game_pad)
-		self.bunny.controller_data.level = self.level
+		self.bunnies = []
+		for bunny in range(0,self.num_bunnies):
+			name = ['blue','pinkie','pacbun','bowie'][bunny]
+			self.bunnies.append(self.requestNewEntity(self.templates[name], pos=self.level.getBunnyStarts()[bunny%len(self.level.getBunnyStarts())], parent=self, name=f"Bunny {name}"))
+			game_pad = self.input.getGamePad(bunny)
+			if game_pad:
+				self.bunnies[bunny].setGamePad(game_pad)
+			self.bunnies[bunny].controller_data.level = self.level
 
 		self.foxes = []
 		for fox_start in self.level.getFoxStarts():
-			this_fox = self.requestNewEntity(self.templates['fox'], pos=fox_start[0], parent=self, name="Fox")
-			this_fox.controller_data.bunny = self.bunny
+			this_fox = self.requestNewEntity(self.templates['fox'], pos=fox_start.pos, parent=self, name="Fox")
+			this_fox.controller_data.bunny = self.bunnies[0]
 			this_fox.controller_data.level = self.level
-			this_fox.controller_data.type = fox_start[1]
+			this_fox.controller_data.type = fox_start.type
 			self.foxes.append(this_fox)
 
 		self.message(self.level.message, Vec3(20,20,0), duration=10, color=graphics.Color(1,1,1))
@@ -216,6 +222,8 @@ class PacBun(Game):
 
 	def updateEscape(self, dt):
 		self.title.setState(title.eTitleStates.escape)
+		for bunny in self.bunnies:
+			self.collision_manager.doCollisionsWithSingleEntity(bunny)  # collisions between monsters
 
 		####################################################
 	def updateNewHighScore(self, dt):
@@ -226,7 +234,8 @@ class PacBun(Game):
 	####################################################
 
 	def updateWin(self, dt):
-		self.bunny.setState(entity.eStates.dead)
+		for bunny in self.bunnies:
+			bunny.setState(entity.eStates.dead)
 		self.restart_cooldown-=dt
 		self.title.setState(title.eTitleStates.win)
 		if self.restart_cooldown<=0:
@@ -354,20 +363,6 @@ class PacBun(Game):
 
 
 # end draw()
-
-	def reportMonsterDeath(self):
-		self.num_monsters-=1
-		# if self.num_monsters<=0:
-		# 	self.setGameMode(eGameModes.win)
-		# 	self.restart_cooldown = 6
-
-	def requestNewEnemy(self,
-											 entity_template,
-											 pos=Vec3(0,0,0),
-											 parent=False,
-											 name=False):
-		self.num_monsters+=1
-		self.requestNewEntity(entity_template,pos,parent,name)
 
 	def addNewHighScore(self, initials):
 		self.high_score.controller.updateScores(score_data=self.high_score.controller_data.scores_data, initials=initials, new_score=self.current_score)

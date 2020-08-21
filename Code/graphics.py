@@ -615,6 +615,9 @@ class MultiAnim(Component):
 				self.current_anim =  eStates.stationary
 				self.current_state = eStates.stationary
 
+			for anim in common_data.entity.graphics.anims:	# ie every anim in the multiAnim
+				common_data.entity.graphics.anims[anim].init_instance(data=self,common_data=common_data)
+
 	def delete(self, data):
 		for anim in self.anims:
 			self.anims[anim].delete()
@@ -635,12 +638,8 @@ class MultiAnim(Component):
 			common_data.new_state=False
 			data.current_anim = common_data.state
 			data.current_state = common_data.state
-			self.startAnim(data, 0) # TODO allow some anims to begin from different frame
+			self.anims[data.current_anim].startAnim(data) # TODO allow some anims to begin from different frame
 		self.anims[data.current_anim].advanceAnim(data, time)
-
-	def startAnim(self, data, frame=0):
-		data.current_time = 0
-		data.current_frame = frame
 
 	def draw(self, data, common_data):
 		frame = self.anims[data.current_anim].getCurrentFrame(data)
@@ -667,6 +666,10 @@ class Anim(object):
 		self.frames = []
 		self.render_layer = render_layer
 
+	# override for specific instances and some anim types
+	def init_instance(self, data, common_data):
+		pass
+
 	def addFrame(self, image, duration):
 		self.frames.append(AnimFrame(image, duration))
 
@@ -683,6 +686,10 @@ class Anim(object):
 
 	def getCurrentFrame(self, data):
 		return self.frames[data.current_frame]
+
+	def startAnim(self, data, frame=0):
+		data.current_time = 0
+		data.current_frame = frame
 
 	def delete(self):
 		for frame in self.frames:
@@ -740,6 +747,21 @@ class AnimRandom(Anim):
 		while anim_instance.current_time > self.frames[anim_instance.current_frame].time:
 			anim_instance.current_time -= self.frames[anim_instance.current_frame].time
 			anim_instance.current_frame = rand_num(len(self.frames))
+
+# simple choose a frame at random and stay static
+class AnimRandomStatic(Anim):
+	def __init__(self, rl, frames):
+		super(AnimRandomStatic, self).__init__(rl)
+		self.addFrames(rl, frames)
+
+	def init_instance(self, data, common_data):
+		data.current_frame = rand_num(len(self.frames))
+
+	def startAnim(self, data, frame=0):
+		data.current_time = 0
+
+	def advanceAnim(self, anim_instance, time):
+		pass
 
 # container for a single frame of animation
 class AnimFrame:

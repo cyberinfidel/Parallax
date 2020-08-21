@@ -15,9 +15,19 @@ class Hole(object):
 		self.exit = exit
 		self.direction = direction
 
+class Fox(object):
+	def __init__(self, pos, type):
+		self.pos = pos
+		self.type = type
+
+
 class Level(object):
 
+
 	def __init__(self, game, data, tile_t):
+
+		impassables = ['H','#']
+
 		self.game = game
 		self.map = copy.deepcopy(data['Map'])
 		self.message = data['Message']
@@ -31,6 +41,7 @@ class Level(object):
 			self.tiles[i] = [None]*20
 
 		self.holes = []
+		self.bunny_starts = []
 		self.fox_starts=[]
 
 		self.num_spaces=0
@@ -46,22 +57,24 @@ class Level(object):
 
 				# set up each tile from what the map says
 				if self.map[y][x]=="H":
-					this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, [tile.eTileStates.hedge,tile.eTileStates.hedge2,tile.eTileStates.hedge3][vector.rand_num(3)])
+					this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.hedge)
+				elif self.map[y][x]=="#":
+					this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.void)
 				else:
 					# work out ways out of the space
-					if self.map[y + 1][x] != "H":
+					if self.map[y + 1][x] not in impassables:
 						this_tile.controller.addExit(this_tile.controller_data, entity.eDirections.up)
 						exit_coord = Vec3(x*16+8,y*16+10,0)
 						exit_direction = entity.eDirections.up
-					if self.map[y - 1][x] != "H":
+					if self.map[y - 1][x] not in impassables:
 						this_tile.controller.addExit(this_tile.controller_data, entity.eDirections.down)
 						exit_coord = Vec3(x * 16 +8, y * 16 +6, 0)
 						exit_direction = entity.eDirections.down
-					if self.map[y][x - 1] != "H":
+					if self.map[y][x - 1] not in impassables:
 						this_tile.controller.addExit(this_tile.controller_data, entity.eDirections.left)
 						exit_coord = Vec3(x * 16  +6, y * 16+8, 0)
 						exit_direction = entity.eDirections.left
-					if self.map[y][x + 1] != "H":
+					if self.map[y][x + 1] not in impassables:
 						this_tile.controller.addExit(this_tile.controller_data, entity.eDirections.right)
 						exit_coord = Vec3(x * 16 + 10, y * 16+8, 0)
 						exit_direction = entity.eDirections.right
@@ -69,17 +82,19 @@ class Level(object):
 					if self.map[y][x] == "o":
 						this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.hole)
 						self.holes.append(Hole(Vec3(x,y,0),exit_coord, exit_direction))
+					elif self.map[y][x] == "T":
+							this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.tunnel)
 					else:
 						if self.map[y][x] == "B":
-							self.bunny_start = Vec3(x * 16 + 8, y * 16 + 8, 0)
+							self.bunny_starts.append(Vec3(x * 16 + 8, y * 16 + 8, 0))
 						elif self.map[y][x] == "1":
-							self.fox_starts.append((Vec3(x * 16 + 8, y * 16 + 8, 0),fox.eFoxTypes.direct))
+							self.fox_starts.append(Fox(pos=Vec3(x * 16 + 8, y * 16 + 8, 0),type=fox.eFoxTypes.direct))
 						elif self.map[y][x] == "2":
-							self.fox_starts.append((Vec3(x * 16 + 8, y * 16 + 8, 0),fox.eFoxTypes.axis_swap))
+							self.fox_starts.append(Fox(Vec3(x * 16 + 8, y * 16 + 8, 0),fox.eFoxTypes.axis_swap))
 						elif self.map[y][x] == "3":
-							self.fox_starts.append((Vec3(x * 16 + 8, y * 16 + 8, 0),fox.eFoxTypes.ahead))
+							self.fox_starts.append(Fox(Vec3(x * 16 + 8, y * 16 + 8, 0),fox.eFoxTypes.ahead))
 						elif self.map[y][x] == "4":
-							self.fox_starts.append((Vec3(x * 16 + 8, y * 16 + 8, 0),fox.eFoxTypes.cowardly))
+							self.fox_starts.append(Fox(Vec3(x * 16 + 8, y * 16 + 8, 0),fox.eFoxTypes.cowardly))
 						# blank space
 						self.num_spaces += 1
 						this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.clear)
@@ -104,8 +119,8 @@ class Level(object):
 				else:
 					return self.holes[0]
 
-	def getBunnyStart(self):
-		return self.bunny_start
+	def getBunnyStarts(self):
+		return self.bunny_starts
 
 	def getFoxStarts(self):
 		return self.fox_starts

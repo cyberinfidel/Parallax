@@ -45,7 +45,7 @@ def makeGraphics(manager, renlayer):
 				[
 			{
 				"Name": "Bat Flapping",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": graphics.AnimNoLoop,
 				"States": [entity.eStates.stationary],
 				"Frames":
 					[
@@ -160,7 +160,8 @@ class Controller(controller.Controller):
 					data.vel.y = 0 # drop on target
 				elif (common_data.pos.z<80) and (data.vel.z<3):
 					data.vel.y += 2 # otherwise flap
-					common_data.entity.graphics.startAnim(data = common_data.entity.graphics_data)
+					# common_data.entity.graphics.startAnim(data = common_data.entity.graphics_data)
+					self.setState(data, common_data, entity.eStates.stationary, force_new_state=True)
 					common_data.entity.sounds.playEvent(data, common_data, eEvents.flap)
 
 				data.cooldown = 0.2

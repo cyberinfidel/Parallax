@@ -130,7 +130,7 @@ class Controller(controller.Controller):
 			else:
 				common_data.blink=False
 
-			if common_data.game.game_mode==game.eGameModes.play:
+			if common_data.game.game_mode==game.eGameModes.play or common_data.game.game_mode==PacBun.eGameModes.escape:
 				self.setState(data, common_data, eTitleStates.play)
 				if data.game_pad.actions[game_pad.eActions.pause]:
 					common_data.game.setGameMode(game.eGameModes.paused)

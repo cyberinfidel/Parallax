@@ -27,8 +27,12 @@ class eActions(enum.IntEnum):
 	pause = 9
 	quit = 10
 	fullscreen = 11
-	select = 12
-	numActions = 13
+	select = 12,
+	up1 = 13,
+	right1 = 14,
+	down1 = 15,
+	left1 = 16,
+	numActions = 17
 
 class GamePad(Component):
 	def __init__(self, game):
@@ -67,13 +71,18 @@ class Input(object):
 			raise("Coudldn't initialise joysticks")
 
 		self.quit = False
-		self.game_pads = [GamePad(game)]
+		self.game_pads = [GamePad(game),GamePad(game)]
 
 		self.key_map = {}
 		self.key_map[eActions.up] = [sdl2.SDLK_UP]
 		self.key_map[eActions.right] = [sdl2.SDLK_RIGHT]
 		self.key_map[eActions.down] = [sdl2.SDLK_DOWN]
 		self.key_map[eActions.left] = [sdl2.SDLK_LEFT]
+
+		self.key_map[eActions.up1] = [sdl2.SDLK_w]
+		self.key_map[eActions.right1] = [sdl2.SDLK_d]
+		self.key_map[eActions.down1] = [sdl2.SDLK_s]
+		self.key_map[eActions.left1] = [sdl2.SDLK_a]
 
 		self.key_map[eActions.jump] = [sdl2.SDLK_SPACE]
 		self.key_map[eActions.attack_small] = [sdl2.SDLK_g]
@@ -91,7 +100,7 @@ class Input(object):
 			for joy in range(sdl2.SDL_NumJoysticks()):
 				if sdl2.SDL_IsGameController(joy):
 					self.controllers[joy]=(GameController(handler=sdl2.SDL_GameControllerOpen(joy), joy_number=joy))
-			if len(self.controllers)>1:
+			if len(self.controllers)>2:
 				self.game_pads.append(GamePad(game))
 
 
@@ -129,7 +138,7 @@ class Input(object):
 							self.game_pads[player].clear(eActions.left)
 	
 				elif event.type == sdl2.SDL_CONTROLLERBUTTONUP:
-					for player in [0, 1]:
+					for player in [0, 1, 2, 3]:
 						if event.cbutton.button == sdl2.SDL_CONTROLLER_BUTTON_A and event.cbutton.which==player:
 							self.game_pads[player].clear(eActions.jump)
 						if event.cbutton.button == sdl2.SDL_CONTROLLER_BUTTON_Y and event.cbutton.which==player:
@@ -161,7 +170,20 @@ class Input(object):
 					if event.key.keysym.sym in self.key_map[eActions.right]:
 						self.game_pads[0].set(eActions.right)
 						self.game_pads[0].clear(eActions.left)
-	
+
+					if event.key.keysym.sym in self.key_map[eActions.up1]:
+						self.game_pads[1].set(eActions.up)
+						self.game_pads[1].clear(eActions.down)
+					if event.key.keysym.sym in self.key_map[eActions.down1]:
+						self.game_pads[1].set(eActions.down)
+						self.game_pads[1].clear(eActions.up)
+					if event.key.keysym.sym in self.key_map[eActions.left1]:
+						self.game_pads[1].set(eActions.left)
+						self.game_pads[1].clear(eActions.right)
+					if event.key.keysym.sym in self.key_map[eActions.right1]:
+						self.game_pads[1].set(eActions.right)
+						self.game_pads[1].clear(eActions.left)
+
 					if event.key.keysym.sym in self.key_map[eActions.jump]:
 						self.game_pads[0].set(eActions.jump)
 					if event.key.keysym.sym in self.key_map[eActions.attack_small]:
@@ -189,7 +211,16 @@ class Input(object):
 						self.game_pads[0].clear(eActions.left)
 					if event.key.keysym.sym in self.key_map[eActions.right]:
 						self.game_pads[0].clear(eActions.right)
-	
+
+					if event.key.keysym.sym in self.key_map[eActions.up1]:
+						self.game_pads[1].clear(eActions.up)
+					if event.key.keysym.sym in self.key_map[eActions.down1]:
+						self.game_pads[1].clear(eActions.down)
+					if event.key.keysym.sym in self.key_map[eActions.left1]:
+						self.game_pads[1].clear(eActions.left)
+					if event.key.keysym.sym in self.key_map[eActions.right1]:
+						self.game_pads[1].clear(eActions.right)
+
 					if event.key.keysym.sym in self.key_map[eActions.jump]:
 						self.game_pads[0].clear(eActions.jump)
 					if event.key.keysym.sym in self.key_map[eActions.attack_small]:

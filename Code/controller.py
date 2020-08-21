@@ -17,8 +17,12 @@ class Controller(Component):
 		super(Controller, self).__init__(game)
 
 	# Update the entity state whether the last action has cooled down or not
-	def setState(self, data, common_data, state, cooldown=-1):
-		if common_data.state!=state:
+	# By default repeating a state is ignored
+	# e.g. so a running entity doesnt restart it's running animation every update
+	# use the force_new_state flag to force exactly that to happen
+	# e.g. when a bat decides to flap it's wings
+	def setState(self, data, common_data, state, cooldown=-1, force_new_state=False):
+		if common_data.state!=state or force_new_state:
 			common_data.state = state
 			common_data.new_state = True
 			data.cooldown = cooldown

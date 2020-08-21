@@ -16,10 +16,10 @@ import background
 class eTileStates(enum.IntEnum):
 	poo = 3
 	hedge = 4
-	hedge2 = 5
-	hedge3 = 6
-	clear = 7
-	hole = 8
+	clear = 5
+	hole = 6
+	void = 7
+	tunnel = 8
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
