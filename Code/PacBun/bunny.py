@@ -195,7 +195,7 @@ class Controller(controller.Controller):
 	def receiveCollision(self, A, message):
 		if message:
 			if message.damage>0:
-				A.common_data.game.setGameMode(game.eGameModes.game_over)
+				A.common_data.game.setGameMode(PacBun.eGameModes.game_over)
 				A.controller_data.game_pad=False
 				A.controller.setState(A.controller_data,A.common_data,entity.eStates.dead)
 

@@ -8,7 +8,7 @@ import sdl2.mouse
 # 	add path to Parallax
 sys.path.append('../')
 # actually import files
-from game import Game, eGameModes
+from game import Game
 import game
 from entity import eStates
 import entity
@@ -29,8 +29,15 @@ import new_high_score
 import message_box
 
 
-class eGameModes(game.eGameModes):
-	escape, high_score, new_high_score, numGameModes = range(game.eGameModes.numGameModes,game.eGameModes.numGameModes+4)
+class eGameModes:
+		quit,\
+		init,\
+		title,\
+		start,\
+		play,\
+		game_over,\
+		win,\
+		paused,	escape, high_score, new_high_score, numGameModes = range(0,12)
 
 class PacBun(Game):
 

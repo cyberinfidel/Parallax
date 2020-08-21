@@ -130,22 +130,24 @@ class Controller(controller.Controller):
 			else:
 				common_data.blink=False
 
-			if common_data.game.game_mode==game.eGameModes.play or common_data.game.game_mode==PacBun.eGameModes.escape:
+			if common_data.game.game_mode==PacBun.eGameModes.play:
 				self.setState(data, common_data, eTitleStates.play)
+
+			if common_data.game.game_mode==PacBun.eGameModes.play or common_data.game.game_mode==PacBun.eGameModes.escape:
 				if data.game_pad.actions[game_pad.eActions.pause]:
-					common_data.game.setGameMode(game.eGameModes.paused)
+					common_data.game.setGameMode(PacBun.eGameModes.paused)
 					self.setState(data, common_data, eTitleStates.paused)
 					data.game_pad.actions[game_pad.eActions.pause] = False  # stops complete quit
 					data.game_pad.actions[game_pad.eActions.quit] = False  # stops complete quit
 			else:
-				if common_data.game.game_mode == game.eGameModes.paused:
+				if common_data.game.game_mode == PacBun.eGameModes.paused:
 					if data.game_pad:
 						if data.game_pad.actions[game_pad.eActions.jump]:
-							common_data.game.setGameMode(game.eGameModes.play)
+							common_data.game.setGameMode(PacBun.eGameModes.play)
 							self.setState(data, common_data, eTitleStates.play)
 							data.game_pad.actions[game_pad.eActions.jump]=False # stops hero jumping
 						if data.game_pad.actions[game_pad.eActions.quit]:
-							common_data.game.setGameMode(game.eGameModes.title)
+							common_data.game.setGameMode(PacBun.eGameModes.title)
 							common_data.game.killPlayEntities()
 							self.setState(data, common_data, eTitleStates.title)
 							data.game_pad.actions[game_pad.eActions.quit]=False # stops complete quit
@@ -153,17 +155,17 @@ class Controller(controller.Controller):
 							common_data.game.toggleFullscreen()
 							data.game_pad.actions[game_pad.eActions.fullscreen] = False  # stops repeat
 
-				elif common_data.game.game_mode == game.eGameModes.title\
+				elif common_data.game.game_mode == PacBun.eGameModes.title\
 						or common_data.game.game_mode == PacBun.eGameModes.high_score:
 					self.setState(data, common_data,
-												eTitleStates.title if common_data.game.game_mode==game.eGameModes.title else eTitleStates.high_score)
+												eTitleStates.title if common_data.game.game_mode==PacBun.eGameModes.title else eTitleStates.high_score)
 					if data.game_pad:
 						if data.game_pad.actions[game_pad.eActions.jump]:
-							common_data.game.setGameMode(game.eGameModes.start)
+							common_data.game.setGameMode(PacBun.eGameModes.start)
 							self.setState(data, common_data, eTitleStates.play)
 							data.game_pad.actions[game_pad.eActions.jump]=False # stops hero jumping
 						if data.game_pad.actions[game_pad.eActions.quit]:
-							common_data.game.setGameMode(game.eGameModes.quit)
+							common_data.game.setGameMode(PacBun.eGameModes.quit)
 							common_data.game.killPlayEntities()
 							self.setState(data, common_data, eTitleStates.quit)
 							data.game_pad.actions[game_pad.eActions.quit] = False  # stops complete quit
@@ -171,9 +173,9 @@ class Controller(controller.Controller):
 							common_data.game.toggleFullscreen()
 							data.game_pad.actions[game_pad.eActions.fullscreen] = False  # stops repeat
 
-				elif common_data.game.game_mode == game.eGameModes.game_over:
+				elif common_data.game.game_mode == PacBun.eGameModes.game_over:
 					self.setState(data, common_data, eTitleStates.game_over)
-				elif common_data.game.game_mode == game.eGameModes.win:
+				elif common_data.game.game_mode == PacBun.eGameModes.win:
 					self.setState(data, common_data, eTitleStates.win)
 
 
