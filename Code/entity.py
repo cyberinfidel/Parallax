@@ -1,5 +1,6 @@
 # external lib import
 import enum
+import copy
 
 # my file import
 from vector import Vec3
@@ -87,8 +88,8 @@ class EntityManager(object):
 		self.templates.append(EntityTemplate(self.game, graphics=graphics, sounds=sounds, controller=controller, collider=collider))
 		return len(self.templates)-1
 
-	def makeEntity(self, entity_t_index, name = False):
-		self.entities.append( self.templates[entity_t_index].instanceEntity(name))
+	def makeEntity(self, entity_t_index, name=False, init=False):
+		self.entities.append( self.templates[entity_t_index].instanceEntity(name, init))
 		return self.entities[-1]
 
 	def deleteDead(self):
@@ -99,7 +100,14 @@ class Entity(object):
 		def __init__(self):
 			pass
 
-	def __init__(self, name, game, graphics=False, sounds=False, controller=False, collider=False):
+	def __init__(self,
+							 name,
+							 game,
+							 graphics=False,
+							 sounds=False,
+							 controller=False,
+							 collider=False,
+							 init=False):
 		self.common_data = self.Data()
 		self.common_data.game = game
 		self.common_data.entity = self
@@ -126,6 +134,11 @@ class Entity(object):
 		if self.collider:
 			self.collider_data = collider.makeData(self.common_data)	# store data for this instance
 
+		if init:
+			# execute init
+			exec(init,globals(),locals())
+			pass
+
 	def delete(self):
 		if self.graphics:
 			self.graphics.delete(self.graphics_data)
@@ -143,7 +156,7 @@ class Entity(object):
 		return self.common_data.name
 
 	def setPos(self,pos):
-		self.common_data.pos = pos
+		self.common_data.pos = copy.deepcopy(pos)
 
 	def getPos(self):
 		return self.common_data.pos
@@ -199,10 +212,16 @@ class EntityTemplate(object):
 		self.collider = collider
 		self.name = f"{name}(t)"
 
-	def instanceEntity(self, name):
+	def instanceEntity(self, name, init):
 		if not name:
 			name=self.name	# use template name
-		return Entity(name, game = self.game, graphics=self.graphics, sounds=self.sounds, controller = self.controller, collider = self.collider)
+		return Entity(name=name,
+									game = self.game,
+									graphics=self.graphics,
+									sounds=self.sounds,
+									controller = self.controller,
+									collider = self.collider,
+									init=init)
 
 	def delete(self):
 		print(f"{self.name} - delete template doesn't do anything right now...")

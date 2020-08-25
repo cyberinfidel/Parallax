@@ -633,9 +633,12 @@ class MultiAnim(entity.Component):
 	def update(self, data, common_data, time):
 		if common_data.new_state:
 			common_data.new_state=False
-			data.current_anim = common_data.state
-			data.current_state = common_data.state
-			self.anims[data.current_anim].startAnim(data) # TODO allow some anims to begin from different frame
+			if common_data.state in self.anims:
+				data.current_anim = common_data.state
+				data.current_state = common_data.state
+				self.anims[data.current_anim].startAnim(data) # TODO allow some anims to begin from different frame
+			else:
+				log(f"Warning: {common_data.name} animation doesn't exist for requested state {common_data.state}")
 		self.anims[data.current_anim].advanceAnim(data, time)
 
 	def draw(self, data, common_data):
@@ -746,19 +749,20 @@ class AnimRandom(Anim):
 			anim_instance.current_frame = rand_num(len(self.frames))
 
 # simple choose a frame at random and stay static
+# note: frame is chosen every time the animation is started
+# in a MultiAnim this means a random frame each time the state
+# for this Anim is chosen - the frame will not persist
 class AnimRandomStatic(Anim):
 	def __init__(self, rl, frames):
 		super(AnimRandomStatic, self).__init__(rl)
 		self.addFrames(rl, frames)
 
-	def init_instance(self, data, common_data):
-		data.current_frame = rand_num(len(self.frames))
-
 	def startAnim(self, data, frame=0):
 		data.current_time = 0
+		data.current_frame = rand_num(len(self.frames))
 
 	def advanceAnim(self, anim_instance, time):
-		pass
+		pass	# don't animate and stay on the initially selected random frame
 
 # container for a single frame of animation
 class AnimFrame:

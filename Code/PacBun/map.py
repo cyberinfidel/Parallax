@@ -20,7 +20,7 @@ class Fox(object):
 		self.type = type
 
 
-class Level(object):
+class Map(object):
 
 
 	def __init__(self, game, data, tile_t):
@@ -90,7 +90,7 @@ class Level(object):
 					if self.map[y][x] == "o":
 						this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.hole)
 						self.holes.append(Hole(Vec3(x, y, 0), exit_coord, exit_direction))
-					if self.map[y][x] == "O":
+					elif self.map[y][x] == "O":
 						this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.cutscene_hole)
 					elif self.map[y][x] == "T":
 						# map to which tunnel graphic to use based on exits

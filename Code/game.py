@@ -153,12 +153,21 @@ class Game(object):
 
 	def requestNewEntity(self,
 											 entity_template,
-											 pos=vector.Vec3(0,0,0),
+											 pos=False,
 											 parent=False,
-											 name=False):
-		new_entity = self.entity_manager.makeEntity(entity_template, name)
-		new_entity.setPos(copy.deepcopy(pos))
-		new_entity.setParent(parent)
+											 name=False,
+											 init=False):
+		new_entity = self.entity_manager.makeEntity(entity_t_index=entity_template,
+																								name=name,
+																								init=init)
+		# position (and anything else) may be set within the code at runtime
+		# and passed in as a parameter
+		# or it may be set as part of executing the  init routine
+		# in the entity's instance method
+		if pos:
+			new_entity.setPos(copy.deepcopy(pos))
+		if parent:
+			new_entity.setParent(parent)
 
 		if new_entity.graphics:
 			self.drawables.append(new_entity)

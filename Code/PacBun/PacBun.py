@@ -20,7 +20,7 @@ import log
 
 #import PacBun files
 import title
-import level
+import map
 
 
 class eGameModes:
@@ -95,6 +95,7 @@ class PacBun(game.Game):
 
 		self.setGameMode(eGameModes.title)
 		self.current_level = 0
+		self.num_bunnies = 1
 
 
 
@@ -108,12 +109,12 @@ class PacBun(game.Game):
 
 	def makeTemplates(self, templates_data, render_layer):
 		templates = {}	# to hold the actual handles from the entity manager
-		for template in templates_data:
-			templates[template] = self.entity_manager.makeEntityTemplate(
-				controller=templates_data[template]['controller'](self.controller_manager),
-				collider=templates_data[template]['collider'](self.controller_manager),
-				graphics=self.graphics_manager.makeTemplate(templates_data[template]['graphics'],
-																										{'RenderLayer': render_layer})
+		for name, template in templates_data.items():
+			templates[name] = self.entity_manager.makeEntityTemplate(
+				controller=template['controller'](self.controller_manager) if template['controller'] else None,
+				collider=template['collider'](self.controller_manager) if template['collider'] else None,
+				graphics=self.graphics_manager.makeTemplate(template['graphics'],
+																										{'RenderLayer': render_layer}) if template['graphics'] else None
 			)
 		return templates
 
@@ -159,7 +160,7 @@ class PacBun(game.Game):
 
 		self.level_data = self.levels[self.current_level]
 		# initialise map
-		self.level = level.Level(self,self.level_data, self.templates['tile'])
+		self.level = map.Map(self, self.level_data, self.templates['tile'])
 
 		self.playing = self.level_data['Playing']
 
@@ -175,19 +176,28 @@ class PacBun(game.Game):
 						pos=self.level.getBunnyStarts()[bunny%len(self.level.getBunnyStarts())],
 						parent=self,
 						name=f"Bunny {name}"))
-			game_pad = self.input.getGamePad(bunny)
-			if game_pad:
-				self.bunnies[bunny].setGamePad(game_pad)
-			self.bunnies[bunny].controller_data.level = self.level
-		else:
-			self.num_bunnies = len(self.level_data['Bunnies'])
-			for bunny, name in enumerate(self.level_data['Bunnies']):
-				self.bunnies.append(
-					self.requestNewEntity(
-						self.templates[name],
-						pos=self.level.getBunnyStarts()[bunny % len(self.level.getBunnyStarts())],
-						parent=self,
-						name=f"Bunny {name}"))
+				game_pad = self.input.getGamePad(bunny)
+				self.bunnies[bunny].controller_data.level = self.level
+				if game_pad:
+					self.bunnies[bunny].setGamePad(game_pad)
+
+		for name, entity in self.level_data['Entities'].items():
+			self.requestNewEntity(entity_template=self.templates[entity['template']],
+														parent=self,
+														name=name,
+														init=entity['init'])
+
+
+
+		# self.num_bunnies = len(self.level_data['Bunnies'])
+		# for bunny, name in enumerate(self.level_data['Bunnies']):
+		# 	self.bunnies.append(
+		# 		self.requestNewEntity(
+		# 			self.templates[name],
+		# 			pos=self.level.getBunnyStarts()[bunny % len(self.level.getBunnyStarts())],
+		# 			parent=self,
+		# 			name=f"Bunny {name}"))
+
 
 		self.foxes = []
 		for fox_start in self.level.getFoxStarts():
