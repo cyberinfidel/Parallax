@@ -1,20 +1,18 @@
 # external lib import
-import enum
 import os
 import ctypes
 
 # import sdl libs
 import sdl2.ext
 import sdl2.sdlimage as sdl_image
-# import sdl2.sdlgfx as sdl_gfx
-
 
 # initialise for loading PNGs and JPGs
 sdl_image.IMG_Init(sdl_image.IMG_INIT_PNG)
 sdl_image.IMG_Init(sdl_image.IMG_INIT_JPG)
 
 # import my files
-from entity import eStates, Component
+import entity
+import vector
 from vector import Vec3, rand_num
 from log import log
 
@@ -89,7 +87,6 @@ class Image(object):
 			# set the bottom to be the highest value of y that isn't empty
 			h = surface.contents.h
 			w = surface.contents.w
-			blank=True
 			top=h-1
 			bottom=0
 			right = 0
@@ -518,15 +515,15 @@ class RenderLayer(object):
 ####################################################
 
 # Types of graphics components available
-class GraphicsTypes(enum.IntEnum):
-	single_image = 0,
-	single_anim = 1,
-	multi_anim = 2,
-	text_message = 3,
-	num_graphics_types = 4
+class GraphicsTypes:
+	single_image, \
+	single_anim, \
+	multi_anim, \
+	text_message, \
+	num_graphics_types = range(0,5)
 
 # graphics component for a single static image
-class SingleImage(Component):
+class SingleImage(entity.Component):
 	def __init__(self, game, data):
 		super(SingleImage, self).__init__(game)
 		self.rl = data['RenderLayer']
@@ -549,7 +546,7 @@ class SingleImage(Component):
 		pass
 
 # graphics component for multiple static images
-class MultiImage(Component):
+class MultiImage(entity.Component):
 	def __init__(self, game, data):
 		super(MultiImage, self).__init__(game)
 		self.rl = data['RenderLayer']
@@ -574,7 +571,7 @@ class MultiImage(Component):
 
 
 # graphics component for a single animation only
-class SingleAnim(Component):
+class SingleAnim(entity.Component):
 	class Data(object):
 		def __init__(self, common_data):
 			self.current_frame = 0
@@ -601,7 +598,7 @@ class SingleAnim(Component):
 
 
 # graphics component for multiple animations
-class MultiAnim(Component):
+class MultiAnim(entity.Component):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -612,8 +609,8 @@ class MultiAnim(Component):
 			else:
 				self.current_frame = 0
 				self.current_time = 0
-				self.current_anim =  eStates.stationary
-				self.current_state = eStates.stationary
+				self.current_anim =  entity.eStates.stationary
+				self.current_state = entity.eStates.stationary
 
 			for anim in common_data.entity.graphics.anims:	# ie every anim in the multiAnim
 				common_data.entity.graphics.anims[anim].init_instance(data=self,common_data=common_data)
@@ -646,14 +643,14 @@ class MultiAnim(Component):
 		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, common_data.pos.y + frame.origin_y, common_data.pos.z + frame.origin_z)
 
 	def hasShadow(self):
-		return eStates.shadow in self.anims
+		return entity.eStates.shadow in self.anims
 
 	def drawShadow(self, data, common_data, shadow_height=0):
 
 		# todo: work out why y=0 doesn't work
 		# todo: shrink shadow the higher y is
 		# todo: allow shadows that aren't all at y=0
-		frame = self.anims[eStates.shadow].getCurrentFrame(data)
+		frame = self.anims[entity.eStates.shadow].getCurrentFrame(data)
 		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x + shadow_height, frame.origin_y, common_data.pos.z)
 
 

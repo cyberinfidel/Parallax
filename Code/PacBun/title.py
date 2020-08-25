@@ -1,9 +1,6 @@
-import enum
-
-import entity
+# Parallax
 import controller
 import graphics
-import game
 import game_pad
 
 import PacBun

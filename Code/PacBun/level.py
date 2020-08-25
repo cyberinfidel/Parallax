@@ -2,13 +2,12 @@ import copy
 
 import entity
 from vector import Vec3
-import vector
 
 import tile
 import fox
 import PacBun
 
-# contiainer for information about the holes
+# container for information about the rabbit holes
 class Hole(object):
 	def __init__(self,pos, exit, direction):
 		self.pos = pos
@@ -26,7 +25,7 @@ class Level(object):
 
 	def __init__(self, game, data, tile_t):
 
-		impassables = ['H','#']
+		impassables = ['H','#','<','>']
 
 		self.game = game
 		self.map = copy.deepcopy(data['Map'])
@@ -62,28 +61,63 @@ class Level(object):
 					this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.void)
 				else:
 					# work out ways out of the space
-					if self.map[y + 1][x] not in impassables:
-						this_tile.controller.addExit(this_tile.controller_data, entity.eDirections.up)
-						exit_coord = Vec3(x*16+8,y*16+10,0)
-						exit_direction = entity.eDirections.up
-					if self.map[y - 1][x] not in impassables:
-						this_tile.controller.addExit(this_tile.controller_data, entity.eDirections.down)
-						exit_coord = Vec3(x * 16 +8, y * 16 +6, 0)
-						exit_direction = entity.eDirections.down
-					if self.map[y][x - 1] not in impassables:
-						this_tile.controller.addExit(this_tile.controller_data, entity.eDirections.left)
-						exit_coord = Vec3(x * 16  +6, y * 16+8, 0)
-						exit_direction = entity.eDirections.left
-					if self.map[y][x + 1] not in impassables:
-						this_tile.controller.addExit(this_tile.controller_data, entity.eDirections.right)
-						exit_coord = Vec3(x * 16 + 10, y * 16+8, 0)
-						exit_direction = entity.eDirections.right
+					exit_map_value=0
+					if y+1<18:
+						if self.map[y + 1][x] not in impassables:
+							this_tile.controller.addExit(this_tile.controller_data, entity.eDirections.up)
+							exit_coord = Vec3(x*16+8,y*16+10,0)
+							exit_direction = entity.eDirections.up
+							exit_map_value += 1
+					if y-1>0:
+						if self.map[y - 1][x] not in impassables:
+							this_tile.controller.addExit(this_tile.controller_data, entity.eDirections.down)
+							exit_coord = Vec3(x * 16 +8, y * 16 +6, 0)
+							exit_direction = entity.eDirections.down
+							exit_map_value += 2
+					if x-1>0:
+						if self.map[y][x - 1] not in impassables:
+							this_tile.controller.addExit(this_tile.controller_data, entity.eDirections.left)
+							exit_coord = Vec3(x * 16  +6, y * 16+8, 0)
+							exit_direction = entity.eDirections.left
+							exit_map_value += 4
+					if x+1<20:
+						if self.map[y][x + 1] not in impassables:
+							this_tile.controller.addExit(this_tile.controller_data, entity.eDirections.right)
+							exit_coord = Vec3(x * 16 + 10, y * 16+8, 0)
+							exit_direction = entity.eDirections.right
+							exit_map_value += 8
 
 					if self.map[y][x] == "o":
 						this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.hole)
-						self.holes.append(Hole(Vec3(x,y,0),exit_coord, exit_direction))
+						self.holes.append(Hole(Vec3(x, y, 0), exit_coord, exit_direction))
+					if self.map[y][x] == "O":
+						this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.cutscene_hole)
 					elif self.map[y][x] == "T":
-							this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.tunnel)
+						# map to which tunnel graphic to use based on exits
+						# which_tunnel = [
+						# 	tile.eTileStates.tunnel_no_exit,  # 0000
+						# 	tile.eTileStates.tunnel_up,  # 0001
+						# 	tile.eTileStates.tunnel_down,  # 0010, 2
+						# 	tile.eTileStates.tunnel_up_down,  # 0011, 3
+						# 	tile.eTileStates.tunnel_left,  # 0100, 4
+						# 	tile.eTileStates.tunnel_up_left,  # 0101, 5
+						# 	tile.eTileStates.tunnel_down_left,  # 0110, 6
+						# 	tile.eTileStates.tunnel_up_down_left,  # 0111, 7
+						# 	tile.eTileStates.tunnel_right,  # 1000, 8
+						# 	tile.eTileStates.tunnel_up_right,  # 1001, 9
+						# 	tile.eTileStates.tunnel_down_right,  # 1010,10
+						# 	tile.eTileStates.tunnel_up_down_right,  # 1011,11
+						# 	tile.eTileStates.tunnel_left_right,  # 1100,12
+						# 	tile.eTileStates.tunnel_up_left_right,  # 1101,13
+						# 	tile.eTileStates.tunnel_down_left_right,  # 1110,14
+						# 	tile.eTileStates.tunnel_up_down_left_right,  # 1111,15
+						# ][exit_map_value]
+
+						if exit_map_value>15:
+							print(f"warning: exit map value boo boo {exit_map_value}")
+						this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.tunnel_no_exit+exit_map_value)
+
+
 					else:
 						if self.map[y][x] == "B":
 							self.bunny_starts.append(Vec3(x * 16 + 8, y * 16 + 8, 0))
@@ -97,7 +131,7 @@ class Level(object):
 							self.fox_starts.append(Fox(Vec3(x * 16 + 8, y * 16 + 8, 0),fox.eFoxTypes.cowardly))
 						# blank space
 						self.num_spaces += 1
-						this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.clear)
+						this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.path)
 
 
 

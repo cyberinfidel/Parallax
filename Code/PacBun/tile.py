@@ -1,25 +1,54 @@
-# system
-import enum
-
 # Parallax
-import entity
-import game_pad
 import controller
 import collision
-import graphics
 from vector import Vec3
-import sound
-import background
+
+
+# exits map to binary values
+# tile.eTileStates.tunnel_no_exit,  # 0000
+# tile.eTileStates.tunnel_up,  # 0001
+# tile.eTileStates.tunnel_down,  # 0010, 2
+# tile.eTileStates.tunnel_up_down,  # 0011, 3
+# tile.eTileStates.tunnel_left,  # 0100, 4
+# tile.eTileStates.tunnel_up_left,  # 0101, 5
+# tile.eTileStates.tunnel_down_left,  # 0110, 6
+# tile.eTileStates.tunnel_up_down_left,  # 0111, 7
+# tile.eTileStates.tunnel_right,  # 1000, 8
+# tile.eTileStates.tunnel_up_right,  # 1001, 9
+# tile.eTileStates.tunnel_down_right,  # 1010,10
+# tile.eTileStates.tunnel_up_down_right,  # 1011,11
+# tile.eTileStates.tunnel_left_right,  # 1100,12
+# tile.eTileStates.tunnel_up_left_right,  # 1101,13
+# tile.eTileStates.tunnel_down_left_right,  # 1110,14
+# tile.eTileStates.tunnel_up_down_left_right,  # 1111,15
+
+class eTileStates:
+	poo, \
+	hedge, \
+	path, \
+	hole, \
+	void, \
+	tunnel_no_exit, \
+	tunnel_up, \
+	tunnel_down, \
+	tunnel_up_down, \
+	tunnel_left, \
+	tunnel_up_left, \
+	tunnel_down_left, \
+	tunnel_up_down_left, \
+	tunnel_right, \
+	tunnel_up_right, \
+	tunnel_down_right, \
+	tunnel_up_down_right, \
+	tunnel_left_right, \
+	tunnel_up_left_right, \
+	tunnel_down_left_right, \
+	tunnel_up_down_left_right, \
+	cutscene_hole, \
+	= range(2,24)
 
 
 
-class eTileStates(enum.IntEnum):
-	poo = 3
-	hedge = 4
-	clear = 5
-	hole = 6
-	void = 7
-	tunnel = 8
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})

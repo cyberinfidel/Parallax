@@ -1,21 +1,10 @@
-import json
-import sdl2
 
+# Parallax
 import entity
 import controller
 import graphics
-import text
 import game_pad
 
-import game
-import PacBun
-
-
-
-# class HighScore(object):
-# 	def __init__(self, score, image):
-# 		self.score = score
-# 		self.image = image
 
 # graphics component for getting initials for new high score
 class NewScore(entity.Component):
@@ -68,7 +57,7 @@ class NewScore(entity.Component):
 
 	def delete(self, data):
 		for image in self.initial_images:
-			self.render_layer.releaseImage
+			self.render_layer.releaseImage()
 
 def makeGraphics(manager, render_layer):
 	return manager.makeTemplate({
@@ -134,10 +123,6 @@ class Controller(controller.Controller):
 		if redraw:
 			data.initials[data.current_initial] = chr(initial_value)
 			common_data.entity.graphics.updateInitials(common_data.entity)
-
-
-
-
 
 
 	def getInitials(self, entity, new_score):

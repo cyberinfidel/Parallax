@@ -8,9 +8,7 @@ import sdl2.mouse
 # 	add path to Parallax
 sys.path.append('../')
 # actually import files
-from game import Game
 import game
-from entity import eStates
 import entity
 from collision import CollisionManager
 from vector import Vec3
@@ -23,23 +21,19 @@ import log
 #import PacBun files
 import title
 import level
-import text
-import high_score
-import new_high_score
-import message_box
 
 
 class eGameModes:
-		quit,\
-		init,\
-		title,\
-		start,\
-		play,\
-		game_over,\
-		win,\
-		paused,	escape, high_score, new_high_score, numGameModes = range(0,12)
+	quit,\
+	init,\
+	title,\
+	start,\
+	play,\
+	game_over,\
+	win,\
+	paused,	escape, high_score, new_high_score, numGameModes = range(0,12)
 
-class PacBun(Game):
+class PacBun(game.Game):
 
 	def __init__(self):
 		# do bare minimum to set up
@@ -163,20 +157,37 @@ class PacBun(Game):
 		self.cleanUpDead()
 		self.restart_cooldown = 2
 
+		self.level_data = self.levels[self.current_level]
 		# initialise map
-		self.level = level.Level(self,self.levels[self.current_level], self.templates['tile'])
+		self.level = level.Level(self,self.level_data, self.templates['tile'])
 
-		self.num_bunnies = 4
+		self.playing = self.level_data['Playing']
 
-		# initialise creatures
 		self.bunnies = []
-		for bunny in range(0,self.num_bunnies):
-			name = ['blue','pinkie','pacbun','bowie'][bunny]
-			self.bunnies.append(self.requestNewEntity(self.templates[name], pos=self.level.getBunnyStarts()[bunny%len(self.level.getBunnyStarts())], parent=self, name=f"Bunny {name}"))
+
+		if self.playing:
+		# initialise creatures
+			for bunny in range(0,self.num_bunnies):
+				name = ['blue','pinkie','pacbun','bowie'][bunny]
+				self.bunnies.append(
+					self.requestNewEntity(
+						self.templates[name],
+						pos=self.level.getBunnyStarts()[bunny%len(self.level.getBunnyStarts())],
+						parent=self,
+						name=f"Bunny {name}"))
 			game_pad = self.input.getGamePad(bunny)
 			if game_pad:
 				self.bunnies[bunny].setGamePad(game_pad)
 			self.bunnies[bunny].controller_data.level = self.level
+		else:
+			self.num_bunnies = len(self.level_data['Bunnies'])
+			for bunny, name in enumerate(self.level_data['Bunnies']):
+				self.bunnies.append(
+					self.requestNewEntity(
+						self.templates[name],
+						pos=self.level.getBunnyStarts()[bunny % len(self.level.getBunnyStarts())],
+						parent=self,
+						name=f"Bunny {name}"))
 
 		self.foxes = []
 		for fox_start in self.level.getFoxStarts():
@@ -312,16 +323,16 @@ class PacBun(Game):
 # end update() #################################################################
 
 	def cleanUpDead(self):
-		self.updatables[:] = [x for x in self.updatables if x.getState() != eStates.dead]
+		self.updatables[:] = [x for x in self.updatables if x.getState() != entity.eStates.dead]
 		self.collision_manager.cleanUpDead()
-		self.drawables[:] = [x for x in self.drawables if x.getState() != eStates.dead]
-		self.audibles[:] = [x for x in self.audibles if x.getState() != eStates.dead]
+		self.drawables[:] = [x for x in self.drawables if x.getState() != entity.eStates.dead]
+		self.audibles[:] = [x for x in self.audibles if x.getState() != entity.eStates.dead]
 		self.entity_manager.deleteDead()
 
 	def killPlayEntities(self):
 		for updatable in self.updatables:
 			if not (updatable in self.persistent_entities):
-				updatable.common_data.state = eStates.dead
+				updatable.common_data.state = entity.eStates.dead
 		self.cleanUpDead()
 
 

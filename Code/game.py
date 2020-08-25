@@ -1,6 +1,5 @@
 # import python libs
 import time
-import enum
 import copy
 
 # import sdl files
@@ -160,11 +159,6 @@ class Game(object):
 		new_entity = self.entity_manager.makeEntity(entity_template, name)
 		new_entity.setPos(copy.deepcopy(pos))
 		new_entity.setParent(parent)
-		#	TODO: add generic names to entity templates
-		# if name:
-		# 	new_entity.name=name
-		#		else:
-		#			new_entity.name=entity_template.getName()
 
 		if new_entity.graphics:
 			self.drawables.append(new_entity)

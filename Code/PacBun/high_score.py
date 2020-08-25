@@ -1,10 +1,8 @@
 import json
-import sdl2
 
 import entity
 import controller
 import graphics
-import text
 import PacBun
 
 

@@ -172,7 +172,7 @@ class Controller(controller.Controller):
 					data.vel.y = 0 # drop on target
 				elif (common_data.pos.z<80+rand_num(200)) and (data.vel.z<3):
 					data.vel.y += 2+rand_num(5) # otherwise flap
-					common_data.entity.graphics.startAnim(data = common_data.entity.graphics_data)
+					self.setState(data, common_data, eStates.stationary, force_new_state=True)
 
 				data.cooldown = 0.2
 

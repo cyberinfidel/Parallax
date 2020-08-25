@@ -1,8 +1,7 @@
 global_tolerance = 0.00001
 global_gravity = 0.1
 
-from entity import Component
-from vector import Plane, Vec3
+import entity
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -12,7 +11,7 @@ def log(msg, new_line=True):
 		print(msg, end='')
 
 
-class Controller(Component):
+class Controller(entity.Component):
 	def __init__(self, game):
 		super(Controller, self).__init__(game)
 

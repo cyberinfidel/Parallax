@@ -1,5 +1,4 @@
 # system
-import enum
 import copy
 
 # Parallax
@@ -7,11 +6,8 @@ import entity
 import game_pad
 import controller
 import collision
-import graphics
 from vector import Vec3
-import vector
 import sound
-import game
 import PacBun
 
 import tile
@@ -120,7 +116,7 @@ class Controller(controller.Controller):
 
 			# decide if bunny is near middle of tile and if we should do womething special with the tile it's in
 			if (6 < x_in_tile < 10) and (6 < y_in_tile <10):
-				if current_tile.common_data.state == tile.eTileStates.clear:
+				if current_tile.common_data.state == tile.eTileStates.path:
 					data.level.poo(current_tile, data)	# returns true if count of poos reaches number of empty spaces
 					common_data.game.reportScore(1)
 				elif current_tile.common_data.state == tile.eTileStates.hole:

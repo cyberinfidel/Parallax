@@ -4,15 +4,11 @@ import copy
 
 # Parallax
 import entity
-import game_pad
 import controller
 import collision
-import graphics
 from vector import Vec3
 import vector
 import sound
-import game
-import tile
 
 
 
@@ -118,7 +114,6 @@ class Controller(controller.Controller):
 		fox_speed = data.fox_speed
 
 		bunny_pos = copy.deepcopy(data.bunny.getPos())
-		bunny_coords = Vec3(int(bunny_pos.x/16),int(bunny_pos.y/16),0)
 
 		if data.type==eFoxTypes.ahead:
 			# aim at a position ahead of the bunny

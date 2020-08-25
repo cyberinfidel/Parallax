@@ -11,40 +11,41 @@ def log(msg, new_line=True):
 	else:
 		print(msg, end='')
 
-class eStates(enum.IntEnum):
-	dead = 0
-	hide = 1
-	stationary = 2
-	runLeft = 3
-	runRight = 4
-	runUp = 5
-	runDown = 6
-	fallLeft = 7
-	fallRight = 8
-	idle = 9
-	down = 10
-	gettingUp = 11
-	attackSmallLeft = 12
-	attackSmallRight = 13
-	attackBigLeft = 14
-	attackBigRight = 15
-	blockLeft = 16
-	blockRight = 17
-	jumpLeft = 18
-	jumpRight = 19
-	jumpUp = 20
-	jumpDown = 21
-	jumpStat = 22
-	standDown = 23
-	standLeft = 24
-	standUp = 25
-	standRight = 26
-	hurtLeft = 27
-	hurtRight = 28
-	shadow = 29
-	appear = 30
-	fade = 31
-	numStates = 32
+# note stationary(2)is the default starting state
+class eStates:
+	dead,\
+	hide,\
+	stationary,\
+	runLeft,\
+	runRight,\
+	runUp,\
+	runDown,\
+	fallLeft,\
+	fallRight,\
+	idle,\
+	down,\
+	gettingUp,\
+	attackSmallLeft,\
+	attackSmallRight,\
+	attackBigLeft,\
+	attackBigRight,\
+	blockLeft,\
+	blockRight,\
+	jumpLeft,\
+	jumpRight,\
+	jumpUp,\
+	jumpDown,\
+	jumpStat,\
+	standDown,\
+	standLeft,\
+	standUp,\
+	standRight,\
+	hurtLeft,\
+	hurtRight,\
+	shadow,\
+	appear,\
+	fade,\
+	numStates = range(0,33)
 
 class eDirections(enum.IntEnum):
 	down = 0
@@ -190,18 +191,21 @@ class Entity(object):
 
 class EntityTemplate(object):
 
-	def __init__(self, game, graphics = False, sounds = False, controller = False, collider = False):
+	def __init__(self, game, graphics = False, sounds = False, controller = False, collider = False, name = False):
 		self.game = game
 		self.graphics = graphics
 		self.sounds = sounds
 		self.controller = controller
 		self.collider = collider
+		self.name = f"{name}(t)"
 
 	def instanceEntity(self, name):
+		if not name:
+			name=self.name	# use template name
 		return Entity(name, game = self.game, graphics=self.graphics, sounds=self.sounds, controller = self.controller, collider = self.collider)
 
 	def delete(self):
-		print("delete template")
+		print(f"{self.name} - delete template doesn't do anything right now...")
 
 class ComponentManager(object):
 	def __init__(self, game):
