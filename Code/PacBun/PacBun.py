@@ -19,7 +19,7 @@ import utility
 import log
 
 #import PacBun files
-import title
+import mode_cont
 import map
 
 
@@ -112,10 +112,10 @@ class PacBun(game.Game):
 		templates = {}	# to hold the actual handles from the entity manager
 		for name, template in templates_data.items():
 			templates[name] = self.entity_manager.makeEntityTemplate(name,
-				controller=template['controller'](self.controller_manager) if template['controller'] else None,
-				collider=template['collider'](self.controller_manager) if template['collider'] else None,
+				controller=template['controller'](self.controller_manager) if 'controller' in template else None,
+				collider=template['collider'](self.controller_manager) if 'collider' in template else None,
 				graphics=self.graphics_manager.makeTemplate(template['graphics']['component'],
-																										{'RenderLayer': self.render_layers[template['graphics']['render layer']]}) if template['graphics'] else None
+																										{'RenderLayer': self.render_layers[template['graphics']['render layer']]}) if 'graphics' in template else None
 			)
 		return templates
 
@@ -302,8 +302,8 @@ class PacBun(game.Game):
 		###################
 		# init next scene #
 		###################
-		self.scene_data = self.scenes_data['scenes'][self.game_data['game']['modes'][self.current_mode]['scene list'][self.current_scene]]
-		# initialise map
+		self.scene_data = self.scenes_data['scenes'][self.mode_data['scene list'][self.current_scene]]
+		# initialise map todo: make another entity instead of special
 		if "Map" in self.scene_data:
 			self.level = map.Map(self, self.scene_data, self.templates['tile'])
 
@@ -472,6 +472,8 @@ def run(tests=False):
 	if tests:
 		game.runTests()
 	game.run()
+	log.log("Exiting...")
+	log.flushToFile()
 	return 0
 
 

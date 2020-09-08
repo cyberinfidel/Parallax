@@ -53,6 +53,14 @@ class GamePad(Component):
 			eActions.select: False
 		}
 
+	def get(self, action):
+		return self.actions[action]
+
+	def getAndClear(self, action):
+		ret = self.actions[action]
+		self.actions[action]=False
+		return ret
+
 	def set(self,action):
 		self.actions[action]=True
 

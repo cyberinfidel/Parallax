@@ -10,8 +10,6 @@ import new_high_score
 import message_box
 import director
 
-def none(dummy=None): return None
-
 graphics = {
 	'bowie': {
 		"Name": "Bunny Animations",
@@ -854,32 +852,24 @@ game_templates = {
 	},
 	'tile': {
 		'controller': components['controllers']['tile_controller'],
-		'collider': None,
 		'graphics': { 'component': components['graphics']['tile_graphics'], 'render layer': 'game'}
 	},
 	'director': {
 		'controller': components['controllers']['director_controller'],
-		'collider': None,
-		'graphics': None,
 	},
 	'high_scores':{
 		'controller': components['controllers']['high_score_controller'],
-		'collider': None,
 		'graphics': { 'component': components['graphics']['high_score_graphics'], 'render layer': 'overlay'},
 	},
 	'title':{
-		'controller': None,
-		'collider': None,
 		'graphics': { 'component': components['graphics']['title_graphics'], 'render layer': 'overlay'},
 	},
 	'new_high_score':{
 		'controller': components['controllers']['new_high_score_controller'],
-		'collider': None,
 		'graphics': { 'component': components['graphics']['new_high_score_graphics'], 'render layer': 'overlay'},
 	},
 	'message':{
 		'controller': components['controllers']['message_controller'],
-		'collider': None,
 		'graphics': { 'component': components['graphics']['message_graphics'], 'render layer': 'overlay'},
 	}
 }
