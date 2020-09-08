@@ -1,4 +1,4 @@
-from director import Event
+from px_director import Event
 
 class SpawnEnemies(Event):
 	def __init__(self, spawns):

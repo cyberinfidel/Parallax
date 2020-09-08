@@ -1,7 +1,7 @@
 import copy
 
 import px_entity
-from vector import Vec3
+from px_vector import Vec3
 
 import tile
 import fox

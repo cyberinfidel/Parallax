@@ -1,9 +1,9 @@
 
 # Parallax
 import px_entity
-import controller
-import graphics
-import game_pad
+import px_controller
+import px_graphics
+import px_game_pad
 
 
 # graphics component for getting initials for new high score
@@ -22,9 +22,9 @@ class NewScore(px_entity.Component):
 		self.font = self.render_layer.addFont("Fonts/Silom/Silom.ttf", 48)
 		self.initial_images = []
 		colors = (
-			graphics.Color(1, 1, 0, 1),
-			graphics.Color(0, 1, 1, 1),
-			graphics.Color(1, 0, 1, 1),
+			px_graphics.Color(1, 1, 0, 1),
+			px_graphics.Color(0, 1, 1, 1),
+			px_graphics.Color(1, 0, 1, 1),
 		)
 
 		for i in range(0, 3):
@@ -47,9 +47,9 @@ class NewScore(px_entity.Component):
 		# no checking for which one is updated
 		# just draws them all again
 		colors = (
-			graphics.Color(1, 1, 0, 1),
-			graphics.Color(0, 1, 1, 1),
-			graphics.Color(1, 0, 1, 1),
+			px_graphics.Color(1, 1, 0, 1),
+			px_graphics.Color(0, 1, 1, 1),
+			px_graphics.Color(1, 0, 1, 1),
 		)
 
 		for i in range(0, 3):
@@ -70,7 +70,7 @@ def makeGraphics(manager, render_layer):
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 	class Data(object):
 		def __init__(self, entity, init=False):
 			if init:
@@ -90,28 +90,28 @@ class Controller(controller.Controller):
 	def update(self, data, entity, dt):
 		redraw=False
 		initial_value = ord(data.initials[data.current_initial])
-		if data.game_pad.actions[game_pad.eActions.up]:
+		if data.game_pad.actions[px_game_pad.eActions.up]:
 			initial_value += 1
 			if initial_value>96: initial_value=32
-			data.game_pad.actions[game_pad.eActions.up] = False
+			data.game_pad.actions[px_game_pad.eActions.up] = False
 			redraw=True
-		elif data.game_pad.actions[game_pad.eActions.down]:
+		elif data.game_pad.actions[px_game_pad.eActions.down]:
 			initial_value -= 1
 			if initial_value<32: initial_value=96
-			data.game_pad.actions[game_pad.eActions.down] = False
+			data.game_pad.actions[px_game_pad.eActions.down] = False
 			redraw = True
 		# keep within ascii values 32 (space) and 96 (') inclusive which means
 		# a bunch of symbols and uppercase, but no lowercase
 
-		elif data.game_pad.actions[game_pad.eActions.right]:
+		elif data.game_pad.actions[px_game_pad.eActions.right]:
 			data.current_initial = (data.current_initial + 1)%3
-			data.game_pad.actions[game_pad.eActions.right] = False
-		elif data.game_pad.actions[game_pad.eActions.left]:
+			data.game_pad.actions[px_game_pad.eActions.right] = False
+		elif data.game_pad.actions[px_game_pad.eActions.left]:
 			data.current_initial = (data.current_initial - 1)%3
-			data.game_pad.actions[game_pad.eActions.left] = False
+			data.game_pad.actions[px_game_pad.eActions.left] = False
 
-		elif data.game_pad.actions[game_pad.eActions.jump]:
-			data.game_pad.actions[game_pad.eActions.jump] = False
+		elif data.game_pad.actions[px_game_pad.eActions.jump]:
+			data.game_pad.actions[px_game_pad.eActions.jump] = False
 			entity.game.addNewHighScore(str(data.initials[0])+str(data.initials[1])+str(data.initials[2]))
 			self.setState(data, entity, px_entity.eStates.dead)
 

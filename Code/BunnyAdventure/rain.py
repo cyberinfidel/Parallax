@@ -1,17 +1,17 @@
 from px_entity import eStates
-import controller
-import graphics
-from vector import Vec3
+import px_controller
+import px_graphics
+from px_vector import Vec3
 
 def makeGraphics(manager, renlayer):
 	return manager.makeTemplate( {
 		"Name": "Rain",
-		"Template": graphics.MultiAnim,
+		"Template": px_graphics.MultiAnim,
 		"RenderLayer": renlayer,
 		"Anims": [
 			{
 				"Name": "Rain Drop Falls",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [Controller.state_fall],
 				"Frames":
 					[
@@ -21,7 +21,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Rain Drop Pool",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [Controller.state_pool],
 				"Frames":
 					[
@@ -42,7 +42,7 @@ def makeGraphics(manager, renlayer):
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 	# note custom states
 	state_fall = 2
 	state_pool = 3
@@ -79,6 +79,6 @@ class Controller(controller.Controller):
 			if common_data.state == Controller.state_pool:
 				self.setState(data, common_data, eStates.dead)
 
-		controller.basic_physics(common_data.pos,data.vel)
+		px_controller.basic_physics(common_data.pos, data.vel)
 
 

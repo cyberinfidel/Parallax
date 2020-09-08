@@ -3,11 +3,11 @@ import enum
 
 # Parallax
 from px_entity import eStates, eDirections
-from game_pad import eActions
-from controller import Controller, global_tolerance, restrictToArena, global_gravity
-from collision import Collider, Message
-from graphics import AnimNoLoop, AnimLoop, MultiAnim, AnimSingle
-from vector import Vec3
+from px_game_pad import eActions
+from px_controller import Controller, global_tolerance, restrictToArena, global_gravity
+from px_collision import Collider, Message
+from px_graphics import AnimNoLoop, AnimLoop, MultiAnim, AnimSingle
+from px_vector import Vec3
 
 # Knightfight
 from strike import Strike, HitController, HitCollider

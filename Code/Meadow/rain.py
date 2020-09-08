@@ -1,7 +1,7 @@
 from px_entity import eStates
-from controller import Controller, basic_physics
-from graphics import AnimNoLoop, MultiAnim
-from vector import Vec3
+from px_controller import Controller, basic_physics
+from px_graphics import AnimNoLoop, MultiAnim
+from px_vector import Vec3
 import background
 
 def rainGraphics(renlayer):

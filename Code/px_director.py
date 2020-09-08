@@ -1,8 +1,8 @@
 from px_entity import eStates
-from controller import Controller
-from game import eGameModes
-from vector import Vec3
-import graphics
+from px_controller import Controller
+from px_game import eGameModes
+from px_vector import Vec3
+import px_graphics
 
 
 # the director class takes a list of events
@@ -44,7 +44,7 @@ class Delay(Event):
 
 
 class Message(Event):
-	def __init__(self, text, pos, color, duration=0, align=graphics.eAlign.left):
+	def __init__(self, text, pos, color, duration=0, align=px_graphics.eAlign.left):
 		super(Event, self).__init__()
 		self.text = text
 		self.pos = pos
@@ -78,17 +78,17 @@ class FadeToClearColor(Event):
 		if not self.step_color:
 			# get the incremental color, effectively the vector towards the final color
 			# only calculate this once
-			self.step_color = graphics.Color((self.color.r - current_color.r) / self.time,
-																			 (self.color.g - current_color.g) / self.time,
-																			 (self.color.b - current_color.b) / self.time,
-																			 )
+			self.step_color = px_graphics.Color((self.color.r - current_color.r) / self.time,
+																					(self.color.g - current_color.g) / self.time,
+																					(self.color.b - current_color.b) / self.time,
+																					)
 		# check when to stop
 		self.time -= dt
 		if self.time<=0:
 			entity.game.setClearColor(self.color) # make sure completely get to color desired
 			return eEventStates.dead
 
-		entity.game.setClearColor(self.step_color*graphics.Color(dt,dt,dt)+current_color)
+		entity.game.setClearColor(self.step_color * px_graphics.Color(dt, dt, dt) + current_color)
 		return eEventStates.live
 
 

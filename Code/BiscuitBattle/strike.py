@@ -1,7 +1,7 @@
 from px_entity import eStates
-from controller import Controller
-from collision import Collider, Message
-from vector import Vec3
+from px_controller import Controller
+from px_collision import Collider, Message
+from px_vector import Vec3
 
 class Strike(object):
 	def __init__(self, cool, delay, range, force, damage, template, hero_damage=0):

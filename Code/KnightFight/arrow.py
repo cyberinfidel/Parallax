@@ -1,8 +1,8 @@
 from px_entity import eStates, eDirections
-from vector import Vec3
-import controller
-import collision
-from graphics import MultiAnim, AnimSingle
+from px_vector import Vec3
+import px_controller
+import px_collision
+from px_graphics import MultiAnim, AnimSingle
 import background
 
 #########
@@ -46,7 +46,7 @@ def AGraphics(renlayer):
 				]
 	}
 
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 
 	class Data(object):
 		def __init__(self, common_data, init=False):
@@ -70,17 +70,17 @@ class Controller(controller.Controller):
 		if common_data.state==eStates.fallLeft or common_data.state==eStates.fallRight:
 			if not self.coolDown(data,dt):
 				self.setState(data, common_data, eStates.dead)
-			controller.friction(data.vel, 0.1)
+			px_controller.friction(data.vel, 0.1)
 		elif common_data.pos.y>0:
-			controller.friction(data.vel, 0.01)
+			px_controller.friction(data.vel, 0.01)
 		else:
 			self.setState(data,common_data,eStates.fallLeft if data.facing==eDirections.left else eStates.fallRight)
 			data.cooldown=1
-			controller.friction(data.vel, 0.1)
+			px_controller.friction(data.vel, 0.1)
 
 
-		controller.basic_gravity(data.vel)
-		controller.basic_physics(common_data.pos,data.vel)
+		px_controller.basic_gravity(data.vel)
+		px_controller.basic_physics(common_data.pos, data.vel)
 
 		background.restrictToArena(common_data.pos, data.vel)
 
@@ -98,7 +98,7 @@ class Controller(controller.Controller):
 				else:
 					data.vel = data.vel + message.force/data.mass
 
-class Collider(collision.Collider):
+class Collider(px_collision.Collider):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -117,4 +117,4 @@ class Collider(collision.Collider):
 			return False
 		else:
 			dam = 1 if common_data.entity.controller_data.vel.magsq()>10 else 0
-			return(collision.Message(source=common_data.entity, damage=dam, damage_hero=dam))
+			return(px_collision.Message(source=common_data.entity, damage=dam, damage_hero=dam))

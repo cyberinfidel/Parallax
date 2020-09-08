@@ -3,7 +3,7 @@ import enum
 import copy
 
 # Parallax
-from vector import Vec3
+from px_vector import Vec3
 
 
 # disable to remove logging

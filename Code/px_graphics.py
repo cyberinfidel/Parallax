@@ -12,9 +12,9 @@ sdl_image.IMG_Init(sdl_image.IMG_INIT_JPG)
 
 # import my files
 import px_entity
-import vector
-from vector import Vec3, rand_num
-from log import log
+import px_vector
+from px_vector import Vec3, rand_num
+from px_log import log
 
 # globals
 graphics_debug = False
@@ -63,7 +63,7 @@ class Color(object):
 	def __str__(self):
 		return f"(r{self.r}, g{self.g}, b{self.b}, a{self.a})"
 
-import text
+import px_text
 
 # Individual images for use as frames for animations or as part of the background etc.
 # Based on SDL images for the moment with no atlassing etc.
@@ -273,7 +273,7 @@ class RenderLayer(object):
 
 		self.origin = Vec3(0,0,0)
 
-		self.font_manager = text.FontManager(self.ren)
+		self.font_manager = px_text.FontManager(self.ren)
 		self.default_font=0
 
 		# Color cast used for fading and other effects
@@ -301,7 +301,7 @@ class RenderLayer(object):
 												 string,
 												 font=0,
 												 color=Color(1, 1, 1, 1)):
-		message = text.Message.withRender(font_manager=self.font_manager, font=font, string=string, color=color)
+		message = px_text.Message.withRender(font_manager=self.font_manager, font=font, string=string, color=color)
 		index = self._getNextEmptySlot()
 		self.images[index] = Image.fromTexture(self.ren,message.texture, message.width, message.height)
 		return index
@@ -315,7 +315,7 @@ class RenderLayer(object):
 														 string,
 														 font=0,
 														 color=Color(1, 1, 1, 1)):
-		message = text.Message.withRender(font_manager=self.font_manager, string=string, font=font, color=color)
+		message = px_text.Message.withRender(font_manager=self.font_manager, string=string, font=font, color=color)
 		self.images[old_image].delete()
 		self.images[old_image] = Image.fromTexture(self.ren,message.texture, message.width, message.height)
 
@@ -422,7 +422,7 @@ class RenderLayer(object):
 	def queueMessageFromText(self, message_text, x, y, font=None, size= None):
 		if not font:
 			font = self.default_font
-		self.addImageFromMessage(text.Message.withRender(font, message_text))
+		self.addImageFromMessage(px_text.Message.withRender(font, message_text))
 
 	# takes all textures already submitted and makes into an atlas
 	# uses dumbest algorithm possible atm

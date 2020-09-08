@@ -1,16 +1,16 @@
 import px_entity
-import controller
-import graphics
+import px_controller
+import px_graphics
 def makeGraphics(manager, renlayer):
 	return manager.makeTemplate({
 			"Name": "Heart Animations",
-			"Template": graphics.MultiAnim,
+			"Template": px_graphics.MultiAnim,
 			"RenderLayer": renlayer,
 			"Anims":
 				[
 					{
 						"Name": "stationary",
-						"AnimType": graphics.AnimRandom,
+						"AnimType": px_graphics.AnimRandom,
 						"States": [px_entity.eStates.stationary],
 						"Frames":
 							[
@@ -20,7 +20,7 @@ def makeGraphics(manager, renlayer):
 					},
 					{
 						"Name": "appear",
-						"AnimType": graphics.AnimNoLoop,
+						"AnimType": px_graphics.AnimNoLoop,
 						"States": [px_entity.eStates.appear],
 						"Frames":
 							[
@@ -35,7 +35,7 @@ def makeGraphics(manager, renlayer):
 					},
 					{
 						"Name": "fade",
-						"AnimType": graphics.AnimNoLoop,
+						"AnimType": px_graphics.AnimNoLoop,
 						"States": [px_entity.eStates.fade],
 						"Frames":
 							[
@@ -54,7 +54,7 @@ def makeGraphics(manager, renlayer):
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": HeartIndicatorController})
-class HeartIndicatorController(controller.Controller):
+class HeartIndicatorController(px_controller.Controller):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:

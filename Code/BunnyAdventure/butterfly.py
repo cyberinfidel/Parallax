@@ -1,11 +1,11 @@
 import enum
 
 from px_entity import eStates, eDirections
-from vector import Vec3, rand_num
-import controller
-import collision
-from graphics import AnimLoop, AnimNoLoop, MultiAnim, AnimSingle
-import sound
+from px_vector import Vec3, rand_num
+import px_controller
+import px_collision
+from px_graphics import AnimLoop, AnimNoLoop, MultiAnim, AnimSingle
+import px_sound
 from background import restrictToArena
 
 class eEvents(enum.IntEnum):
@@ -115,7 +115,7 @@ def makeGraphics3(manager, renlayer):
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 
 	class Data(object):
 		def __init__(self, common_data, init=False):
@@ -177,12 +177,12 @@ class Controller(controller.Controller):
 				data.cooldown = 0.2
 
 		if common_data.pos.y>0:
-			controller.friction(data.vel, 0.01)
+			px_controller.friction(data.vel, 0.01)
 		else:
-			controller.friction(data.vel, 0.1)
+			px_controller.friction(data.vel, 0.1)
 
-		controller.basic_gravity(data.vel)
-		controller.basic_physics(common_data.pos,data.vel)
+		px_controller.basic_gravity(data.vel)
+		px_controller.basic_physics(common_data.pos, data.vel)
 
 		restrictToArena(common_data.pos, data.vel)
 

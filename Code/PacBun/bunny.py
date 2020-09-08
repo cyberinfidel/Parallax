@@ -3,11 +3,11 @@ import copy
 
 # Parallax
 import px_entity
-import game_pad
-import controller
-import collision
-from vector import Vec3
-import sound
+import px_game_pad
+import px_controller
+import px_collision
+from px_vector import Vec3
+import px_sound
 import PacBun
 
 import tile
@@ -15,7 +15,7 @@ import tile
 def makeSounds(manager, mixer):
 	return manager.makeTemplate({
 		"Name": "Bunny Sounds",
-		"Template": sound.MultiSound,
+		"Template": px_sound.MultiSound,
 		"Mixer": mixer,
 		"StateSounds": [
 		],
@@ -23,7 +23,7 @@ def makeSounds(manager, mixer):
 			[
 				{
 					"Name": "Jump",
-					"Type": sound.Single,
+					"Type": px_sound.Single,
 					"Events": [px_entity.eEvents.jump],
 					"Samples":  # one of these will play at random if there's more than one
 						[
@@ -37,7 +37,7 @@ def makeSounds(manager, mixer):
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
 		# values global to all instances
@@ -80,26 +80,26 @@ class Controller(controller.Controller):
 		if data.game_pad:
 			# i.e. this bunny is being controlled by a game_pad
 			# player wants to go left at next opportunity
-			if data.game_pad.actions[game_pad.eActions.left]:
+			if data.game_pad.actions[px_game_pad.eActions.left]:
 				# queue up that direction
 				data.queued_facing = px_entity.eDirections.left
 				data.queued_vel.x = -bunny_speed
 				data.queued_vel.y = 0
 				data.queued_state = px_entity.eStates.runLeft
 			#  right
-			elif data.game_pad.actions[game_pad.eActions.right]:
+			elif data.game_pad.actions[px_game_pad.eActions.right]:
 				data.queued_facing = px_entity.eDirections.right
 				data.queued_vel.x = bunny_speed
 				data.queued_vel.y = 0
 				data.queued_state = px_entity.eStates.runRight
 			# up
-			elif data.game_pad.actions[game_pad.eActions.up]:
+			elif data.game_pad.actions[px_game_pad.eActions.up]:
 				data.queued_facing = px_entity.eDirections.up
 				data.queued_vel.x = 0
 				data.queued_vel.y = bunny_speed
 				data.queued_state = px_entity.eStates.runUp
 			# down
-			elif data.game_pad.actions[game_pad.eActions.down]:
+			elif data.game_pad.actions[px_game_pad.eActions.down]:
 				data.queued_facing = px_entity.eDirections.down
 				data.queued_vel.x = 0
 				data.queued_vel.y = -bunny_speed
@@ -184,7 +184,7 @@ class Controller(controller.Controller):
 			self.setState(data, entity, data.queued_state)
 
 
-		controller.basic_physics(entity.pos, data.vel)
+		px_controller.basic_physics(entity.pos, data.vel)
 		entity.pos.clamp(Vec3(0,0,0),Vec3(319,319,0))
 
 
@@ -201,7 +201,7 @@ class Controller(controller.Controller):
 
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
-class Collider(collision.Collider):
+class Collider(px_collision.Collider):
 	class Data(object):
 		def __init__(self, entity, init=False):
 			if init:
@@ -222,9 +222,9 @@ class Collider(collision.Collider):
 
 	def getCollisionMessage(self, data, entity):
 		if entity.state!=px_entity.eStates.dead:
-			return(collision.Message(source=entity.entity, damage_hero=1))
+			return(px_collision.Message(source=entity.entity, damage_hero=1))
 		else:
-			return(collision.Message(source=entity.entity))
+			return(px_collision.Message(source=entity.entity))
 
 
 

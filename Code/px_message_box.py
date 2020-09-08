@@ -2,9 +2,9 @@ import sdl2
 
 import px_entity
 # import text
-import graphics
-import controller
-import vector
+import px_graphics
+import px_controller
+import px_vector
 
 
 
@@ -21,7 +21,7 @@ class MessageBox(px_entity.Component):
 		def __init__(self, entity, init=False):
 			self.image = None
 
-	def init(self, data, ren_layer, message, font=0, color=graphics.Color(1, 1, 1, 1), duration=0, align=graphics.eAlign.left, fade_speed=0.5):
+	def init(self, data, ren_layer, message, font=0, color=px_graphics.Color(1, 1, 1, 1), duration=0, align=px_graphics.eAlign.left, fade_speed=0.5):
 		data.ren_layer = ren_layer
 		# data.message = message
 		data.color = color
@@ -66,11 +66,11 @@ class MessageBox(px_entity.Component):
 	def draw(self, data, entity):
 		offset_x=0
 		offset_y=0
-		if data.align==graphics.eAlign.centre:
+		if data.align==px_graphics.eAlign.centre:
 			offset_x,offset_y = data.ren_layer.getImageDimensions(data.image)
 			offset_x/=2
 			offset_y/=2
-		elif data.align==graphics.eAlign.centre:
+		elif data.align==px_graphics.eAlign.centre:
 			offset_x,offset_y = data.ren_layer.getImageDimensions(data.image)
 
 		return data.ren_layer.queueImage(
@@ -78,12 +78,12 @@ class MessageBox(px_entity.Component):
 			x = entity.pos.x-offset_x,
 			y = entity.pos.y-offset_y,
 			z = entity.pos.z,
-			color = data.color*graphics.Color(1,1,1,data.fade)
+			color =data.color * px_graphics.Color(1, 1, 1, data.fade)
 		)
 
 	def update(self, data, _entity, dt):
 		data.fade+=dt*data.fade_direction*(1/data.fade_speed)
-		data.fade = vector.clamp(0,data.fade,1)
+		data.fade = px_vector.clamp(0, data.fade, 1)
 		data.duration -=dt
 		if data.duration<1:
 			data.fade_direction=-1
@@ -105,7 +105,7 @@ def makeGraphics(manager, render_layer):
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 	class Data(object):
 		def __init__(self, entity, init=False):
 			pass

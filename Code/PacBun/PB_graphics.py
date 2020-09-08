@@ -1,14 +1,14 @@
-import graphics
+import px_graphics
 import px_entity
 
 bowie_graphics = {
 		"Name": "Bunny Animations",
-		"Template": graphics.MultiAnim,
+		"Template": px_graphics.MultiAnim,
 		# "RenderLayer": self.renlayer,
 		"Anims": [
 			{
 				"Name": "Bunny Stands",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.stationary],
 				"Frames":
 					[
@@ -27,7 +27,7 @@ bowie_graphics = {
 			},
 			{
 				"Name": "Bunny Runs Down",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runDown],
 				"Frames":
 					[
@@ -39,7 +39,7 @@ bowie_graphics = {
 			},
 			{
 				"Name": "Bunny Runs Up",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runUp],
 				"Frames":
 					[
@@ -51,7 +51,7 @@ bowie_graphics = {
 			},
 			{
 				"Name": "Bunny Runs Left",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runLeft],
 				"Frames":
 					[
@@ -63,7 +63,7 @@ bowie_graphics = {
 			},
 			{
 				"Name": "Bunny Runs Right",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runRight],
 				"Frames":
 					[

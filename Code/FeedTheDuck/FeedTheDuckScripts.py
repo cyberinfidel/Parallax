@@ -2,11 +2,11 @@
 import enum
 
 # Parallax
-from controller import Controller, basic_physics, friction
-from collision import Collider
-from graphics import MultiAnim, AnimLoop, AnimNoLoop
-from game_pad import eActions
-from vector import Vec3
+from px_controller import Controller, basic_physics, friction
+from px_collision import Collider
+from px_graphics import MultiAnim, AnimLoop, AnimNoLoop
+from px_game_pad import eActions
+from px_vector import Vec3
 
 # FeedTheDuck
 

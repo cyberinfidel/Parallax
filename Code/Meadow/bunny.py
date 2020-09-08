@@ -3,14 +3,14 @@ import enum
 
 # Parallax
 from px_entity import eStates
-from game_pad import eActions
-from controller import Controller, global_tolerance, global_gravity
-from collision import Collider, Message
-from graphics import AnimNoLoop, AnimLoop, MultiAnim, AnimSingle
-from vector import Vec3
+from px_game_pad import eActions
+from px_controller import Controller, global_tolerance, global_gravity
+from px_collision import Collider, Message
+from px_graphics import AnimNoLoop, AnimLoop, MultiAnim, AnimSingle
+from px_vector import Vec3
 import background
-import sound
-from vector import rand_num
+import px_sound
+from px_vector import rand_num
 
 # Knightfight
 import strike
@@ -31,7 +31,7 @@ class eEvents(enum.IntEnum):
 def heroSounds(mixer):
 	return {
 		"Name": "Hero Sounds",
-		"Template": sound.MultiSound,
+		"Template": px_sound.MultiSound,
 		"Mixer": mixer,
 		"StateSounds": [
 		],
@@ -39,7 +39,7 @@ def heroSounds(mixer):
 			[
 				{
 					"Name": "Jump",
-					"Type": sound.Single,
+					"Type": px_sound.Single,
 					"Events": [eEvents.jump],
 					"Samples":  # one of these will play at random if there's more than one
 						[

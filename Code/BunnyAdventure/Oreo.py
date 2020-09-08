@@ -3,14 +3,14 @@ import enum
 
 # Parallax
 from px_entity import eStates
-from game_pad import eActions
-import controller
-import collision
-from graphics import AnimNoLoop, AnimLoop, MultiAnim, AnimSingle
-from vector import Vec3
+from px_game_pad import eActions
+import px_controller
+import px_collision
+from px_graphics import AnimNoLoop, AnimLoop, MultiAnim, AnimSingle
+from px_vector import Vec3
 import background
-import sound
-from vector import rand_num
+import px_sound
+from px_vector import rand_num
 
 # Knightfight
 import strike
@@ -30,7 +30,7 @@ class eEvents(enum.IntEnum):
 def sounds(mixer):
 	return {
 		"Name": "Hero Sounds",
-		"Template": sound.MultiSound,
+		"Template": px_sound.MultiSound,
 		"Mixer": mixer,
 		"StateSounds": [
 		],
@@ -38,7 +38,7 @@ def sounds(mixer):
 			[
 				{
 					"Name": "Jump",
-					"Type": sound.Single,
+					"Type": px_sound.Single,
 					"Events": [eEvents.jump],
 					"Samples":  # one of these will play at random if there's more than one
 						[
@@ -180,7 +180,7 @@ def makeGraphics(manager, renlayer):
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
 		# values global to all instances
@@ -281,13 +281,13 @@ class Controller(controller.Controller):
 
 
 		# ground vs in the air
-		if common_data.pos.y < 0.0 + controller.global_tolerance:
+		if common_data.pos.y < 0.0 + px_controller.global_tolerance:
 			# we're on the ground guys
 			common_data.pos.y = 0.0
 			data.vel.y = 0.0
 			data.jump = False
 		else:
-			data.vel.y -= controller.global_gravity
+			data.vel.y -= px_controller.global_gravity
 
 		# deal with things that can't interrupt actions that are already happening
 
@@ -464,7 +464,7 @@ class Controller(controller.Controller):
 
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
-class Collider(collision.Collider):
+class Collider(px_collision.Collider):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -479,11 +479,11 @@ class Collider(collision.Collider):
 			self.mass = 10.0
 
 	def __init__(self, game, data):
-		super(collision.Collider, self).__init__(game)
+		super(px_collision.Collider, self).__init__(game)
 		# global static data to all of HeroCollider components
 
 	def getCollisionMessage(self, data, common_data):
-		return(collision.Message(
+		return(px_collision.Message(
 			source=common_data.entity,
 			impassable=data.impassable
 		))

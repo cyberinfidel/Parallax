@@ -1,5 +1,5 @@
-from director import Event, Controller, Delay, SpawnEntity, EndGame
-from vector import Vec3, rand_num
+from px_director import Event, Controller, Delay, SpawnEntity, EndGame
+from px_vector import Vec3, rand_num
 
 class SpawnEnemies(Event):
 	def __init__(game, spawns):

@@ -1,20 +1,20 @@
 # Reaper
-import controller
-import collision
-import graphics
+import px_controller
+import px_collision
+import px_graphics
 import px_entity
 import background
-from vector import Vec3, rand_num
+from px_vector import Vec3, rand_num
 
 def makeGraphics(manager, renlayer):
 	return manager.makeTemplate({
 			"Name": "Reaper",
-			"Template": graphics.MultiAnim,
+			"Template": px_graphics.MultiAnim,
 			"RenderLayer": renlayer,
 			"Anims": [
 				{
 					"Name": "Simple Reaper Stationary",
-					"AnimType": graphics.AnimLoop,
+					"AnimType": px_graphics.AnimLoop,
 					"States": [px_entity.eStates.stationary],
 					"Frames":
 						[
@@ -23,7 +23,7 @@ def makeGraphics(manager, renlayer):
 				},
 				{
 				"Name": "Simple Reaper Shuffling Left",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runLeft],
 				"Frames":
 					[
@@ -43,7 +43,7 @@ def makeGraphics(manager, renlayer):
 			},
 				{
 					"Name": "Simple Reaper Shuffling Right",
-					"AnimType": graphics.AnimLoop,
+					"AnimType": px_graphics.AnimLoop,
 					"States": [px_entity.eStates.runRight],
 					"Frames":
 						[
@@ -63,7 +63,7 @@ def makeGraphics(manager, renlayer):
 				},
 				{
 					"Name": "Reaper Hurt L",
-					"AnimType": graphics.AnimLoop,
+					"AnimType": px_graphics.AnimLoop,
 					"States": [px_entity.eStates.hurtLeft],
 					"Frames":
 						[
@@ -72,7 +72,7 @@ def makeGraphics(manager, renlayer):
 				},
 				{
 					"Name": "Reaper Hurt R",
-					"AnimType": graphics.AnimLoop,
+					"AnimType": px_graphics.AnimLoop,
 					"States": [px_entity.eStates.hurtRight],
 					"Frames":
 						[
@@ -81,7 +81,7 @@ def makeGraphics(manager, renlayer):
 				},
 				{
 					"Name": "Reaper Fall L",
-					"AnimType": graphics.AnimLoop,
+					"AnimType": px_graphics.AnimLoop,
 					"States": [px_entity.eStates.fallLeft],
 					"Frames":
 						[
@@ -90,7 +90,7 @@ def makeGraphics(manager, renlayer):
 				},
 				{
 					"Name": "Reaper Fall R",
-					"AnimType": graphics.AnimLoop,
+					"AnimType": px_graphics.AnimLoop,
 					"States": [px_entity.eStates.fallRight],
 					"Frames":
 						[
@@ -99,7 +99,7 @@ def makeGraphics(manager, renlayer):
 				},
 				{
 					"Name": "Reaper Shadow",
-					"AnimType": graphics.AnimSingle,
+					"AnimType": px_graphics.AnimSingle,
 					"States": [px_entity.eStates.shadow],
 					"Frames":
 						[
@@ -112,7 +112,7 @@ def makeGraphics(manager, renlayer):
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -164,8 +164,8 @@ class Controller(controller.Controller):
 
 				data.cooldown = 0.5
 
-		controller.friction(data.vel)
-		controller.basic_physics(common_data.pos,data.vel)
+		px_controller.friction(data.vel)
+		px_controller.basic_physics(common_data.pos, data.vel)
 		background.restrictToArena(common_data.pos, data.vel)
 
 
@@ -198,7 +198,7 @@ class Controller(controller.Controller):
 
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
-class Collider(collision.Collider):
+class Collider(px_collision.Collider):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -218,6 +218,6 @@ class Collider(collision.Collider):
 
 	def getCollisionMessage(self, data, common_data):
 		if common_data.entity.controller_data.health > 0:
-			return (collision.Message(source=common_data.entity, damage=0, damage_hero=1, force=Vec3(0, 0, 0)))
+			return (px_collision.Message(source=common_data.entity, damage=0, damage_hero=1, force=Vec3(0, 0, 0)))
 		else:
-			return (collision.Message(source=common_data.entity))
+			return (px_collision.Message(source=common_data.entity))

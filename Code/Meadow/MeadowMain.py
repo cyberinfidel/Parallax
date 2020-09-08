@@ -7,14 +7,14 @@ import sdl2.mouse
 # 	add path to Parallax
 sys.path.insert(1, '../')
 # actually import files
-from game import Game, eGameModes
+from px_game import Game, eGameModes
 from px_entity import eStates
-from collision import CollisionManager
-from vector import Vec3, rand_num
-import controller
-import graphics
-import sound
-from director import Controller, Delay, SpawnEntity, EndGame
+from px_collision import CollisionManager
+from px_vector import Vec3, rand_num
+import px_controller
+import px_graphics
+import px_sound
+from px_director import Controller, Delay, SpawnEntity, EndGame
 
 
 # disable to remove logging
@@ -45,15 +45,15 @@ class Meadow(Game):
 		##########################
 		# set up graphics layers #
 		##########################
-		self.renlayer = graphics.RenderLayer(self.ren)
-		self.title_renlayer = graphics.RenderLayer(self.ren)
+		self.renlayer = px_graphics.RenderLayer(self.ren)
+		self.title_renlayer = px_graphics.RenderLayer(self.ren)
 		self.scroll = False
 		self.quit_cooldown = 0.5
 
 		##########################
 		# set up sound           #
 		##########################
-		self.sound_mixer = sound.SoundMixer(self)
+		self.sound_mixer = px_sound.SoundMixer(self)
 		###############################
 		# set up background and title #
 		###############################

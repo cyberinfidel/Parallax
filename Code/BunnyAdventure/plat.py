@@ -1,11 +1,11 @@
-import graphics
-import controller
-import collision
-from vector import Vec3
+import px_graphics
+import px_controller
+import px_collision
+from px_vector import Vec3
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
 
@@ -20,7 +20,7 @@ class Controller(controller.Controller):
 		elif common_data.pos.y<20:
 			data.vel.y = 0.2
 
-		controller.basic_physics(common_data.pos, data.vel)
+		px_controller.basic_physics(common_data.pos, data.vel)
 
 	def receiveCollision(self, A, message):
 		# scenery doesn't react to collisions
@@ -31,7 +31,7 @@ class Controller(controller.Controller):
 def makeGraphics(manager, renlayer):
 	return manager.makeTemplate({
 			"Name": "Platform",
-			"Template": graphics.SingleImage,
+			"Template": px_graphics.SingleImage,
 			"RenderLayer": renlayer,
 			"Image":
 				["Graphics/Platform/TestPlatform50x12.png", 25, 3, 0]
@@ -54,7 +54,7 @@ def restrictToArena(pos, vel):
 
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
-class Collider(collision.Collider):
+class Collider(px_collision.Collider):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -71,6 +71,6 @@ class Collider(collision.Collider):
 
 
 	def getCollisionMessage(self, data, common_data):
-		return(collision.Message(source=common_data.entity,
-														 impassable=True))
+		return(px_collision.Message(source=common_data.entity,
+																impassable=True))
 

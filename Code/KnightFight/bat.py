@@ -1,12 +1,12 @@
 import enum
 
 import px_entity
-import vector
-from vector import Vec3, rand_num
-import controller
-import collision
-import graphics
-import sound
+import px_vector
+from px_vector import Vec3, rand_num
+import px_controller
+import px_collision
+import px_graphics
+import px_sound
 import background
 
 class eEvents(enum.IntEnum):
@@ -16,7 +16,7 @@ class eEvents(enum.IntEnum):
 def makeSounds(manager, mixer):
 	return manager.makeTemplate( {
 		"Name": "Bat Sounds",
-		"Template": sound.MultiSound,
+		"Template": px_sound.MultiSound,
 		"Mixer": mixer,
 		"StateSounds": [
 		],
@@ -24,7 +24,7 @@ def makeSounds(manager, mixer):
 			[
 				{
 					"Name": "Jump",
-					"Type": sound.Single,
+					"Type": px_sound.Single,
 					"Events": [eEvents.flap],
 					"Samples":  # one of these will play at random if there's more than one
 						[
@@ -39,13 +39,13 @@ def makeSounds(manager, mixer):
 def makeGraphics(manager, renlayer):
 	return manager.makeTemplate({
 			"Name": "Bat",
-			"Template": graphics.MultiAnim,
+			"Template": px_graphics.MultiAnim,
 			"RenderLayer": renlayer,
 			"Anims":
 				[
 			{
 				"Name": "Bat Flapping",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.stationary],
 				"Frames":
 					[
@@ -59,7 +59,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Simple Fall Left",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.fallLeft],
 				"Frames":
 					[
@@ -71,7 +71,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Simple Fall Right",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.fallRight],
 				"Frames":
 					[
@@ -83,7 +83,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hurt Left",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.hurtLeft, px_entity.eStates.hurtRight],
 				"Frames":
 				[
@@ -96,7 +96,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Bat Shadow",
-				"AnimType": graphics.AnimSingle,
+				"AnimType": px_graphics.AnimSingle,
 				"States": [px_entity.eStates.shadow],
 				"Frames":
 					[
@@ -108,7 +108,7 @@ def makeGraphics(manager, renlayer):
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 
 	class Data(object):
 		def __init__(self, common_data, init=False):
@@ -167,12 +167,12 @@ class Controller(controller.Controller):
 				data.cooldown = 0.2
 
 		if common_data.pos.y>0:
-			controller.friction(data.vel, 0.01)
+			px_controller.friction(data.vel, 0.01)
 		else:
-			controller.friction(data.vel, 0.1)
+			px_controller.friction(data.vel, 0.1)
 
-		controller.basic_gravity(data.vel)
-		controller.basic_physics(common_data.pos,data.vel)
+		px_controller.basic_gravity(data.vel)
+		px_controller.basic_physics(common_data.pos, data.vel)
 
 		background.restrictToArena(common_data.pos, data.vel)
 
@@ -202,7 +202,7 @@ class Controller(controller.Controller):
 
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
-class Collider(collision.Collider):
+class Collider(px_collision.Collider):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -220,7 +220,7 @@ class Collider(collision.Collider):
 		# global static data to all of BatCollider components
 
 	def getCollisionMessage(self, data, common_data):
-		return(collision.Message(source=common_data.entity, damage=0, damage_hero=1))
+		return(px_collision.Message(source=common_data.entity, damage=0, damage_hero=1))
 
 
 

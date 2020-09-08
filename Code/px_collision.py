@@ -1,7 +1,7 @@
 import enum
 from px_entity import ComponentManager, Component, eStates
-from vector import Vec3
-from log import log
+from px_vector import Vec3
+from px_log import log
 
 # globals
 collision_debug = False

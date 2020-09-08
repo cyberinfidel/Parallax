@@ -8,9 +8,9 @@ import sdl2.sdlmixer
 
 # import my files
 import px_entity
-import game_pad
-import vector
-import graphics
+import px_game_pad
+import px_vector
+import px_graphics
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -32,7 +32,7 @@ class eGameModes:
 
 
 class Game(object):
-	def __init__(self, title, res_x, res_y, zoom, fullscreen, clear_color=graphics.Color(0, 0, 0)):
+	def __init__(self, title, res_x, res_y, zoom, fullscreen, clear_color=px_graphics.Color(0, 0, 0)):
 		# Initialize the video system - this implicitly initializes some
 		# necessary parts within the SDL2 DLL used by the video module.
 		#
@@ -76,7 +76,7 @@ class Game(object):
 		self.game_mode = eGameModes.title
 
 
-		self.input = game_pad.Input(self)
+		self.input = px_game_pad.Input(self)
 
 		self.drawables = px_entity.EntityList()
 		self.audibles = px_entity.EntityList()
@@ -193,7 +193,7 @@ class Game(object):
 
 	def runTests(self):
 		result = 0
-		fails = vector.runTests()
+		fails = px_vector.runTests()
 		if len(fails)>0:
 			log("Unit tests failed.")
 			for fail in fails:

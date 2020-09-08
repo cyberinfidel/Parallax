@@ -6,10 +6,10 @@ import sys
 sys.path.insert(1, '../')
 # actually import files
 import px_entity
-import collision
-import graphics
-import game
-from vector import Vec3
+import px_collision
+import px_graphics
+import px_game
+from px_vector import Vec3
 
 
 from FeedTheDuckScripts import DuckGraphics, DuckController, DuckCollider
@@ -24,12 +24,12 @@ def log(msg, new_line=True):
 
 
 
-class FeedTheDuck(game.Game):
+class FeedTheDuck(px_game.Game):
 	def __init__(self):
 		super(FeedTheDuck, self).__init__(title = "Feed the Duck", res_x= 320, res_y= 200, zoom = 3, fullscreen= False)
 
-		self.renlayer = graphics.RenderLayer(self.ren)
-		self.collision_manager = collision.CollisionManager(game=self) # TODO: should this be a ComponentManager() like the others?
+		self.renlayer = px_graphics.RenderLayer(self.ren)
+		self.collision_manager = px_collision.CollisionManager(game=self) # TODO: should this be a ComponentManager() like the others?
 
 		###################
 		# make components #
@@ -38,7 +38,7 @@ class FeedTheDuck(game.Game):
 
 		backgraphics = self.graphics_manager.makeTemplate({
 			"Name": "Background",
-			"Template": graphics.SingleImage,
+			"Template": px_graphics.SingleImage,
 			"RenderLayer": self.renlayer,
 			"Image": ["Graphics/Background/Back.png", 0, 0, 65]
 		})

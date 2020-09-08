@@ -1,5 +1,5 @@
-from controller import Controller
-from graphics import SingleImage
+from px_controller import Controller
+from px_graphics import SingleImage
 
 
 class BackgroundController(Controller):

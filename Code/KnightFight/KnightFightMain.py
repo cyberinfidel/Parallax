@@ -7,13 +7,13 @@ import sdl2.mouse
 # 	add path to Parallax
 sys.path.append('../')
 # actually import files
-from game import Game, eGameModes
+from px_game import Game, eGameModes
 from px_entity import eStates
-from collision import CollisionManager
-from vector import Vec3, rand_num
-import graphics
-import sound
-import director
+from px_collision import CollisionManager
+from px_vector import Vec3, rand_num
+import px_graphics
+import px_sound
+import px_director
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -45,15 +45,15 @@ class KnightFight(Game):
 		##########################
 		# set up graphics layers #
 		##########################
-		self.renlayer = graphics.RenderLayer(self.ren)
-		self.title_renlayer = graphics.RenderLayer(self.ren)
+		self.renlayer = px_graphics.RenderLayer(self.ren)
+		self.title_renlayer = px_graphics.RenderLayer(self.ren)
 		self.scroll = False
 		self.quit_cooldown = 0.5
 
 		##########################
 		# set up sound           #
 		##########################
-		self.sound_mixer = sound.SoundMixer(self)
+		self.sound_mixer = px_sound.SoundMixer(self)
 		###############################
 		# set up background and title #
 		###############################
@@ -144,7 +144,7 @@ class KnightFight(Game):
 		self.heart_t = self.entity_manager.makeEntityTemplate(graphics=heart_graphics, controller=heart_controller)
 
 		# director
-		director_controller = director.makeController(self.controller_manager)
+		director_controller = px_director.makeController(self.controller_manager)
 
 		self.director_t = self.entity_manager.makeEntityTemplate(controller=director_controller)
 

@@ -4,9 +4,9 @@ import sdl2
 import sdl2.ext
 import sdl2.sdlttf
 
-import graphics
+import px_graphics
 
-from log import log
+from px_log import log
 
 # example
 # self.font = text.Font(self.ren, "Fonts/space-mono/SpaceMono-Bold.ttf")
@@ -15,7 +15,7 @@ from log import log
 
 
 class Message(object):
-	def __init__(self, font_manager, string, font=0, color=graphics.Color(1, 1, 1, 1), size=12):
+	def __init__(self, font_manager, string, font=0, color=px_graphics.Color(1, 1, 1, 1), size=12):
 		self.string = string
 		self.font_manager = font_manager
 		self.font = font
@@ -23,7 +23,7 @@ class Message(object):
 		self.size = size
 
 	@classmethod
-	def withRender(cls, font_manager, string, font=0, color=graphics.Color(1, 1, 1, 1), size=12):
+	def withRender(cls, font_manager, string, font=0, color=px_graphics.Color(1, 1, 1, 1), size=12):
 		message = Message(font_manager, string, font, color, size)
 		message.renderToTexture()
 		return message
@@ -91,7 +91,7 @@ class FontManager(object):
 		self.current_font = font_index
 
 	# todo: make this actually work
-	def renderTextToSurfaceAndSave(self, file, string, font=False, color=graphics.Color(1, 1, 1, 1)):
+	def renderTextToSurfaceAndSave(self, file, string, font=False, color=px_graphics.Color(1, 1, 1, 1)):
 		surf = sdl2.sdlttf.TTF_RenderUTF8_Solid(self.sdl_fonts[font].font, string.encode('utf-8'), color)
 		if surf is None:
 			log(f"TTF_RenderText failed: {string}")
@@ -99,7 +99,7 @@ class FontManager(object):
 		height = surf.contents.h
 		return width, height
 
-	def renderText(self, string, font=False, color=graphics.Color(1, 1, 1, 1)):
+	def renderText(self, string, font=False, color=px_graphics.Color(1, 1, 1, 1)):
 		#We need to first render to a surface as that's what TTF_RenderText
 		#returns, then load that surface into a texture
 

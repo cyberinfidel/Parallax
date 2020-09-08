@@ -1,11 +1,11 @@
 import enum
 
 from px_entity import eStates, eDirections
-from vector import Vec3, rand_num
-from controller import Controller, basic_gravity, basic_physics, friction
-from collision import Collider, Message
-from graphics import AnimLoop, AnimNoLoop, MultiAnim, AnimSingle
-import sound
+from px_vector import Vec3, rand_num
+from px_controller import Controller, basic_gravity, basic_physics, friction
+from px_collision import Collider, Message
+from px_graphics import AnimLoop, AnimNoLoop, MultiAnim, AnimSingle
+import px_sound
 from background import restrictToArena
 
 class eEvents(enum.IntEnum):

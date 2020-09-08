@@ -1,10 +1,10 @@
 import enum
 
 from px_entity import eStates
-import controller
-import graphics
+import px_controller
+import px_graphics
 import background
-from vector import Vec3
+from px_vector import Vec3
 
 class eRainStates(enum.IntEnum):
 	state_fall = 2
@@ -14,12 +14,12 @@ class eRainStates(enum.IntEnum):
 def makeGraphics(manager, renlayer):
 	return manager.makeTemplate({
 		"Name": "Rain",
-		"Template": graphics.MultiAnim,
+		"Template": px_graphics.MultiAnim,
 		"RenderLayer": renlayer,
 		"Anims": [
 			{
 				"Name": "Rain Drop Falls",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [eRainStates.state_fall],
 				"Frames":
 					[
@@ -29,7 +29,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Rain Drop Pool",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [eRainStates.state_pool],
 				"Frames":
 					[
@@ -52,7 +52,7 @@ def makeGraphics(manager, renlayer):
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -84,7 +84,7 @@ class Controller(controller.Controller):
 			if common_data.state == eRainStates.state_pool:
 				self.setState(data, common_data, eStates.dead)
 
-		controller.basic_physics(common_data.pos,data.vel)
+		px_controller.basic_physics(common_data.pos, data.vel)
 		background.restrictToArena(common_data.pos, data.vel)
 
 

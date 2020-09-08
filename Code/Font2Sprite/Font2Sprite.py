@@ -7,19 +7,19 @@ sys.path.append('../')
 
 import sdl2
 
-import text
-import game
-import graphics
+import px_text
+import px_game
+import px_graphics
 
 
 
 
-class Font2Sprite(game.Game):
+class Font2Sprite(px_game.Game):
 
 	def __init__(self):
 		super(Font2Sprite, self).__init__("Font2Sprite", res_x= 320, res_y= 320, zoom = 3, fullscreen= False)
-		self.renlayer = graphics.RenderLayer(self.ren)
-		self.font_manager = text.FontManager(self.ren)
+		self.renlayer = px_graphics.RenderLayer(self.ren)
+		self.font_manager = px_text.FontManager(self.ren)
 		self.font = self.font_manager.addFontFromFile("Fonts/Adventurer/Adventurer.ttf", 15)
 
 		self.i = 33

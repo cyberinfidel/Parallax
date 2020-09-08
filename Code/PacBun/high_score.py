@@ -1,8 +1,8 @@
 import json
 
 import px_entity
-import controller
-import graphics
+import px_controller
+import px_graphics
 import PacBun
 
 
@@ -20,7 +20,7 @@ def init(entity):
 	for i in range(0, 10):
 		score, r, g, b = formatScore(i, scores_data[i][0], scores_data[i][1])
 		graphics_data.images.append(
-			entity.graphics.render_layer.addImageFromString(string=score, font=entity.graphics.font, color=graphics.Color(r, g, b, 1)))
+			entity.graphics.render_layer.addImageFromString(string=score, font=entity.graphics.font, color=px_graphics.Color(r, g, b, 1)))
 
 def formatScore(index, initials, score):
 	r, g, b = (
@@ -71,7 +71,7 @@ class ScoreTable(px_entity.Component):
 
 		for i in range(0,10):
 			score, r, g, b = self.formatScore(i,scores_data[i][0],scores_data[i][1])
-			self.render_layer.replaceImageFromString(entity.graphics_data.images[i], string=score, font=self.font, color=graphics.Color(r, g, b, 255))
+			self.render_layer.replaceImageFromString(entity.graphics_data.images[i], string=score, font=self.font, color=px_graphics.Color(r, g, b, 255))
 
 
 def makeGraphics(manager, render_layer):
@@ -85,7 +85,7 @@ def makeGraphics(manager, render_layer):
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 	class Data(object):
 		def __init__(self, entity, init=False):
 			if init:

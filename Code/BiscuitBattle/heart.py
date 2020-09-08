@@ -1,6 +1,6 @@
 from px_entity import eStates
-from controller import Controller
-from graphics import MultiAnim, AnimRandom, AnimNoLoop
+from px_controller import Controller
+from px_graphics import MultiAnim, AnimRandom, AnimNoLoop
 
 def heartGraphics(renlayer):
 	return{

@@ -1,8 +1,8 @@
-from graphics import SingleImage
-import controller
-from vector import Vec3
+from px_graphics import SingleImage
+import px_controller
+from px_vector import Vec3
 
-class BackgroundController(controller.Controller):
+class BackgroundController(px_controller.Controller):
 	def __init__(self, game, data):
 		super(BackgroundController, self).__init__(game)
 

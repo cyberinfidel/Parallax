@@ -1,6 +1,6 @@
 from px_entity import eStates
-import controller
-import collision
+import px_controller
+import px_collision
 
 class Strike(object):
 	def __init__(self, cool, delay, duration, range, dim, orig, force, absorb, damage, template, hero_damage=0):
@@ -22,7 +22,7 @@ class Strike(object):
 #######
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 	class Data(object):
 		def __init__(self, entity, init=False):
 			if init:
@@ -52,7 +52,7 @@ class Controller(controller.Controller):
 
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
-class Collider(collision.Collider):
+class Collider(px_collision.Collider):
 	class Data(object):
 		def __init__(self, entity, init=False):
 			if init:
@@ -65,5 +65,5 @@ class Collider(collision.Collider):
 		# global static data to all of components
 
 	def getCollisionMessage(self, data, entity):
-		return(collision.Message(source=entity, damage=data.damage, force=data.force, absorb=data.absorb))
+		return(px_collision.Message(source=entity, damage=data.damage, force=data.force, absorb=data.absorb))
 

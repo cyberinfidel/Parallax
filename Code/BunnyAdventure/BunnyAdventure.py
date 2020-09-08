@@ -7,16 +7,16 @@ import sdl2.mouse
 # 	add path to Parallax
 sys.path.insert(1, '../')
 # actually import files
-import game
+import px_game
 import px_entity
-import collision
-import vector
-from vector import Vec3, rand_num
-import controller
-import graphics
-import sound
-import director
-import text
+import px_collision
+import px_vector
+from px_vector import Vec3, rand_num
+import px_controller
+import px_graphics
+import px_sound
+import px_director
+import px_text
 
 
 # disable to remove logging
@@ -35,7 +35,7 @@ import title
 import rain
 import butterfly
 
-class BunnyAdventure(game.Game):
+class BunnyAdventure(px_game.Game):
 	def __init__(self):
 		# do bare minimum to set up
 		# most set up is in first update
@@ -45,20 +45,20 @@ class BunnyAdventure(game.Game):
 		self.logical_size_x = self.res_x
 		self.logical_size_y = self.res_y
 
-		self.collision_manager = collision.CollisionManager(game=self)  # TODO: should this be a ComponentManager() like the others?
+		self.collision_manager = px_collision.CollisionManager(game=self)  # TODO: should this be a ComponentManager() like the others?
 
 		##########################
 		# set up graphics layers #
 		##########################
-		self.renlayer = graphics.RenderLayer(self.ren)
-		self.overlay_renlayer = graphics.RenderLayer(self.ren)
+		self.renlayer = px_graphics.RenderLayer(self.ren)
+		self.overlay_renlayer = px_graphics.RenderLayer(self.ren)
 		self.scroll = True
 		self.quit_cooldown = 0.5
 
 		##########################
 		# set up sound           #
 		##########################
-		self.sound_mixer = sound.SoundMixer(self)
+		self.sound_mixer = px_sound.SoundMixer(self)
 
 		###############################
 		# set up background and title #
@@ -71,7 +71,7 @@ class BunnyAdventure(game.Game):
 		self.title.setGamePad(self.input.getGamePad(0))
 
 		self.raining = False
-		self.setGameMode(game.eGameModes.title)
+		self.setGameMode(px_game.eGameModes.title)
 
 		self.back_t = self.entity_manager.makeEntityTemplate(graphics=back.makeGraphics(self.graphics_manager, self.renlayer))
 		self.platform_t = self.entity_manager.makeEntityTemplate(graphics=plat.makeGraphics(self.graphics_manager,self.renlayer),
@@ -124,7 +124,7 @@ class BunnyAdventure(game.Game):
 																												 )
 
 		# director
-		self.director_t = self.entity_manager.makeEntityTemplate(controller=director.makeController(self.controller_manager))
+		self.director_t = self.entity_manager.makeEntityTemplate(controller=px_director.makeController(self.controller_manager))
 
 		# put all separate images into a crude texture atlas for efficient rendering
 		self.renlayer.makeAtlas()
@@ -140,15 +140,15 @@ class BunnyAdventure(game.Game):
 
 	def update(self, dt):
 
-		if self.game_mode==game.eGameModes.init:
+		if self.game_mode==px_game.eGameModes.init:
 
 			pass
 
 ##################################################
-		elif self.game_mode==game.eGameModes.title:
+		elif self.game_mode==px_game.eGameModes.title:
 			pass
 ##################################################
-		elif self.game_mode==game.eGameModes.start:
+		elif self.game_mode==px_game.eGameModes.start:
 			# set up new game and clean up anything from last game
 			self.num_monsters = 0
 			self.killPlayEntities()
@@ -171,9 +171,9 @@ class BunnyAdventure(game.Game):
 
 			self.rain_cooldown = 500
 			self.restart_cooldown=60
-			self.setGameMode(game.eGameModes.play)
+			self.setGameMode(px_game.eGameModes.play)
 		##################################################
-		elif self.game_mode==game.eGameModes.play:
+		elif self.game_mode==px_game.eGameModes.play:
 
 			if (rand_num(10) == 0 and len(self.drawables)<55):
 				bfly = self.entity_manager.makeEntity(self.bfly_templates[rand_num(3)])
@@ -202,25 +202,25 @@ class BunnyAdventure(game.Game):
 
 		####################################################
 
-		elif self.game_mode==game.eGameModes.game_over:
+		elif self.game_mode==px_game.eGameModes.game_over:
 			self.director.setState(px_entity.eStates.dead)
 			self.restart_cooldown-=dt
 			self.title.setState(title.eTitlentity.eStates.game_over)
 			if self.restart_cooldown<=0:
-				self.setGameMode(game.eGameModes.title)
+				self.setGameMode(px_game.eGameModes.title)
 				self.cleanUpDead()
 
 		####################################################
 
-		elif self.game_mode==game.eGameModes.win:
+		elif self.game_mode==px_game.eGameModes.win:
 			self.restart_cooldown-=dt
 			if self.restart_cooldown<=0:
-				self.setGameMode(game.eGameModes.title)
+				self.setGameMode(px_game.eGameModes.title)
 				self.cleanUpDead()
 
 		####################################################
 
-		elif self.game_mode==game.eGameModes.quit:
+		elif self.game_mode==px_game.eGameModes.quit:
 			self.quit_cooldown-=dt
 			self.title.setState(title.eTitleStates.quit)
 			if self.quit_cooldown<=0:
@@ -228,7 +228,7 @@ class BunnyAdventure(game.Game):
 				return
 
 		# Always do this, unless paused:
-		if self.game_mode!=game.eGameModes.paused:
+		if self.game_mode!=px_game.eGameModes.paused:
 			for index, updatable in reversed(list(enumerate(self.updatables))):
 				updatable.update(dt)
 			for audible in self.audibles:
@@ -271,7 +271,7 @@ class BunnyAdventure(game.Game):
 
 	def draw(self):
 
-		if self.game_mode==game.eGameModes.play:
+		if self.game_mode==px_game.eGameModes.play:
 			#########################
 			# scroll and scale view #
 			# Here be Dragons...    #
@@ -347,9 +347,9 @@ class BunnyAdventure(game.Game):
 	def KFEvents(self):
 		return[
 				# wait a bit
-				director.Delay(2),
+				px_director.Delay(2),
 			# wait a bit
-				director.Delay(0.7),
+				px_director.Delay(0.7),
 				# EndGame()
 			]
 

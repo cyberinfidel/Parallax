@@ -1,8 +1,8 @@
 from px_entity import eStates
-from game_pad import eActions
-import controller
-from graphics import MultiAnim, AnimNoLoop
-from game import eGameModes
+from px_game_pad import eActions
+import px_controller
+from px_graphics import MultiAnim, AnimNoLoop
+from px_game import eGameModes
 
 import enum
 class eTitleStates(enum.IntEnum):
@@ -83,7 +83,7 @@ def makeGraphics(manager, renlayer):
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:

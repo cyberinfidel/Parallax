@@ -1,7 +1,7 @@
 # Parallax
-import controller
-import collision
-from vector import Vec3
+import px_controller
+import px_collision
+from px_vector import Vec3
 
 
 # exits map to binary values
@@ -52,7 +52,7 @@ class eTileStates:
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
 		# values global to all instances
@@ -101,7 +101,7 @@ class Controller(controller.Controller):
 
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
-class Collider(collision.Collider):
+class Collider(px_collision.Collider):
 	class Data(object):
 		def __init__(self, entity, init=False):
 			if init:
@@ -116,7 +116,7 @@ class Collider(collision.Collider):
 		# global static data to all of HeroCollider components
 
 	def getCollisionMessage(self, data, entity):
-		message = collision.Message(source=entity)
+		message = px_collision.Message(source=entity)
 		if entity.state==eTileStates.hedge:
 			message.impassable = True
 			message.poo = False

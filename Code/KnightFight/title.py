@@ -1,10 +1,10 @@
 import enum
 
 import px_entity
-import controller
-import graphics
-import game
-import game_pad
+import px_controller
+import px_graphics
+import px_game
+import px_game_pad
 
 class eTitleStates(enum.IntEnum):
 	dead = px_entity.eStates.dead
@@ -21,13 +21,13 @@ class eTitleStates(enum.IntEnum):
 def makeGraphics(manager, renlayer):
 	return manager.makeTemplate({
 			"Name": "Title Animations",
-			"Template": graphics.MultiAnim,
+			"Template": px_graphics.MultiAnim,
 			"RenderLayer": renlayer,
 			"Anims":
 				[
 					{
 						"Name": "Title",
-						"AnimType": graphics.AnimNoLoop,
+						"AnimType": px_graphics.AnimNoLoop,
 						"States": [eTitleStates.title],
 						"Frames":
 							[
@@ -36,7 +36,7 @@ def makeGraphics(manager, renlayer):
 					},
 					{
 						"Name": "TitleBar",
-						"AnimType": graphics.AnimNoLoop,
+						"AnimType": px_graphics.AnimNoLoop,
 						"States": [eTitleStates.play],
 						"Frames":
 							[
@@ -45,7 +45,7 @@ def makeGraphics(manager, renlayer):
 					},
 					{
 						"Name": "Paused",
-						"AnimType": graphics.AnimNoLoop,
+						"AnimType": px_graphics.AnimNoLoop,
 						"States": [eTitleStates.paused],
 						"Frames":
 							[
@@ -54,7 +54,7 @@ def makeGraphics(manager, renlayer):
 					},
 					{
 						"Name": "Game Over",
-						"AnimType": graphics.AnimNoLoop,
+						"AnimType": px_graphics.AnimNoLoop,
 						"States": [eTitleStates.game_over],
 						"Frames":
 							[
@@ -63,7 +63,7 @@ def makeGraphics(manager, renlayer):
 					},
 					{
 						"Name": "Win",
-						"AnimType": graphics.AnimNoLoop,
+						"AnimType": px_graphics.AnimNoLoop,
 						"States": [eTitleStates.win],
 						"Frames":
 							[
@@ -72,7 +72,7 @@ def makeGraphics(manager, renlayer):
 					},
 					{
 						"Name": "Quit",
-						"AnimType": graphics.AnimNoLoop,
+						"AnimType": px_graphics.AnimNoLoop,
 						"States": [eTitleStates.quit],
 						"Frames":
 							[
@@ -84,7 +84,7 @@ def makeGraphics(manager, renlayer):
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -102,48 +102,48 @@ class Controller(controller.Controller):
 #		if self.coolDown(data, dt):
 #			self.cooldown = self.delay
 
-			if common_data.game.game_mode==game.eGameModes.play:
+			if common_data.game.game_mode==px_game.eGameModes.play:
 				self.setState(data, common_data, eTitleStates.play)
-				if data.game_pad.actions[game_pad.eActions.pause]:
-					common_data.game.setGameMode(game.eGameModes.paused)
+				if data.game_pad.actions[px_game_pad.eActions.pause]:
+					common_data.game.setGameMode(px_game.eGameModes.paused)
 					self.setState(data, common_data, eTitleStates.paused)
-					data.game_pad.actions[game_pad.eActions.pause] = False  # stops complete quite
-					data.game_pad.actions[game_pad.eActions.quit] = False  # stops complete quite
+					data.game_pad.actions[px_game_pad.eActions.pause] = False  # stops complete quite
+					data.game_pad.actions[px_game_pad.eActions.quit] = False  # stops complete quite
 			else:
-				if common_data.game.game_mode == game.eGameModes.paused:
+				if common_data.game.game_mode == px_game.eGameModes.paused:
 					if data.game_pad:
-						if data.game_pad.actions[game_pad.eActions.jump]:
-							common_data.game.setGameMode(game.eGameModes.play)
+						if data.game_pad.actions[px_game_pad.eActions.jump]:
+							common_data.game.setGameMode(px_game.eGameModes.play)
 							self.setState(data, common_data, eTitleStates.play)
-							data.game_pad.actions[game_pad.eActions.jump]=False # stops hero jumping
-						if data.game_pad.actions[game_pad.eActions.quit]:
-							common_data.game.setGameMode(game.eGameModes.title)
+							data.game_pad.actions[px_game_pad.eActions.jump]=False # stops hero jumping
+						if data.game_pad.actions[px_game_pad.eActions.quit]:
+							common_data.game.setGameMode(px_game.eGameModes.title)
 							common_data.game.killPlayEntities()
 							self.setState(data, common_data, eTitleStates.title)
-							data.game_pad.actions[game_pad.eActions.quit]=False # stops complete quite
-						if data.game_pad.actions[game_pad.eActions.fullscreen]:
+							data.game_pad.actions[px_game_pad.eActions.quit]=False # stops complete quite
+						if data.game_pad.actions[px_game_pad.eActions.fullscreen]:
 							common_data.game.toggleFullscreen()
-							data.game_pad.actions[game_pad.eActions.fullscreen] = False  # stops repeat
+							data.game_pad.actions[px_game_pad.eActions.fullscreen] = False  # stops repeat
 
-				elif common_data.game.game_mode == game.eGameModes.title:
+				elif common_data.game.game_mode == px_game.eGameModes.title:
 					self.setState(data, common_data, eTitleStates.title)
 					if data.game_pad:
-						if data.game_pad.actions[game_pad.eActions.jump]:
-							common_data.game.setGameMode(game.eGameModes.start)
+						if data.game_pad.actions[px_game_pad.eActions.jump]:
+							common_data.game.setGameMode(px_game.eGameModes.start)
 							self.setState(data, common_data, eTitleStates.play)
-							data.game_pad.actions[game_pad.eActions.jump]=False # stops hero jumping
-						if data.game_pad.actions[game_pad.eActions.quit]:
-							common_data.game.setGameMode(game.eGameModes.quit)
+							data.game_pad.actions[px_game_pad.eActions.jump]=False # stops hero jumping
+						if data.game_pad.actions[px_game_pad.eActions.quit]:
+							common_data.game.setGameMode(px_game.eGameModes.quit)
 							common_data.game.killPlayEntities()
 							self.setState(data, common_data, eTitleStates.quit)
-							data.game_pad.actions[game_pad.eActions.quit] = False  # stops complete quite
-						if data.game_pad.actions[game_pad.eActions.fullscreen]:
+							data.game_pad.actions[px_game_pad.eActions.quit] = False  # stops complete quite
+						if data.game_pad.actions[px_game_pad.eActions.fullscreen]:
 							common_data.game.toggleFullscreen()
-							data.game_pad.actions[game_pad.eActions.fullscreen] = False  # stops repeat
+							data.game_pad.actions[px_game_pad.eActions.fullscreen] = False  # stops repeat
 
-				elif common_data.game.game_mode == game.eGameModes.game_over:
+				elif common_data.game.game_mode == px_game.eGameModes.game_over:
 					self.setState(data, common_data, eTitleStates.game_over)
-				elif common_data.game.game_mode == game.eGameModes.win:
+				elif common_data.game.game_mode == px_game.eGameModes.win:
 					self.setState(data, common_data, eTitleStates.win)
 
 

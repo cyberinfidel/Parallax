@@ -1,21 +1,21 @@
 import px_entity
-from vector import Vec3, rand_num
-import controller
-import collision
-import graphics
+from px_vector import Vec3, rand_num
+import px_controller
+import px_collision
+import px_graphics
 import background
 import arrow
 
 def makeGraphics(manager, renlayer):
 	return manager.makeTemplate({
 			"Name": "Goblin Archer",
-			"Template": graphics.MultiAnim,
+			"Template": px_graphics.MultiAnim,
 			"RenderLayer": renlayer,
 			"Anims":
 				[
 			{
 				"Name": "Firing Arrow",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.attackSmallLeft],
 				"Frames":
 					[
@@ -33,7 +33,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Firing Arrow",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.attackSmallRight],
 				"Frames":
 					[
@@ -51,7 +51,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Standing",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.stationary],
 				"Frames":
 					[
@@ -60,7 +60,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Standing",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.standLeft],
 				"Frames":
 					[
@@ -69,7 +69,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Standing",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.standRight],
 				"Frames":
 					[
@@ -78,7 +78,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Simple Fall Left",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.fallLeft],
 				"Frames":
 					[
@@ -88,7 +88,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Simple Fall Right",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.fallRight],
 				"Frames":
 					[
@@ -98,7 +98,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Simple Hurt Left",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.hurtLeft],
 				"Frames":
 					[
@@ -107,7 +107,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Simple HurtRight",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.hurtRight],
 				"Frames":
 					[
@@ -116,7 +116,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Goblin Archer Shadow",
-				"AnimType": graphics.AnimSingle,
+				"AnimType": px_graphics.AnimSingle,
 				"States": [px_entity.eStates.shadow],
 				"Frames":
 					[
@@ -128,7 +128,7 @@ def makeGraphics(manager, renlayer):
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 
 	class Data(object):
 		def __init__(self, common_data, init=False):
@@ -191,9 +191,9 @@ class Controller(controller.Controller):
 				self.setState(data, common_data, px_entity.eStates.standLeft if data.facingleft else px_entity.eStates.standRight)
 				data.cooldown = rand_num(1) + 2
 
-		controller.friction(data.vel)
-		controller.basic_gravity(data.vel)
-		controller.basic_physics(common_data.pos,data.vel)
+		px_controller.friction(data.vel)
+		px_controller.basic_gravity(data.vel)
+		px_controller.basic_physics(common_data.pos, data.vel)
 		background.restrictToArena(common_data.pos, data.vel)
 
 
@@ -226,7 +226,7 @@ class Controller(controller.Controller):
 
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
-class Collider(collision.Collider):
+class Collider(px_collision.Collider):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -245,7 +245,7 @@ class Collider(collision.Collider):
 		self.radius = 10.0
 
 	def getCollisionMessage(self, data, common_data):
-		return(collision.Message(source=common_data.entity, damage=0, damage_hero=1))
+		return(px_collision.Message(source=common_data.entity, damage=0, damage_hero=1))
 
 
 

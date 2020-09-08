@@ -4,18 +4,18 @@ import copy
 
 # Parallax
 import px_entity
-import controller
-import collision
-from vector import Vec3
-import vector
-import sound
+import px_controller
+import px_collision
+from px_vector import Vec3
+import px_vector
+import px_sound
 
 
 
 def makeSounds(manager, mixer):
 	return manager.makeTemplate({
 		"Name": "Bunny Sounds",
-		"Template": sound.MultiSound,
+		"Template": px_sound.MultiSound,
 		"Mixer": mixer,
 		"StateSounds": [
 		],
@@ -23,7 +23,7 @@ def makeSounds(manager, mixer):
 			[
 				{
 					"Name": "Jump",
-					"Type": sound.Single,
+					"Type": px_sound.Single,
 					"Events": [px_entity.eEvents.jump],
 					"Samples":  # one of these will play at random if there's more than one
 						[
@@ -47,7 +47,7 @@ class eFoxTypes(enum.IntEnum):
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
 		# values global to all instances
@@ -79,7 +79,7 @@ class Controller(controller.Controller):
 			self.health = 3
 			entity.state = px_entity.eStates.stationary
 			self.queued_state = entity.state
-			self.AI_cooldown = 1+vector.rand_num(15)/5.
+			self.AI_cooldown = 1 + px_vector.rand_num(15) / 5.
 			self.type = 0
 			self.fox_speed = 1
 
@@ -98,13 +98,13 @@ class Controller(controller.Controller):
 		# todo: foxes shouldn't pause if the bunny is in sight
 		data.AI_cooldown -= dt
 		if data.AI_cooldown<=0:
-			data.AI_cooldown=10+vector.rand_num(10)
+			data.AI_cooldown= 10 + px_vector.rand_num(10)
 			if data.fox_speed==1:
 				data.fox_speed=0
 				data.AI_cooldown = data.pause
 				if data.pause>0: data.pause -=1
 				self.setState(data, entity,
-											[px_entity.eStates.stationary, px_entity.eStates.stationary, px_entity.eStates.stationary, px_entity.eStates.stationary, px_entity.eStates.stationary, eFoxStates.cleanRight, eFoxStates.cleanLeft][vector.rand_num(7)]
+											[px_entity.eStates.stationary, px_entity.eStates.stationary, px_entity.eStates.stationary, px_entity.eStates.stationary, px_entity.eStates.stationary, eFoxStates.cleanRight, eFoxStates.cleanLeft][px_vector.rand_num(7)]
 											)
 			else:
 				data.fox_speed=1
@@ -186,7 +186,7 @@ class Controller(controller.Controller):
 				px_entity.eStates.runRight
 			)[data.facing])
 
-		controller.basic_physics(entity.pos, data.vel)
+		px_controller.basic_physics(entity.pos, data.vel)
 		entity.pos.clamp(Vec3(0,0,0),Vec3(319,319,0))
 
 
@@ -201,7 +201,7 @@ class Controller(controller.Controller):
 
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
-class Collider(collision.Collider):
+class Collider(px_collision.Collider):
 	class Data(object):
 		def __init__(self, entity, init=False):
 			if init:
@@ -221,6 +221,6 @@ class Collider(collision.Collider):
 		return self.radius
 
 	def getCollisionMessage(self, data, entity):
-		return(collision.Message(source=entity.entity,damage=1))
+		return(px_collision.Message(source=entity.entity, damage=1))
 
 

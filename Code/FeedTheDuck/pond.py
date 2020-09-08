@@ -1,9 +1,9 @@
 # system
 
 # Parallax
-from collision import Collider, eShapes
-from graphics import SingleImage
-from vector import Vec3
+from px_collision import Collider, eShapes
+from px_graphics import SingleImage
+from px_vector import Vec3
 
 # FeedTheDuck
 

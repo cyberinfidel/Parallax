@@ -3,12 +3,12 @@ import enum
 
 # Parallax
 import px_entity
-import game_pad
-import controller
-import collision
-import graphics
-from vector import Vec3
-import sound
+import px_game_pad
+import px_controller
+import px_collision
+import px_graphics
+from px_vector import Vec3
+import px_sound
 import background
 
 # Knightfight
@@ -30,7 +30,7 @@ class eEvents(enum.IntEnum):
 def makeSounds(manager, mixer):
 	return manager.makeTemplate({
 		"Name": "Hero Sounds",
-		"Template": sound.MultiSound,
+		"Template": px_sound.MultiSound,
 		"Mixer": mixer,
 		"StateSounds": [
 		],
@@ -38,7 +38,7 @@ def makeSounds(manager, mixer):
 			[
 				{
 					"Name": "Jump",
-					"Type": sound.Single,
+					"Type": px_sound.Single,
 					"Events": [eEvents.jump],
 					"Samples":  # one of these will play at random if there's more than one
 						[
@@ -52,12 +52,12 @@ def makeSounds(manager, mixer):
 def makeGraphics(manager, renlayer):
 	return manager.makeTemplate({
 		"Name": "Hero Animations",
-		"Template": graphics.MultiAnim,
+		"Template": px_graphics.MultiAnim,
 		"RenderLayer": renlayer,
 		"Anims": [
 			{
 				"Name": "Hero Stands",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.stationary],
 				"Frames":
 					[
@@ -67,7 +67,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Runs Down",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runDown],
 				"Frames":
 					[
@@ -79,7 +79,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Runs Up",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runUp],
 				"Frames":
 					[
@@ -91,7 +91,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Runs Left",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runLeft],
 				"Frames":
 					[
@@ -103,7 +103,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Runs Right",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runRight],
 				"Frames":
 					[
@@ -115,7 +115,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Jumps Right",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.jumpRight],
 				"Frames":
 					[
@@ -125,7 +125,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Jumps Left",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.jumpLeft],
 				"Frames":
 					[
@@ -135,7 +135,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Jumps Up",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.jumpUp],
 				"Frames":
 					[
@@ -145,7 +145,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Jumps Down",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.jumpDown, px_entity.eStates.jumpStat],
 				"Frames":
 					[
@@ -155,7 +155,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Blocks Right",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.blockRight],
 				"Frames":
 					[
@@ -165,7 +165,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Blocks Left",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.blockLeft],
 				"Frames":
 					[
@@ -175,7 +175,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Big Attack Right",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.attackBigRight],
 				"Frames":
 					[
@@ -193,7 +193,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Small Attack Right",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.attackSmallRight],
 				"Frames":
 					[
@@ -209,7 +209,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Small Attack Left",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.attackSmallLeft],
 				"Frames":
 					[
@@ -225,7 +225,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Big Attack Left",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.attackBigLeft],
 				"Frames":
 					[
@@ -243,7 +243,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Fall Left",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.fallLeft],
 				"Frames":
 					[
@@ -253,7 +253,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Fall Right",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.fallRight],
 				"Frames":
 					[
@@ -263,7 +263,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero Shadow",
-				"AnimType": graphics.AnimSingle,
+				"AnimType": px_graphics.AnimSingle,
 				"States": [px_entity.eStates.shadow],
 				"Frames":
 					[
@@ -272,7 +272,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero hurt Left",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.hurtLeft],
 				"Frames":
 					[
@@ -283,7 +283,7 @@ def makeGraphics(manager, renlayer):
 			},
 			{
 				"Name": "Hero hurt Right",
-				"AnimType": graphics.AnimNoLoop,
+				"AnimType": px_graphics.AnimNoLoop,
 				"States": [px_entity.eStates.hurtRight],
 				"Frames":
 					[
@@ -299,7 +299,7 @@ def makeGraphics(manager, renlayer):
 
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
 		# values global to all instances
@@ -404,13 +404,13 @@ class Controller(controller.Controller):
 			common_data.blink=False
 
 		# ground vs in the air
-		if common_data.pos.y < 0.0 + controller.global_tolerance:
+		if common_data.pos.y < 0.0 + px_controller.global_tolerance:
 			# we're on the ground guys
 			common_data.pos.y = 0.0
 			data.vel.y = 0.0
 			data.jump = False
 		else:
-			data.vel.y -= controller.global_gravity
+			data.vel.y -= px_controller.global_gravity
 
 		# deal with things that can't interrupt actions that are already happening
 
@@ -452,7 +452,7 @@ class Controller(controller.Controller):
 			if data.game_pad:
 				# i.e. this hero is being controlled by a game_pad
 				# going left
-				if data.game_pad.actions[game_pad.eActions.left]:
+				if data.game_pad.actions[px_game_pad.eActions.left]:
 					data.facing = px_entity.eDirections.left
 					if data.jump:
 						self.updateState(data, common_data, px_entity.eStates.jumpLeft, hero_jump_cool)
@@ -460,7 +460,7 @@ class Controller(controller.Controller):
 						self.updateState(data, common_data, px_entity.eStates.runLeft, hero_run_cool)
 
 				# going right
-				elif data.game_pad.actions[game_pad.eActions.right]:
+				elif data.game_pad.actions[px_game_pad.eActions.right]:
 					data.facing = px_entity.eDirections.right
 					if data.jump:
 						self.updateState(data, common_data, px_entity.eStates.jumpRight, hero_jump_cool)
@@ -468,7 +468,7 @@ class Controller(controller.Controller):
 						self.updateState(data, common_data, px_entity.eStates.runRight, hero_run_cool)
 
 				# going up
-				elif data.game_pad.actions[game_pad.eActions.up]:
+				elif data.game_pad.actions[px_game_pad.eActions.up]:
 					if data.jump:
 						self.updateState(data, common_data, px_entity.eStates.jumpUp, hero_jump_cool)
 					else:
@@ -476,27 +476,27 @@ class Controller(controller.Controller):
 
 
 				# going down
-				elif data.game_pad.actions[game_pad.eActions.down]:
+				elif data.game_pad.actions[px_game_pad.eActions.down]:
 					if data.jump:
 						self.updateState(data, common_data, px_entity.eStates.jumpDown, hero_jump_cool)
 					else:
 						self.updateState(data, common_data, px_entity.eStates.runDown, hero_run_cool)
 
-				if data.game_pad.actions[game_pad.eActions.left]:
+				if data.game_pad.actions[px_game_pad.eActions.left]:
 					data.vel.x = -hero_speed
 				# going right
-				elif data.game_pad.actions[game_pad.eActions.right]:
+				elif data.game_pad.actions[px_game_pad.eActions.right]:
 						data.vel.x = hero_speed
 
 				# going up
-				if data.game_pad.actions[game_pad.eActions.up]:
+				if data.game_pad.actions[px_game_pad.eActions.up]:
 					data.vel.z = hero_speed
 				# going down
-				elif data.game_pad.actions[game_pad.eActions.down]:
+				elif data.game_pad.actions[px_game_pad.eActions.down]:
 					data.vel.z = -hero_speed
 
 				# deal with jump button
-				if data.game_pad.actions[game_pad.eActions.jump]:
+				if data.game_pad.actions[px_game_pad.eActions.jump]:
 					if data.jump:
 						pass
 					else:
@@ -507,7 +507,7 @@ class Controller(controller.Controller):
 
 
 				# attacks and block
-				if data.game_pad.actions[game_pad.eActions.attack_big]:
+				if data.game_pad.actions[px_game_pad.eActions.attack_big]:
 					# big attack
 					if data.jump:
 						pass
@@ -518,7 +518,7 @@ class Controller(controller.Controller):
 							self.updateState(data, common_data, px_entity.eStates.attackBigLeft, self.strikes[eStrikes.big].cool)
 						else:
 							self.updateState(data, common_data, px_entity.eStates.attackBigRight, self.strikes[eStrikes.big].cool)
-				elif data.game_pad.actions[game_pad.eActions.attack_small]:
+				elif data.game_pad.actions[px_game_pad.eActions.attack_small]:
 					# small attack
 					if data.jump:
 						pass
@@ -529,7 +529,7 @@ class Controller(controller.Controller):
 						else:
 							self.updateState(data, common_data, px_entity.eStates.attackSmallRight, self.strikes[eStrikes.small].cool)
 
-				elif data.game_pad.actions[game_pad.eActions.block]:
+				elif data.game_pad.actions[px_game_pad.eActions.block]:
 					# block
 					if data.jump:
 						pass
@@ -587,7 +587,7 @@ class Controller(controller.Controller):
 
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
-class Collider(collision.Collider):
+class Collider(px_collision.Collider):
 	class Data(object):
 		def __init__(self, common_data, init=False):
 			if init:
@@ -607,6 +607,6 @@ class Collider(collision.Collider):
 		return self.radius
 
 	def getCollisionMessage(self, data, common_data):
-		return(collision.Message(source=common_data.entity))
+		return(px_collision.Message(source=common_data.entity))
 
 

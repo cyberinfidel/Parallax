@@ -1,4 +1,4 @@
-import graphics
+import px_graphics
 
 import bunny
 import fox
@@ -7,18 +7,18 @@ import px_entity
 import title
 import high_score
 import new_high_score
-import message_box
-import director
+import px_message_box
+import px_director
 
 graphics = {
 	'bowie': {
 		"Name": "Bunny Animations",
-		"Template": graphics.MultiAnim,
+		"Template": px_graphics.MultiAnim,
 		# "RenderLayer": self.renlayer,
 		"Anims": [
 			{
 				"Name": "Bunny Stands",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.stationary],
 				"Frames":
 					[
@@ -37,7 +37,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Down",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runDown],
 				"Frames":
 					[
@@ -49,7 +49,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Up",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runUp],
 				"Frames":
 					[
@@ -61,7 +61,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Left",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runLeft],
 				"Frames":
 					[
@@ -73,7 +73,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Right",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runRight],
 				"Frames":
 					[
@@ -89,12 +89,12 @@ graphics = {
 	},	# end of bowie
 	'pacbun': {
 		"Name": "Bunny Animations",
-		"Template": graphics.MultiAnim,
+		"Template": px_graphics.MultiAnim,
 		# "RenderLayer": self.renlayer,
 		"Anims": [
 			{
 				"Name": "Bunny Stands",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.stationary],
 				"Frames":
 					[
@@ -113,7 +113,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Down",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runDown],
 				"Frames":
 					[
@@ -125,7 +125,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Up",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runUp],
 				"Frames":
 					[
@@ -137,7 +137,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Left",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runLeft],
 				"Frames":
 					[
@@ -149,7 +149,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Right",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runRight],
 				"Frames":
 					[
@@ -165,12 +165,12 @@ graphics = {
 	},	# end of pacbun
 	'pinkie': {
 		"Name": "Bunny Animations",
-		"Template": graphics.MultiAnim,
+		"Template": px_graphics.MultiAnim,
 		# "RenderLayer": self.renlayer,
 		"Anims": [
 			{
 				"Name": "Bunny Stands",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.stationary],
 				"Frames":
 					[
@@ -189,7 +189,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Down",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runDown],
 				"Frames":
 					[
@@ -201,7 +201,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Up",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runUp],
 				"Frames":
 					[
@@ -213,7 +213,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Left",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runLeft],
 				"Frames":
 					[
@@ -225,7 +225,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Right",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runRight],
 				"Frames":
 					[
@@ -241,12 +241,12 @@ graphics = {
 	},	# end of pinkie
 	'blue': {
 		"Name": "Bunny Animations",
-		"Template": graphics.MultiAnim,
+		"Template": px_graphics.MultiAnim,
 		# "RenderLayer": self.renlayer,
 		"Anims": [
 			{
 				"Name": "Bunny Stands",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.stationary],
 				"Frames":
 					[
@@ -265,7 +265,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Down",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runDown],
 				"Frames":
 					[
@@ -277,7 +277,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Up",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runUp],
 				"Frames":
 					[
@@ -289,7 +289,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Left",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runLeft],
 				"Frames":
 					[
@@ -301,7 +301,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Right",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runRight],
 				"Frames":
 					[
@@ -317,12 +317,12 @@ graphics = {
 	},	# end of blue
 	'fox': {
 		"Name": "Fox Animations",
-		"Template": graphics.MultiAnim,
+		"Template": px_graphics.MultiAnim,
 		# "RenderLayer": self.renlayer,
 		"Anims": [
 			{
 				"Name": "Fox Stands",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.stationary],
 				"Frames":
 					[
@@ -350,7 +350,7 @@ graphics = {
 			},
 			{
 				"Name": "Fox Cleans L",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [fox.eFoxStates.cleanLeft],
 				"Frames":
 					[
@@ -405,7 +405,7 @@ graphics = {
 			},
 			{
 				"Name": "Fox Cleans L",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [fox.eFoxStates.cleanRight],
 				"Frames":
 					[
@@ -451,7 +451,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Down",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runDown],
 				"Frames":
 					[
@@ -479,7 +479,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Up",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runUp],
 				"Frames":
 					[
@@ -507,7 +507,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Left",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runLeft],
 				"Frames":
 					[
@@ -535,7 +535,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Runs Right",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runRight],
 				"Frames":
 					[
@@ -563,7 +563,7 @@ graphics = {
 			},
 			{
 				"Name": "Bunny Caught",
-				"AnimType": graphics.AnimLoop,
+				"AnimType": px_graphics.AnimLoop,
 				"States": [fox.eFoxStates.bunnyCaught],
 				"Frames":
 					[
@@ -575,33 +575,33 @@ graphics = {
 	},	# end of fox
 	'tile': {
 		"Name": "Path Graphics",
-		"Template": graphics.MultiAnim,
+		"Template": px_graphics.MultiAnim,
 		# "RenderLayer": self.renlayer,
 		"Anims": [
 			{
 				"Name": "Path without Poo",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.path],
 				"Frames":
 						[["Graphics/Path/Path.png", 8, 8, 0, 0.8]],
 			},
 			{
 				"Name": "Path with Poo",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.poo],
 				"Frames":
 						[["Graphics/Path/Path Poo.png", 8, 8, 0, 0.8]],
 			},
 			{
 				"Name": "Path with Hole",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.hole],
 				"Frames":
 						[["Graphics/Path/Path Hole.png", 8, 8, 0, 0.8]],
 			},
 			{
 				"Name": "Hedge",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.hedge],
 				"Frames":
 					[
@@ -612,14 +612,14 @@ graphics = {
 			},
 			{
 				"Name": "Void",
-				"AnimType": graphics.AnimSingle,
+				"AnimType": px_graphics.AnimSingle,
 				"States": [tile.eTileStates.void],
 				"Frames":
 					[["Graphics/Tunnel/Tunnel 01.png", 8, 8, 0, 0.8]],
 			},
 			{
 				"Name": "Tunnel",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.tunnel_up_down_left_right],
 				"Frames":
 					[
@@ -628,7 +628,7 @@ graphics = {
 			},
 			{
 				"Name": "Tunnel",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.tunnel_up_down],
 				"Frames":
 					[
@@ -637,7 +637,7 @@ graphics = {
 			},
 			{
 				"Name": "Tunnel",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.tunnel_left_right],
 				"Frames":
 					[
@@ -646,7 +646,7 @@ graphics = {
 			},
 			{
 				"Name": "Tunnel",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.tunnel_up_right],
 				"Frames":
 					[
@@ -655,7 +655,7 @@ graphics = {
 			},
 			{
 				"Name": "Tunnel",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.tunnel_up_left],
 				"Frames":
 					[
@@ -664,7 +664,7 @@ graphics = {
 			},
 			{
 				"Name": "Tunnel",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.tunnel_down_left],
 				"Frames":
 					[
@@ -673,7 +673,7 @@ graphics = {
 			},
 			{
 				"Name": "Tunnel",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.tunnel_down_right],
 				"Frames":
 					[
@@ -682,7 +682,7 @@ graphics = {
 			},
 			{
 				"Name": "Tunnel",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.tunnel_up_left_right],
 				"Frames":
 					[
@@ -691,7 +691,7 @@ graphics = {
 			},
 			{
 				"Name": "Tunnel",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.tunnel_up_down_left],
 				"Frames":
 					[
@@ -700,7 +700,7 @@ graphics = {
 			},
 			{
 				"Name": "Tunnel",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.tunnel_down_left_right],
 				"Frames":
 					[
@@ -709,7 +709,7 @@ graphics = {
 			},
 			{
 				"Name": "Tunnel",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.tunnel_up_down_right],
 				"Frames":
 					[
@@ -718,7 +718,7 @@ graphics = {
 			},
 			{
 				"Name": "Tunnel",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.tunnel_up_down_left_right],
 				"Frames":
 					[
@@ -728,7 +728,7 @@ graphics = {
 			},
 			{
 				"Name": "Tunnel",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.tunnel_up],
 				"Frames":
 					[
@@ -737,7 +737,7 @@ graphics = {
 			},
 			{
 				"Name": "Tunnel",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.tunnel_left],
 				"Frames":
 					[
@@ -746,7 +746,7 @@ graphics = {
 			},
 			{
 				"Name": "Tunnel",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.tunnel_down],
 				"Frames":
 					[
@@ -755,7 +755,7 @@ graphics = {
 			},
 			{
 				"Name": "Tunnel",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.tunnel_right],
 				"Frames":
 					[
@@ -764,7 +764,7 @@ graphics = {
 			},
 			{
 				"Name": "Path with Cuscene Hole",
-				"AnimType": graphics.AnimRandomStatic,
+				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.cutscene_hole],
 				"Frames":
 						[["Graphics/Path/Path Hole.png", 8, 8, 0, 0.8]],
@@ -775,7 +775,7 @@ graphics = {
 	},	# end of tile
 	'title': {
 			"Name": "Title Picture",
-			"Template": graphics.SingleImage,
+			"Template": px_graphics.SingleImage,
 			# "RenderLayer": renlayer,
 			"Image":
 					["Graphics/Title/Title.png", 10, -24, 0],
@@ -790,7 +790,7 @@ graphics = {
 	},
 	'message': {
 		"Name": "Message",
-		"Template": message_box.MessageBox,
+		"Template": px_message_box.MessageBox,
 	},
 }
 
@@ -802,8 +802,8 @@ components = {
 		'title_controller': title.makeController,
 		'high_score_controller': high_score.makeController,
 		'new_high_score_controller': new_high_score.makeController,
-		'message_controller': message_box.makeController,
-		'director_controller': director.makeController,
+		'message_controller': px_message_box.makeController,
+		'director_controller': px_director.makeController,
 	},
 	"colliders": {
 		'bunny_collider': bunny.makeCollider,

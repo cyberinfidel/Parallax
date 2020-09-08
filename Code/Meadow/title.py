@@ -1,8 +1,8 @@
 from px_entity import eStates
-from game_pad import eActions
-from controller import Controller
-from graphics import MultiAnim, AnimNoLoop
-from game import eGameModes
+from px_game_pad import eActions
+from px_controller import Controller
+from px_graphics import MultiAnim, AnimNoLoop
+from px_game import eGameModes
 
 import enum
 class eTitleStates(enum.IntEnum):

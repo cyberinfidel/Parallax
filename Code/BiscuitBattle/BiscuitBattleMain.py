@@ -5,11 +5,11 @@ import sys
 # 	add path to Parallax
 sys.path.insert(1, '../')
 # actually import files
-from game import Game, eGameModes
+from px_game import Game, eGameModes
 from px_entity import eStates
-from collision import CollisionManager
-from vector import Vec3, Line, rand_num
-from director import Delay, SpawnEntity, EndGame
+from px_collision import CollisionManager
+from px_vector import Vec3, Line, rand_num
+from px_director import Delay, SpawnEntity, EndGame
 
 # disable to remove logging
 def log(msg, new_line=True):

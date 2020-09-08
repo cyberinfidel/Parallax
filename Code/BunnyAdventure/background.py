@@ -1,10 +1,10 @@
-from graphics import SingleImage
-import controller
-from vector import Vec3
+from px_graphics import SingleImage
+import px_controller
+from px_vector import Vec3
 
 def makeController(manager, template):
 	return manager.makeTemplate({"Template": template})
-class Controller(controller.Controller):
+class Controller(px_controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
 
