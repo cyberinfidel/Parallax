@@ -121,43 +121,43 @@ class Entity(object):
 			pass
 
 	def __init__(self,
-							 _name,
-							 _game,
-							 _graphics=False,
-							 _sounds=False,
-							 _controller=False,
-							 _collider=False,
-							 _init=False,
-							 _parent=False,
-							 _data=False):
-		self.data = _data
-		self.game = _game
-		self.name = _name
+							 name,
+							 game,
+							 graphics=False,
+							 sounds=False,
+							 controller=False,
+							 collider=False,
+							 init=False,
+							 parent=False,
+							 data=False):
+		self.data = data
+		self.game = game
+		self.name = name
 		self.pos = Vec3(0, 0, 0)
 		self.state = eStates.stationary
 		self.new_state = True
 		self.blink = False
-		self.parent = _parent
+		self.parent = parent
 
-		self.graphics = _graphics
+		self.graphics = graphics
 		if self.graphics:
-			self.graphics_data = _graphics.makeData(self, _data)
+			self.graphics_data = graphics.makeData(self, data)
 
-		self.sounds = _sounds
+		self.sounds = sounds
 		if self.sounds:
-			self.sounds_data = _sounds.makeData(self, _data)
+			self.sounds_data = sounds.makeData(self, data)
 
-		self.controller = _controller
+		self.controller = controller
 		if self.controller:
-			self.controller_data = _controller.makeData(self, _data)	# store data for this instance
+			self.controller_data = controller.makeData(self, data)	# store data for this instance
 
-		self.collider = _collider
+		self.collider = collider
 		if self.collider:
-			self.collider_data = _collider.makeData(self, _data)	# store data for this instance
+			self.collider_data = collider.makeData(self, data)	# store data for this instance
 
-		if _init:
+		if init:
 			# execute init
-			exec(_init,globals(),locals())
+			exec(init,globals(),locals())
 
 	def delete(self):
 		if self.graphics:
@@ -240,15 +240,15 @@ class EntityTemplate(object):
 	def instanceEntity(self, name, init, parent, data):
 		if not name:
 			name=self.name	# use template name
-		return Entity(_name=name,
-									_game = self.game,
-									_graphics=self.graphics,
-									_sounds=self.sounds,
-									_controller = self.controller,
-									_collider = self.collider,
-									_init=init,
-									_parent=parent,
-									_data=data)
+		return Entity(name=name,
+									game = self.game,
+									graphics=self.graphics,
+									sounds=self.sounds,
+									controller = self.controller,
+									collider = self.collider,
+									init=init,
+									parent=parent,
+									data=data)
 
 	def delete(self):
 		print(f"{self.name} - delete template doesn't do anything right now...")
