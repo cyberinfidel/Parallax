@@ -80,20 +80,25 @@ class Component(object):
 
 class EntityManager(object):
 	def __init__(self, game):
-		self.templates = []
+		self.templates = {}
 		self.entities = []
 		self.game = game
 
-	def makeEntityTemplate(self, graphics=False, sounds=False, controller=False, collider=False):
-		self.templates.append(EntityTemplate(self.game, graphics=graphics, sounds=sounds, controller=controller, collider=collider))
-		return len(self.templates)-1
+	def makeEntityTemplate(self, name, graphics=False, sounds=False, controller=False, collider=False):
+		self.templates[name] = EntityTemplate(self.game, graphics=graphics, sounds=sounds, controller=controller, collider=collider)
 
-	def makeEntity(self, entity_t_index, name=False, init=False):
-		self.entities.append( self.templates[entity_t_index].instanceEntity(name, init))
+	def makeEntity(self, template, name=False, init=False):
+		self.entities.append( self.templates[template].instanceEntity(name if name else template, init))
 		return self.entities[-1]
 
 	def deleteDead(self):
 		self.entities[:] = [x for x in self.entities if x.getState() != eStates.dead]
+
+class EntityList(list):
+	def killEntitiesNotInList(self, list):
+		for entity in self:
+			if entity.common_data.name not in list:
+				entity.setState(eStates.dead)
 
 class Entity(object):
 	class Data():
@@ -168,7 +173,12 @@ class Entity(object):
 		return self.common_data.parent
 
 	def setState(self,state):
-		self.controller.setState(self.controller_data, self.common_data, state)
+		if self.controller:
+			# play nice with entities that have controllers
+			# and let them choose how to handle this a bit more
+			self.controller.setState(self.controller_data, self.common_data, state)
+		else:
+			self.common_data.state = state
 
 	def getState(self):
 		return self.common_data.state

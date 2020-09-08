@@ -20,6 +20,10 @@ from log import log
 graphics_debug = False
 
 
+class eAlign:
+	left, centre, right = range(0,3)
+
+
 # color class where components are between 0 and 1
 # as intended by nature
 class Color(object):
@@ -28,6 +32,11 @@ class Color(object):
 		self.g = g
 		self.b = b
 		self.a = a
+
+	# accept 0-255 values as well
+	@classmethod
+	def fromInts(cls, r, g, b, a=255):
+		return cls(r/255,g/255,b/255,a/255)
 
 	def toSDLColor(self):
 		return sdl2.SDL_Color(int(self.r*255),
@@ -41,6 +50,14 @@ class Color(object):
 			self.g * other.g,
 			self.b * other.b,
 			self.a * other.a
+		)
+
+	def __add__(self, other):
+		return Color(
+			self.r+other.r,
+			self.g + other.g,
+			self.b + other.b,
+			self.a + other.a,
 		)
 
 import text
@@ -318,6 +335,8 @@ class RenderLayer(object):
 		except Exception as e:
 			log("Problem loading image for frame: " + str(e) + " file:" + filepath)
 
+	def getImageDimensions(self, index):
+		return self.images[index].width,self.images[index].height
 
 	# empty the list of drawables for this layer so nothing is set to be drawn on a render event
 	def clear(self):
@@ -523,15 +542,22 @@ class GraphicsTypes:
 	num_graphics_types = range(0,5)
 
 # graphics component for a single static image
+# template data should look like:
+# {
+# "Name" : "xxx picture",
+# "Template" : graphics.SingleImage,
+# "Image" : ["path/to/image.png", x-origin, y-origin, z-origin]
+# }
+
 class SingleImage(entity.Component):
 	def __init__(self, game, data):
 		super(SingleImage, self).__init__(game)
 		self.rl = data['RenderLayer']
+		self.name = data["Name"]
 		self.image, trim_x, trim_y = self.rl.addImageFromFile(data["Image"][0])
 		self.origin_x = data["Image"][1]-trim_x
 		self.origin_y = data["Image"][2]-trim_y
 		self.origin_z = data["Image"][3]
-		self.name = data["Name"]
 
 	def getImage(self):
 		return self.image

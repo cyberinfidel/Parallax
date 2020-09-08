@@ -78,9 +78,9 @@ class Game(object):
 
 		self.input = game_pad.Input(self)
 
-		self.drawables = []
-		self.audibles = []
-		self.updatables = []
+		self.drawables = entity.EntityList()
+		self.audibles = entity.EntityList()
+		self.updatables = entity.EntityList()
 
 		self.graphics_manager = entity.ComponentManager(game=self)
 		self.controller_manager = entity.ComponentManager(game=self)
@@ -152,12 +152,12 @@ class Game(object):
 			self.killPlayEntities()
 
 	def requestNewEntity(self,
-											 entity_template,
+											 template,
 											 pos=False,
 											 parent=False,
 											 name=False,
 											 init=False):
-		new_entity = self.entity_manager.makeEntity(entity_t_index=entity_template,
+		new_entity = self.entity_manager.makeEntity(template=template,
 																								name=name,
 																								init=init)
 		# position (and anything else) may be set within the code at runtime
@@ -183,6 +183,9 @@ class Game(object):
 
 	def setClearColor(self, color):
 		self.clear_color = color
+
+	def getClearColor(self):
+		return self.clear_color
 
 	def __del__(self):
 		sdl2.sdlmixer.Mix_CloseAudio()

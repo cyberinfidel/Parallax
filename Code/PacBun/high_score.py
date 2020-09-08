@@ -12,6 +12,32 @@ import PacBun
 # 		self.score = score
 # 		self.image = image
 
+def init(entity):
+	graphics_data = entity.graphics_data
+	graphics_data.images = []
+
+	scores_data = entity.controller_data.scores_data  # hold a pointer to the scores in the controller
+	for i in range(0, 10):
+		score, r, g, b = formatScore(i, scores_data[i][0], scores_data[i][1])
+		graphics_data.images.append(
+			entity.graphics.render_layer.addImageFromString(string=score, font=entity.graphics.font, color=graphics.Color(r, g, b, 1)))
+
+def formatScore(index, initials, score):
+	r, g, b = (
+		(1, 1, 0),
+		(1, 0, 1),
+		(0, 1, 1),
+		(1, 0, 0),
+		(0, 1, 0),
+		(0, 0, 1),
+		(1, 1, 1),
+		(0.5, 0.5, 1),
+		(1, 0.5, 0.5),
+		(0.5, 1, 0.5),
+	)[index]
+	return "{0:0=2d}: ".format(index+1) + " {0:0=4d} ".format(score) + str(initials), r,g,b
+
+
 # graphics component for high score table
 class ScoreTable(entity.Component):
 	class Data(object):
@@ -33,36 +59,10 @@ class ScoreTable(entity.Component):
 			self.render_layer.queueImage(image, 85, 270-i*20, 0)
 
 	def update(self, data, common_data, dt):
-		if common_data.game.game_mode == PacBun.eGameModes.high_score:
-			common_data.blink=False
-		else:
-			common_data.blink=True
-
-	def formatScore(self, index, initials, score):
-		r, g, b = (
-			(1, 1, 0),
-			(1, 0, 1),
-			(0, 1, 1),
-			(1, 0, 0),
-			(0, 1, 0),
-			(0, 0, 1),
-			(1, 1, 1),
-			(0.5, 0.5, 1),
-			(1, 0.5, 0.5),
-			(0.5, 1, 0.5),
-		)[index]
-		return "{0:0=2d}: ".format(index+1) + " {0:0=4d} ".format(score) + str(initials), r,g,b
+		pass
 
 
-	def initScore(self, common_data):
-		common_data.blink=True
-		graphics_data = common_data.entity.graphics_data
-		graphics_data.images = []
 
-		scores_data = common_data.entity.controller_data.scores_data	# hold a pointer to the scores in the controller
-		for i in range(0,10):
-			score, r, g, b = self.formatScore(i,scores_data[i][0],scores_data[i][1])
-			graphics_data.images.append(self.render_layer.addImageFromString(string=score, font=self.font, color=graphics.Color(r, g, b, 1)))
 
 
 

@@ -29,7 +29,6 @@ class Map(object):
 
 		self.game = game
 		self.map = copy.deepcopy(data['Map'])
-		self.message = data['Message']
 
 		# flip since we draw from bottom left
 		for i in range(0, 9):

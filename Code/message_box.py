@@ -21,7 +21,7 @@ class MessageBox(entity.Component):
 		def __init__(self, common_data, init=False):
 			self.image = None
 
-	def init(self, data, ren_layer, message, font=0, color=graphics.Color(1, 1, 1, 1), duration=0):
+	def init(self, data, ren_layer, message, font=0, color=graphics.Color(1, 1, 1, 1), duration=0, align=graphics.eAlign.left):
 		data.ren_layer = ren_layer
 		# data.message = message
 		data.color = color
@@ -31,6 +31,7 @@ class MessageBox(entity.Component):
 		data.duration = duration
 		data.fade = 0
 		data.fade_direction = 1
+		data.align = align
 
 		# actually draw message
 		self._renderMessage(data)
@@ -40,14 +41,14 @@ class MessageBox(entity.Component):
 		if not data.image:
 			data.image = data.ren_layer.addImageFromString(string = data.message,
 																										 font=data.font,
-																										 color=data.color
+																										 color=data.color,
 																											 )
 		else:
 			data.ren_layer.replaceImageFromString(old_image = data.image,
 																				string=data.message,
 																				font=data.font,
-																				color=data.color
-																				)
+																				color=data.color,
+																						)
 
 
 		def setMessage(self, data, message):
@@ -62,10 +63,19 @@ class MessageBox(entity.Component):
 		super(MessageBox, self).__init__(game)
 
 	def draw(self, data, common_data):
+		offset_x=0
+		offset_y=0
+		if data.align==graphics.eAlign.centre:
+			offset_x,offset_y = data.ren_layer.getImageDimensions(data.image)
+			offset_x/=2
+			offset_y/=2
+		elif data.align==graphics.eAlign.centre:
+			offset_x,offset_y = data.ren_layer.getImageDimensions(data.image)
+
 		return data.ren_layer.queueImage(
 			image = data.image,
-			x = common_data.pos.x,
-			y = common_data.pos.y,
+			x = common_data.pos.x-offset_x,
+			y = common_data.pos.y-offset_y,
 			z = common_data.pos.z,
 			color = data.color*graphics.Color(1,1,1,data.fade)
 		)

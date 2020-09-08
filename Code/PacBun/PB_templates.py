@@ -317,7 +317,6 @@ graphics = {
 		]
 
 	},	# end of blue
-
 	'fox': {
 		"Name": "Fox Animations",
 		"Template": graphics.MultiAnim,
@@ -570,7 +569,7 @@ graphics = {
 				"States": [fox.eFoxStates.bunnyCaught],
 				"Frames":
 					[
-						["Graphics/Fox/FoxCaught.png", 11, 15, 0, 0.02],
+						["Graphics/Fox/FoxCaught 3.png", 11, 15, 0, 0.02],
 					],
 			},
 		]
@@ -777,96 +776,11 @@ graphics = {
 
 	},	# end of tile
 	'title': {
-			"Name": "Title Animations",
-			"Template": graphics.MultiAnim,
+			"Name": "Title Picture",
+			"Template": graphics.SingleImage,
 			# "RenderLayer": renlayer,
-			"Anims":
-				[
-					{
-						"Name": "Title",
-						"AnimType": graphics.AnimNoLoop,
-						"States": [title.eTitleStates.title],
-						"Frames":
-							[
-								["Graphics/Title/Title.png", 10, -24, 0, 0.9],
-							],
-					},
-					{
-						"Name": "TitleBar",
-						"AnimType": graphics.AnimNoLoop,
-						"States": [title.eTitleStates.play],
-						"Frames":
-							[
-								["Graphics/Title/TitleBar.png", 30, 18, 0, 0.9],
-							],
-					},
-					{
-						"Name": "Paused",
-						"AnimType": graphics.AnimNoLoop,
-						"States": [title.eTitleStates.paused],
-						"Frames":
-							[
-								["Graphics/Title/Paused.png", -30, -24, 0, 0.2],
-							],
-					},
-					{
-						"Name": "Game Over",
-						"AnimType": graphics.AnimNoLoop,
-						"States": [title.eTitleStates.game_over],
-						"Frames":
-							[
-								["Graphics/Title/GameOver.png", -50, -24, 0, 0.2],
-							],
-					},
-					{
-						"Name": "New High Score",
-						"AnimType": graphics.AnimLoop,
-						"States": [title.eTitleStates.new_high_score],
-						"Frames":
-							[
-								["Graphics/Title/NewHighScore.png", -10, -24, 0, 0.2],
-							],
-					},
-					{
-						"Name": "Win",
-						"AnimType": graphics.AnimNoLoop,
-						"States": [title.eTitleStates.win],
-						"Frames":
-							[
-								["Graphics/Title/Win.png", 4, 4, 0, 2],
-							],
-					},
-					{
-						"Name": "High Score Table",
-						"AnimType": graphics.AnimLoop,
-						"States": [title.eTitleStates.high_score],
-						"Frames":
-							[
-								["Graphics/Title/HighScore1.png", -35, -5, 0, 1],
-								["Graphics/Title/HighScore2.png", -35, -5, 0, 1],
-								["Graphics/Title/HighScore3.png", -35, -5, 0, 1],
-							],
-					},
-					{
-						"Name": "Escape",
-						"AnimType": graphics.AnimLoop,
-						"States": [title.eTitleStates.escape],
-						"Frames":
-							[
-								["Graphics/Title/Escape.png", 4, -100, 0, 0.5],
-								["Graphics/Title/Escape2.png", 4, -100, 0, 0.5],
-							],
-					},
-					{
-						"Name": "Quit",
-						"AnimType": graphics.AnimNoLoop,
-						"States": [title.eTitleStates.quit],
-						"Frames":
-							[
-								["Graphics/Title/Quit.png", 6, -24, 0, 2],
-							],
-					},
-				]
+			"Image":
+					["Graphics/Title/Title.png", 10, -24, 0],
 	},
 	'high_score': {
 			"Name": "Scoreboard",
@@ -898,10 +812,10 @@ components = {
 		'fox_collider': fox.makeCollider,
 	},
 	"graphics": {
-		'bunny_pacbun_graphics': graphics['pacbun'],
-		'bunny_pinkie_graphics': graphics['pinkie'],
-		'bunny_bowie_graphics': graphics['bowie'],
-		'bunny_blue_graphics': graphics['blue'],
+		'pacbun_graphics': graphics['pacbun'],
+		'pinkie_graphics': graphics['pinkie'],
+		'bowie_graphics': graphics['bowie'],
+		'blue_graphics': graphics['blue'],
 		'fox_graphics': graphics['fox'],
 		'tile_graphics': graphics['tile'],
 		'title_graphics': graphics['title'],
@@ -911,68 +825,61 @@ components = {
 	}
 }
 
-# templates that are used in the levels
-# and are rendered under the titles
-templates = {
+# templates that are available in the whole game
+game_templates = {
 	'pacbun': {
 		'controller': components['controllers']['bunny_controller'],
 		'collider': components['colliders']['bunny_collider'],
-		'graphics': components['graphics']['bunny_pacbun_graphics'],
+		'graphics': { 'component': components['graphics']['pacbun_graphics'], 'render layer': 'game'}
 	},
 	'pinkie': {
 		'controller': components['controllers']['bunny_controller'],
 		'collider': components['colliders']['bunny_collider'],
-		'graphics': components['graphics']['bunny_pinkie_graphics'],
+		'graphics': { 'component': components['graphics']['pinkie_graphics'], 'render layer': 'game'}
 	},
 	'blue': {
 		'controller': components['controllers']['bunny_controller'],
 		'collider': components['colliders']['bunny_collider'],
-		'graphics': components['graphics']['bunny_blue_graphics'],
+		'graphics': { 'component': components['graphics']['blue_graphics'], 'render layer': 'game'}
 	},
 	'bowie': {
 		'controller': components['controllers']['bunny_controller'],
 		'collider': components['colliders']['bunny_collider'],
-		'graphics': components['graphics']['bunny_bowie_graphics'],
+		'graphics': { 'component': components['graphics']['bowie_graphics'], 'render layer': 'game'}
 	},
 	'fox': {
 		'controller': components['controllers']['fox_controller'],
 		'collider': components['colliders']['fox_collider'],
-		'graphics': components['graphics']['fox_graphics']
+		'graphics': { 'component': components['graphics']['fox_graphics'], 'render layer': 'game'}
 	},
 	'tile': {
 		'controller': components['controllers']['tile_controller'],
 		'collider': None,
-		'graphics': components['graphics']['tile_graphics']
+		'graphics': { 'component': components['graphics']['tile_graphics'], 'render layer': 'game'}
 	},
 	'director': {
 		'controller': components['controllers']['director_controller'],
 		'collider': None,
 		'graphics': None,
-	}
-}
-
-# templates that are part of the overlay layer
-# these exist independent of levels
-title_templates = {
-	'high_score':{
+	},
+	'high_scores':{
 		'controller': components['controllers']['high_score_controller'],
 		'collider': None,
-		'graphics': components['graphics']['high_score_graphics'],
+		'graphics': { 'component': components['graphics']['high_score_graphics'], 'render layer': 'overlay'},
 	},
 	'title':{
-		'controller': components['controllers']['title_controller'],
+		'controller': None,
 		'collider': None,
-		'graphics': components['graphics']['title_graphics'],
+		'graphics': { 'component': components['graphics']['title_graphics'], 'render layer': 'overlay'},
 	},
 	'new_high_score':{
 		'controller': components['controllers']['new_high_score_controller'],
 		'collider': None,
-		'graphics': components['graphics']['new_high_score_graphics'],
+		'graphics': { 'component': components['graphics']['new_high_score_graphics'], 'render layer': 'overlay'},
 	},
 	'message':{
 		'controller': components['controllers']['message_controller'],
 		'collider': None,
-		'graphics': components['graphics']['message_graphics'],
-
+		'graphics': { 'component': components['graphics']['message_graphics'], 'render layer': 'overlay'},
 	}
 }
