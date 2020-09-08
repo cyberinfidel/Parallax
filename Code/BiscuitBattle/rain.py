@@ -1,4 +1,4 @@
-from entity import eStates
+from px_entity import eStates
 from controller import Controller, basic_physics, restrictToArena
 from graphics import AnimNoLoop, MultiAnim
 from vector import Vec3

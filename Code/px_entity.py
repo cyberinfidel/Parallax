@@ -70,11 +70,11 @@ class Component(object):
 #  then there is no need to define this class
 #  at all
 	class Data(object):
-		def __init__(self, common_data):
+		def __init__(self, entity, data):
 			pass
 
-	def makeData(self, common_data):
-		return self.Data(common_data)
+	def makeData(self, entity, data=False):
+		return self.Data(entity, data)
 
 	def delete(self, data):
 		log(f"Missing delete function for Component:{type(self)}")
@@ -89,8 +89,8 @@ class EntityManager(object):
 	def makeEntityTemplate(self, name, graphics=False, sounds=False, controller=False, collider=False):
 		self.templates[name] = EntityTemplate(self.game, graphics=graphics, sounds=sounds, controller=controller, collider=collider)
 
-	def makeEntity(self, template, name=False, init=False, parent=False):
-		new_entity = self.templates[template].instanceEntity(name if name else template, init, parent)
+	def makeEntity(self, template, name=False, init=False, parent=False, data=False):
+		new_entity = self.templates[template].instanceEntity(name if name else template, init, parent, data)
 		self.entities.append(new_entity)
 		if name:
 			self.named_entities[name]=new_entity
@@ -112,7 +112,7 @@ class EntityManager(object):
 class EntityList(list):
 	def killEntitiesNotInList(self, list):
 		for entity in self:
-			if entity.common_data.name not in list:
+			if entity.name not in list:
 				entity.setState(eStates.dead)
 
 class Entity(object):
@@ -128,32 +128,32 @@ class Entity(object):
 							 _controller=False,
 							 _collider=False,
 							 _init=False,
-							 _parent=False):
-		self.common_data = self.Data()
-		self.common_data.game = _game
-		self.common_data.entity = self
-		self.common_data.name = _name
-		self.common_data.pos = Vec3(0, 0, 0)
-		self.common_data.state = eStates.stationary
-		self.common_data.new_state = True
-		self.common_data.blink = False
-		self.common_data.parent = _parent
+							 _parent=False,
+							 _data=False):
+		self.data = _data
+		self.game = _game
+		self.name = _name
+		self.pos = Vec3(0, 0, 0)
+		self.state = eStates.stationary
+		self.new_state = True
+		self.blink = False
+		self.parent = _parent
 
 		self.graphics = _graphics
 		if self.graphics:
-			self.graphics_data = _graphics.makeData(self.common_data)
+			self.graphics_data = _graphics.makeData(self, _data)
 
 		self.sounds = _sounds
 		if self.sounds:
-			self.sounds_data = _sounds.makeData(self.common_data)
+			self.sounds_data = _sounds.makeData(self, _data)
 
 		self.controller = _controller
 		if self.controller:
-			self.controller_data = _controller.makeData(self.common_data)	# store data for this instance
+			self.controller_data = _controller.makeData(self, _data)	# store data for this instance
 
 		self.collider = _collider
 		if self.collider:
-			self.collider_data = _collider.makeData(self.common_data)	# store data for this instance
+			self.collider_data = _collider.makeData(self, _data)	# store data for this instance
 
 		if _init:
 			# execute init
@@ -173,41 +173,41 @@ class Entity(object):
 			self.collider.delete(self.collider)
 
 	def getName(self):
-		return self.common_data.name
+		return self.name
 
 	def setPos(self,pos):
-		self.common_data.pos = copy.deepcopy(pos)
+		self.pos = copy.deepcopy(pos)
 
 	def getPos(self):
-		return self.common_data.pos
+		return self.pos
 
 	def setParent(self,parent):
-		self.common_data.parent = parent
+		self.parent = parent
 
 	def getParent(self):
-		return self.common_data.parent
+		return self.parent
 
 	def setState(self,state):
 		if self.controller:
 			# play nice with entities that have controllers
 			# and let them choose how to handle this a bit more
-			self.controller.setState(self.controller_data, self.common_data, state)
+			self.controller.setState(self.controller_data, self, state)
 		else:
-			self.common_data.state = state
+			self.state = state
 
 	def getState(self):
-		return self.common_data.state
+		return self.state
 
 
 # basic update method. Override for fancier behaviour
 	def update(self, dt):
 		if self.controller:
-			self.controller.update(self.controller_data, self.common_data, dt)
-		if self.common_data.state!=eStates.hide and self.common_data.state!=eStates.dead:
+			self.controller.update(self.controller_data, self, dt)
+		if self.state!=eStates.hide and self.state!=eStates.dead:
 			if self.sounds:
-				self.sounds.play(self.sounds_data,self.common_data)
+				self.sounds.play(self.sounds_data,self)
 			if self.graphics:
-				self.graphics.update(self.graphics_data,self.common_data, dt)
+				self.graphics.update(self.graphics_data,self, dt)
 
 	def setController(self, controller):
 		self.controller = controller
@@ -237,7 +237,7 @@ class EntityTemplate(object):
 		self.collider = collider
 		self.name = f"{name}(t)"
 
-	def instanceEntity(self, name, init, parent):
+	def instanceEntity(self, name, init, parent, data):
 		if not name:
 			name=self.name	# use template name
 		return Entity(_name=name,
@@ -247,7 +247,8 @@ class EntityTemplate(object):
 									_controller = self.controller,
 									_collider = self.collider,
 									_init=init,
-									_parent=parent)
+									_parent=parent,
+									_data=data)
 
 	def delete(self):
 		print(f"{self.name} - delete template doesn't do anything right now...")

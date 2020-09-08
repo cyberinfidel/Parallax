@@ -1,5 +1,5 @@
 import enum
-from entity import ComponentManager, Component, eStates
+from px_entity import ComponentManager, Component, eStates
 from vector import Vec3
 from log import log
 
@@ -59,14 +59,14 @@ class CollisionManager(ComponentManager):
 								# we have a collision
 
 								if collision_debug:
-									log(f"Collision - A: {A.common_data.name} B: {B.common_data.name}")
+									log(f"Collision - A: {A.name} B: {B.name}")
 								return True
 
 	def resolveCollision(self, A, B):
 			if A.controller:
-				A.controller.receiveCollision(A, B.collider.getCollisionMessage(B.collider_data, B.common_data))
+				A.controller.receiveCollision(A, B.collider.getCollisionMessage(B.collider_data, B))
 			if B.controller:
-				B.controller.receiveCollision(B, A.collider.getCollisionMessage(A.collider_data, A.common_data))
+				B.controller.receiveCollision(B, A.collider.getCollisionMessage(A.collider_data, A))
 
 
 

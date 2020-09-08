@@ -5,7 +5,7 @@ import sys
 # 	add path to Parallax
 sys.path.insert(1, '../')
 # actually import files
-import entity
+import px_entity
 import collision
 import graphics
 import game
@@ -102,7 +102,7 @@ class FeedTheDuck(game.Game):
 
 		for index, updatable in reversed(list(enumerate(self.updatables))):
 			updatable.update(dt)
-			if updatable.getState() == entity.eStates.dead:
+			if updatable.getState() == px_entity.eStates.dead:
 				self.updatables.pop(index)
 
 		self.collision_manager.doCollisionsWithSingleEntity(self.duck)
@@ -110,7 +110,7 @@ class FeedTheDuck(game.Game):
 
 
 		for index, drawable in enumerate(self.drawables):
-			if drawable.getState() == entity.eStates.dead:
+			if drawable.getState() == px_entity.eStates.dead:
 				self.drawables.pop(index)
 
 	###########

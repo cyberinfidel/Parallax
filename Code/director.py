@@ -1,4 +1,4 @@
-from entity import eStates
+from px_entity import eStates
 from controller import Controller
 from game import eGameModes
 from vector import Vec3
@@ -38,7 +38,7 @@ class Delay(Event):
 		super(Event, self).__init__()
 		self.count_down = duration
 
-	def update(self, data, common_data, dt):
+	def update(self, data, entity, dt):
 		self.count_down -= dt
 		return eEventStates.block if (self.count_down > 0) else eEventStates.dead
 
@@ -52,8 +52,8 @@ class Message(Event):
 		self.duration = duration
 		self.align = align
 
-	def update(self, data, common_data, dt):
-		common_data.game.message(self.text, self.pos, self.color, self.duration, self.align)
+	def update(self, data, entity, dt):
+		entity.game.message(self.text, self.pos, self.color, self.duration, self.align)
 		return eEventStates.dead
 
 class ClearColor(Event):
@@ -61,8 +61,8 @@ class ClearColor(Event):
 		super(Event, self).__init__()
 		self.color=color
 
-	def update(self, data, common_data, dt):
-		common_data.game.setClearColor(self.color)
+	def update(self, data, entity, dt):
+		entity.game.setClearColor(self.color)
 		return eEventStates.dead
 
 class FadeToClearColor(Event):
@@ -73,8 +73,8 @@ class FadeToClearColor(Event):
 		self.total_time = time
 		self.step_color = None
 
-	def update(self, data, common_data, dt):
-		current_color = common_data.game.getClearColor()
+	def update(self, data, entity, dt):
+		current_color = entity.game.getClearColor()
 		if not self.step_color:
 			# get the incremental color, effectively the vector towards the final color
 			# only calculate this once
@@ -85,10 +85,10 @@ class FadeToClearColor(Event):
 		# check when to stop
 		self.time -= dt
 		if self.time<=0:
-			common_data.game.setClearColor(self.color) # make sure completely get to color desired
+			entity.game.setClearColor(self.color) # make sure completely get to color desired
 			return eEventStates.dead
 
-		common_data.game.setClearColor(self.step_color*graphics.Color(dt,dt,dt)+current_color)
+		entity.game.setClearColor(self.step_color*graphics.Color(dt,dt,dt)+current_color)
 		return eEventStates.live
 
 
@@ -99,10 +99,10 @@ class Spawn(Event):
 		super(Event, self).__init__()
 		self.spawns = spawns
 
-	def update(self, data, common_data, dt):
+	def update(self, data, entity, dt):
 		# spawn entities in spawns list
 		for spawn in self.spawns:
-			common_data.game.requestNewEntity(
+			entity.game.requestNewEntity(
 				template= spawn.template,
 				name = spawn.name,
 				pos = spawn.pos,
@@ -133,14 +133,14 @@ class NextScene(Event):
 		self.next_scene = next_scene
 		self.cooldown=cooldown
 
-	def update(self, data, common_data, dt):
-		common_data.game.nextScene(self.next_scene)
+	def update(self, data, entity, dt):
+		entity.game.nextScene(self.next_scene)
 		return eEventStates.dead
 
 # signals to exit the program
 class Quit(Event):
-	def update(self, data, common_data, dt):
-		common_data.game.quit()
+	def update(self, data, entity, dt):
+		entity.game.quit()
 
 class WaitFor(Event):
 	def __init__(self, condition):
@@ -148,7 +148,7 @@ class WaitFor(Event):
 		# wait for condition
 		self.condition=condition
 
-	def update(self, data, common_data, dt):
+	def update(self, data, entity, dt):
 		return eEventStates.dead if self.condition() else eEventStates.block
 
 #############################
@@ -162,15 +162,15 @@ class Controller(Controller):
 		# values global to all this type of component
 
 	class Data(object):
-		def __init__(self, common_data, init=False):
+		def __init__(self, entity, init=False):
 			self.latest_event = 0
 			self.events = []
 
 	# eEventStates: 0 dead, 1 live, 2 blocking
-	def update(self, data, common_data, dt):
+	def update(self, data, entity, dt):
 		index = 0
 		while index< len(data.events):
-			result = data.events[index].update(data,common_data,dt)
+			result = data.events[index].update(data,entity,dt)
 			if result==eEventStates.dead:
 				# remove this event from list
 				data.events.pop(index)

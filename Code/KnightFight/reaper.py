@@ -2,7 +2,7 @@
 import controller
 import collision
 import graphics
-import entity
+import px_entity
 import background
 from vector import Vec3, rand_num
 
@@ -15,7 +15,7 @@ def makeGraphics(manager, renlayer):
 				{
 					"Name": "Simple Reaper Stationary",
 					"AnimType": graphics.AnimLoop,
-					"States": [entity.eStates.stationary],
+					"States": [px_entity.eStates.stationary],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperR1.png", 16, 38, 0, 0.1],
@@ -24,7 +24,7 @@ def makeGraphics(manager, renlayer):
 				{
 				"Name": "Simple Reaper Shuffling Left",
 				"AnimType": graphics.AnimLoop,
-				"States": [entity.eStates.runLeft],
+				"States": [px_entity.eStates.runLeft],
 				"Frames":
 					[
 						["Graphics/Reaper/ReaperRunL01.png", 16, 38, 0, 0.1],
@@ -44,7 +44,7 @@ def makeGraphics(manager, renlayer):
 				{
 					"Name": "Simple Reaper Shuffling Right",
 					"AnimType": graphics.AnimLoop,
-					"States": [entity.eStates.runRight],
+					"States": [px_entity.eStates.runRight],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperRunR01.png", 16, 38, 0, 0.1],
@@ -64,7 +64,7 @@ def makeGraphics(manager, renlayer):
 				{
 					"Name": "Reaper Hurt L",
 					"AnimType": graphics.AnimLoop,
-					"States": [entity.eStates.hurtLeft],
+					"States": [px_entity.eStates.hurtLeft],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperL3.png", 16, 38, 0, 0.3],
@@ -73,7 +73,7 @@ def makeGraphics(manager, renlayer):
 				{
 					"Name": "Reaper Hurt R",
 					"AnimType": graphics.AnimLoop,
-					"States": [entity.eStates.hurtRight],
+					"States": [px_entity.eStates.hurtRight],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperR3.png", 16, 38, 0, 0.3],
@@ -82,7 +82,7 @@ def makeGraphics(manager, renlayer):
 				{
 					"Name": "Reaper Fall L",
 					"AnimType": graphics.AnimLoop,
-					"States": [entity.eStates.fallLeft],
+					"States": [px_entity.eStates.fallLeft],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperFallL.png", 24, 24, 0, 0.3],
@@ -91,7 +91,7 @@ def makeGraphics(manager, renlayer):
 				{
 					"Name": "Reaper Fall R",
 					"AnimType": graphics.AnimLoop,
-					"States": [entity.eStates.fallRight],
+					"States": [px_entity.eStates.fallRight],
 					"Frames":
 						[
 							["Graphics/Reaper/ReaperFallR.png", 24, 24, 0, 0.3],
@@ -100,7 +100,7 @@ def makeGraphics(manager, renlayer):
 				{
 					"Name": "Reaper Shadow",
 					"AnimType": graphics.AnimSingle,
-					"States": [entity.eStates.shadow],
+					"States": [px_entity.eStates.shadow],
 					"Frames":
 						[
 							["Graphics/shadow.png", 16, 4, 0, 0.3],
@@ -124,9 +124,9 @@ class Controller(controller.Controller):
 			self.health = 10
 			self.vel = Vec3(0, 0, 0)
 			self.mass = 3
-			self.facing = entity.eDirections.right
+			self.facing = px_entity.eDirections.right
 
-			common_data.state = entity.eStates.stationary
+			common_data.state = px_entity.eStates.stationary
 			common_data.new_state = False
 
 	def __init__(self, game, data):
@@ -140,23 +140,23 @@ class Controller(controller.Controller):
 			pass
 		else:
 			if data.health <= 0:
-				self.setState(data, common_data, entity.eStates.dead)
+				self.setState(data, common_data, px_entity.eStates.dead)
 				return
 			if rand_num(10)==0:
-				self.setState(data, common_data, entity.eStates.stationary)
+				self.setState(data, common_data, px_entity.eStates.stationary)
 				data.vel = Vec3(0,0,0)
 				data.cooldown = rand_num(1) + 2
 			else:
 				# chase hero
 				target = common_data.game.requestTarget(common_data.pos)
 				if(target.x<common_data.pos.x):
-					self.setState(data, common_data, entity.eStates.runLeft)
+					self.setState(data, common_data, px_entity.eStates.runLeft)
 					data.vel = Vec3(-speed, 0, 0)
-					data.facing = entity.eDirections.left
+					data.facing = px_entity.eDirections.left
 				else:
-					self.setState(data, common_data, entity.eStates.runRight)
+					self.setState(data, common_data, px_entity.eStates.runRight)
 					data.vel = Vec3(speed, 0, 0)
-					data.facing = entity.eDirections.right
+					data.facing = px_entity.eDirections.right
 				if(target.z<common_data.pos.z):
 					data.vel.z = -speed
 				else:
@@ -182,18 +182,18 @@ class Controller(controller.Controller):
 				hurt_cool = 1
 				fall_cool = 2
 				data.health -= message.damage
-				if data.facing == entity.eDirections.left:
+				if data.facing == px_entity.eDirections.left:
 					if data.health <= 0:
-						self.setState(data, common_data, entity.eStates.fallLeft, fall_cool)
+						self.setState(data, common_data, px_entity.eStates.fallLeft, fall_cool)
 						common_data.game.reportMonsterDeath()
 					else:
-						self.setState(data, common_data, entity.eStates.hurtLeft, hurt_cool)
+						self.setState(data, common_data, px_entity.eStates.hurtLeft, hurt_cool)
 				else:
 					if data.health <= 0:
-						self.setState(data, common_data, entity.eStates.fallRight, fall_cool)
+						self.setState(data, common_data, px_entity.eStates.fallRight, fall_cool)
 						common_data.game.reportMonsterDeath()
 					else:
-						self.setState(data, common_data, entity.eStates.hurtRight, hurt_cool)
+						self.setState(data, common_data, px_entity.eStates.hurtRight, hurt_cool)
 			# todo change damage_hero to 0 in collider on death
 
 def makeCollider(manager):

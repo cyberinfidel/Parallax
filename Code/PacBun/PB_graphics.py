@@ -1,5 +1,5 @@
 import graphics
-import entity
+import px_entity
 
 bowie_graphics = {
 		"Name": "Bunny Animations",
@@ -9,7 +9,7 @@ bowie_graphics = {
 			{
 				"Name": "Bunny Stands",
 				"AnimType": graphics.AnimLoop,
-				"States": [entity.eStates.stationary],
+				"States": [px_entity.eStates.stationary],
 				"Frames":
 					[
 						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
@@ -28,7 +28,7 @@ bowie_graphics = {
 			{
 				"Name": "Bunny Runs Down",
 				"AnimType": graphics.AnimLoop,
-				"States": [entity.eStates.runDown],
+				"States": [px_entity.eStates.runDown],
 				"Frames":
 					[
 						["Graphics/Bunny/White/RunDown 2.png", 8, 11, 0, 0.05],
@@ -40,7 +40,7 @@ bowie_graphics = {
 			{
 				"Name": "Bunny Runs Up",
 				"AnimType": graphics.AnimLoop,
-				"States": [entity.eStates.runUp],
+				"States": [px_entity.eStates.runUp],
 				"Frames":
 					[
 						["Graphics/Bunny/White/RunUp 2.png", 8, 11, 0, 0.05],
@@ -52,7 +52,7 @@ bowie_graphics = {
 			{
 				"Name": "Bunny Runs Left",
 				"AnimType": graphics.AnimLoop,
-				"States": [entity.eStates.runLeft],
+				"States": [px_entity.eStates.runLeft],
 				"Frames":
 					[
 						["Graphics/Bunny/White/RunLeft 1.png", 8, 14, 0, 0.05],
@@ -64,7 +64,7 @@ bowie_graphics = {
 			{
 				"Name": "Bunny Runs Right",
 				"AnimType": graphics.AnimLoop,
-				"States": [entity.eStates.runRight],
+				"States": [px_entity.eStates.runRight],
 				"Frames":
 					[
 						["Graphics/Bunny/White/RunRight 1.png", 8, 14, 0, 0.05],

@@ -5,7 +5,7 @@ import enum
 import sdl2
 
 # my file import
-from entity import Component
+from px_entity import Component
 
 # disable to remove logging
 def log(msg, new_line=True):

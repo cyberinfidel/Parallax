@@ -5,7 +5,7 @@ import sdl2
 import sdl2.ext
 import sdl2.sdlmixer as sdlmixer
 
-import entity
+import px_entity
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -79,9 +79,9 @@ class SoundTypes(enum.IntEnum):
 	multi_sound = 1
 	num_sound_types = 2
 
-class MultiSound(entity.Component):
+class MultiSound(px_entity.Component):
 	class Data(object):
-		def __init__(self, common_data, init=False):
+		def __init__(self, entity, init=False):
 			pass
 
 	def __init__(self, game, data):
@@ -100,13 +100,13 @@ class MultiSound(entity.Component):
 				self.event_sounds[event] = sound['Type'](self.mixer, sound["Samples"])
 
 	# plays state sounds as part of per tick update routines
-	def play(self, data, common_data):
-		if common_data.state in self.state_sounds:
-			# log(f"{self.name} sound {common_data.state}")
-			self.state_sounds[common_data.state].play(data, common_data)
+	def play(self, data, entity):
+		if entity.state in self.state_sounds:
+			# log(f"{self.name} sound {entity.state}")
+			self.state_sounds[entity.state].play(data, entity)
 
-	def playEvent(self, data, common_data, event):
-		self.event_sounds[event].play(data, common_data)
+	def playEvent(self, data, entity, event):
+		self.event_sounds[event].play(data, entity)
 
 class RandomSample(object):
 	def __init__(self, path, sample):
@@ -122,8 +122,8 @@ class SingleNoLoopNoOverlapState(object):
 		self.sample = mixer.loadSound(samples[0])
 		self.channel=-1
 
-	def play(self, data, common_data):
-		if common_data.new_state and not sdlmixer.Mix_Playing(self.channel):
+	def play(self, data, entity):
+		if entity.new_state and not sdlmixer.Mix_Playing(self.channel):
 			self.channel = self.mixer.play(self.sample, loops=0)
 
 class Single(object):
@@ -131,7 +131,7 @@ class Single(object):
 		self.mixer = mixer
 		self.sample = mixer.loadSound(samples[0])
 
-	def play(self, data, common_data):
+	def play(self, data, entity):
 		self.mixer.play(self.sample, loops=0)
 
 

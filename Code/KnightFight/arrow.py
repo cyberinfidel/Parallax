@@ -1,4 +1,4 @@
-from entity import eStates, eDirections
+from px_entity import eStates, eDirections
 from vector import Vec3
 import controller
 import collision

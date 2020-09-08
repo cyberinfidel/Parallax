@@ -1,4 +1,4 @@
-from entity import eStates
+from px_entity import eStates
 from controller import Controller
 from collision import Collider, Message
 from vector import Vec3

@@ -6,7 +6,7 @@ import sys
 sys.path.insert(1, '../')
 # actually import files
 from game import Game, eGameModes
-from entity import eStates
+from px_entity import eStates
 from collision import CollisionManager
 from vector import Vec3, Line, rand_num
 from director import Delay, SpawnEntity, EndGame

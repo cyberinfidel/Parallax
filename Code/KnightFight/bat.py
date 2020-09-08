@@ -1,6 +1,6 @@
 import enum
 
-import entity
+import px_entity
 import vector
 from vector import Vec3, rand_num
 import controller
@@ -46,7 +46,7 @@ def makeGraphics(manager, renlayer):
 			{
 				"Name": "Bat Flapping",
 				"AnimType": graphics.AnimNoLoop,
-				"States": [entity.eStates.stationary],
+				"States": [px_entity.eStates.stationary],
 				"Frames":
 					[
 						["Graphics/Bat/Bat2.png", 24, 30, 0, 0.04],
@@ -60,7 +60,7 @@ def makeGraphics(manager, renlayer):
 			{
 				"Name": "Simple Fall Left",
 				"AnimType": graphics.AnimNoLoop,
-				"States": [entity.eStates.fallLeft],
+				"States": [px_entity.eStates.fallLeft],
 				"Frames":
 					[
 						["Graphics/Bat/BatHurt 1.png", 24, 30, 0, 0.04],
@@ -72,7 +72,7 @@ def makeGraphics(manager, renlayer):
 			{
 				"Name": "Simple Fall Right",
 				"AnimType": graphics.AnimNoLoop,
-				"States": [entity.eStates.fallRight],
+				"States": [px_entity.eStates.fallRight],
 				"Frames":
 					[
 						["Graphics/Bat/BatHurt 1.png", 24, 30, 0, 0.04],
@@ -84,7 +84,7 @@ def makeGraphics(manager, renlayer):
 			{
 				"Name": "Hurt Left",
 				"AnimType": graphics.AnimLoop,
-				"States": [entity.eStates.hurtLeft, entity.eStates.hurtRight],
+				"States": [px_entity.eStates.hurtLeft, px_entity.eStates.hurtRight],
 				"Frames":
 				[
 					["Graphics/Bat/BatHurt 1.png", 24, 30, 0, 0.04],
@@ -97,7 +97,7 @@ def makeGraphics(manager, renlayer):
 			{
 				"Name": "Bat Shadow",
 				"AnimType": graphics.AnimSingle,
-				"States": [entity.eStates.shadow],
+				"States": [px_entity.eStates.shadow],
 				"Frames":
 					[
 						["Graphics/shadow.png", 16, 4, 0, 0.3],
@@ -120,7 +120,7 @@ class Controller(controller.Controller):
 			self.health = 5
 			self.vel = Vec3(0,0,0)
 			self.mass = 4
-			self.facing = entity.eDirections.left
+			self.facing = px_entity.eDirections.left
 
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
@@ -133,9 +133,9 @@ class Controller(controller.Controller):
 			pass
 		else:
 			if data.health <= 0:
-				self.setState(data, common_data, entity.eStates.dead)
+				self.setState(data, common_data, px_entity.eStates.dead)
 				return
-			self.setState(data, common_data, entity.eStates.stationary)
+			self.setState(data, common_data, px_entity.eStates.stationary)
 			if rand_num(10)==0:
 #				self.setState(data, common_data, eStates.stationary)
 				data.vel = Vec3(0,0,0)
@@ -146,11 +146,11 @@ class Controller(controller.Controller):
 				if(target.x<common_data.pos.x):
 #					self.setState(data, common_data, eStates.runLeft)
 					data.vel = Vec3(-speed, 0, 0)
-					data.facing = entity.eDirections.left
+					data.facing = px_entity.eDirections.left
 				else:
 #					self.setState(data, common_data, eStates.runRight)
 					data.vel = Vec3(speed, 0, 0)
-					data.facing = entity.eDirections.right
+					data.facing = px_entity.eDirections.right
 				if(target.z<common_data.pos.z):
 					data.vel.z = -speed
 				else:
@@ -161,7 +161,7 @@ class Controller(controller.Controller):
 				elif (common_data.pos.z<80) and (data.vel.z<3):
 					data.vel.y += 2 # otherwise flap
 					# common_data.entity.graphics.startAnim(data = common_data.entity.graphics_data)
-					self.setState(data, common_data, entity.eStates.stationary, force_new_state=True)
+					self.setState(data, common_data, px_entity.eStates.stationary, force_new_state=True)
 					common_data.entity.sounds.playEvent(data, common_data, eEvents.flap)
 
 				data.cooldown = 0.2
@@ -187,18 +187,18 @@ class Controller(controller.Controller):
 				hurt_cool = 1
 				fall_cool = 3
 				data.health -= message.damage
-				if data.facing == entity.eDirections.left:
+				if data.facing == px_entity.eDirections.left:
 					if data.health <= 0:
-						self.setState(data, common_data, entity.eStates.fallLeft, fall_cool)
+						self.setState(data, common_data, px_entity.eStates.fallLeft, fall_cool)
 						common_data.game.reportMonsterDeath()
 					else:
-						self.setState(data, common_data, entity.eStates.hurtLeft, hurt_cool)
+						self.setState(data, common_data, px_entity.eStates.hurtLeft, hurt_cool)
 				else:
 					if data.health <= 0:
-						self.setState(data, common_data, entity.eStates.fallRight, fall_cool)
+						self.setState(data, common_data, px_entity.eStates.fallRight, fall_cool)
 						common_data.game.reportMonsterDeath()
 					else:
-						self.setState(data, common_data, entity.eStates.hurtRight, hurt_cool)
+						self.setState(data, common_data, px_entity.eStates.hurtRight, hurt_cool)
 
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})

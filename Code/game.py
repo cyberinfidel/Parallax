@@ -7,7 +7,7 @@ import sdl2.ext
 import sdl2.sdlmixer
 
 # import my files
-import entity
+import px_entity
 import game_pad
 import vector
 import graphics
@@ -78,14 +78,14 @@ class Game(object):
 
 		self.input = game_pad.Input(self)
 
-		self.drawables = entity.EntityList()
-		self.audibles = entity.EntityList()
-		self.updatables = entity.EntityList()
+		self.drawables = px_entity.EntityList()
+		self.audibles = px_entity.EntityList()
+		self.updatables = px_entity.EntityList()
 
-		self.graphics_manager = entity.ComponentManager(game=self)
-		self.controller_manager = entity.ComponentManager(game=self)
-		self.entity_manager = entity.EntityManager(game=self)
-		self.sound_manager = entity.ComponentManager(game=self)
+		self.graphics_manager = px_entity.ComponentManager(game=self)
+		self.controller_manager = px_entity.ComponentManager(game=self)
+		self.entity_manager = px_entity.EntityManager(game=self)
+		self.sound_manager = px_entity.ComponentManager(game=self)
 
 
 
@@ -156,11 +156,13 @@ class Game(object):
 											 pos=False,
 											 parent=False,
 											 name=False,
-											 init=False):
+											 init=False,
+											 data=False):
 		new_entity = self.entity_manager.makeEntity(template=template,
 																								name=name,
 																								init=init,
-																								parent=parent)
+																								parent=parent,
+																								data=data)
 		# position (and anything else) may be set within the code at runtime
 		# and passed in as a parameter
 		# or it may be set as part of executing the  init routine

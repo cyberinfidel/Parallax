@@ -1,14 +1,14 @@
 import enum
 
-import entity
+import px_entity
 import controller
 import graphics
 import game
 import game_pad
 
 class eTitleStates(enum.IntEnum):
-	dead = entity.eStates.dead
-	hide = entity.eStates.hide,
+	dead = px_entity.eStates.dead
+	hide = px_entity.eStates.hide,
 	title = 2,
 	paused = 3,
 	game_over = 4,

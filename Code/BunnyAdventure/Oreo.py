@@ -2,7 +2,7 @@
 import enum
 
 # Parallax
-from entity import eStates
+from px_entity import eStates
 from game_pad import eActions
 import controller
 import collision

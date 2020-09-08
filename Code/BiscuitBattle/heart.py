@@ -1,4 +1,4 @@
-from entity import eStates
+from px_entity import eStates
 from controller import Controller
 from graphics import MultiAnim, AnimRandom, AnimNoLoop
 

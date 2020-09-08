@@ -1,6 +1,6 @@
 import json
 
-import entity
+import px_entity
 import controller
 import graphics
 import PacBun
@@ -39,9 +39,9 @@ def formatScore(index, initials, score):
 
 
 # graphics component for high score table
-class ScoreTable(entity.Component):
+class ScoreTable(px_entity.Component):
 	class Data(object):
-		def __init__(self, common_data, init=False):
+		def __init__(self, entity, init=False):
 			if init:
 				pass
 			else:
@@ -54,11 +54,11 @@ class ScoreTable(entity.Component):
 		self.font = self.render_layer.addFont("Fonts/PacBun/PacBun.ttf", 32)
 
 
-	def draw(self, data, common_data):
+	def draw(self, data, entity):
 		for i, image in enumerate(data.images):
 			self.render_layer.queueImage(image, 85, 270-i*20, 0)
 
-	def update(self, data, common_data, dt):
+	def update(self, data, entity, dt):
 		pass
 
 
@@ -87,7 +87,7 @@ def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
 class Controller(controller.Controller):
 	class Data(object):
-		def __init__(self, common_data, init=False):
+		def __init__(self, entity, init=False):
 			if init:
 				pass
 			else:
@@ -102,7 +102,7 @@ class Controller(controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
 
-	def update(self, data, common_data, dt):
+	def update(self, data, entity, dt):
 		pass
 
 	def isHighScore(self, entity, new_score):

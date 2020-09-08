@@ -1,4 +1,4 @@
-from entity import eStates
+from px_entity import eStates
 import controller
 import graphics
 from vector import Vec3

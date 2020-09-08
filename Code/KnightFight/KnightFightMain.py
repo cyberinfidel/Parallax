@@ -8,7 +8,7 @@ import sdl2.mouse
 sys.path.append('../')
 # actually import files
 from game import Game, eGameModes
-from entity import eStates
+from px_entity import eStates
 from collision import CollisionManager
 from vector import Vec3, rand_num
 import graphics

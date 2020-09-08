@@ -1,4 +1,4 @@
-import entity
+import px_entity
 import controller
 import graphics
 def makeGraphics(manager, renlayer):
@@ -11,7 +11,7 @@ def makeGraphics(manager, renlayer):
 					{
 						"Name": "stationary",
 						"AnimType": graphics.AnimRandom,
-						"States": [entity.eStates.stationary],
+						"States": [px_entity.eStates.stationary],
 						"Frames":
 							[
 								["Graphics/Heart/Heart 7.png", 4, 4, 0, 0.9],
@@ -21,7 +21,7 @@ def makeGraphics(manager, renlayer):
 					{
 						"Name": "appear",
 						"AnimType": graphics.AnimNoLoop,
-						"States": [entity.eStates.appear],
+						"States": [px_entity.eStates.appear],
 						"Frames":
 							[
 								["Graphics/Heart/Heart 1.png", 4, 4, 0, 0.2],
@@ -36,7 +36,7 @@ def makeGraphics(manager, renlayer):
 					{
 						"Name": "fade",
 						"AnimType": graphics.AnimNoLoop,
-						"States": [entity.eStates.fade],
+						"States": [px_entity.eStates.fade],
 						"Frames":
 							[
 								["Graphics/Heart/Heart 7.png", 4, 4, 0, 0.5],
@@ -74,12 +74,12 @@ class HeartIndicatorController(controller.Controller):
 			# if hero health is greater or equal to this heart's number
 			common_data.blink = False
 			if common_data.parent.controller_data.health>=data.health_num:
-				if common_data.state==entity.eStates.fade:
-					self.setState(data, common_data, entity.eStates.appear, 1)
+				if common_data.state==px_entity.eStates.fade:
+					self.setState(data, common_data, px_entity.eStates.appear, 1)
 				else:
-					self.setState(data, common_data, entity.eStates.stationary, 1)
+					self.setState(data, common_data, px_entity.eStates.stationary, 1)
 			else:
-				if common_data.state in (entity.eStates.appear,entity.eStates.stationary):
-					self.setState(data, common_data, entity.eStates.fade, 1)
+				if common_data.state in (px_entity.eStates.appear, px_entity.eStates.stationary):
+					self.setState(data, common_data, px_entity.eStates.fade, 1)
 				else:
 					common_data.blink=True

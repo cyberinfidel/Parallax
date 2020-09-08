@@ -1,4 +1,4 @@
-from entity import eStates
+from px_entity import eStates
 import controller
 import collision
 
@@ -24,7 +24,7 @@ def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
 class Controller(controller.Controller):
 	class Data(object):
-		def __init__(self, common_data, init=False):
+		def __init__(self, entity, init=False):
 			if init:
 				pass
 			else:
@@ -33,17 +33,17 @@ class Controller(controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
 
-	def update(self, data, common_data, dt):
+	def update(self, data, entity, dt):
 
 		if not self.coolDown(data, dt):
 			# finished big hit - otherwise just hang around
-			common_data.state = eStates.dead
+			entity.state = eStates.dead
 
 	def receiveCollision(self, entity, message=False):
 		# Could make it so
 		# if a hit hits then it lasts only for the remainder of that tick
 		# this avoids hitting the same thing multiple times
-		# common_data.state = eStates.dead
+		# entity.state = eStates.dead
 
 		# otherwise the damage would be spread over multiple ticks
 		# The more ticks that the hit collides with an object the more damage
@@ -54,7 +54,7 @@ def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
 class Collider(collision.Collider):
 	class Data(object):
-		def __init__(self, common_data, init=False):
+		def __init__(self, entity, init=False):
 			if init:
 				pass
 			else:
@@ -64,6 +64,6 @@ class Collider(collision.Collider):
 		super(Collider, self).__init__(game)
 		# global static data to all of components
 
-	def getCollisionMessage(self, data, common_data):
-		return(collision.Message(source=common_data.entity, damage=data.damage, force=data.force, absorb=data.absorb))
+	def getCollisionMessage(self, data, entity):
+		return(collision.Message(source=entity, damage=data.damage, force=data.force, absorb=data.absorb))
 

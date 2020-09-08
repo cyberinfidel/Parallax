@@ -3,7 +3,7 @@ import enum
 import copy
 
 # Parallax
-import entity
+import px_entity
 import controller
 import collision
 from vector import Vec3
@@ -24,7 +24,7 @@ def makeSounds(manager, mixer):
 				{
 					"Name": "Jump",
 					"Type": sound.Single,
-					"Events": [entity.eEvents.jump],
+					"Events": [px_entity.eEvents.jump],
 					"Samples":  # one of these will play at random if there's more than one
 						[
 							"Sounds/Hero/jump.wav"
@@ -35,9 +35,9 @@ def makeSounds(manager, mixer):
 	})
 
 class eFoxStates(enum.IntEnum):
-	cleanLeft = entity.eStates.hurtLeft
-	cleanRight = entity.eStates.hurtRight
-	bunnyCaught = entity.eStates.idle
+	cleanLeft = px_entity.eStates.hurtLeft
+	cleanRight = px_entity.eStates.hurtRight
+	bunnyCaught = px_entity.eStates.idle
 
 class eFoxTypes(enum.IntEnum):
 	direct=1
@@ -62,7 +62,7 @@ class Controller(controller.Controller):
 	################
 
 	class Data(object):
-		def __init__(self, common_data, init=False):
+		def __init__(self, entity, init=False):
 			if init:
 				self.game_pad = init.game_pad
 			else:
@@ -77,8 +77,8 @@ class Controller(controller.Controller):
 			self.facing = False
 			self.queued_facing = 4
 			self.health = 3
-			common_data.state = entity.eStates.stationary
-			self.queued_state = common_data.state
+			entity.state = px_entity.eStates.stationary
+			self.queued_state = entity.state
 			self.AI_cooldown = 1+vector.rand_num(15)/5.
 			self.type = 0
 			self.fox_speed = 1
@@ -91,8 +91,8 @@ class Controller(controller.Controller):
 
 
 
-	def update(self, data, common_data, dt):
-		if common_data.state==eFoxStates.bunnyCaught: return
+	def update(self, data, entity, dt):
+		if entity.state==eFoxStates.bunnyCaught: return
 
 		# pause foxes every so often
 		# todo: foxes shouldn't pause if the bunny is in sight
@@ -103,8 +103,8 @@ class Controller(controller.Controller):
 				data.fox_speed=0
 				data.AI_cooldown = data.pause
 				if data.pause>0: data.pause -=1
-				self.setState(data, common_data,
-											[entity.eStates.stationary,entity.eStates.stationary,entity.eStates.stationary,entity.eStates.stationary,entity.eStates.stationary,eFoxStates.cleanRight,eFoxStates.cleanLeft][vector.rand_num(7)]
+				self.setState(data, entity,
+											[px_entity.eStates.stationary, px_entity.eStates.stationary, px_entity.eStates.stationary, px_entity.eStates.stationary, px_entity.eStates.stationary, eFoxStates.cleanRight, eFoxStates.cleanLeft][vector.rand_num(7)]
 											)
 			else:
 				data.fox_speed=1
@@ -124,23 +124,23 @@ class Controller(controller.Controller):
 				Vec3(96, 0, 0),
 			)[data.bunny.controller_data.facing]
 
-		x, y = data.level.getCoordFromPos(common_data.pos)
+		x, y = data.level.getCoordFromPos(entity.pos)
 		current_tile = data.level.getTileFromCoord(x, y)
 		exits = current_tile.controller.getExits(current_tile.controller_data)
-		x_in_tile = common_data.pos.x % 16
-		y_in_tile = common_data.pos.y % 16
+		x_in_tile = entity.pos.x % 16
+		y_in_tile = entity.pos.y % 16
 
 		# work out preferred direction
-		if bunny_pos.x>common_data.pos.x:
-			pref_dir=entity.eDirections.right
+		if bunny_pos.x>entity.pos.x:
+			pref_dir=px_entity.eDirections.right
 		else:
-			pref_dir = entity.eDirections.left
-		if bunny_pos.y > common_data.pos.y:
-			sec_dir = entity.eDirections.up
+			pref_dir = px_entity.eDirections.left
+		if bunny_pos.y > entity.pos.y:
+			sec_dir = px_entity.eDirections.up
 		else:
-			sec_dir = entity.eDirections.down
+			sec_dir = px_entity.eDirections.down
 
-		if (abs(bunny_pos.x-common_data.pos.x)<abs(bunny_pos.y-common_data.pos.y)):
+		if (abs(bunny_pos.x-entity.pos.x)<abs(bunny_pos.y-entity.pos.y)):
 			# choose most optimal axis
 			pref_dir, sec_dir = sec_dir, pref_dir
 
@@ -150,16 +150,16 @@ class Controller(controller.Controller):
 		elif data.type==eFoxTypes.cowardly:
 			# reverse directions so fox runs away
 			pref_dir = (
-				entity.eDirections.up,
-				entity.eDirections.right,
-				entity.eDirections.down,
-				entity.eDirections.left,
+				px_entity.eDirections.up,
+				px_entity.eDirections.right,
+				px_entity.eDirections.down,
+				px_entity.eDirections.left,
 			)[pref_dir]
 			sec_dir = (
-				entity.eDirections.up,
-				entity.eDirections.right,
-				entity.eDirections.down,
-				entity.eDirections.left,
+				px_entity.eDirections.up,
+				px_entity.eDirections.right,
+				px_entity.eDirections.down,
+				px_entity.eDirections.left,
 			)[sec_dir]
 
 
@@ -179,31 +179,31 @@ class Controller(controller.Controller):
 				Vec3(fox_speed,0, 0),
 			)[data.facing]
 
-			self.setState(data, common_data,(
-				entity.eStates.runDown,
-				entity.eStates.runLeft,
-				entity.eStates.runUp,
-				entity.eStates.runRight
+			self.setState(data, entity,(
+				px_entity.eStates.runDown,
+				px_entity.eStates.runLeft,
+				px_entity.eStates.runUp,
+				px_entity.eStates.runRight
 			)[data.facing])
 
-		controller.basic_physics(common_data.pos, data.vel)
-		common_data.pos.clamp(Vec3(0,0,0),Vec3(319,319,0))
+		controller.basic_physics(entity.pos, data.vel)
+		entity.pos.clamp(Vec3(0,0,0),Vec3(319,319,0))
 
 
 	def receiveCollision(self, A, message):
 		if message:
 			if message.damage_hero>0:
 				# caught the bunny
-				self.setState(A.controller_data,A.common_data,eFoxStates.bunnyCaught)
-				# print(f"col source{message.source.common_data.pos.x},{message.source.common_data.pos.y}")
-		# 	print(f"Hedge source{message.source.common_data.pos.x}{message.source.common_data.pos.y}")
+				self.setState(A.controller_data,A.entity,eFoxStates.bunnyCaught)
+				# print(f"col source{message.source.entity.pos.x},{message.source.entity.pos.y}")
+		# 	print(f"Hedge source{message.source.entity.pos.x}{message.source.entity.pos.y}")
 			# 	# A.controller_data.vel = Vec3(0,0,0)
 
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
 class Collider(collision.Collider):
 	class Data(object):
-		def __init__(self, common_data, init=False):
+		def __init__(self, entity, init=False):
 			if init:
 				pass
 			else:
@@ -220,7 +220,7 @@ class Collider(collision.Collider):
 	def getRadius(self):
 		return self.radius
 
-	def getCollisionMessage(self, data, common_data):
-		return(collision.Message(source=common_data.entity,damage=1))
+	def getCollisionMessage(self, data, entity):
+		return(collision.Message(source=entity.entity,damage=1))
 
 

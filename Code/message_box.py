@@ -1,6 +1,6 @@
 import sdl2
 
-import entity
+import px_entity
 # import text
 import graphics
 import controller
@@ -16,9 +16,9 @@ def makeSounds(manager, mixer):
 # end sounds ####################################################
 
 # graphics component for displaying a message
-class MessageBox(entity.Component):
+class MessageBox(px_entity.Component):
 	class Data(object):
-		def __init__(self, common_data, init=False):
+		def __init__(self, entity, init=False):
 			self.image = None
 
 	def init(self, data, ren_layer, message, font=0, color=graphics.Color(1, 1, 1, 1), duration=0, align=graphics.eAlign.left, fade_speed=0.5):
@@ -63,7 +63,7 @@ class MessageBox(entity.Component):
 	def __init__(self,game, data):
 		super(MessageBox, self).__init__(game)
 
-	def draw(self, data, common_data):
+	def draw(self, data, entity):
 		offset_x=0
 		offset_y=0
 		if data.align==graphics.eAlign.centre:
@@ -75,20 +75,20 @@ class MessageBox(entity.Component):
 
 		return data.ren_layer.queueImage(
 			image = data.image,
-			x = common_data.pos.x-offset_x,
-			y = common_data.pos.y-offset_y,
-			z = common_data.pos.z,
+			x = entity.pos.x-offset_x,
+			y = entity.pos.y-offset_y,
+			z = entity.pos.z,
 			color = data.color*graphics.Color(1,1,1,data.fade)
 		)
 
-	def update(self, data, common_data, dt):
+	def update(self, data, _entity, dt):
 		data.fade+=dt*data.fade_direction*(1/data.fade_speed)
 		data.fade = vector.clamp(0,data.fade,1)
 		data.duration -=dt
 		if data.duration<1:
 			data.fade_direction=-1
 		if data.duration<0:
-			common_data.entity.setState(entity.eStates.dead)
+			_entity.setState(px_entity.eStates.dead)
 
 
 
@@ -107,13 +107,13 @@ def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
 class Controller(controller.Controller):
 	class Data(object):
-		def __init__(self, common_data, init=False):
+		def __init__(self, entity, init=False):
 			pass
 
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
 
-	def update(self, data, common_data, dt):
+	def update(self, data, entity, dt):
 		pass
 
 # end controller ####################################################

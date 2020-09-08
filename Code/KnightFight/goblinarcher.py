@@ -1,4 +1,4 @@
-import entity
+import px_entity
 from vector import Vec3, rand_num
 import controller
 import collision
@@ -16,7 +16,7 @@ def makeGraphics(manager, renlayer):
 			{
 				"Name": "Firing Arrow",
 				"AnimType": graphics.AnimLoop,
-				"States": [entity.eStates.attackSmallLeft],
+				"States": [px_entity.eStates.attackSmallLeft],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/GoblinArcher 08.png", 22, 36, 0, 0.1],
@@ -34,7 +34,7 @@ def makeGraphics(manager, renlayer):
 			{
 				"Name": "Firing Arrow",
 				"AnimType": graphics.AnimLoop,
-				"States": [entity.eStates.attackSmallRight],
+				"States": [px_entity.eStates.attackSmallRight],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/Right/GoblinArcher 08.png", 22, 36, 0, 0.1],
@@ -52,7 +52,7 @@ def makeGraphics(manager, renlayer):
 			{
 				"Name": "Standing",
 				"AnimType": graphics.AnimLoop,
-				"States": [entity.eStates.stationary],
+				"States": [px_entity.eStates.stationary],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/GoblinArcher 08.png", 22, 36, 0, 0.04],
@@ -61,7 +61,7 @@ def makeGraphics(manager, renlayer):
 			{
 				"Name": "Standing",
 				"AnimType": graphics.AnimLoop,
-				"States": [entity.eStates.standLeft],
+				"States": [px_entity.eStates.standLeft],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/GoblinArcher 08.png", 22, 36, 0, 0.04],
@@ -70,7 +70,7 @@ def makeGraphics(manager, renlayer):
 			{
 				"Name": "Standing",
 				"AnimType": graphics.AnimLoop,
-				"States": [entity.eStates.standRight],
+				"States": [px_entity.eStates.standRight],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/Right/GoblinArcher 08.png", 22, 36, 0, 0.04],
@@ -79,7 +79,7 @@ def makeGraphics(manager, renlayer):
 			{
 				"Name": "Simple Fall Left",
 				"AnimType": graphics.AnimNoLoop,
-				"States": [entity.eStates.fallLeft],
+				"States": [px_entity.eStates.fallLeft],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/GoblinArcherDies 1.png", 22, 36, 0, 0.5],
@@ -89,7 +89,7 @@ def makeGraphics(manager, renlayer):
 			{
 				"Name": "Simple Fall Right",
 				"AnimType": graphics.AnimNoLoop,
-				"States": [entity.eStates.fallRight],
+				"States": [px_entity.eStates.fallRight],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/Right/GoblinArcherDies 1.png", 22, 36, 0, 0.5],
@@ -99,7 +99,7 @@ def makeGraphics(manager, renlayer):
 			{
 				"Name": "Simple Hurt Left",
 				"AnimType": graphics.AnimLoop,
-				"States": [entity.eStates.hurtLeft],
+				"States": [px_entity.eStates.hurtLeft],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/GoblinArcherDies 1.png", 22, 36, 0, 0.5],
@@ -108,7 +108,7 @@ def makeGraphics(manager, renlayer):
 			{
 				"Name": "Simple HurtRight",
 				"AnimType": graphics.AnimLoop,
-				"States": [entity.eStates.hurtRight],
+				"States": [px_entity.eStates.hurtRight],
 				"Frames":
 					[
 						["Graphics/GoblinArcher/Right/GoblinArcherDies 1.png", 22, 36, 0, 0.5],
@@ -117,7 +117,7 @@ def makeGraphics(manager, renlayer):
 			{
 				"Name": "Goblin Archer Shadow",
 				"AnimType": graphics.AnimSingle,
-				"States": [entity.eStates.shadow],
+				"States": [px_entity.eStates.shadow],
 				"Frames":
 					[
 						["Graphics/shadow.png", 16, 4, 0, 0.3],
@@ -146,7 +146,7 @@ class Controller(controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
 		# values global to all instances
-		self.invincible_states = (entity.eStates.dead, entity.eStates.fallLeft, entity.eStates.fallRight)
+		self.invincible_states = (px_entity.eStates.dead, px_entity.eStates.fallLeft, px_entity.eStates.fallRight)
 
 		arrow_controller = self.game.controller_manager.makeTemplate({"Template": arrow.Controller})
 		arrow_collider = self.game.collision_manager.makeTemplate({"Template": arrow.Collider})
@@ -164,7 +164,7 @@ class Controller(controller.Controller):
 																							 name="Goblin archer arrow")
 		arrow.collider_data.force = 0#Vec3(-1 if flippedX else 1,0,0)
 		arrow.collider_data.hero_damage = 1
-		arrow.common_data.state = (entity.eStates.runLeft if flippedX else entity.eStates.runRight)
+		arrow.common_data.state = (px_entity.eStates.runLeft if flippedX else px_entity.eStates.runRight)
 		arrow.controller_data.vel = Vec3(-7 if flippedX else 7,1,0)
 
 	def update(self, data, common_data, dt):
@@ -172,23 +172,23 @@ class Controller(controller.Controller):
 		fire_cool = 1.4
 
 		if self.coolDown(data, dt):
-			if data.fired and (common_data.state not in [entity.eStates.fallLeft,entity.eStates.fallRight, entity.eStates.dead]):
+			if data.fired and (common_data.state not in [px_entity.eStates.fallLeft, px_entity.eStates.fallRight, px_entity.eStates.dead]):
 				if data.cooldown<0.9:
 					self.shoot(data,common_data,data.facingleft)
 					data.fired = False
 		else:
 			if data.health <= 0:
-				self.setState(data, common_data, entity.eStates.dead)
+				self.setState(data, common_data, px_entity.eStates.dead)
 				return
 			# fire at hero if in range
 			target = common_data.game.requestTarget(common_data.pos)
 			data.facingleft = (target.x<common_data.pos.x)
 			if abs(target.x-common_data.pos.x)<200 and abs(target.z-common_data.pos.z)<20:
-				self.setState(data, common_data, entity.eStates.attackSmallLeft if data.facingleft else entity.eStates.attackSmallRight)
+				self.setState(data, common_data, px_entity.eStates.attackSmallLeft if data.facingleft else px_entity.eStates.attackSmallRight)
 				data.fired = True
 				data.cooldown = fire_cool
 			else:
-				self.setState(data, common_data, entity.eStates.standLeft if data.facingleft else entity.eStates.standRight)
+				self.setState(data, common_data, px_entity.eStates.standLeft if data.facingleft else px_entity.eStates.standRight)
 				data.cooldown = rand_num(1) + 2
 
 		controller.friction(data.vel)
@@ -213,16 +213,16 @@ class Controller(controller.Controller):
 					data.health -= message.damage
 					if data.facingleft:
 						if data.health <= 0:
-							self.setState(data, common_data, entity.eStates.fallLeft, fall_cool)
+							self.setState(data, common_data, px_entity.eStates.fallLeft, fall_cool)
 							common_data.game.reportMonsterDeath()
 						else:
-							self.setState(data, common_data, entity.eStates.hurtLeft, hurt_cool)
+							self.setState(data, common_data, px_entity.eStates.hurtLeft, hurt_cool)
 					else:
 						if data.health <= 0:
-							self.setState(data, common_data, entity.eStates.fallRight, fall_cool)
+							self.setState(data, common_data, px_entity.eStates.fallRight, fall_cool)
 							common_data.game.reportMonsterDeath()
 						else:
-							self.setState(data, common_data, entity.eStates.hurtRight, hurt_cool)
+							self.setState(data, common_data, px_entity.eStates.hurtRight, hurt_cool)
 
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})

@@ -1,4 +1,4 @@
-import entity
+import px_entity
 import controller
 import graphics
 def makeGraphics(manager, renlayer):
@@ -11,7 +11,7 @@ def makeGraphics(manager, renlayer):
 					{
 						"Name": "stationary",
 						"AnimType": graphics.AnimRandom,
-						"States": [entity.eStates.stationary],
+						"States": [px_entity.eStates.stationary],
 						"Frames":
 							[
 								["Graphics/Heart/Heart 7.png", 4, 4, 0, 0.9],
@@ -21,7 +21,7 @@ def makeGraphics(manager, renlayer):
 					{
 						"Name": "appear",
 						"AnimType": graphics.AnimNoLoop,
-						"States": [entity.eStates.appear],
+						"States": [px_entity.eStates.appear],
 						"Frames":
 							[
 								["Graphics/Heart/Heart 1.png", 4, 4, 0, 0.2],
@@ -36,7 +36,7 @@ def makeGraphics(manager, renlayer):
 					{
 						"Name": "fade",
 						"AnimType": graphics.AnimNoLoop,
-						"States": [entity.eStates.fade],
+						"States": [px_entity.eStates.fade],
 						"Frames":
 							[
 								["Graphics/Heart/Heart 7.png", 4, 4, 0, 0.5],
@@ -56,7 +56,7 @@ def makeController(manager):
 	return manager.makeTemplate({"Template": HeartIndicatorController})
 class HeartIndicatorController(controller.Controller):
 	class Data(object):
-		def __init__(self, common_data, init=False):
+		def __init__(self, entity, init=False):
 			if init:
 				pass
 			else:
@@ -68,18 +68,18 @@ class HeartIndicatorController(controller.Controller):
 	def __init__(self, game, data):
 		super(HeartIndicatorController, self).__init__(game)
 
-	def update(self, data, common_data, dt):
+	def update(self, data, entity, dt):
 		if not self.coolDown(data, dt):
 			# cooling down so can't do anything new
 			# if hero health is greater or equal to this heart's number
-			common_data.blink = False
-			if common_data.parent.controller_data.health>=data.health_num:
-				if common_data.state==entity.eStates.fade:
-					self.setState(data, common_data, entity.eStates.appear, 1)
+			entity.blink = False
+			if entity.parent.controller_data.health>=data.health_num:
+				if entity.state==px_entity.eStates.fade:
+					self.setState(data, entity, px_entity.eStates.appear, 1)
 				else:
-					self.setState(data, common_data, entity.eStates.stationary, 1)
+					self.setState(data, entity, px_entity.eStates.stationary, 1)
 			else:
-				if common_data.state in (entity.eStates.appear,entity.eStates.stationary):
-					self.setState(data, common_data, entity.eStates.fade, 1)
+				if entity.state in (px_entity.eStates.appear, px_entity.eStates.stationary):
+					self.setState(data, entity, px_entity.eStates.fade, 1)
 				else:
-					common_data.blink=True
+					entity.blink=True

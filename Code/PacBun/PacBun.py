@@ -9,7 +9,7 @@ import sdl2.mouse
 sys.path.append('../')
 # actually import files
 import game
-import entity
+import px_entity
 from collision import CollisionManager
 from vector import Vec3
 import graphics
@@ -120,10 +120,14 @@ class PacBun(game.Game):
 			init = False
 			if 'init' in entity:
 				init = entity['init']	# custom initialisation code, not always needed
+			data = False
+			if 'data' in entity:
+				data = entity['data']
 			entities['name'] = self.requestNewEntity(template=entity['template'],
-														name=name,
-														parent=self,
-														init=init)
+																							 name=name,
+																							 parent=self,
+																							 init=init,
+																							 data=data)
 
 	def getEntityByName(self, name):
 		return self.entity_manager.getEntityByName(name)
@@ -207,7 +211,7 @@ class PacBun(game.Game):
 
 	def updateWin(self, dt): # kill
 		for bunny in self.bunnies:
-			bunny.setState(entity.eStates.dead)
+			bunny.setState(px_entity.eStates.dead)
 		self.restart_cooldown-=dt
 		self.title.setState(title.eTitleStates.win)
 		if self.restart_cooldown<=0:
@@ -376,7 +380,7 @@ class PacBun(game.Game):
 			for updatable in self.updatables:
 				updatable.update(dt)
 			for audible in self.audibles:
-				audible.sounds.play(audible.sounds_data, audible.common_data)
+				audible.sounds.play(audible.sounds_data, audible)
 
 			self.cleanUpDead()
 
@@ -384,10 +388,10 @@ class PacBun(game.Game):
 # end update() #################################################################
 
 	def cleanUpDead(self):
-		self.updatables[:] = [x for x in self.updatables if x.getState() != entity.eStates.dead]
+		self.updatables[:] = [x for x in self.updatables if x.getState() != px_entity.eStates.dead]
 		self.collision_manager.cleanUpDead()
-		self.drawables[:] = [x for x in self.drawables if x.getState() != entity.eStates.dead]
-		self.audibles[:] = [x for x in self.audibles if x.getState() != entity.eStates.dead]
+		self.drawables[:] = [x for x in self.drawables if x.getState() != px_entity.eStates.dead]
+		self.audibles[:] = [x for x in self.audibles if x.getState() != px_entity.eStates.dead]
 		self.entity_manager.deleteDead()
 
 	# This kills everything in the entity manager that isn't listed in the whitelist
@@ -406,7 +410,7 @@ class PacBun(game.Game):
 
 	# todo: move to data
 	def requestTarget(self,pos):
-		return self.bunny.common_data.pos
+		return self.bunny.pos
 
 	# todo: move to data
 	def reportScore(self, increment):
@@ -445,8 +449,8 @@ class PacBun(game.Game):
 	def draw(self):
 		for drawable in self.drawables:
 			# draw actual things
-			if not drawable.common_data.blink:
-				drawable.graphics.draw(drawable.graphics_data, drawable.common_data)
+			if not drawable.blink:
+				drawable.graphics.draw(drawable.graphics_data, drawable)
 
 		self.render_layers['game'].renderSortedByZThenY()
 
@@ -461,7 +465,7 @@ class PacBun(game.Game):
 	def addNewHighScore(self, initials):
 		self.high_score.controller.updateScores(score_data=self.high_score.controller_data.scores_data, initials=initials, new_score=self.current_score)
 		self.high_score.graphics.updateScores(self.high_score)
-		self.new_high_score.common_data.state = entity.eStates.dead
+		self.new_high_score.state = px_entity.eStates.dead
 		self.setGameMode(eGameModes.title)
 
 

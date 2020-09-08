@@ -8,7 +8,7 @@ import sdl2.mouse
 sys.path.insert(1, '../')
 # actually import files
 import game
-import entity
+import px_entity
 import collision
 import vector
 from vector import Vec3, rand_num
@@ -203,7 +203,7 @@ class BunnyAdventure(game.Game):
 		####################################################
 
 		elif self.game_mode==game.eGameModes.game_over:
-			self.director.setState(entity.eStates.dead)
+			self.director.setState(px_entity.eStates.dead)
 			self.restart_cooldown-=dt
 			self.title.setState(title.eTitlentity.eStates.game_over)
 			if self.restart_cooldown<=0:
@@ -244,15 +244,15 @@ class BunnyAdventure(game.Game):
 # end update() #################################################################
 
 	def cleanUpDead(self):
-		self.updatables[:] = [x for x in self.updatables if x.getState() != entity.eStates.dead]
+		self.updatables[:] = [x for x in self.updatables if x.getState() != px_entity.eStates.dead]
 		self.collision_manager.cleanUpDead()
-		self.drawables[:] = [x for x in self.drawables if x.getState() != entity.eStates.dead]
-		self.audibles[:] = [x for x in self.audibles if x.getState() != entity.eStates.dead]
+		self.drawables[:] = [x for x in self.drawables if x.getState() != px_entity.eStates.dead]
+		self.audibles[:] = [x for x in self.audibles if x.getState() != px_entity.eStates.dead]
 
 	def killPlayEntities(self):
 		for updatable in self.updatables:
 			if not (updatable is self.title):
-				updatable.common_data.state = entity.eStates.dead
+				updatable.common_data.state = px_entity.eStates.dead
 
 
 	def requestTarget(self,pos):

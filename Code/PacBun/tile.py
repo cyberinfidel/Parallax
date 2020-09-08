@@ -62,7 +62,7 @@ class Controller(controller.Controller):
 	################
 
 	class Data(object):
-		def __init__(self, common_data, init=False):
+		def __init__(self, entity, init=False):
 			if init:
 				self.game_pad = init.game_pad
 			else:
@@ -89,7 +89,7 @@ class Controller(controller.Controller):
 	def getTypes(self, data):
 		return data.types
 
-	def update(self, data, common_data, dt):
+	def update(self, data, entity, dt):
 		pass
 
 
@@ -103,7 +103,7 @@ def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
 class Collider(collision.Collider):
 	class Data(object):
-		def __init__(self, common_data, init=False):
+		def __init__(self, entity, init=False):
 			if init:
 				pass
 			else:
@@ -115,9 +115,9 @@ class Collider(collision.Collider):
 		super(Collider, self).__init__(game)
 		# global static data to all of HeroCollider components
 
-	def getCollisionMessage(self, data, common_data):
-		message = collision.Message(source=common_data.entity)
-		if common_data.state==eTileStates.hedge:
+	def getCollisionMessage(self, data, entity):
+		message = collision.Message(source=entity)
+		if entity.state==eTileStates.hedge:
 			message.impassable = True
 			message.poo = False
 		else:

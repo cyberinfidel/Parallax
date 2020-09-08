@@ -1,7 +1,7 @@
 global_tolerance = 0.00001
 global_gravity = 0.1
 
-import entity
+import px_entity
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -11,7 +11,7 @@ def log(msg, new_line=True):
 		print(msg, end='')
 
 
-class Controller(entity.Component):
+class Controller(px_entity.Component):
 	def __init__(self, game):
 		super(Controller, self).__init__(game)
 
@@ -20,18 +20,18 @@ class Controller(entity.Component):
 	# e.g. so a running entity doesnt restart it's running animation every update
 	# use the force_new_state flag to force exactly that to happen
 	# e.g. when a bat decides to flap it's wings
-	def setState(self, data, common_data, state, cooldown=-1, force_new_state=False):
-		if common_data.state!=state or force_new_state:
-			common_data.state = state
-			common_data.new_state = True
+	def setState(self, data, entity, state, cooldown=-1, force_new_state=False):
+		if entity.state!=state or force_new_state:
+			entity.state = state
+			entity.new_state = True
 			data.cooldown = cooldown
 
 	# Updates the entity state only if the last action has cooled down
 	# if an action is supposed to interrupt everything else then don't use this function
-	def updateState(self, data, common_data, state, cooldown=-1):
-		if data.cooldown<=0 and common_data.state!=state:
-			common_data.state = state
-			common_data.new_state = True
+	def updateState(self, data, entity, state, cooldown=-1):
+		if data.cooldown<=0 and entity.state!=state:
+			entity.state = state
+			entity.new_state = True
 			data.cooldown = cooldown
 
 	def coolDown(self,data, dt):

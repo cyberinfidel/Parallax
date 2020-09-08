@@ -11,7 +11,7 @@ sdl_image.IMG_Init(sdl_image.IMG_INIT_PNG)
 sdl_image.IMG_Init(sdl_image.IMG_INIT_JPG)
 
 # import my files
-import entity
+import px_entity
 import vector
 from vector import Vec3, rand_num
 from log import log
@@ -552,7 +552,7 @@ class GraphicsTypes:
 # "Image" : ["path/to/image.png", x-origin, y-origin, z-origin]
 # }
 
-class SingleImage(entity.Component):
+class SingleImage(px_entity.Component):
 	def __init__(self, game, data):
 		super(SingleImage, self).__init__(game)
 		self.rl = data['RenderLayer']
@@ -565,17 +565,17 @@ class SingleImage(entity.Component):
 	def getImage(self):
 		return self.image
 
-	def draw(self, data, common_data):
-		return self.rl.queueImage(self.image, common_data.pos.x - self.origin_x, common_data.pos.y + self.origin_y, common_data.pos.z + self.origin_z)
+	def draw(self, data, entity):
+		return self.rl.queueImage(self.image, entity.pos.x - self.origin_x, entity.pos.y + self.origin_y, entity.pos.z + self.origin_z)
 
 	def hasShadow(self):
 		return False
 
-	def update(self, data, common_data, time):
+	def update(self, data, entity, time):
 		pass
 
 # graphics component for multiple static images
-class MultiImage(entity.Component):
+class MultiImage(px_entity.Component):
 	def __init__(self, game, data):
 		super(MultiImage, self).__init__(game)
 		self.rl = data['RenderLayer']
@@ -587,22 +587,22 @@ class MultiImage(entity.Component):
 	def getImage(self):
 		return self.image
 
-	def draw(self, data, common_data):
+	def draw(self, data, entity):
 		for image in self.images:
-			self.rl.queueImage(image.image, common_data.pos.x - image.origin_x, common_data.pos.y + image.origin_y, common_data.pos.z + image.origin_z)
+			self.rl.queueImage(image.image, entity.pos.x - image.origin_x, entity.pos.y + image.origin_y, entity.pos.z + image.origin_z)
 		return True
 
 	def hasShadow(self):
 		return False
 
-	def update(self, data, common_data, time):
+	def update(self, data, entity, time):
 		pass
 
 
 # graphics component for a single animation only
-class SingleAnim(entity.Component):
+class SingleAnim(px_entity.Component):
 	class Data(object):
-		def __init__(self, common_data):
+		def __init__(self, entity):
 			self.current_frame = 0
 			self.current_time = 0
 
@@ -615,34 +615,28 @@ class SingleAnim(entity.Component):
 	def getAnim(self):
 		return self.anim
 
-	def update(self, data, common_data, time):
+	def update(self, data, entity, time):
 		self.anim.advanceAnim(data, time)
 
-	def draw(self, data, common_data):
+	def draw(self, data, entity):
 		frame = self.anim[0]
-		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, common_data.pos.y + frame.origin_y, common_data.pos.z + frame.origin_z)
+		return self.rl.queueImage(frame.image, entity.pos.x - frame.origin_x, entity.pos.y + frame.origin_y, entity.pos.z + frame.origin_z)
 
 	def hasShadow(self):
 		return False
 
 
 # graphics component for multiple animations
-class MultiAnim(entity.Component):
+class MultiAnim(px_entity.Component):
 	class Data(object):
-		def __init__(self, common_data, init=False):
-			if init:
-				self.current_frame = init.current_frame
-				self.current_time = init.current_time
-				self.current_anim = init.current_anim
-				self.current_state = init.current_anim
-			else:
-				self.current_frame = 0
-				self.current_time = 0
-				self.current_anim =  entity.eStates.stationary
-				self.current_state = entity.eStates.stationary
+		def __init__(self, _entity, data):
+			self.current_frame = 0
+			self.current_time = 0
+			self.current_anim =  px_entity.eStates.stationary
+			self.current_state = px_entity.eStates.stationary
 
-			for anim in common_data.entity.graphics.anims:	# ie every anim in the multiAnim
-				common_data.entity.graphics.anims[anim].init_instance(data=self,common_data=common_data)
+			for anim in _entity.graphics.anims:	# ie every anim in the multiAnim
+				_entity.graphics.anims[anim].initInstance(data=self,entity=_entity)
 
 	def delete(self, data):
 		for anim in self.anims:
@@ -659,31 +653,31 @@ class MultiAnim(entity.Component):
 			for state in anim["States"]:
 				self.anims[state] = anim['AnimType'](self.rl, anim["Frames"])
 
-	def update(self, data, common_data, time):
-		if common_data.new_state:
-			common_data.new_state=False
-			if common_data.state in self.anims:
-				data.current_anim = common_data.state
-				data.current_state = common_data.state
+	def update(self, data, entity, time):
+		if entity.new_state:
+			entity.new_state=False
+			if entity.state in self.anims:
+				data.current_anim = entity.state
+				data.current_state = entity.state
 				self.anims[data.current_anim].startAnim(data) # TODO allow some anims to begin from different frame
 			else:
-				log(f"Warning: {common_data.name} animation doesn't exist for requested state {common_data.state}")
+				log(f"Warning: {entity.name} animation doesn't exist for requested state {entity.state}")
 		self.anims[data.current_anim].advanceAnim(data, time)
 
-	def draw(self, data, common_data):
+	def draw(self, data, entity):
 		frame = self.anims[data.current_anim].getCurrentFrame(data)
-		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x, common_data.pos.y + frame.origin_y, common_data.pos.z + frame.origin_z)
+		return self.rl.queueImage(frame.image, entity.pos.x - frame.origin_x, entity.pos.y + frame.origin_y, entity.pos.z + frame.origin_z)
 
 	def hasShadow(self):
-		return entity.eStates.shadow in self.anims
+		return px_entity.eStates.shadow in self.anims
 
-	def drawShadow(self, data, common_data, shadow_height=0):
+	def drawShadow(self, data, entity, shadow_height=0):
 
 		# todo: work out why y=0 doesn't work
 		# todo: shrink shadow the higher y is
 		# todo: allow shadows that aren't all at y=0
-		frame = self.anims[entity.eStates.shadow].getCurrentFrame(data)
-		return self.rl.queueImage(frame.image, common_data.pos.x - frame.origin_x + shadow_height, frame.origin_y, common_data.pos.z)
+		frame = self.anims[px_entity.eStates.shadow].getCurrentFrame(data)
+		return self.rl.queueImage(frame.image, entity.pos.x - frame.origin_x + shadow_height, frame.origin_y, entity.pos.z)
 
 
 #####################################################################
@@ -696,7 +690,7 @@ class Anim(object):
 		self.render_layer = render_layer
 
 	# override for specific instances and some anim types
-	def init_instance(self, data, common_data):
+	def initInstance(self, data, entity):
 		pass
 
 	def addFrame(self, image, duration):

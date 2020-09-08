@@ -1,6 +1,6 @@
 import copy
 
-import entity
+import px_entity
 from vector import Vec3
 
 import tile
@@ -55,42 +55,42 @@ class Map(object):
 
 				# set up each tile from what the map says
 				if self.map[y][x]=="H":
-					this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.hedge)
+					this_tile.controller.setState(this_tile.controller_data, this_tile, tile.eTileStates.hedge)
 				elif self.map[y][x]=="#":
-					this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.void)
+					this_tile.controller.setState(this_tile.controller_data, this_tile, tile.eTileStates.void)
 				else:
 					# work out ways out of the space
 					exit_map_value=0
 					if y+1<18:
 						if self.map[y + 1][x] not in impassables:
-							this_tile.controller.addExit(this_tile.controller_data, entity.eDirections.up)
+							this_tile.controller.addExit(this_tile.controller_data, px_entity.eDirections.up)
 							exit_coord = Vec3(x*16+8,y*16+10,0)
-							exit_direction = entity.eDirections.up
+							exit_direction = px_entity.eDirections.up
 							exit_map_value += 1
 					if y-1>0:
 						if self.map[y - 1][x] not in impassables:
-							this_tile.controller.addExit(this_tile.controller_data, entity.eDirections.down)
+							this_tile.controller.addExit(this_tile.controller_data, px_entity.eDirections.down)
 							exit_coord = Vec3(x * 16 +8, y * 16 +6, 0)
-							exit_direction = entity.eDirections.down
+							exit_direction = px_entity.eDirections.down
 							exit_map_value += 2
 					if x-1>0:
 						if self.map[y][x - 1] not in impassables:
-							this_tile.controller.addExit(this_tile.controller_data, entity.eDirections.left)
+							this_tile.controller.addExit(this_tile.controller_data, px_entity.eDirections.left)
 							exit_coord = Vec3(x * 16  +6, y * 16+8, 0)
-							exit_direction = entity.eDirections.left
+							exit_direction = px_entity.eDirections.left
 							exit_map_value += 4
 					if x+1<20:
 						if self.map[y][x + 1] not in impassables:
-							this_tile.controller.addExit(this_tile.controller_data, entity.eDirections.right)
+							this_tile.controller.addExit(this_tile.controller_data, px_entity.eDirections.right)
 							exit_coord = Vec3(x * 16 + 10, y * 16+8, 0)
-							exit_direction = entity.eDirections.right
+							exit_direction = px_entity.eDirections.right
 							exit_map_value += 8
 
 					if self.map[y][x] == "o":
-						this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.hole)
+						this_tile.controller.setState(this_tile.controller_data, this_tile, tile.eTileStates.hole)
 						self.holes.append(Hole(Vec3(x, y, 0), exit_coord, exit_direction))
 					elif self.map[y][x] == "O":
-						this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.cutscene_hole)
+						this_tile.controller.setState(this_tile.controller_data, this_tile, tile.eTileStates.cutscene_hole)
 					elif self.map[y][x] == "T":
 						# map to which tunnel graphic to use based on exits
 						# which_tunnel = [
@@ -114,7 +114,7 @@ class Map(object):
 
 						if exit_map_value>15:
 							print(f"warning: exit map value boo boo {exit_map_value}")
-						this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.tunnel_no_exit+exit_map_value)
+						this_tile.controller.setState(this_tile.controller_data, this_tile, tile.eTileStates.tunnel_no_exit+exit_map_value)
 
 
 					else:
@@ -130,7 +130,7 @@ class Map(object):
 							self.fox_starts.append(Fox(Vec3(x * 16 + 8, y * 16 + 8, 0),fox.eFoxTypes.cowardly))
 						# blank space
 						self.num_spaces += 1
-						this_tile.controller.setState(this_tile.controller_data, this_tile.common_data, tile.eTileStates.path)
+						this_tile.controller.setState(this_tile.controller_data, this_tile, tile.eTileStates.path)
 
 
 
@@ -160,7 +160,7 @@ class Map(object):
 
 	def poo(self, current_tile, data):
 		# can poo in a clear tile only
-		current_tile.controller.setState(current_tile.controller_data, current_tile.common_data, tile.eTileStates.poo)
+		current_tile.controller.setState(current_tile.controller_data, current_tile, tile.eTileStates.poo)
 		self.num_poos+=1
 		data.score+=1
 		if self.num_poos>= self.num_spaces:

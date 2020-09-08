@@ -1,15 +1,15 @@
 
 # Parallax
-import entity
+import px_entity
 import controller
 import graphics
 import game_pad
 
 
 # graphics component for getting initials for new high score
-class NewScore(entity.Component):
+class NewScore(px_entity.Component):
 	class Data(object):
-		def __init__(self, common_data, init=False):
+		def __init__(self, entity, init=False):
 			if init:
 				pass
 			else:
@@ -32,15 +32,15 @@ class NewScore(entity.Component):
 				self.render_layer.addImageFromString(string="A", font=self.font,
 																						 color=colors[i]))
 
-	def draw(self, data, common_data):
-		controller_data = common_data.entity.controller_data
+	def draw(self, data, entity):
+		controller_data = entity.controller_data
 
 		# self.render_layer.queueImage(controller_data.score_image, 85, 270-i*20, 0)
 		for i in range(0,3):
 			if i!=controller_data.current_initial or not controller_data.blink:
 				self.render_layer.queueImage(self.initial_images[i], 100+50*i, 180, 0)
 
-	def update(self, data, common_data, dt):
+	def update(self, data, entity, dt):
 		pass
 
 	def updateInitials(self, entity):
@@ -72,7 +72,7 @@ def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
 class Controller(controller.Controller):
 	class Data(object):
-		def __init__(self, common_data, init=False):
+		def __init__(self, entity, init=False):
 			if init:
 				pass
 			else:
@@ -87,7 +87,7 @@ class Controller(controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
 
-	def update(self, data, common_data, dt):
+	def update(self, data, entity, dt):
 		redraw=False
 		initial_value = ord(data.initials[data.current_initial])
 		if data.game_pad.actions[game_pad.eActions.up]:
@@ -112,8 +112,8 @@ class Controller(controller.Controller):
 
 		elif data.game_pad.actions[game_pad.eActions.jump]:
 			data.game_pad.actions[game_pad.eActions.jump] = False
-			common_data.game.addNewHighScore(str(data.initials[0])+str(data.initials[1])+str(data.initials[2]))
-			self.setState(data, common_data, entity.eStates.dead)
+			entity.game.addNewHighScore(str(data.initials[0])+str(data.initials[1])+str(data.initials[2]))
+			self.setState(data, entity, px_entity.eStates.dead)
 
 		data.blink_cool -= dt
 		if data.blink_cool<=0:
@@ -122,7 +122,7 @@ class Controller(controller.Controller):
 
 		if redraw:
 			data.initials[data.current_initial] = chr(initial_value)
-			common_data.entity.graphics.updateInitials(common_data.entity)
+			entity.graphics.updateInitials(entity)
 
 
 	def getInitials(self, entity, new_score):

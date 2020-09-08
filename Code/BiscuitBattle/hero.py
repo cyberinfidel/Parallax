@@ -2,7 +2,7 @@
 import enum
 
 # Parallax
-from entity import eStates, eDirections
+from px_entity import eStates, eDirections
 from game_pad import eActions
 from controller import Controller, global_tolerance, restrictToArena, global_gravity
 from collision import Collider, Message
