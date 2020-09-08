@@ -69,6 +69,9 @@ class Vec3:
 	def __mul__(self, scalar):
 		return Vec3(self.x*scalar,self.y*scalar,self.z*scalar)
 
+	def __str__(self):
+		return f"({self.x}, {self.y}, {self.z})"
+
 	def magsq(self):
 		return (self.x*self.x + self.y*self.y + self.z * self.z)
 

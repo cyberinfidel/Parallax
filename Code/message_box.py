@@ -21,7 +21,7 @@ class MessageBox(entity.Component):
 		def __init__(self, common_data, init=False):
 			self.image = None
 
-	def init(self, data, ren_layer, message, font=0, color=graphics.Color(1, 1, 1, 1), duration=0, align=graphics.eAlign.left):
+	def init(self, data, ren_layer, message, font=0, color=graphics.Color(1, 1, 1, 1), duration=0, align=graphics.eAlign.left, fade_speed=0.5):
 		data.ren_layer = ren_layer
 		# data.message = message
 		data.color = color
@@ -31,6 +31,7 @@ class MessageBox(entity.Component):
 		data.duration = duration
 		data.fade = 0
 		data.fade_direction = 1
+		data.fade_speed = fade_speed
 		data.align = align
 
 		# actually draw message
@@ -81,7 +82,7 @@ class MessageBox(entity.Component):
 		)
 
 	def update(self, data, common_data, dt):
-		data.fade+=dt*data.fade_direction*2
+		data.fade+=dt*data.fade_direction*(1/data.fade_speed)
 		data.fade = vector.clamp(0,data.fade,1)
 		data.duration -=dt
 		if data.duration<1:

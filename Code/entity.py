@@ -2,8 +2,9 @@
 import enum
 import copy
 
-# my file import
+# Parallax
 from vector import Vec3
+
 
 # disable to remove logging
 def log(msg, new_line=True):
@@ -81,18 +82,32 @@ class Component(object):
 class EntityManager(object):
 	def __init__(self, game):
 		self.templates = {}
-		self.entities = []
+		self.entities = []				# all entities including generated no-names
+		self.named_entities = {}	# keep a list of the names entities
 		self.game = game
 
 	def makeEntityTemplate(self, name, graphics=False, sounds=False, controller=False, collider=False):
 		self.templates[name] = EntityTemplate(self.game, graphics=graphics, sounds=sounds, controller=controller, collider=collider)
 
-	def makeEntity(self, template, name=False, init=False):
-		self.entities.append( self.templates[template].instanceEntity(name if name else template, init))
+	def makeEntity(self, template, name=False, init=False, parent=False):
+		new_entity = self.templates[template].instanceEntity(name if name else template, init, parent)
+		self.entities.append(new_entity)
+		if name:
+			self.named_entities[name]=new_entity
 		return self.entities[-1]
 
 	def deleteDead(self):
 		self.entities[:] = [x for x in self.entities if x.getState() != eStates.dead]
+		kill_list=[]
+		for name, entity in self.named_entities.items():
+			if entity.getState()==eStates.dead:
+				kill_list.append(name)
+		for name in kill_list:
+			self.named_entities.pop(name)
+
+	# only works for names entities
+	def getEntityByName(self, name):
+		return self.named_entities[name]
 
 class EntityList(list):
 	def killEntitiesNotInList(self, list):
@@ -106,42 +121,43 @@ class Entity(object):
 			pass
 
 	def __init__(self,
-							 name,
-							 game,
-							 graphics=False,
-							 sounds=False,
-							 controller=False,
-							 collider=False,
-							 init=False):
+							 _name,
+							 _game,
+							 _graphics=False,
+							 _sounds=False,
+							 _controller=False,
+							 _collider=False,
+							 _init=False,
+							 _parent=False):
 		self.common_data = self.Data()
-		self.common_data.game = game
+		self.common_data.game = _game
 		self.common_data.entity = self
-		self.common_data.name = name
+		self.common_data.name = _name
 		self.common_data.pos = Vec3(0, 0, 0)
 		self.common_data.state = eStates.stationary
 		self.common_data.new_state = True
 		self.common_data.blink = False
-		self.common_data.parent = False
+		self.common_data.parent = _parent
 
-		self.graphics = graphics
+		self.graphics = _graphics
 		if self.graphics:
-			self.graphics_data = graphics.makeData(self.common_data)
+			self.graphics_data = _graphics.makeData(self.common_data)
 
-		self.sounds = sounds
+		self.sounds = _sounds
 		if self.sounds:
-			self.sounds_data = sounds.makeData(self.common_data)
+			self.sounds_data = _sounds.makeData(self.common_data)
 
-		self.controller = controller
+		self.controller = _controller
 		if self.controller:
-			self.controller_data = controller.makeData(self.common_data)	# store data for this instance
+			self.controller_data = _controller.makeData(self.common_data)	# store data for this instance
 
-		self.collider = collider
+		self.collider = _collider
 		if self.collider:
-			self.collider_data = collider.makeData(self.common_data)	# store data for this instance
+			self.collider_data = _collider.makeData(self.common_data)	# store data for this instance
 
-		if init:
+		if _init:
 			# execute init
-			exec(init,globals(),locals())
+			exec(_init,globals(),locals())
 
 	def delete(self):
 		if self.graphics:
@@ -221,16 +237,17 @@ class EntityTemplate(object):
 		self.collider = collider
 		self.name = f"{name}(t)"
 
-	def instanceEntity(self, name, init):
+	def instanceEntity(self, name, init, parent):
 		if not name:
 			name=self.name	# use template name
-		return Entity(name=name,
-									game = self.game,
-									graphics=self.graphics,
-									sounds=self.sounds,
-									controller = self.controller,
-									collider = self.collider,
-									init=init)
+		return Entity(_name=name,
+									_game = self.game,
+									_graphics=self.graphics,
+									_sounds=self.sounds,
+									_controller = self.controller,
+									_collider = self.collider,
+									_init=init,
+									_parent=parent)
 
 	def delete(self):
 		print(f"{self.name} - delete template doesn't do anything right now...")

@@ -60,6 +60,9 @@ class Color(object):
 			self.a + other.a,
 		)
 
+	def __str__(self):
+		return f"(r{self.r}, g{self.g}, b{self.b}, a{self.a})"
+
 import text
 
 # Individual images for use as frames for animations or as part of the background etc.

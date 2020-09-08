@@ -60,17 +60,10 @@ class PacBun(game.Game):
 					rl.addFont(font_data['file'],font_data['size'])
 		log.log("Render Layers set up.")
 
+		log.log("Setting up misc game settings...")
 		self.scroll = False
-
-		# todo: move these
-		self.quit_cooldown = 0.5
-		self.title_cooldown_time = 3
-		self.title_cooldown = self.title_cooldown_time
-
-		##########################
-		# set up sound           #
-		##########################
 		self.sound_mixer = sound.SoundMixer(self)
+		self.collision_manager = CollisionManager(game=self)
 
 		log.log("Making game scope templates...")
 		self.templates = self.makeTemplates(self.game_data['game']['templates'])
@@ -79,13 +72,12 @@ class PacBun(game.Game):
 
 		log.log("Making game scope entities...")
 		self.makeEntities(self.game_data['game']['entities'])
-		log.log("Persistent entites made.")
+		log.log("Game scope entities made.")
 
 		log.log("Getting scenes...")
 		self.scenes_data = (utility.getDataFromFile('PB_scenes.config'))
 		self.current_scene = 0
 
-		self.collision_manager = CollisionManager(game=self)
 
 		# put all separate images into texture atlasses for (more) efficient rendering
 		log.log("Making texture atlases...")
@@ -106,30 +98,35 @@ class PacBun(game.Game):
 		self.current_mode=-1
 		self.nextScene(next_scene=0, mode=self.game_data['game']['init_mode'])
 
+	########################################
 	# end init()
+	########################################
 
+	# batch creates templates from provided dict data
 	def makeTemplates(self, templates_data):
-		templates = {}	# to hold the actual handles from the entity manager
 		for name, template in templates_data.items():
-			templates[name] = self.entity_manager.makeEntityTemplate(name,
+			self.entity_manager.makeEntityTemplate(name,
 				controller=template['controller'](self.controller_manager) if 'controller' in template else None,
 				collider=template['collider'](self.controller_manager) if 'collider' in template else None,
 				graphics=self.graphics_manager.makeTemplate(template['graphics']['component'],
 																										{'RenderLayer': self.render_layers[template['graphics']['render layer']]}) if 'graphics' in template else None
 			)
-		return templates
 
 
+	# batch requests entities from provided dict data
 	def makeEntities(self, entities_data):
+		entities = {}
 		for name, entity in entities_data.items():
 			init = False
 			if 'init' in entity:
 				init = entity['init']	# custom initialisation code, not always needed
-			self.requestNewEntity(template=entity['template'],
+			entities['name'] = self.requestNewEntity(template=entity['template'],
 														name=name,
 														parent=self,
 														init=init)
 
+	def getEntityByName(self, name):
+		return self.entity_manager.getEntityByName(name)
 
 	def updatePlay(self, dt): # kill
 		# draw score
@@ -215,7 +212,7 @@ class PacBun(game.Game):
 		self.title.setState(title.eTitleStates.win)
 		if self.restart_cooldown<=0:
 			self.current_scene+=1
-			if self.current_scene>=len(self.scenes_data['modes'][self.current_mode]['scene list']):
+			if self.current_scene>=len(self.scenes_data['modes'][self.current_mode]['scenes']):
 				self.setGameMode(eGameModes.game_over)
 			else:
 				self.setGameMode(eGameModes.start)
@@ -283,13 +280,13 @@ class PacBun(game.Game):
 			specified = "specified "
 		else:
 			self.current_scene+=1
-			if self.current_scene>=len(self.game_data['game']['modes'][self.current_mode]['scene list']):
+			if self.current_scene>=len(self.mode_data['scenes']):
 				# todo add check for completing the game instead of just looping?
 				self.current_scene=0
 			specified = ""
-		next_scene = self.game_data['game']['modes'][self.current_mode]['scene list'][self.current_scene]
+		next_scene = self.mode_data['scenes'][self.current_scene]
 		log.log(
-			f"Switching to {specified}scene [{self.current_mode},{self.current_scene}]: {self.game_data['game']['modes'][self.current_mode]['scene list'][self.current_scene]}")
+			f"Switching to {specified}scene [{self.current_mode},{self.current_scene}]: {self.mode_data['scenes'][self.current_scene]}")
 
 		# kill old scene
 		self.killEntitiesExceptDicts(
@@ -302,7 +299,7 @@ class PacBun(game.Game):
 		###################
 		# init next scene #
 		###################
-		self.scene_data = self.scenes_data['scenes'][self.mode_data['scene list'][self.current_scene]]
+		self.scene_data = self.scenes_data['scenes'][self.mode_data['scenes'][self.current_scene]]
 		# initialise map todo: make another entity instead of special
 		if "Map" in self.scene_data:
 			self.level = map.Map(self, self.scene_data, self.templates['tile'])
@@ -416,7 +413,7 @@ class PacBun(game.Game):
 		self.current_score+=increment
 
 	# todo: move
-	def message(self, text, pos, color=graphics.Color(1, 1, 1, 1), duration=0, align=graphics.eAlign.left):
+	def message(self, text, pos, color=graphics.Color(1, 1, 1, 1), duration=0, align=graphics.eAlign.left, fade_speed=0.5):
 		message = self.requestNewEntity(template='message',
 													name= f"message: {text}",
 													pos=pos,
@@ -429,7 +426,8 @@ class PacBun(game.Game):
 													font=0,
 													color = color,
 													duration=duration,
-													align=align
+													align=align,
+													fade_speed=fade_speed
 													)
 
 	###########

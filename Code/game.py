@@ -159,15 +159,14 @@ class Game(object):
 											 init=False):
 		new_entity = self.entity_manager.makeEntity(template=template,
 																								name=name,
-																								init=init)
+																								init=init,
+																								parent=parent)
 		# position (and anything else) may be set within the code at runtime
 		# and passed in as a parameter
 		# or it may be set as part of executing the  init routine
 		# in the entity's instance method
 		if pos:
 			new_entity.setPos(copy.deepcopy(pos))
-		if parent:
-			new_entity.setParent(parent)
 
 		if new_entity.graphics:
 			self.drawables.append(new_entity)
