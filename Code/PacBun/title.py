@@ -21,15 +21,13 @@ class Controller(controller.Controller):
 
 			self.cooldown = 0
 			self.delay = 2
-			print("Made title controller instance")
 
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
-		print("Made title controller template")
 
 	def update(self, data, common_data, dt):
-		print("Controller update")
-		pass
+		if data.game_pad.actions[game_pad.eActions.quit]:
+			common_data.game.nextScene(mode='quit')
 
 
 

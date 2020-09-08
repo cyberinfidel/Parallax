@@ -137,6 +137,11 @@ class NextScene(Event):
 		common_data.game.nextScene(self.next_scene)
 		return eEventStates.dead
 
+# signals to exit the program
+class Quit(Event):
+	def update(self, data, common_data, dt):
+		common_data.game.quit()
+
 class WaitFor(Event):
 	def __init__(self, condition):
 		super(Event, self).__init__()

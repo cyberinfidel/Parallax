@@ -1,6 +1,7 @@
 from datetime import datetime
 
 log_data = []
+default_log_file_name = 'log.txt'
 
 # disable to remove logging
 def log(msg, new_line=True, log_time=True):
@@ -13,6 +14,8 @@ def log(msg, new_line=True, log_time=True):
 	log_data.append(entry)
 	print(entry, end='')
 
-def flushToFile(file):
+def flushToFile(file=False):
+	if not file:
+		file = default_log_file_name
 	with open(file,'w') as log_file:
 			log_file.writelines(log_data)

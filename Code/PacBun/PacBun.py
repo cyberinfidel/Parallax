@@ -101,7 +101,7 @@ class PacBun(game.Game):
 
 		# self.renlayer.dumpAtlasToFiles("TA.png", "TA.json")
 		log.log("### Startup complete ###")
-		log.flushToFile("log.txt")
+		log.flushToFile()
 
 		self.current_mode=-1
 		self.nextScene(next_scene=0, mode=self.game_data['game']['init_mode'])
@@ -222,11 +222,7 @@ class PacBun(game.Game):
 			self.cleanUpDead()
 		####################################################
 
-	def updateQuit(self, dt): # kill
-		self.quit_cooldown-=dt
-		self.title.setState(title.eTitleStates.quit)
-		if self.quit_cooldown<=0:
-			gc.enable()
+	def quit(self): # kill the program
 			self.running=False
 			return
 		####################################################
@@ -262,7 +258,7 @@ class PacBun(game.Game):
 				self.current_mode=mode
 				self.mode_data = self.game_data['game']['modes'][self.current_mode] # convenience
 				# kill old mode
-				self.killEntitiesExceptLists(
+				self.killEntitiesExceptDicts(
 					[
 						self.game_data['game']['entities'],
 					]
@@ -270,11 +266,14 @@ class PacBun(game.Game):
 
 				# set up next mode
 				log.log(f"Making {mode} mode templates.")
-				self.makeTemplates(self.mode_data['templates'])
+				if 'templates' in self.mode_data:
+					self.makeTemplates(self.mode_data['templates'])
 				log.log(f"Making {mode} mode entities.")
-				self.makeEntities(self.mode_data['entities'])
+				if 'entities' in self.mode_data:
+					self.makeEntities(self.mode_data['entities'])
 				if next_scene<0:	# no scene specified so revert to 0
 					next_scene = 0
+				log.flushToFile()
 
 
 
@@ -293,10 +292,10 @@ class PacBun(game.Game):
 			f"Switching to {specified}scene [{self.current_mode},{self.current_scene}]: {self.game_data['game']['modes'][self.current_mode]['scene list'][self.current_scene]}")
 
 		# kill old scene
-		self.killEntitiesExceptLists(
+		self.killEntitiesExceptDicts(
 			[
 				self.game_data['game']['entities'],
-			 	self.game_data['game']['modes'][self.current_mode]['entities']
+			 	self.mode_data['entities'] if 'entities' in self.mode_data else {}
 			]
 		)
 
@@ -326,11 +325,11 @@ class PacBun(game.Game):
 				self.bunnies[bunny].controller_data.level = self.level
 				if game_pad:
 					self.bunnies[bunny].setGamePad(game_pad)
-
-		self.makeTemplates(self.scene_data['templates'])
-		self.makeEntities(self.scene_data['entities'])
-
-
+		if 'templates' in self.scene_data:
+			self.makeTemplates(self.scene_data['templates'])
+		if 'entities' in self.scene_data:
+			self.makeEntities(self.scene_data['entities'])
+		log.flushToFile()
 
 		# self.num_bunnies = len(self.level_data['Bunnies'])
 		# for bunny, name in enumerate(self.level_data['Bunnies']):
@@ -397,13 +396,16 @@ class PacBun(game.Game):
 	# This kills everything in the entity manager that isn't listed in the whitelist
 	# used by nextScene via killEntitiesExceptLists
 	def killEntitiesExcept(self, white_list):
-		self.updatables.killEntitiesNotInList(self.game_data['game']['entities'])
-		self.drawables.killEntitiesNotInList(self.game_data['game']['entities'])
+		self.updatables.killEntitiesNotInList(white_list)
+		self.drawables.killEntitiesNotInList(white_list)
 		self.cleanUpDead()
 
 	# takes a list of lists and kills everything except those entities
-	def killEntitiesExceptLists(self, lists):
-		self.killEntitiesExcept([l for l in lists])
+	def killEntitiesExceptDicts(self, lists):
+		white_list = []
+		for l in lists:
+			white_list.extend(l)
+		self.killEntitiesExcept(white_list)
 
 	# todo: move to data
 	def requestTarget(self,pos):

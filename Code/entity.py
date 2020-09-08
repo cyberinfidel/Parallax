@@ -142,7 +142,6 @@ class Entity(object):
 		if init:
 			# execute init
 			exec(init,globals(),locals())
-			pass
 
 	def delete(self):
 		if self.graphics:
