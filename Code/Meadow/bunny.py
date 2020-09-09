@@ -13,7 +13,7 @@ import px_sound
 from px_vector import rand_num
 
 # Knightfight
-import strike
+import px_strike
 
 
 class eStrikes(enum.IntEnum):

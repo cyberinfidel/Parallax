@@ -170,13 +170,13 @@ class Game(object):
 		if pos:
 			new_entity.setPos(copy.deepcopy(pos))
 
-		if new_entity.graphics:
+		if new_entity.hasComponent('graphics'):
 			self.drawables.append(new_entity)
-		if new_entity.sounds:
+		if new_entity.hasComponent('sounds'):
 			self.audibles.append(new_entity)
-		if new_entity.controller:
+		if new_entity.hasComponent('controller'):
 			self.updatables.append(new_entity)
-		if new_entity.collider:
+		if new_entity.hasComponent('collider'):
 			self.collision_manager.append(new_entity)
 		return new_entity
 

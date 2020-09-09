@@ -38,7 +38,7 @@ class Delay(Event):
 		super(Event, self).__init__()
 		self.count_down = duration
 
-	def update(self, data, entity, dt):
+	def update(self, entity, dt):
 		self.count_down -= dt
 		return eEventStates.block if (self.count_down > 0) else eEventStates.dead
 
@@ -52,7 +52,7 @@ class Message(Event):
 		self.duration = duration
 		self.align = align
 
-	def update(self, data, entity, dt):
+	def update(self, entity, dt):
 		entity.game.message(self.text, self.pos, self.color, self.duration, self.align)
 		return eEventStates.dead
 
@@ -61,7 +61,7 @@ class ClearColor(Event):
 		super(Event, self).__init__()
 		self.color=color
 
-	def update(self, data, entity, dt):
+	def update(self, entity, dt):
 		entity.game.setClearColor(self.color)
 		return eEventStates.dead
 
@@ -73,7 +73,7 @@ class FadeToClearColor(Event):
 		self.total_time = time
 		self.step_color = None
 
-	def update(self, data, entity, dt):
+	def update(self, entity, dt):
 		current_color = entity.game.getClearColor()
 		if not self.step_color:
 			# get the incremental color, effectively the vector towards the final color
@@ -99,7 +99,7 @@ class Spawn(Event):
 		super(Event, self).__init__()
 		self.spawns = spawns
 
-	def update(self, data, entity, dt):
+	def update(self, entity, dt):
 		# spawn entities in spawns list
 		for spawn in self.spawns:
 			entity.game.requestNewEntity(
@@ -133,13 +133,13 @@ class NextScene(Event):
 		self.next_scene = next_scene
 		self.cooldown=cooldown
 
-	def update(self, data, entity, dt):
+	def update(self, entity, dt):
 		entity.game.nextScene(self.next_scene)
 		return eEventStates.dead
 
 # signals to exit the program
 class Quit(Event):
-	def update(self, data, entity, dt):
+	def update(self, entity, dt):
 		entity.game.quit()
 
 class WaitFor(Event):
@@ -148,7 +148,7 @@ class WaitFor(Event):
 		# wait for condition
 		self.condition=condition
 
-	def update(self, data, entity, dt):
+	def update(self, entity, dt):
 		return eEventStates.dead if self.condition() else eEventStates.block
 
 #############################
@@ -161,19 +161,18 @@ class Controller(Controller):
 		super(Controller, self).__init__(game)
 		# values global to all this type of component
 
-	class Data(object):
-		def __init__(self, entity, init=False):
-			self.latest_event = 0
-			self.events = []
+	def initEntity(self, entity, data=False):
+			entity.latest_event = 0
+			entity.events = []
 
 	# eEventStates: 0 dead, 1 live, 2 blocking
-	def update(self, data, entity, dt):
+	def update(self, entity, dt):
 		index = 0
-		while index< len(data.events):
-			result = data.events[index].update(data,entity,dt)
+		while index< len(entity.events):
+			result = entity.events[index].update(entity,dt)
 			if result==eEventStates.dead:
 				# remove this event from list
-				data.events.pop(index)
+				entity.events.pop(index)
 			elif result==eEventStates.block:
 				# this event is blocking
 				# so don't execute any more events

@@ -20,29 +20,29 @@ class Controller(px_entity.Component):
 	# e.g. so a running entity doesnt restart it's running animation every update
 	# use the force_new_state flag to force exactly that to happen
 	# e.g. when a bat decides to flap it's wings
-	def setState(self, data, entity, state, cooldown=-1, force_new_state=False):
+	def setState(self, entity, state, cooldown=-1, force_new_state=False):
 		if entity.state!=state or force_new_state:
 			entity.state = state
 			entity.new_state = True
-			data.cooldown = cooldown
+			entity.cooldown = cooldown
 
 	# Updates the entity state only if the last action has cooled down
 	# if an action is supposed to interrupt everything else then don't use this function
-	def updateState(self, data, entity, state, cooldown=-1):
-		if data.cooldown<=0 and entity.state!=state:
+	def updateState(self, entity, state, cooldown=-1):
+		if entity.cooldown<=0 and entity.state!=state:
 			entity.state = state
 			entity.new_state = True
-			data.cooldown = cooldown
+			entity.cooldown = cooldown
 
-	def coolDown(self,data, dt):
+	def coolDown(self, entity, dt):
 		# if doing something that can't be interrupted then countdown and return True
 		# unless got to end of it so return False
 		# or otherwise return False - not doing anything blocking
-		if data.cooldown>0:
-			data.cooldown -=dt
-			if data.cooldown<=0:
+		if entity.cooldown>0:
+			entity.cooldown -=dt
+			if entity.cooldown<=0:
 				# cooled down right now
-				data.cooldown = -1
+				entity.cooldown = -1
 				return False
 			else:
 				# still cooling down

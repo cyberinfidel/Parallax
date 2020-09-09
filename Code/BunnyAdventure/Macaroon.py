@@ -13,7 +13,7 @@ import px_sound
 from px_vector import rand_num
 
 # Knightfight
-import strike
+import px_strike
 
 
 class eStrikes(enum.IntEnum):
@@ -188,8 +188,8 @@ class Controller(px_controller.Controller):
 		self.invincible_states = (eStates.dead, eStates.fallLeft, eStates.fallRight)
 
 		# set up all attacks
-		hit_controller = strike.makeController(self.game.controller_manager)
-		hit_collider = strike.makeCollider(self.game.collision_manager)
+		hit_controller = px_strike.makeController(self.game.controller_manager)
+		hit_collider = px_strike.makeCollider(self.game.collision_manager)
 		hit_t = self.game.entity_manager.makeEntityTemplate(graphics=False,
 																												controller=hit_controller,
 																												collider=hit_collider)
@@ -197,16 +197,16 @@ class Controller(px_controller.Controller):
 		# cool downs in seconds
 		self.strikes = [
 			#			cool	del		range					dimension				origin			force		damage
-			strike.Strike(cool=0.8, delay=0.6, duration = 0.2, range=Vec3(24, 0, 0), dim=Vec3(10,12,8), orig=Vec3(5,6,4),
-						 force=3, absorb=0, damage=2, template=hit_t, hero_damage=0),  # big
-			strike.Strike(cool=0.8, delay=0.4, duration = 0.2, range=Vec3(8, 30, 10), dim=Vec3(12,8,8), orig=Vec3(6,4,4),
-						 force=3, absorb=0, damage=2, template=hit_t),  # big_up
-			strike.Strike(cool=1.5, delay=0.2, duration = 0.2, range=Vec3(25, 0, 0), dim=Vec3(30,16,16), orig=Vec3(5,4,4),
-						 force=1, absorb=0, damage=1, template=hit_t),  # small
-			strike.Strike(cool=1.5, delay=0.6, duration = 0.5, range=Vec3(16, 0, 0), dim=Vec3(10,30,16), orig=Vec3(5,20,8),
-						 force=0.2, absorb=100, damage=0, template=hit_t),  # block
-			strike.Strike(cool=0.8, delay=0.7, duration=0.1, range=Vec3(20, 0, 0), dim=Vec3(10,30,16), orig=Vec3(5,20,8),
-						 force=3, absorb=100, damage=0, template=hit_t),  # push
+			px_strike.Strike(cool=0.8, delay=0.6, duration = 0.2, range=Vec3(24, 0, 0), dim=Vec3(10, 12, 8), orig=Vec3(5, 6, 4),
+											 force=3, absorb=0, damage=2, template=hit_t, hero_damage=0),  # big
+			px_strike.Strike(cool=0.8, delay=0.4, duration = 0.2, range=Vec3(8, 30, 10), dim=Vec3(12, 8, 8), orig=Vec3(6, 4, 4),
+											 force=3, absorb=0, damage=2, template=hit_t),  # big_up
+			px_strike.Strike(cool=1.5, delay=0.2, duration = 0.2, range=Vec3(25, 0, 0), dim=Vec3(30, 16, 16), orig=Vec3(5, 4, 4),
+											 force=1, absorb=0, damage=1, template=hit_t),  # small
+			px_strike.Strike(cool=1.5, delay=0.6, duration = 0.5, range=Vec3(16, 0, 0), dim=Vec3(10, 30, 16), orig=Vec3(5, 20, 8),
+											 force=0.2, absorb=100, damage=0, template=hit_t),  # block
+			px_strike.Strike(cool=0.8, delay=0.7, duration=0.1, range=Vec3(20, 0, 0), dim=Vec3(10, 30, 16), orig=Vec3(5, 20, 8),
+											 force=3, absorb=100, damage=0, template=hit_t),  # push
 		]
 
 		# sounds

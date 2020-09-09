@@ -76,6 +76,10 @@ class Component(object):
 	def makeData(self, entity, data=False):
 		return self.Data(entity, data)
 
+	# called when an entity is created that contains this component
+	def initEntity(self, entity, data=False):
+		pass
+
 	def delete(self, data):
 		log(f"Missing delete function for Component:{type(self)}")
 
@@ -139,41 +143,38 @@ class Entity(object):
 		self.blink = False
 		self.parent = parent
 
-		self.graphics = graphics
-		if self.graphics:
-			self.graphics_data = graphics.makeData(self, data)
-
-		self.sounds = sounds
-		if self.sounds:
-			self.sounds_data = sounds.makeData(self, data)
-
-		self.controller = controller
-		if self.controller:
-			self.controller_data = controller.makeData(self, data)	# store data for this instance
-
-		self.collider = collider
-		if self.collider:
-			self.collider_data = collider.makeData(self, data)	# store data for this instance
+		self.components={}
+		for type in [
+			['graphics',graphics],
+			['sounds', sounds],
+			['controller', controller],
+			['collider', collider],
+		 ]:
+			if type[1]:
+				self.components[type[0]] = type[1]
+				type[1].initEntity(self, data)
 
 		if init:
+			log(f"Init entity: {name} code: {init}")
 			# execute init
 			exec(init,globals(),locals())
 
 	def delete(self):
-		if self.graphics:
-			self.graphics.delete(self.graphics_data)
+		pass
 
-		if self.sounds:
-			self.sounds.delete(self.sounds_data)
 
-		if self.controller:
-			self.controller.delete(self.controller_data)
+	def hasComponent(self, type):
+		return type in self.components
 
-		if self.collider:
-			self.collider.delete(self.collider)
+	def getComponent(self, type):
+		return self.components[type]
 
 	def getName(self):
 		return self.name
+
+	def draw(self):
+		log(f"drawing entity: {self.name}")
+		self.components['graphics'].draw(self)
 
 	def setPos(self,pos):
 		self.pos = copy.deepcopy(pos)
@@ -188,43 +189,49 @@ class Entity(object):
 		return self.parent
 
 	def setState(self,state):
-		if self.controller:
+		if self.hasComponent('controller'):
 			# play nice with entities that have controllers
 			# and let them choose how to handle this a bit more
-			self.controller.setState(self.controller_data, self, state)
+			self.components['controller'].setState(self, state)
 		else:
 			self.state = state
 
 	def getState(self):
 		return self.state
 
+	def process(self, command, args):
+		pass
 
 # basic update method. Override for fancier behaviour
 	def update(self, dt):
-		if self.controller:
-			self.controller.update(self.controller_data, self, dt)
+		# todo: make 'update' standard by iterating across components
+		# i.e. fix sounds to be less weird
+		# prob make graphics component decide if it actually draws or not
+		log(f"updating entity {self.name}")
+		if self.hasComponent('controller'):
+			self.components['controller'].update(self, dt)
 		if self.state!=eStates.hide and self.state!=eStates.dead:
-			if self.sounds:
-				self.sounds.play(self.sounds_data,self)
-			if self.graphics:
-				self.graphics.update(self.graphics_data,self, dt)
+			if self.hasComponent('sounds'):
+				self.components['sounds'].play(self)
+			if self.hasComponent('graphics'):
+				self.components['graphics'].update(self, dt)
 
-	def setController(self, controller):
-		self.controller = controller
-		self.controller_data = controller.makeData()
+	# def setController(self, controller):
+	# 	self.controller = controller
+	# 	self.controller_data = controller.makeData()
 
 	def setGamePad(self, game_pad):
-		self.controller_data.game_pad = game_pad
+		self.game_pad = game_pad
 
-	def setGraphics(self,graphics):
-		self.graphics = graphics
-		if self.graphics:
-			self.graphics_data = graphics.makeData()
+	# def setGraphics(self,graphics):
+	# 	self.graphics = graphics
+	# 	if self.graphics:
+	# 		self.graphics_data = graphics.makeData()
 
-	def setSounds(self,sounds):
-		self.sounds = sounds
-		if self.sounds:
-			self.sounds_data = sounds.makeData()
+	# def setSounds(self,sounds):
+	# 	self.sounds = sounds
+	# 	if self.sounds:
+	# 		self.sounds_data = sounds.makeData()
 
 
 class EntityTemplate(object):

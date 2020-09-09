@@ -419,20 +419,20 @@ class PacBun(px_game.Game):
 	# todo: move
 	def message(self, text, pos, color=px_graphics.Color(1, 1, 1, 1), duration=0, align=px_graphics.eAlign.left, fade_speed=0.5):
 		message = self.requestNewEntity(template='message',
-													name= f"message: {text}",
-													pos=pos,
-													parent=self,
+																		name= f"message: {text}",
+																		pos=pos,
+																		parent=self,
+																		data={
+																			'ren_layer': self.render_layers['overlay'],
+																			'message': text,
+																			'font': 0,
+																			'color' : color,
+																			'duration' : duration,
+																			'align' : align,
+																			'fade_speed' : fade_speed
+																		}
 		)
-		# todo: use the init parameter of requestNewEntity rather than two step init
-		message.graphics.init(data = message.graphics_data,
-													ren_layer = self.render_layers['overlay'],
-													message=text,
-													font=0,
-													color = color,
-													duration=duration,
-													align=align,
-													fade_speed=fade_speed
-													)
+		return message
 
 	###########
 	#  interp #
@@ -450,7 +450,7 @@ class PacBun(px_game.Game):
 		for drawable in self.drawables:
 			# draw actual things
 			if not drawable.blink:
-				drawable.graphics.draw(drawable.graphics_data, drawable)
+				drawable.draw()
 
 		self.render_layers['game'].renderSortedByZThenY()
 

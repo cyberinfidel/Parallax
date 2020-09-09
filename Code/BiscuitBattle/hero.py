@@ -10,7 +10,7 @@ from px_graphics import AnimNoLoop, AnimLoop, MultiAnim, AnimSingle
 from px_vector import Vec3
 
 # Knightfight
-from strike import Strike, HitController, HitCollider
+from px_strike import Strike, HitController, HitCollider
 
 
 class eStrikes(enum.IntEnum):

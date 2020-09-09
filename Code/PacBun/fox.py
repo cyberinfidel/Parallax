@@ -61,27 +61,21 @@ class Controller(px_controller.Controller):
 	# end __init__ #
 	################
 
-	class Data(object):
-		def __init__(self, entity, init=False):
-			if init:
-				self.game_pad = init.game_pad
-			else:
-				self.game_pad = False
-
+	def initEntity(self, entity, data=False):
 			# values for each instance
 
-			self.cooldown = -1
-			self.pause = 7
-			self.vel = Vec3(0.0,0.0,0.0)
-			self.queued_vel = Vec3(0.0,0.0,0.0)
-			self.facing = False
-			self.queued_facing = 4
-			self.health = 3
+			entity.cooldown = -1
+			entity.pause = 7
+			entity.vel = Vec3(0.0,0.0,0.0)
+			entity.queued_vel = Vec3(0.0,0.0,0.0)
+			entity.facing = False
+			entity.queued_facing = 4
+			entity.health = 3
 			entity.state = px_entity.eStates.stationary
-			self.queued_state = entity.state
-			self.AI_cooldown = 1 + px_vector.rand_num(15) / 5.
-			self.type = 0
-			self.fox_speed = 1
+			entity.queued_state = entity.state
+			entity.AI_cooldown = 1 + px_vector.rand_num(15) / 5.
+			entity.type = 0
+			entity.fox_speed = 1
 
 
 	#####################
@@ -91,42 +85,42 @@ class Controller(px_controller.Controller):
 
 
 
-	def update(self, data, entity, dt):
+	def update(self, entity, dt):
 		if entity.state==eFoxStates.bunnyCaught: return
 
 		# pause foxes every so often
 		# todo: foxes shouldn't pause if the bunny is in sight
-		data.AI_cooldown -= dt
-		if data.AI_cooldown<=0:
-			data.AI_cooldown= 10 + px_vector.rand_num(10)
-			if data.fox_speed==1:
-				data.fox_speed=0
-				data.AI_cooldown = data.pause
-				if data.pause>0: data.pause -=1
-				self.setState(data, entity,
+		entity.AI_cooldown -= dt
+		if entity.AI_cooldown<=0:
+			entity.AI_cooldown= 10 + px_vector.rand_num(10)
+			if entity.fox_speed==1:
+				entity.fox_speed=0
+				entity.AI_cooldown = entity.pause
+				if entity.pause>0: entity.pause -=1
+				self.setState(entity,
 											[px_entity.eStates.stationary, px_entity.eStates.stationary, px_entity.eStates.stationary, px_entity.eStates.stationary, px_entity.eStates.stationary, eFoxStates.cleanRight, eFoxStates.cleanLeft][px_vector.rand_num(7)]
 											)
 			else:
-				data.fox_speed=1
+				entity.fox_speed=1
 
-		if data.fox_speed==0:
+		if entity.fox_speed==0:
 			return
-		fox_speed = data.fox_speed
+		fox_speed = entity.fox_speed
 
-		bunny_pos = copy.deepcopy(data.bunny.getPos())
+		bunny_pos = copy.deepcopy(entity.bunny.getPos())
 
-		if data.type==eFoxTypes.ahead:
+		if entity.type==eFoxTypes.ahead:
 			# aim at a position ahead of the bunny
 			bunny_pos+= (
 				Vec3(0,-96,0),
 				Vec3(-96,0, 0),
 				Vec3(0, 96, 0),
 				Vec3(96, 0, 0),
-			)[data.bunny.controller_data.facing]
+			)[entity.bunny.facing]
 
-		x, y = data.level.getCoordFromPos(entity.pos)
-		current_tile = data.level.getTileFromCoord(x, y)
-		exits = current_tile.controller.getExits(current_tile.controller_data)
+		x, y = entity.level.getCoordFromPos(entity.pos)
+		current_tile = entity.level.getTileFromCoord(x, y)
+		exits = current_tile.controller.getExits(current_tile)
 		x_in_tile = entity.pos.x % 16
 		y_in_tile = entity.pos.y % 16
 
@@ -144,10 +138,10 @@ class Controller(px_controller.Controller):
 			# choose most optimal axis
 			pref_dir, sec_dir = sec_dir, pref_dir
 
-		if data.type==eFoxTypes.axis_swap:
+		if entity.type==eFoxTypes.axis_swap:
 			# swap to less optimal axis for this fox
 			pref_dir, sec_dir = sec_dir, pref_dir
-		elif data.type==eFoxTypes.cowardly:
+		elif entity.type==eFoxTypes.cowardly:
 			# reverse directions so fox runs away
 			pref_dir = (
 				px_entity.eDirections.up,
@@ -166,27 +160,27 @@ class Controller(px_controller.Controller):
 		# try to go that way
 		if ((x_in_tile-8)%16==0) and ((y_in_tile-8)%16==0):
 			if pref_dir in exits:
-				data.facing = pref_dir
+				entity.facing = pref_dir
 			elif sec_dir in exits:
-				data.facing = sec_dir
+				entity.facing = sec_dir
 			else:
-				data.facing = exits[0]
+				entity.facing = exits[0]
 
-			data.vel = (
+			entity.vel = (
 				Vec3(0,-fox_speed,0),
 				Vec3(-fox_speed,0, 0),
 				Vec3(0, fox_speed, 0),
 				Vec3(fox_speed,0, 0),
-			)[data.facing]
+			)[entity.facing]
 
-			self.setState(data, entity,(
+			self.setState(entity,(
 				px_entity.eStates.runDown,
 				px_entity.eStates.runLeft,
 				px_entity.eStates.runUp,
 				px_entity.eStates.runRight
-			)[data.facing])
+			)[entity.facing])
 
-		px_controller.basic_physics(entity.pos, data.vel)
+		px_controller.basic_physics(entity.pos, entity.vel)
 		entity.pos.clamp(Vec3(0,0,0),Vec3(319,319,0))
 
 
@@ -194,7 +188,7 @@ class Controller(px_controller.Controller):
 		if message:
 			if message.damage_hero>0:
 				# caught the bunny
-				self.setState(A.controller_data,A.entity,eFoxStates.bunnyCaught)
+				self.setState(A,eFoxStates.bunnyCaught)
 				# print(f"col source{message.source.entity.pos.x},{message.source.entity.pos.y}")
 		# 	print(f"Hedge source{message.source.entity.pos.x}{message.source.entity.pos.y}")
 			# 	# A.controller_data.vel = Vec3(0,0,0)
@@ -202,25 +196,16 @@ class Controller(px_controller.Controller):
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
 class Collider(px_collision.Collider):
-	class Data(object):
-		def __init__(self, entity, init=False):
-			if init:
-				pass
-			else:
-				pass
-			self.dim = Vec3(4,4,8)
-			self.orig = Vec3(2,2,4)
-			self.mass = 10.0
-			self.force = 0.0
-
 	def __init__(self, game, data):
 		super(Collider, self).__init__(game)
-		# global static data to all of HeroCollider components
 
-	def getRadius(self):
-		return self.radius
+	def initEntity(self, entity, data=False):
+			entity.dim = Vec3(4,4,8)
+			entity.orig = Vec3(2,2,4)
+			entity.mass = 10.0
+			entity.force = 0.0
 
-	def getCollisionMessage(self, data, entity):
-		return(px_collision.Message(source=entity.entity, damage=1))
+	def getCollisionMessage(self, entity):
+		return(px_collision.Message(source=entity, damage=1))
 
 

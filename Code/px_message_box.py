@@ -17,25 +17,37 @@ def makeSounds(manager, mixer):
 
 # graphics component for displaying a message
 class MessageBox(px_entity.Component):
-	class Data(object):
-		def __init__(self, entity, init=False):
-			self.image = None
-
-	def init(self, data, ren_layer, message, font=0, color=px_graphics.Color(1, 1, 1, 1), duration=0, align=px_graphics.eAlign.left, fade_speed=0.5):
-		data.ren_layer = ren_layer
+	def initEntity(self, entity, data=False):
+		entity.image = None
+		entity.ren_layer = data['ren_layer']
 		# data.message = message
-		data.color = color
-		data.duration = duration
-		data.message = message
-		data.font = font
-		data.duration = duration
-		data.fade = 0
-		data.fade_direction = 1
-		data.fade_speed = fade_speed
-		data.align = align
-
+		entity.color = data['color']
+		entity.duration = data['duration']
+		entity.message = data['message']
+		entity.font = data['font']
+		entity.duration = data['duration']
+		entity.fade = 0
+		entity.fade_direction = 1
+		entity.fade_speed = data['fade_speed']
+		entity.align = data['align']
 		# actually draw message
-		self._renderMessage(data)
+		self._renderMessage(entity)
+	#
+	# def init(self, entity, ren_layer, message, font=0, color=px_graphics.Color(1, 1, 1, 1), duration=0, align=px_graphics.eAlign.left, fade_speed=0.5):
+	# 	entity.ren_layer = ren_layer
+	# 	# data.message = message
+	# 	entity.color = color
+	# 	entity.duration = duration
+	# 	entity.message = message
+	# 	entity.font = font
+	# 	entity.duration = duration
+	# 	entity.fade = 0
+	# 	entity.fade_direction = 1
+	# 	entity.fade_speed = fade_speed
+	# 	entity.align = align
+	#
+	# 	# actually draw message
+	# 	self._renderMessage(entity)
 
 	def _renderMessage(self, data):
 		# draw message and add to/replace in render layer's images
@@ -60,37 +72,35 @@ class MessageBox(px_entity.Component):
 		data.message = message
 		self._renderMessage(data)
 
-	def __init__(self,game, data):
+	def __init__(self, game, data):
 		super(MessageBox, self).__init__(game)
 
-	def draw(self, data, entity):
+	def draw(self, entity):
 		offset_x=0
 		offset_y=0
-		if data.align==px_graphics.eAlign.centre:
-			offset_x,offset_y = data.ren_layer.getImageDimensions(data.image)
+		if entity.align==px_graphics.eAlign.centre:
+			offset_x,offset_y = entity.ren_layer.getImageDimensions(entity.image)
 			offset_x/=2
 			offset_y/=2
-		elif data.align==px_graphics.eAlign.centre:
-			offset_x,offset_y = data.ren_layer.getImageDimensions(data.image)
+		elif entity.align==px_graphics.eAlign.centre:
+			offset_x,offset_y = entity.ren_layer.getImageDimensions(entity.image)
 
-		return data.ren_layer.queueImage(
-			image = data.image,
+		return entity.ren_layer.queueImage(
+			image = entity.image,
 			x = entity.pos.x-offset_x,
 			y = entity.pos.y-offset_y,
 			z = entity.pos.z,
-			color =data.color * px_graphics.Color(1, 1, 1, data.fade)
+			color =entity.color * px_graphics.Color(1, 1, 1, entity.fade)
 		)
 
-	def update(self, data, _entity, dt):
-		data.fade+=dt*data.fade_direction*(1/data.fade_speed)
-		data.fade = px_vector.clamp(0, data.fade, 1)
-		data.duration -=dt
-		if data.duration<1:
-			data.fade_direction=-1
-		if data.duration<0:
-			_entity.setState(px_entity.eStates.dead)
-
-
+	def update(self, entity, dt):
+		entity.fade+=dt*entity.fade_direction*(1/entity.fade_speed)
+		entity.fade = px_vector.clamp(0, entity.fade, 1)
+		entity.duration -=dt
+		if entity.duration<1:
+			entity.fade_direction=-1
+		if entity.duration<0:
+			entity.setState(px_entity.eStates.dead)
 
 def makeGraphics(manager, render_layer):
 	return manager.makeTemplate({
@@ -103,6 +113,7 @@ def makeGraphics(manager, render_layer):
 
 # end graphics ####################################################
 
+# todo: remove this? doesn't seem to do anything
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
 class Controller(px_controller.Controller):
@@ -113,7 +124,7 @@ class Controller(px_controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
 
-	def update(self, data, entity, dt):
+	def update(self, entity, dt):
 		pass
 
 # end controller ####################################################
