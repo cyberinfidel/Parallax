@@ -80,6 +80,9 @@ class Component(object):
 	def initEntity(self, entity, data=False):
 		pass
 
+	def process(self, entity, command, args):
+		pass
+
 	def delete(self, data):
 		log(f"Missing delete function for Component:{type(self)}")
 
@@ -173,7 +176,7 @@ class Entity(object):
 		return self.name
 
 	def draw(self):
-		log(f"drawing entity: {self.name}")
+		# log(f"drawing entity: {self.name}")
 		self.components['graphics'].draw(self)
 
 	def setPos(self,pos):
@@ -200,14 +203,15 @@ class Entity(object):
 		return self.state
 
 	def process(self, command, args):
-		pass
+		for component in self.components:
+			self.components[component].process(self, command, args)
 
 # basic update method. Override for fancier behaviour
 	def update(self, dt):
 		# todo: make 'update' standard by iterating across components
 		# i.e. fix sounds to be less weird
 		# prob make graphics component decide if it actually draws or not
-		log(f"updating entity {self.name}")
+		# log(f"updating entity {self.name}")
 		if self.hasComponent('controller'):
 			self.components['controller'].update(self, dt)
 		if self.state!=eStates.hide and self.state!=eStates.dead:

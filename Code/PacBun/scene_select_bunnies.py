@@ -6,6 +6,7 @@ import px_game_pad
 import px_entity
 import px_graphics
 from px_vector import Vec3
+import px_log
 
 ########################################
 # controller for select bunnies scene
@@ -34,6 +35,14 @@ class BunnyChooseController(px_controller.Controller):
 
 	def initEntity(self, entity, data=False):
 		entity.message = False
+		if data:
+			entity.pos = data['pos']
+			entity.parent = entity.game.getEntityByName('bunny choice')
+			entity.bun_num= data['bun num']
+			entity.message_color = data['message color']
+			entity.bun_name = data['bun name']
+		else:
+			px_log.log("*** Warning: Entity {entity.name} with BunnyChooseController component missing data.")
 
 	def update(self, entity, dt):
 		# check if currently chosen bunny
@@ -41,17 +50,16 @@ class BunnyChooseController(px_controller.Controller):
 		# if bunny_choice.controller_data.current_bun[0]==0:
 		# 	print("Pacbun!")
 
-		if entity.parent.current_bun[0]==entity.bun:
+		if entity.parent.current_bun[0]==entity.bun_num:
 			if entity.state!=px_entity.eStates.runDown:
 				self.setState(entity, px_entity.eStates.runDown)
 				entity.message = entity.game.message(text=entity.bun_name,
 														pos= entity.pos+Vec3(0,40,0),
-														color=entity.bun_color,
+														color=entity.message_color,
 														duration=100,
 														align=px_graphics.eAlign.centre,
-														fade_speed = 0.3)
-			# print(f"Color:{data.bun_color}")
+														fade_speed = 0.5)
 		else:
 			self.setState(entity, px_entity.eStates.stationary)
 			if entity.message:
-				entity.message.process('fade out',0.5)
+				entity.message.process('fade out',[0.5])

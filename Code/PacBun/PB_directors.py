@@ -57,8 +57,14 @@ def director_high_scores(game):
 def director_quit(game):
 	return [
 		FadeToClearColor(px_graphics.Color(0, 0, 0), 2),
-		Message("Goodbye and thank you for playing with me.", Vec3(160, 150, 0), px_graphics.Color(1, 1, 0, 1), 3, px_graphics.eAlign.centre),
-		Spawn(spawns=[SpawnEntity('pacbun', 'pacbun', Vec3(160, 120, 1), game)]),
+		Message("Goodbye and thank you for playing", Vec3(160, 165, 0), px_graphics.Color(1, 1, 0, 1), 3, px_graphics.eAlign.centre),
+		Message("with me and my friends.", Vec3(160, 150, 0), px_graphics.Color(1, 1, 0, 1), 3, px_graphics.eAlign.centre),
+		Spawn(spawns=[
+			SpawnEntity('pacbun', 'pacbun', Vec3(160, 120, 1), game),
+			SpawnEntity('pinkie', 'pinkie', Vec3(143, 94, 1), game),
+			SpawnEntity('blue', 'blue', Vec3(158, 90, 1), game),
+			SpawnEntity('bowie', 'bowie', Vec3(174, 91, 1), game),
+		]),
 		Delay(3),
 		Quit()
 	]

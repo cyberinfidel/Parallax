@@ -32,22 +32,6 @@ class MessageBox(px_entity.Component):
 		entity.align = data['align']
 		# actually draw message
 		self._renderMessage(entity)
-	#
-	# def init(self, entity, ren_layer, message, font=0, color=px_graphics.Color(1, 1, 1, 1), duration=0, align=px_graphics.eAlign.left, fade_speed=0.5):
-	# 	entity.ren_layer = ren_layer
-	# 	# data.message = message
-	# 	entity.color = color
-	# 	entity.duration = duration
-	# 	entity.message = message
-	# 	entity.font = font
-	# 	entity.duration = duration
-	# 	entity.fade = 0
-	# 	entity.fade_direction = 1
-	# 	entity.fade_speed = fade_speed
-	# 	entity.align = align
-	#
-	# 	# actually draw message
-	# 	self._renderMessage(entity)
 
 	def _renderMessage(self, data):
 		# draw message and add to/replace in render layer's images
@@ -101,6 +85,12 @@ class MessageBox(px_entity.Component):
 			entity.fade_direction=-1
 		if entity.duration<0:
 			entity.setState(px_entity.eStates.dead)
+
+	def process(self, entity, command, args):
+		if command=='fade out':
+			entity.fade_direction = -1
+			entity.duration = args[0]
+
 
 def makeGraphics(manager, render_layer):
 	return manager.makeTemplate({
