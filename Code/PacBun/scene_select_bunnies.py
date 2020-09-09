@@ -56,7 +56,7 @@ class BunnyChooseController(px_controller.Controller):
 				entity.message = entity.game.message(text=entity.bun_name,
 														pos= entity.pos+Vec3(0,40,0),
 														color=entity.message_color,
-														duration=100,
+														duration=-1,
 														align=px_graphics.eAlign.centre,
 														fade_speed = 0.5)
 		else:

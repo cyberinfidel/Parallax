@@ -42,6 +42,7 @@ def director_title(game):
 def director_high_scores(game):
 	return [
 		FadeToClearColor(px_graphics.Color(0, 0, 0), 2),
+		Message("Best", Vec3(132, 287, 0), px_graphics.Color(1, 1, 0, 1), -1, px_graphics.eAlign.left),
 		Spawn(spawns=[SpawnEntity(template='high_scores',
 															name='high scores',
 															pos=Vec3(36, 250, 50),
@@ -49,6 +50,10 @@ def director_high_scores(game):
 															init=	"import high_score\n"
 																		"high_score.init(self)"
 		)]),
+		Delay(0.8),
+		Message("est", Vec3(155, 287, 0), px_graphics.Color(0, 1, 1, 1), -1, px_graphics.eAlign.left),
+		Delay(0.8),
+		Message("Buns", Vec3(175, 287, 0), px_graphics.Color(1, 0, 1, 1), -1, px_graphics.eAlign.left),
 		Delay(3),
 		NextScene()
 

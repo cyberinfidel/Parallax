@@ -26,6 +26,12 @@ class MessageBox(px_entity.Component):
 		entity.message = data['message']
 		entity.font = data['font']
 		entity.duration = data['duration']
+		if entity.duration<0:
+			entity.permanent = 0
+			entity.duration = 1
+		else:
+			entity.permanent = 1
+
 		entity.fade = 0
 		entity.fade_direction = 1
 		entity.fade_speed = data['fade_speed']
@@ -80,7 +86,7 @@ class MessageBox(px_entity.Component):
 	def update(self, entity, dt):
 		entity.fade+=dt*entity.fade_direction*(1/entity.fade_speed)
 		entity.fade = px_vector.clamp(0, entity.fade, 1)
-		entity.duration -=dt
+		entity.duration -=dt*entity.permanent
 		if entity.duration<1:
 			entity.fade_direction=-1
 		if entity.duration<0:
