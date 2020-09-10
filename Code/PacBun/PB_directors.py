@@ -73,3 +73,20 @@ def director_quit(game):
 		Delay(3),
 		Quit()
 	]
+
+def director_play(game, title):
+	events =  [
+		FadeToClearColor(px_graphics.Color.fromInts(0, 0, 0), 1),
+		Delay(1),
+	]
+	for message in title:
+		events.extend([
+			Message(message, Vec3(160, 200, 0), px_graphics.Color(1, 1, 1, 1), 2, px_graphics.eAlign.centre),
+			Delay(2.5),
+		])
+	events.extend([
+		FadeToClearColor(px_graphics.Color.fromInts(219, 182, 85), 1),
+		Delay(1),
+		NextScene()
+	])
+	return events

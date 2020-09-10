@@ -112,9 +112,13 @@ class EntityManager(object):
 		for name in kill_list:
 			self.named_entities.pop(name)
 
-	# only works for names entities
+	# only works for named entities
 	def getEntityByName(self, name):
 		return self.named_entities[name]
+
+	# all templates have names
+	def getTemplateByName(self, name):
+		return self.templates[name]
 
 class EntityList(list):
 	def killEntitiesNotInList(self, list):

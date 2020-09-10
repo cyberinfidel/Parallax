@@ -9,23 +9,6 @@ from px_vector import Vec3
 import px_log
 
 ########################################
-# controller for select bunnies scene
-def makeSelectBunniesController(manager):
-	return manager.makeTemplate({"Template": SelectBunniesController})
-class SelectBunniesController(px_controller.Controller):
-	def __init__(self, game, data):
-		super(SelectBunniesController, self).__init__(game)
-
-	def update(self, entity, dt):
-		if entity.game_pad.getAndClear(px_game_pad.eActions.quit):
-			entity.game.nextScene(mode='title')
-		elif entity.game_pad.getAndClear(px_game_pad.eActions.fullscreen):
-			entity.game.toggleFullscreen()
-		elif entity.game_pad.getAndClear(px_game_pad.eActions.jump):
-			entity.game.nextScene()
-
-
-########################################
 # controller for a bunny in the bunny select scene
 def makeBunnyChooseController(manager):
 	return manager.makeTemplate({"Template": BunnyChooseController})
@@ -37,7 +20,7 @@ class BunnyChooseController(px_controller.Controller):
 		entity.message = False
 		if data:
 			entity.pos = data['pos']
-			entity.parent = entity.game.getEntityByName('bunny choice')
+			entity.parent = entity.game.getEntityByName(f'bunny choice {0}')
 			entity.bun_num= data['bun num']
 			entity.message_color = data['message color']
 			entity.bun_name = data['bun name']
@@ -50,7 +33,7 @@ class BunnyChooseController(px_controller.Controller):
 		# if bunny_choice.controller_data.current_bun[0]==0:
 		# 	print("Pacbun!")
 
-		if entity.parent.current_bun[0]==entity.bun_num:
+		if entity.game.current_bun[0]==entity.bun_num:
 			if entity.state!=px_entity.eStates.runDown:
 				self.setState(entity, px_entity.eStates.runDown)
 				entity.message = entity.game.message(text=entity.bun_name,

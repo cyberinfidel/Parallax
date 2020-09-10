@@ -19,7 +19,7 @@ class TitleController(px_controller.Controller):
 		elif entity.game_pad.getAndClear(px_game_pad.eActions.fullscreen):
 			entity.game.toggleFullscreen()
 		elif entity.game_pad.getAndClear(px_game_pad.eActions.jump):
-			entity.game.nextScene(mode='play')
+			entity.game.nextScene(mode='bunny select')
 
 ########################################
 # controller for quit screens
@@ -34,24 +34,46 @@ class QuitController(px_controller.Controller):
 			exit(0)	# just end
 
 ########################################
-# controller for play mode
+# controller for bunny selected
 #
-# - Stores the selected bunnies for the players
-def makeSelectBunniesController(manager):
-	return manager.makeTemplate({"Template": SelectBunniesController})
-class SelectBunniesController(px_controller.Controller):
+# - Stores the selected bunnies for the players in the game object
+# todo: consider a less ugly solution for storing persistent data
+def makeBunnyChoiceController(manager):
+	return manager.makeTemplate({"Template": BunnyChoiceController})
+class BunnyChoiceController(px_controller.Controller):
 	def __init__(self, game, data):
-		super(SelectBunniesController, self).__init__(game)
+		super(BunnyChoiceController, self).__init__(game)
 		self.bunnies = ['pacbun','pinkie','blue','bowie']
+		game.current_bun = [0,1,2,3]
 
 	# called when an entity is created that contains this component
 	def initEntity(self, entity, data=False):
-			entity.current_bun = [0,0,0,0]
+		entity.this_bun = data['this bun']
 
 	def update(self, entity, dt):
 		if entity.game_pad.getAndClear(px_game_pad.eActions.left):
-			entity.current_bun[0] = (entity.current_bun[0]-1)%4
+			entity.game.current_bun[0] = (entity.game.current_bun[0]-1)%4
 		elif entity.game_pad.getAndClear(px_game_pad.eActions.right):
-			entity.current_bun[0] = (entity.current_bun[0]+1)%4
+			entity.game.current_bun[0] = (entity.game.current_bun[0]+1)%4
+
+		if entity.game_pad.getAndClear(px_game_pad.eActions.quit):
+			entity.game.nextScene(mode='title')
+		elif entity.game_pad.getAndClear(px_game_pad.eActions.fullscreen):
+			entity.game.toggleFullscreen()
+		elif entity.game_pad.getAndClear(px_game_pad.eActions.jump):
+			entity.game.nextScene(mode='play')
+
+########################################
+# controller for play
+def makePlayController(manager):
+	return manager.makeTemplate({"Template": PlayController})
+class PlayController(px_controller.Controller):
+	def __init__(self, game, data):
+		super(PlayController, self).__init__(game)
+
+	def update(self, entity, dt):
+		if entity.game_pad.getAndClear(px_game_pad.eActions.quit):
+			print('todo: implement pause') # todo: implement pause instead of quitting
+			entity.game.nextScene(mode='title')
 
 

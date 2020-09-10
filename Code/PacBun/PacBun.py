@@ -105,6 +105,7 @@ class PacBun(px_game.Game):
 	# batch creates templates from provided dict data
 	def makeTemplates(self, templates_data):
 		for name, template in templates_data.items():
+			px_log.log(f"Making {name} template.")
 			self.entity_manager.makeEntityTemplate(name,
 				controller=template['controller'](self.controller_manager) if 'controller' in template else None,
 				collider=template['collider'](self.controller_manager) if 'collider' in template else None,
@@ -131,6 +132,18 @@ class PacBun(px_game.Game):
 
 	def getEntityByName(self, name):
 		return self.entity_manager.getEntityByName(name)
+
+	def getTemplateByName(self, name):
+		return self.entity_manager.getTemplateByName(name)
+
+	def getCurrentScene(self):
+		return self.current_scene
+
+	def getCurrentMode(self):
+		return self.current_mode
+
+	def pause(self):
+		self.game_mode=eGameModes.paused
 
 	def updatePlay(self, dt): # kill
 		# draw score
@@ -305,14 +318,14 @@ class PacBun(px_game.Game):
 		###################
 		self.scene_data = self.scenes_data['scenes'][self.mode_data['scenes'][self.current_scene]]
 		# initialise map todo: make another entity instead of special
-		if "Map" in self.scene_data:
-			self.level = map.Map(self, self.scene_data, self.templates['tile'])
+		# if "Map" in self.scene_data:
+		# 	self.level = map.Map(self, self.scene_data, self.templates['tile'])
 
 		self.playing = self.scene_data['playing']
 
 		self.bunnies = []
 
-		if self.playing:
+		if False:#self.playing:
 		# initialise creatures todo: make less bespoke (and work)
 			for bunny in range(0,self.num_bunnies):
 				name = ['blue','pinkie','pacbun','bowie'][bunny]
@@ -341,14 +354,14 @@ class PacBun(px_game.Game):
 		# 			parent=self,
 		# 			name=f"Bunny {name}"))
 
-		if "Map" in self.scene_data:
-			self.foxes = []
-			for fox_start in self.level.getFoxStarts():
-				this_fox = self.requestNewEntity(self.templates['fox'], pos=fox_start.pos, parent=self, name="Fox")
-				this_fox.controller_data.bunny = self.bunnies[0]
-				this_fox.controller_data.level = self.level
-				this_fox.controller_data.type = fox_start.type
-				self.foxes.append(this_fox)
+		# if "Map" in self.scene_data:
+		# 	self.foxes = []
+		# 	for fox_start in self.level.getFoxStarts():
+		# 		this_fox = self.requestNewEntity(self.templates['fox'], pos=fox_start.pos, parent=self, name="Fox")
+		# 		this_fox.controller_data.bunny = self.bunnies[0]
+		# 		this_fox.controller_data.level = self.level
+		# 		this_fox.controller_data.type = fox_start.type
+		# 		self.foxes.append(this_fox)
 
 
 		gc.collect()
