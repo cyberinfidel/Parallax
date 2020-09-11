@@ -22,7 +22,8 @@ class BunnyChooseController(px_controller.Controller):
 			entity.pos = data['pos']
 			entity.parent = entity.game.getEntityByName(f'bunny choice {0}')
 			entity.bun_num= data['bun num']
-			entity.message_color = data['message color']
+			bunnies = entity.game.game_data['bunnies']
+			entity.message_color = bunnies.index(entity.bun_num).color
 			entity.bun_name = data['bun name']
 		else:
 			px_log.log("*** Warning: Entity {entity.name} with BunnyChooseController component missing data.")

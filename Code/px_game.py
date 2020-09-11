@@ -11,13 +11,7 @@ import px_entity
 import px_game_pad
 import px_vector
 import px_graphics
-
-# disable to remove logging
-def log(msg, new_line=True):
-	if new_line:
-		print(msg)
-	else:
-		print(msg, end='')
+import px_log
 
 class eGameModes:
 	quit,\
@@ -54,8 +48,9 @@ class Game(object):
 		# Create a new window (like your browser window or editor window,
 		# etc.) and give it a meaningful title and size. We definitely need
 		# this, if we want to present something to the user.
+		# todo: calculate resolution more carefully esp for fullscreen
 		if(self.fullscreen):
-			self.window = sdl2.ext.Window(self.title, size=(self.res_x, self.res_y), flags=sdl2.SDL_WINDOW_FULLSCREEN)
+			self.window = sdl2.ext.Window(self.title, size=(self.res_x*self.zoom, self.res_y*self.zoom), flags=sdl2.SDL_WINDOW_FULLSCREEN)
 		else:
 			self.window = sdl2.ext.Window(self.title, size=(self.res_x*self.zoom, self.res_y*self.zoom))
 
@@ -88,10 +83,56 @@ class Game(object):
 		self.sound_manager = px_entity.ComponentManager(game=self)
 
 
-
+	# todo: choose resolutionfor fullscreen more carefully
 	def toggleFullscreen(self):
 		self.fullscreen = not self.fullscreen
 		sdl2.SDL_SetWindowFullscreen(self.window.window, self.fullscreen)
+
+	# batch creates templates from provided dict data
+	def makeTemplates(self, templates_data):
+		for name, template in templates_data.items():
+			px_log.log(f"Making {name} template.")
+			self.entity_manager.makeEntityTemplate(name,
+				controller=template['controller'](self.controller_manager) if 'controller' in template else None,
+				collider=template['collider'](self.controller_manager) if 'collider' in template else None,
+				graphics=self.graphics_manager.makeTemplate(template['graphics']['component'],
+																										{'RenderLayer': self.render_layers[template['graphics']['render layer']]}) if 'graphics' in template else None
+			)
+
+
+	# batch requests entities from provided dict data
+	def makeEntities(self, entities_data):
+		entities = {}
+		for name, entity in entities_data.items():
+			init = False
+			if 'init' in entity:
+				init = entity['init']	# custom initialisation code, not always needed
+			data = False
+			if 'data' in entity:
+				data = entity['data']
+			entities['name'] = self.requestNewEntity(template=entity['template'],
+																							 name=name,
+																							 parent=self,
+																							 init=init,
+																							 data=data)
+
+	def getEntityByName(self, name):
+		return self.entity_manager.getEntityByName(name)
+
+	def getTemplateByName(self, name):
+		return self.entity_manager.getTemplateByName(name)
+
+	def getCurrentScene(self):
+		return self.current_scene
+
+	def getCurrentMode(self):
+		return self.current_mode
+
+	def getColorCast(self, rl):
+		return self.render_layers[rl].getColorCast()
+
+	def setColorCast(self, rl, color):
+		self.render_layers[rl].setColorCast(color)
 
 	def render(self):
 		self.ren.color = self.clear_color.toSDLColor()
@@ -188,6 +229,9 @@ class Game(object):
 	def getClearColor(self):
 		return self.clear_color
 
+	def getGamePad(self, player):
+		return self.input.getGamePad(player)
+
 	def __del__(self):
 		sdl2.sdlmixer.Mix_CloseAudio()
 
@@ -195,8 +239,8 @@ class Game(object):
 		result = 0
 		fails = px_vector.runTests()
 		if len(fails)>0:
-			log("Unit tests failed.")
+			print("Unit tests failed.")
 			for fail in fails:
-				log(f"Fail in: {fail}")
+				print(f"Fail in: {fail}")
 			return 1
 		return result

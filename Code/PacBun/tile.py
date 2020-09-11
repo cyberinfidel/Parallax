@@ -55,49 +55,29 @@ def makeController(manager):
 class Controller(px_controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
-		# values global to all instances
 
-	################
-	# end __init__ #
-	################
-
-	class Data(object):
-		def __init__(self, entity, init=False):
-			if init:
-				self.game_pad = init.game_pad
-			else:
-				self.game_pad = False
-
+	def initEntity(self, entity, data=False):
 			# values for each instance
-			self.types = []
-			self.exits = []
+			entity.types = []
+			entity.exits = []
 
+	def addExit(self, entity, exit):
+		entity.exits.append(exit)
 
-	#####################
-	# end data __init__ #
-	#####################
+	def getExits(self, entity):
+		return entity.exits
 
-	def addExit(self, data, exit):
-		data.exits.append(exit)
+	def addType(self, entity, type):
+		entity.types.append(type)
 
-	def getExits(self, data):
-		return data.exits
+	def getTypes(self, entity):
+		return entity.types
 
-	def addType(self, data, type):
-		data.types.append(type)
-
-	def getTypes(self, data):
-		return data.types
-
-	def update(self, data, entity, dt):
+	def update(self, entity, dt):
 		pass
 
-
-
 	def receiveCollision(self, A, message):
-		# log("Hero hit: "+message["name"])
-		if message:
-			pass
+		pass
 
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})

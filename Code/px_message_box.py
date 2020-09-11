@@ -80,7 +80,7 @@ class MessageBox(px_entity.Component):
 			x = entity.pos.x-offset_x,
 			y = entity.pos.y-offset_y,
 			z = entity.pos.z,
-			color =entity.color * px_graphics.Color(1, 1, 1, entity.fade)
+			color = entity.color * px_graphics.Color(1, 1, 1, entity.fade)
 		)
 
 	def update(self, entity, dt):

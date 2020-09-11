@@ -20,7 +20,7 @@ import px_log
 
 #import PacBun files
 import mode_cont
-import map
+import PB_map
 
 
 class eGameModes:
@@ -36,20 +36,20 @@ class eGameModes:
 class PacBun(px_game.Game):
 
 	def __init__(self):
-		self.game_data = px_utility.getDataFromFile('PB_game.config')
+		self.game_data = px_utility.getDataFromFile('PB_game.config')['game']
 
 		px_log.log("Setting up window...")
-		super(PacBun, self).__init__("PacBun", res_x= self.game_data['game']['res_x'],
-																 res_y = self.game_data['game']['res_y'],
-																 zoom = self.game_data['game']['zoom'],
-																 fullscreen= self.game_data['game']['fullscreen'])
+		super(PacBun, self).__init__("PacBun", res_x= self.game_data['res_x'],
+																 res_y = self.game_data['res_y'],
+																 zoom = self.game_data['zoom'],
+																 fullscreen= self.game_data['fullscreen'])
 		sdl2.mouse.SDL_ShowCursor(False)
 		px_log.log("Window set up.")
 
 		px_log.log("Setting up render layers...")
 
 		self.render_layers = {}
-		for rl_name,rl_data in self.game_data['game']['render layers'].items():
+		for rl_name,rl_data in self.game_data['render layers'].items():
 			rl = px_graphics.RenderLayer(self.ren)
 			self.render_layers[rl_name]=rl
 			if 'fonts' in rl_data:
@@ -66,12 +66,12 @@ class PacBun(px_game.Game):
 		self.collision_manager = CollisionManager(game=self)
 
 		px_log.log("Making game scope templates...")
-		self.templates = self.makeTemplates(self.game_data['game']['templates'])
+		self.templates = self.makeTemplates(self.game_data['templates'])
 		# self.templates.update(self.makeTemplates(overlay_templates_data, self.overlay_renlayer))
 		px_log.log("Templates made.")
 
 		px_log.log("Making game scope entities...")
-		self.makeEntities(self.game_data['game']['entities'])
+		self.makeEntities(self.game_data['entities'])
 		px_log.log("Game scope entities made.")
 
 		px_log.log("Getting scenes...")
@@ -82,11 +82,11 @@ class PacBun(px_game.Game):
 		# put all separate images into texture atlasses for (more) efficient rendering
 		px_log.log("Making texture atlases...")
 		for rl_name, rl_instance in self.render_layers.items():
-			if 'texture atlas' in self.game_data['game']['render layers'][rl_name]:
+			if 'texture atlas' in self.game_data['render layers'][rl_name]:
 				# make texture atlas
 				# todo: do stuff with texture atlas files
-				if 'size hint' in self.game_data['game']['render layers'][rl_name]:
-					rl_instance.makeAtlas(self.game_data['game']['render layers'][rl_name]['size hint'])
+				if 'size hint' in self.game_data['render layers'][rl_name]:
+					rl_instance.makeAtlas(self.game_data['render layers'][rl_name]['size hint'])
 				else:
 					rl_instance.makeAtlas()
 				rl_instance.dumpAtlasToFiles(f"{rl_name}.png",f"{rl_name}.json")
@@ -96,51 +96,20 @@ class PacBun(px_game.Game):
 		px_log.flushToFile()
 
 		self.current_mode=-1
-		self.nextScene(next_scene=0, mode=self.game_data['game']['init_mode'])
+		self.nextScene(next_scene=0, mode=self.game_data['init_mode'])
 
 	########################################
 	# end init()
 	########################################
 
-	# batch creates templates from provided dict data
-	def makeTemplates(self, templates_data):
-		for name, template in templates_data.items():
-			px_log.log(f"Making {name} template.")
-			self.entity_manager.makeEntityTemplate(name,
-				controller=template['controller'](self.controller_manager) if 'controller' in template else None,
-				collider=template['collider'](self.controller_manager) if 'collider' in template else None,
-				graphics=self.graphics_manager.makeTemplate(template['graphics']['component'],
-																										{'RenderLayer': self.render_layers[template['graphics']['render layer']]}) if 'graphics' in template else None
-			)
+	def getBunnyData(self):
+		return self.game_data['bunnies']
 
+	def getCurrentBunnyData(self, player):
+		return self.game_data['bunnies'].index(self.current_bun[player])
 
-	# batch requests entities from provided dict data
-	def makeEntities(self, entities_data):
-		entities = {}
-		for name, entity in entities_data.items():
-			init = False
-			if 'init' in entity:
-				init = entity['init']	# custom initialisation code, not always needed
-			data = False
-			if 'data' in entity:
-				data = entity['data']
-			entities['name'] = self.requestNewEntity(template=entity['template'],
-																							 name=name,
-																							 parent=self,
-																							 init=init,
-																							 data=data)
-
-	def getEntityByName(self, name):
-		return self.entity_manager.getEntityByName(name)
-
-	def getTemplateByName(self, name):
-		return self.entity_manager.getTemplateByName(name)
-
-	def getCurrentScene(self):
-		return self.current_scene
-
-	def getCurrentMode(self):
-		return self.current_mode
+	def getNumBunnies(self):
+		return 4
 
 	def pause(self):
 		self.game_mode=eGameModes.paused
@@ -270,11 +239,11 @@ class PacBun(px_game.Game):
 			if mode!=self.current_mode:
 				px_log.log(f"Switching to mode: {mode}")
 				self.current_mode=mode
-				self.mode_data = self.game_data['game']['modes'][self.current_mode] # convenience
+				self.mode_data = self.game_data['modes'][self.current_mode] # convenience
 				# kill old mode
 				self.killEntitiesExceptDicts(
 					[
-						self.game_data['game']['entities'],
+						self.game_data['entities'],
 					]
 				)
 
@@ -308,7 +277,7 @@ class PacBun(px_game.Game):
 		# kill old scene
 		self.killEntitiesExceptDicts(
 			[
-				self.game_data['game']['entities'],
+				self.game_data['entities'],
 			 	self.mode_data['entities'] if 'entities' in self.mode_data else {}
 			]
 		)

@@ -46,7 +46,7 @@ class Color(object):
 
 	def __mul__(self, other):
 		return Color(
-			self.r*other.r,
+			self.r * other.r,
 			self.g * other.g,
 			self.b * other.b,
 			self.a * other.a
@@ -54,7 +54,7 @@ class Color(object):
 
 	def __add__(self, other):
 		return Color(
-			self.r+other.r,
+			self.r + other.r,
 			self.g + other.g,
 			self.b + other.b,
 			self.a + other.a,
@@ -177,13 +177,6 @@ class Image(object):
 		sdl2.SDL_RenderCopy(self.renderer, self.texture, self.src,
 												sdl2.SDL_Rect(int(x), int(y), self.width, self.height))
 
-		if debug:
-			# draw the outline of the image for debugging purposes
-			sdl2.SDL_SetRenderDrawColor(self.renderer,255,255,255,50)
-			sdl2.SDL_SetRenderDrawBlendMode(self.renderer,sdl2.SDL_BLENDMODE_ADD)
-
-			sdl2.SDL_RenderDrawRect(self.renderer,sdl2.SDL_Rect(int(round(x)), int(round(y)), self.width, self.height))
-
 	# destructors ###########################################################
 
 	# try to delete (with ref counting)
@@ -238,16 +231,16 @@ class Drawable(object):
 		return self.z
 
 class RenderImage(Drawable):
-	def __init__(self, image, x, y, z, color_cast=Color(1, 1, 1, 1)):
+	def __init__(self, image, x, y, z, color=Color(1, 1, 1, 1)):
 		super(RenderImage, self).__init__(x,y,z)
 		self.image = image
-		self.color_cast = color_cast
+		self.color = color
 
 	# draws an image paying attention to the passed origin (should be the render layer origin, not the image's)
 	def draw(self, origin, screen_height):
 		self.image.draw(x=self.x - origin.x,
 										y=screen_height - (self.y + self.z - origin.y - origin.z),
-										color=self.color_cast
+										color=self.color
 										)
 
 class RenderShape(Drawable):
@@ -347,8 +340,8 @@ class RenderLayer(object):
 
 	# add an image to the list of drawables to be drawn on a render
 	def queueImage(self, image, x, y, z, color=Color(1, 1, 1, 1)):
-		self.drawables.append(RenderImage(self.images[image], x, y, z, self.color_cast*color))
-
+		self.drawables.append(RenderImage(self.images[image], x, y, z,
+																			self.color_cast * color))
 
 	def getScreenHeight(self):
 		# get screen dimensions entirely so can draw from bottom left instead of top left
@@ -402,6 +395,9 @@ class RenderLayer(object):
 		return self.origin.z
 	def getOrigin(self):
 		return self.origin
+
+	def getColorCast(self):
+		return self.color_cast
 
 	def setColorCast(self,color):
 		self.color_cast = color

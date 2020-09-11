@@ -74,7 +74,7 @@ class Controller(px_controller.Controller):
 			entity.state = px_entity.eStates.stationary
 			entity.queued_state = entity.state
 			entity.AI_cooldown = 1 + px_vector.rand_num(15) / 5.
-			entity.type = 0
+			entity.type = data['type']
 			entity.fox_speed = 1
 
 
@@ -107,6 +107,9 @@ class Controller(px_controller.Controller):
 			return
 		fox_speed = entity.fox_speed
 
+		map_controller = entity.parent.getComponent('controller')
+		entity.bunny = map_controller.getNearestBunny(entity.parent, entity.pos)
+
 		bunny_pos = copy.deepcopy(entity.bunny.getPos())
 
 		if entity.type==eFoxTypes.ahead:
@@ -118,9 +121,8 @@ class Controller(px_controller.Controller):
 				Vec3(96, 0, 0),
 			)[entity.bunny.facing]
 
-		x, y = entity.level.getCoordFromPos(entity.pos)
-		current_tile = entity.level.getTileFromCoord(x, y)
-		exits = current_tile.controller.getExits(current_tile)
+		current_tile = map_controller.getTileFromPos(entity.parent, entity.pos)
+		exits = current_tile.getComponent('controller').getExits(current_tile)
 		x_in_tile = entity.pos.x % 16
 		y_in_tile = entity.pos.y % 16
 

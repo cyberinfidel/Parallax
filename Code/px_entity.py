@@ -127,10 +127,6 @@ class EntityList(list):
 				entity.setState(eStates.dead)
 
 class Entity(object):
-	class Data():
-		def __init__(self):
-			pass
-
 	def __init__(self,
 							 name,
 							 game,
@@ -141,7 +137,7 @@ class Entity(object):
 							 init=False,
 							 parent=False,
 							 data=False):
-		self.data = data
+		self.data = data	# note this is done first so things like init can use the data
 		self.game = game
 		self.name = name
 		self.pos = Vec3(0, 0, 0)
