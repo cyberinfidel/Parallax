@@ -71,6 +71,9 @@ class PlayController(px_controller.Controller):
 	def __init__(self, game, data):
 		super(PlayController, self).__init__(game)
 
+	def initEntity(self, entity, data=False):
+		entity.game.current_score=0
+
 	def update(self, entity, dt):
 		if entity.game_pad.getAndClear(px_game_pad.eActions.quit):
 			print('todo: implement pause') # todo: implement pause instead of quitting

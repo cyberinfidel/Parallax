@@ -24,15 +24,15 @@ graphics = {
 					[
 						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
 						["Graphics/Bunny/White/Idle 2.png", 8, 11, 0, 0.2],
-						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
-						["Graphics/Bunny/White/Idle 2.png", 8, 11, 0, 0.2],
-						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
-						["Graphics/Bunny/White/Idle 2.png", 8, 11, 0, 0.2],
-						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
-						["Graphics/Bunny/White/Idle 2.png", 8, 11, 0, 0.2],
-						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
-						["Graphics/Bunny/White/Idle 2.png", 8, 11, 0, 0.2],
 						["Graphics/Bunny/White/Idle 3.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/White/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/White/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/White/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/White/Idle 2.png", 8, 11, 0, 0.2],
 					]
 			},
 			{
@@ -98,17 +98,17 @@ graphics = {
 				"States": [px_entity.eStates.stationary],
 				"Frames":
 					[
-						["Graphics/Bunny/Yellow/Idle 1.png", 8, 11, 0, 0.8],
-						["Graphics/Bunny/Yellow/Idle 2.png", 8, 11, 0, 0.2],
-						["Graphics/Bunny/Yellow/Idle 1.png", 8, 11, 0, 0.8],
-						["Graphics/Bunny/Yellow/Idle 2.png", 8, 11, 0, 0.2],
-						["Graphics/Bunny/Yellow/Idle 1.png", 8, 11, 0, 0.8],
 						["Graphics/Bunny/Yellow/Idle 2.png", 8, 11, 0, 0.2],
 						["Graphics/Bunny/Yellow/Idle 1.png", 8, 11, 0, 0.8],
 						["Graphics/Bunny/Yellow/Idle 2.png", 8, 11, 0, 0.2],
 						["Graphics/Bunny/Yellow/Idle 1.png", 8, 11, 0, 0.8],
 						["Graphics/Bunny/Yellow/Idle 2.png", 8, 11, 0, 0.2],
 						["Graphics/Bunny/Yellow/Idle 3.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Yellow/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Yellow/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Yellow/Idle 1.png", 8, 11, 0, 0.8],
+						["Graphics/Bunny/Yellow/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Yellow/Idle 1.png", 8, 11, 0, 0.8],
 					]
 			},
 			{
@@ -182,9 +182,9 @@ graphics = {
 						["Graphics/Bunny/Pink/Idle 2.png", 8, 11, 0, 0.2],
 						["Graphics/Bunny/Pink/Idle 1.png", 8, 11, 0, 0.8],
 						["Graphics/Bunny/Pink/Idle 2.png", 8, 11, 0, 0.2],
+						["Graphics/Bunny/Pink/Idle 3.png", 8, 11, 0, 0.2],
 						["Graphics/Bunny/Pink/Idle 1.png", 8, 11, 0, 0.8],
 						["Graphics/Bunny/Pink/Idle 2.png", 8, 11, 0, 0.2],
-						["Graphics/Bunny/Pink/Idle 3.png", 8, 11, 0, 0.2],
 					]
 			},
 			{
@@ -450,7 +450,7 @@ graphics = {
 					]
 			},
 			{
-				"Name": "Bunny Runs Down",
+				"Name": "Fox Runs Down",
 				"AnimType": px_graphics.AnimLoop,
 				"States": [px_entity.eStates.runDown],
 				"Frames":
@@ -562,12 +562,39 @@ graphics = {
 					],
 			},
 			{
-				"Name": "Bunny Caught",
+				"Name": "PacBun Caught",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [fox.eFoxStates.bunnyCaught],
+				"States": [fox.eFoxStates.caughtPacbun],
+				"Frames":
+					[
+						["Graphics/Fox/FoxCaught 1.png", 11, 15, 0, 0.02],
+					],
+			},
+			{
+				"Name": "Pinkie Caught",
+				"AnimType": px_graphics.AnimLoop,
+				"States": [fox.eFoxStates.caughtPinkie],
 				"Frames":
 					[
 						["Graphics/Fox/FoxCaught 3.png", 11, 15, 0, 0.02],
+					],
+			},
+			{
+				"Name": "Blue Caught",
+				"AnimType": px_graphics.AnimLoop,
+				"States": [fox.eFoxStates.caughtBlue],
+				"Frames":
+					[
+						["Graphics/Fox/FoxCaught 2.png", 11, 15, 0, 0.02],
+					],
+			},
+			{
+				"Name": "Bowie Caught",
+				"AnimType": px_graphics.AnimLoop,
+				"States": [fox.eFoxStates.caughtBowie],
+				"Frames":
+					[
+						["Graphics/Fox/FoxCaught 4.png", 11, 15, 0, 0.02],
 					],
 			},
 		]

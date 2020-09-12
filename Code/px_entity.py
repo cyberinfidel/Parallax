@@ -80,8 +80,8 @@ class Component(object):
 	def initEntity(self, entity, data=False):
 		pass
 
-	def process(self, entity, command, args):
-		pass
+	def process(self, entity, command, args=None):
+		return False
 
 	def delete(self, data):
 		log(f"Missing delete function for Component:{type(self)}")
@@ -202,9 +202,11 @@ class Entity(object):
 	def getState(self):
 		return self.state
 
-	def process(self, command, args):
+	def process(self, command, args=None):
 		for component in self.components:
-			self.components[component].process(self, command, args)
+			ret = self.components[component].process(self, command, args)
+			if ret:
+				return ret
 
 # basic update method. Override for fancier behaviour
 	def update(self, dt):

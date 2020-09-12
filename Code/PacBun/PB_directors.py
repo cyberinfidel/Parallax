@@ -82,10 +82,14 @@ def director_quit(game):
 		Message("Goodbye and thank you for playing", Vec3(160, 165, 0), bunnies['pacbun'].color, 3, px_graphics.eAlign.centre),
 		Message("with me and my friends.", Vec3(160, 150, 0), bunnies['pacbun'].color, 3, px_graphics.eAlign.centre),
 		Spawn(spawns=[
-			SpawnEntity('pacbun', 'pacbun', Vec3(160, 120, 1), game),
-			SpawnEntity('pinkie', 'pinkie', Vec3(143, 94, 1), game),
-			SpawnEntity('blue', 'blue', Vec3(158, 90, 1), game),
-			SpawnEntity('bowie', 'bowie', Vec3(174, 91, 1), game),
+			SpawnEntity(template='pacbun bye', name='pacbun',
+									pos=Vec3(160, 120, 1), parent=game),
+			SpawnEntity(template='pinkie bye', name='pinkie',
+									pos=Vec3(143, 94, 1), parent=game),
+			SpawnEntity(template='blue bye', name='blue',
+									pos=Vec3(158, 90, 1), parent=game),
+			SpawnEntity(template='bowie bye', name='bowie',
+									pos=Vec3(174, 91, 1), parent=game),
 		]),
 		Delay(2),
 		FadeRenderLayer('game', px_graphics.Color(0,0,0,0),1),
@@ -116,6 +120,12 @@ def director_play(game, data):
 					]),
 		FadeToClearColor(px_graphics.Color.fromInts(219, 182, 85), 1),
 		FadeRenderLayer('game', px_graphics.Color(1,1,1,1),1),
+		Delay(20),
+
+		# fade out at end of scene
+		FadeToClearColor(px_graphics.Color.fromInts(0, 0, 0), 1),
+		FadeRenderLayer('overlay', px_graphics.Color(0,0,0,0), 1),
+		FadeRenderLayer('game', px_graphics.Color(0,0,0,0),1),
 		Delay(1),
 		NextScene()
 	])

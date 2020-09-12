@@ -44,11 +44,11 @@ class CollisionManager(ComponentManager):
 		# progressive bounding box
 		# check x first
 		Apos = A.getPos()
-		Adim = A.collider_data.dim
-		Aorig = A.collider_data.orig
+		Adim = A.dim
+		Aorig = A.orig
 		Bpos = B.getPos()
-		Bdim = B.collider_data.dim
-		Borig = B.collider_data.orig
+		Bdim = B.dim
+		Borig = B.orig
 
 		if (Apos.x - Aorig.x + Adim.x)> (Bpos.x -Borig.x): # Aright > Bleft
 			if (Bpos.x - Borig.x + Bdim.x) > (Apos.x - Aorig.x): # Bright < Aleft
@@ -63,10 +63,10 @@ class CollisionManager(ComponentManager):
 								return True
 
 	def resolveCollision(self, A, B):
-			if A.controller:
-				A.controller.receiveCollision(A, B.collider.getCollisionMessage(B.collider_data, B))
-			if B.controller:
-				B.controller.receiveCollision(B, A.collider.getCollisionMessage(A.collider_data, A))
+			if A.hasComponent('controller'):
+				A.getComponent('controller').receiveCollision(A, B.getComponent('collider').getCollisionMessage(B))
+			if B.hasComponent('controller'):
+				B.getComponent('controller').receiveCollision(B, A.getComponent('collider').getCollisionMessage(A))
 
 
 

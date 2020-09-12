@@ -33,7 +33,7 @@ class MapController(px_controller.Controller):
 	def initEntity(self, entity, data=False):
 		impassables = ['H','#','<','>']
 
-		entity.map = copy.deepcopy(data)
+		entity.map = copy.deepcopy(data)	# deepcopy since we're going to flip it upside down
 
 		# flip since we draw from bottom left
 		for i in range(0, 9):
@@ -127,7 +127,6 @@ class MapController(px_controller.Controller):
 						if entity.map[y][x] == "B":
 							if bunny_to_place<entity.game.getNumBunnies():
 								current_bunny_data = entity.game.getCurrentBunnyData(bunny_to_place)
-								bunny_to_place+=1
 								entity.bunnies.append(entity.game.requestNewEntity(
 								current_bunny_data.handle,
 								Vec3(x * 16 + 8, y * 16 + 8, 0),
@@ -137,6 +136,7 @@ class MapController(px_controller.Controller):
 									'game_pad':entity.game.getGamePad(bunny_to_place),
 								}
 							))
+							bunny_to_place += 1
 						elif entity.map[y][x] == "1":
 							# entity.fox_starts.append(Fox(pos=Vec3(x * 16 + 8, y * 16 + 8, 0),type=fox.eFoxTypes.direct))
 							entity.game.requestNewEntity('fox',
@@ -216,7 +216,7 @@ class MapController(px_controller.Controller):
 
 	def poo(self, entity, current_tile, data):
 		# can poo in a clear tile only
-		current_tile.setState(current_tile, tile.eTileStates.poo)
+		current_tile.setState(tile.eTileStates.poo)
 		entity.num_poos+=1
 		data.score+=1
 		if entity.num_poos>= entity.num_spaces:

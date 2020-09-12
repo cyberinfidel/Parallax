@@ -215,7 +215,7 @@ class Game(object):
 			self.drawables.append(new_entity)
 		if new_entity.hasComponent('sounds'):
 			self.audibles.append(new_entity)
-		if new_entity.hasComponent('controller'):
+		if new_entity.hasComponent('controller') or new_entity.hasComponent('graphics'):
 			self.updatables.append(new_entity)
 		if new_entity.hasComponent('collider'):
 			self.collision_manager.append(new_entity)

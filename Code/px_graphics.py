@@ -567,7 +567,7 @@ class SingleImage(px_entity.Component):
 	def hasShadow(self):
 		return False
 
-	def update(self, data, entity, time):
+	def update(self, entity, time):
 		pass
 
 # graphics component for multiple static images

@@ -37,7 +37,10 @@ def makeSounds(manager, mixer):
 class eFoxStates(enum.IntEnum):
 	cleanLeft = px_entity.eStates.hurtLeft
 	cleanRight = px_entity.eStates.hurtRight
-	bunnyCaught = px_entity.eStates.idle
+	caughtPacbun = 33
+	caughtPinkie = 34
+	caughtBlue = 35
+	caughtBowie = 36
 
 class eFoxTypes(enum.IntEnum):
 	direct=1
@@ -86,7 +89,8 @@ class Controller(px_controller.Controller):
 
 
 	def update(self, entity, dt):
-		if entity.state==eFoxStates.bunnyCaught: return
+		if entity.state in [eFoxStates.caughtBlue,eFoxStates.caughtBowie,eFoxStates.caughtPacbun,eFoxStates.caughtPinkie]:
+			return
 
 		# pause foxes every so often
 		# todo: foxes shouldn't pause if the bunny is in sight
@@ -122,7 +126,7 @@ class Controller(px_controller.Controller):
 			)[entity.bunny.facing]
 
 		current_tile = map_controller.getTileFromPos(entity.parent, entity.pos)
-		exits = current_tile.getComponent('controller').getExits(current_tile)
+		exits = current_tile.process('getExits')
 		x_in_tile = entity.pos.x % 16
 		y_in_tile = entity.pos.y % 16
 
@@ -189,8 +193,15 @@ class Controller(px_controller.Controller):
 	def receiveCollision(self, A, message):
 		if message:
 			if message.damage_hero>0:
-				# caught the bunny
-				self.setState(A,eFoxStates.bunnyCaught)
+				# caught a bunny
+				# but which bunny?!?!?!?
+				self.setState(A,{
+					'pacbun': eFoxStates.caughtPacbun,
+					'pinkie': eFoxStates.caughtPinkie,
+					'blue': eFoxStates.caughtBlue,
+					'bowie': eFoxStates.caughtBowie,
+				}[message.source.name]
+											)
 				# print(f"col source{message.source.entity.pos.x},{message.source.entity.pos.y}")
 		# 	print(f"Hedge source{message.source.entity.pos.x}{message.source.entity.pos.y}")
 			# 	# A.controller_data.vel = Vec3(0,0,0)
@@ -204,8 +215,6 @@ class Collider(px_collision.Collider):
 	def initEntity(self, entity, data=False):
 			entity.dim = Vec3(4,4,8)
 			entity.orig = Vec3(2,2,4)
-			entity.mass = 10.0
-			entity.force = 0.0
 
 	def getCollisionMessage(self, entity):
 		return(px_collision.Message(source=entity, damage=1))
