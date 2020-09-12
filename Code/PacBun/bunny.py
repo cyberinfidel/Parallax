@@ -40,10 +40,6 @@ def makeController(manager):
 class Controller(px_controller.Controller):
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
-		# values global to all instances
-	################
-	# end __init__ #
-	################
 
 	def initEntity(self, entity, data=False):
 		if entity.data:
@@ -58,15 +54,6 @@ class Controller(px_controller.Controller):
 		entity.state = px_entity.eStates.stationary
 		entity.queued_state = entity.state
 		entity.score = 0
-
-
-
-	#####################
-	# end data __init__ #
-	#####################
-
-
-
 
 	def update(self, entity, dt):
 		bunny_speed = 1
