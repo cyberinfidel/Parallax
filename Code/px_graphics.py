@@ -133,12 +133,13 @@ class Image(object):
 				trim_x = max(0,left)
 				trim_y = max(0,top)
 				# there's space around the sprite so trim it
-				trim_surface = sdl2.SDL_CreateRGBSurfaceFrom(surface.contents.pixels+left*4+top*w*4,
+				trim_surface = sdl2.SDL_CreateRGBSurfaceWithFormatFrom(surface.contents.pixels+left*4+top*w*4,
 																			new_w,
 																			new_h,
 																			32,
 																			w*4,
-																			0xff,0xff00,0xff0000,0xff000000
+																			sdl2.SDL_PIXELFORMAT_ARGB8888
+																			# 0xff,0xff00,0xff0000,0xff000000
 																			)
 				if not trim_surface:
 					print("SDL_CreateRGBSurfaceFrom failed")
