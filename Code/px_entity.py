@@ -4,14 +4,7 @@ import copy
 
 # Parallax
 from px_vector import Vec3
-
-
-# disable to remove logging
-def log(msg, new_line=True):
-	if new_line:
-		print(msg)
-	else:
-		print(msg, end='')
+import px_log
 
 # note stationary(2)is the default starting state
 class eStates:
@@ -84,7 +77,7 @@ class Component(object):
 		return False
 
 	def delete(self, data):
-		log(f"Missing delete function for Component:{type(self)}")
+		px_log.log(f"Missing delete function for Component:{type(self)}")
 
 class EntityManager(object):
 	def __init__(self, game):
@@ -158,7 +151,7 @@ class Entity(object):
 				type[1].initEntity(self, data)
 
 		if init:
-			log(f"Init entity: {name} code: {init}")
+			# px_log.log(f"Init entity: {name} code: {init}")
 			# execute init
 			exec(init,globals(),locals())
 
@@ -176,7 +169,7 @@ class Entity(object):
 		return self.name
 
 	def draw(self):
-		# log(f"drawing entity: {self.name}")
+		# px_log.log(f"drawing entity: {self.name}")
 		self.components['graphics'].draw(self)
 
 	def setPos(self,pos):
@@ -213,7 +206,7 @@ class Entity(object):
 		# todo: make 'update' standard by iterating across components
 		# i.e. fix sounds to be less weird
 		# prob make graphics component decide if it actually draws or not
-		# log(f"updating entity {self.name}")
+		# px_log.log(f"updating entity {self.name}")
 		if self.hasComponent('controller'):
 			self.components['controller'].update(self, dt)
 		if self.state!=eStates.hide and self.state!=eStates.dead:

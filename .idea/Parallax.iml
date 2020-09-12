@@ -11,8 +11,6 @@
       <sourceFolder url="file://$MODULE_DIR$/Code/PyBulletTest" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Code/PacBun" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Code/FontTest" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/.idea" />
-      <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

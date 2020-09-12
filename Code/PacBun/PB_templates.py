@@ -898,5 +898,5 @@ game_templates = {
 	'message':{
 		'controller': components['controllers']['message_controller'],
 		'graphics': { 'component': components['graphics']['message_graphics'], 'render layer': 'overlay'},
-	}
+	},
 }
