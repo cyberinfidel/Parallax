@@ -138,7 +138,7 @@ class Image(object):
 																			new_h,
 																			32,
 																			w*4,
-																			sdl2.SDL_PIXELFORMAT_ARGB8888
+																			sdl2.SDL_PIXELFORMAT_ABGR8888
 																			# 0xff,0xff00,0xff0000,0xff000000
 																			)
 				if not trim_surface:
@@ -444,7 +444,7 @@ class RenderLayer(object):
 		if not dry_run:
 			# make the atlas texture
 			self.TA = sdl2.SDL_CreateTexture(self.ren.renderer,
-																			 sdl2.SDL_PIXELFORMAT_BGRA8888,
+																			 sdl2.SDL_PIXELFORMAT_ABGR8888,
 																			 sdl2.SDL_TEXTUREACCESS_TARGET,
 																			 atlas_dim,
 																			 atlas_dim)
@@ -487,7 +487,7 @@ class RenderLayer(object):
 		return True
 
 	def dumpAtlasToFiles(self, image_file, data_file):
-		format = sdl2.SDL_PIXELFORMAT_BGRA8888
+		format = sdl2.SDL_PIXELFORMAT_ABGR8888
 
 		surface = sdl2.SDL_CreateRGBSurfaceWithFormat(0, self.atlas_dim, self.atlas_dim, 32, format)
 		sdl2.SDL_LockSurface(surface)
@@ -506,7 +506,7 @@ class RenderLayer(object):
 
 ######################################################
 	def dumpImageToFile(self, image, image_file):
-		format = sdl2.SDL_PIXELFORMAT_BGRA8888
+		format = sdl2.SDL_PIXELFORMAT_ABGR8888
 		width = self.images[image].width
 		height = self.images[image].height
 

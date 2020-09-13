@@ -290,8 +290,6 @@ class PacBun(px_game.Game):
 		# if "Map" in self.scene_data:
 		# 	self.level = map.Map(self, self.scene_data, self.templates['tile'])
 
-		self.playing = self.scene_data['playing']
-
 		self.bunnies = []
 
 		if False:#self.playing:
