@@ -15,13 +15,15 @@ from px_vector import Vec3
 import px_graphics
 import px_sound
 import px_utility
-
 import px_log
 
 #import PacBun files
-import mode_cont
-import PB_map
 
+class eStates(px_entity.eStates):
+	runDown,runLeft, runUp, runRight,\
+		cleanLeft, cleanRight,\
+		caughtPacBun, caughtPinkie, caughtBlue, caughtBowie,\
+		=range(px_entity.eStates.numStates+1,px_entity.eStates.numStates+11)
 
 class eGameModes:
 	quit,\
@@ -104,15 +106,19 @@ class PacBun(px_game.Game):
 
 	def getBunnyData(self):
 		return self.game_data['bunnies']
+	##################################################
 
 	def getCurrentBunnyData(self, player):
 		return self.game_data['bunnies'].index(self.current_bun[player])
+	##################################################
 
 	def getNumBunnies(self):
 		return 4
+	##################################################
 
 	def pause(self):
 		self.game_mode=eGameModes.paused
+	##################################################
 
 	def updatePlay(self, dt): # kill
 		# draw score
@@ -129,104 +135,10 @@ class PacBun(px_game.Game):
 		px_log.log("WARNING: in title game mode.")
 	##################################################
 
-	def updateStart(self, dt): # kill
-
-		gc.collect()
-		if len(gc.garbage)>0: print(gc.garbage)
-		# set up new game and clean up anything from last game
-		self.num_monsters = 0
-		self.killPlayEntities()
-		self.cleanUpDead()
-		self.restart_cooldown = 2
-
-		gc.collect()
-		gc.disable()
-		self.setGameMode(eGameModes.play)
-		self.updatePlay(dt)
-		####################################################
-
-	def updateGameOver(self, dt): # kill
-		self.restart_cooldown-=dt
-
-		# fade to black
-		self.title.setState(title.eTitleStates.game_over)
-		fade_factor = max(0,min(1,self.restart_cooldown-0.5))
-		self.renlayer.setColorCast(px_graphics.Color(fade_factor,
-																								 fade_factor,
-																								 fade_factor,
-																								 fade_factor))
-		self.setClearColor(px_graphics.Color((220 / 255) * fade_factor,
-																				 (182/255) * fade_factor,
-																				 (85/255) * fade_factor))
-
-		if self.restart_cooldown<=0:
-			self.killPlayEntities()
-			self.cleanUpDead()
-
-			# do high scoreness
-			if self.high_score.controller.isHighScore(self.high_score, self.current_score):
-				self.new_high_score = self.requestNewEntity(self.templates['new_high_score'], parent=self, name="New High Score")
-				self.new_high_score.graphics.updateInitials(self.new_high_score)
-				game_pad = self.input.getGamePad(0)
-				if game_pad:
-					self.new_high_score.setGamePad(game_pad)
-
-				self.setGameMode(eGameModes.new_high_score)
-				self.title.setState(title.eTitleStates.new_high_score)
-				return
-
-			self.setGameMode(eGameModes.title)
-		####################################################
-
-	def updateEscape(self, dt): # kill
-		self.title.setState(title.eTitleStates.escape)
-		for bunny in self.bunnies:
-			self.collision_manager.doCollisionsWithSingleEntity(bunny)  # collisions between monsters
-
-		####################################################
-	def updateNewHighScore(self, dt): # kill
-
-
-		pass
-
-	####################################################
-
-	def updateWin(self, dt): # kill
-		for bunny in self.bunnies:
-			bunny.setState(px_entity.eStates.dead)
-		self.restart_cooldown-=dt
-		self.title.setState(title.eTitleStates.win)
-		if self.restart_cooldown<=0:
-			self.current_scene+=1
-			if self.current_scene>=len(self.scenes_data['modes'][self.current_mode]['scenes']):
-				self.setGameMode(eGameModes.game_over)
-			else:
-				self.setGameMode(eGameModes.start)
-			self.cleanUpDead()
-		####################################################
-
 	def quit(self): # kill the program
 			self.running=False
 			return
-		####################################################
-
-	def updateInit(self, dt): # kill
-		pass
-		####################################################
-
-	def updatePaused(self, dt): # kill
-		self.renlayer.setColorCast(px_graphics.Color(0.5, 0.5, 0.5, 1))
-		self.setClearColor(px_graphics.Color(110 / 255, 91 / 255, 43 / 255))
-		self.title.update(dt)
-		####################################################
-
-	def updateHighScore(self, dt): # kill
-		self.title_cooldown-=dt
-		if self.title_cooldown<0:
-			self.title_cooldown = self.title_cooldown_time
-			self.setGameMode(eGameModes.title)
-			# log("switching to title")
-		####################################################
+	####################################################
 
 	# ends the scene and by default increments the scene counter for the next scene
 	# can change between modes e.g. playing and title
@@ -369,10 +281,10 @@ class PacBun(px_game.Game):
 # end update() #################################################################
 
 	def cleanUpDead(self):
-		self.updatables[:] = [x for x in self.updatables if x.getState() != px_entity.eStates.dead]
+		self.updatables[:] = [x for x in self.updatables if x.getState() != eStates.dead]
 		self.collision_manager.cleanUpDead()
-		self.drawables[:] = [x for x in self.drawables if x.getState() != px_entity.eStates.dead]
-		self.audibles[:] = [x for x in self.audibles if x.getState() != px_entity.eStates.dead]
+		self.drawables[:] = [x for x in self.drawables if x.getState() != eStates.dead]
+		self.audibles[:] = [x for x in self.audibles if x.getState() != eStates.dead]
 		self.entity_manager.deleteDead()
 
 	# This kills everything in the entity manager that isn't listed in the whitelist
@@ -446,7 +358,7 @@ class PacBun(px_game.Game):
 	def addNewHighScore(self, initials):
 		self.high_score.controller.updateScores(score_data=self.high_score.controller_data.scores_data, initials=initials, new_score=self.current_score)
 		self.high_score.graphics.updateScores(self.high_score)
-		self.new_high_score.state = px_entity.eStates.dead
+		self.new_high_score.state = eStates.dead
 		self.setGameMode(eGameModes.title)
 
 

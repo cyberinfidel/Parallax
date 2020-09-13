@@ -8,8 +8,8 @@ import px_controller
 import px_collision
 from px_vector import Vec3
 import px_sound
-import PacBun
 
+import PacBun
 import tile
 
 def makeSounds(manager, mixer):
@@ -51,7 +51,7 @@ class Controller(px_controller.Controller):
 		entity.queued_vel = Vec3(0.0,0.0,0.0)
 		entity.facing = False
 		entity.queued_facing = 4
-		entity.state = px_entity.eStates.stationary
+		entity.state = PacBun.eStates.idle
 		entity.queued_state = entity.state
 		entity.score = 0
 
@@ -68,25 +68,25 @@ class Controller(px_controller.Controller):
 				entity.queued_facing = px_entity.eDirections.left
 				entity.queued_vel.x = -bunny_speed
 				entity.queued_vel.y = 0
-				entity.queued_state = px_entity.eStates.runLeft
+				entity.queued_state = PacBun.eStates.runLeft
 			#  right
 			elif entity.game_pad.actions[px_game_pad.eActions.right]:
 				entity.queued_facing = px_entity.eDirections.right
 				entity.queued_vel.x = bunny_speed
 				entity.queued_vel.y = 0
-				entity.queued_state = px_entity.eStates.runRight
+				entity.queued_state = PacBun.eStates.runRight
 			# up
 			elif entity.game_pad.actions[px_game_pad.eActions.up]:
 				entity.queued_facing = px_entity.eDirections.up
 				entity.queued_vel.x = 0
 				entity.queued_vel.y = bunny_speed
-				entity.queued_state = px_entity.eStates.runUp
+				entity.queued_state = PacBun.eStates.runUp
 			# down
 			elif entity.game_pad.actions[px_game_pad.eActions.down]:
 				entity.queued_facing = px_entity.eDirections.down
 				entity.queued_vel.x = 0
 				entity.queued_vel.y = -bunny_speed
-				entity.queued_state = px_entity.eStates.runDown
+				entity.queued_state = PacBun.eStates.runDown
 
 		x, y = map_controller.getCoordFromPos(entity.pos)
 		current_tile = map_controller.getTileFromCoord(map_entity,x,y)
@@ -104,7 +104,7 @@ class Controller(px_controller.Controller):
 				# and setup the direction for the bunny to run from the entity for that hole
 				if self.game.game_mode == PacBun.eGameModes.escape:
 					self.game.setGameMode(PacBun.eGameModes.win)
-					self.setState(entity, px_entity.eStates.dead)
+					self.setState(entity, PacBun.eStates.dead)
 					entity.blink = True
 				hole = map_controller.getNextHole(map_entity,x,y)
 				entity.pos = copy.deepcopy(hole.exit)
@@ -112,10 +112,10 @@ class Controller(px_controller.Controller):
 				# avoid any unexpected turns that were already queued
 				entity.queued_facing = hole.direction
 				entity.queued_state = (
-					px_entity.eStates.runDown,
-					px_entity.eStates.runLeft,
-					px_entity.eStates.runUp,
-					px_entity.eStates.runRight
+					PacBun.eStates.runDown,
+					PacBun.eStates.runLeft,
+					PacBun.eStates.runUp,
+					PacBun.eStates.runRight
 				)[entity.facing]
 				# actually set the state
 				self.setState(entity, entity.queued_state)
@@ -158,7 +158,7 @@ class Controller(px_controller.Controller):
 					entity.vel.y=0
 
 			if entity.vel.x==0 and entity.vel.y==0:
-				entity.setState(px_entity.eStates.stationary)
+				entity.setState(PacBun.eStates.idle)
 
 
 
@@ -173,7 +173,7 @@ class Controller(px_controller.Controller):
 			if message.damage>0:
 				A.game.setGameMode(PacBun.eGameModes.game_over)
 				A.game_pad=False
-				A.setState(px_entity.eStates.dead)
+				A.setState(PacBun.eStates.dead)
 
 
 def makeCollider(manager):
@@ -188,7 +188,7 @@ class Collider(px_collision.Collider):
 			entity.orig = Vec3(4,4,4)
 
 	def getCollisionMessage(self, entity):
-		if entity.state!=px_entity.eStates.dead:
+		if entity.state!=PacBun.eStates.dead:
 			return(px_collision.Message(source=entity, damage_hero=1))
 		else:
 			return(px_collision.Message(source=entity))

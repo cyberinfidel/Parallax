@@ -2,11 +2,12 @@
 
 # Parallax
 import px_controller
-import px_game_pad
 import px_entity
 import px_graphics
 from px_vector import Vec3
 import px_log
+
+import PacBun
 
 ########################################
 # controller for a bunny in the bunny select scene
@@ -35,8 +36,8 @@ class BunnyChooseController(px_controller.Controller):
 		# 	print("Pacbun!")
 
 		if entity.game.current_bun[0]==entity.bun_num:
-			if entity.state!=px_entity.eStates.runDown:
-				self.setState(entity, px_entity.eStates.runDown)
+			if entity.state!=PacBun.eStates.runDown:
+				self.setState(entity, PacBun.eStates.runDown)
 				entity.message = entity.game.message(text=entity.bun_name,
 														pos= entity.pos+Vec3(0,40,0),
 														color=entity.message_color,
@@ -44,6 +45,6 @@ class BunnyChooseController(px_controller.Controller):
 														align=px_graphics.eAlign.centre,
 														fade_speed = 0.5)
 		else:
-			self.setState(entity, px_entity.eStates.stationary)
+			self.setState(entity, PacBun.eStates.idle)
 			if entity.message:
 				entity.message.process('fade out',[0.5])

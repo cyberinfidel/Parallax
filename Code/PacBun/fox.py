@@ -10,7 +10,8 @@ from px_vector import Vec3
 import px_vector
 import px_sound
 
-
+# Pacbun
+import PacBun
 
 def makeSounds(manager, mixer):
 	return manager.makeTemplate({
@@ -35,8 +36,8 @@ def makeSounds(manager, mixer):
 	})
 
 class eFoxStates(enum.IntEnum):
-	cleanLeft = px_entity.eStates.hurtLeft
-	cleanRight = px_entity.eStates.hurtRight
+	cleanLeft = PacBun.eStates.cleanLeft
+	cleanRight = PacBun.eStates.cleanRight
 	caughtPacbun = 33
 	caughtPinkie = 34
 	caughtBlue = 35
@@ -74,7 +75,7 @@ class Controller(px_controller.Controller):
 			entity.facing = False
 			entity.queued_facing = 4
 			entity.health = 3
-			entity.state = px_entity.eStates.stationary
+			entity.state = PacBun.eStates.idle
 			entity.queued_state = entity.state
 			entity.AI_cooldown = 1 + px_vector.rand_num(15) / 5.
 			entity.type = data['type']
@@ -102,7 +103,7 @@ class Controller(px_controller.Controller):
 				entity.AI_cooldown = entity.pause
 				if entity.pause>0: entity.pause -=1
 				self.setState(entity,
-											[px_entity.eStates.stationary, px_entity.eStates.stationary, px_entity.eStates.stationary, px_entity.eStates.stationary, px_entity.eStates.stationary, eFoxStates.cleanRight, eFoxStates.cleanLeft][px_vector.rand_num(7)]
+											[PacBun.eStates.idle, PacBun.eStates.idle, PacBun.eStates.idle, PacBun.eStates.idle, PacBun.eStates.idle, PacBun.eStates.cleanRight, PacBun.eStates.cleanLeft][px_vector.rand_num(7)]	# todo: find better way to make idle more likely
 											)
 			else:
 				entity.fox_speed=1
@@ -180,10 +181,10 @@ class Controller(px_controller.Controller):
 			)[entity.facing]
 
 			self.setState(entity,(
-				px_entity.eStates.runDown,
-				px_entity.eStates.runLeft,
-				px_entity.eStates.runUp,
-				px_entity.eStates.runRight
+				PacBun.eStates.runDown,
+				PacBun.eStates.runLeft,
+				PacBun.eStates.runUp,
+				PacBun.eStates.runRight
 			)[entity.facing])
 
 		px_controller.basic_physics(entity.pos, entity.vel)

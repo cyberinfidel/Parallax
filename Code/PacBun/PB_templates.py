@@ -1,14 +1,14 @@
 import px_graphics
+import px_message_box
+import px_director
 
-import bunny
-import fox
-import tile
-import px_entity
+import PacBun
 import title
 import high_score
 import new_high_score
-import px_message_box
-import px_director
+import bunny
+import fox
+import tile
 
 graphics = {
 	'bowie': {
@@ -19,7 +19,7 @@ graphics = {
 			{
 				"Name": "Bunny Stands",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.stationary],
+				"States": [PacBun.eStates.idle],
 				"Frames":
 					[
 						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
@@ -38,7 +38,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Down",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runDown],
+				"States": [PacBun.eStates.runDown],
 				"Frames":
 					[
 						["Graphics/Bunny/White/RunDown 2.png", 8, 11, 0, 0.05],
@@ -50,7 +50,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Up",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runUp],
+				"States": [PacBun.eStates.runUp],
 				"Frames":
 					[
 						["Graphics/Bunny/White/RunUp 2.png", 8, 9, 0, 0.05],
@@ -62,7 +62,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Left",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runLeft],
+				"States": [PacBun.eStates.runLeft],
 				"Frames":
 					[
 						["Graphics/Bunny/White/RunLeft 1.png", 8, 10, 0, 0.05],
@@ -74,7 +74,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Right",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runRight],
+				"States": [PacBun.eStates.runRight],
 				"Frames":
 					[
 						["Graphics/Bunny/White/RunRight 1.png", 8, 10, 0, 0.05],
@@ -95,7 +95,7 @@ graphics = {
 			{
 				"Name": "Bunny Stands",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.stationary],
+				"States": [PacBun.eStates.idle],
 				"Frames":
 					[
 						["Graphics/Bunny/Yellow/Idle 2.png", 8, 11, 0, 0.2],
@@ -114,7 +114,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Down",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runDown],
+				"States": [PacBun.eStates.runDown],
 				"Frames":
 					[
 						["Graphics/Bunny/Yellow/RunDown 2.png", 8, 11, 0, 0.05],
@@ -126,7 +126,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Up",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runUp],
+				"States": [PacBun.eStates.runUp],
 				"Frames":
 					[
 						["Graphics/Bunny/Yellow/RunUp 2.png", 8, 9, 0, 0.05],
@@ -138,7 +138,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Left",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runLeft],
+				"States": [PacBun.eStates.runLeft],
 				"Frames":
 					[
 						["Graphics/Bunny/Yellow/RunLeft 1.png", 8, 10, 0, 0.05],
@@ -150,7 +150,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Right",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runRight],
+				"States": [PacBun.eStates.runRight],
 				"Frames":
 					[
 						["Graphics/Bunny/Yellow/RunRight 1.png", 8, 10, 0, 0.05],
@@ -171,7 +171,7 @@ graphics = {
 			{
 				"Name": "Bunny Stands",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.stationary],
+				"States": [PacBun.eStates.idle],
 				"Frames":
 					[
 						["Graphics/Bunny/Pink/Idle 1.png", 8, 11, 0, 0.8],
@@ -190,7 +190,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Down",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runDown],
+				"States": [PacBun.eStates.runDown],
 				"Frames":
 					[
 						["Graphics/Bunny/Pink/RunDown 2.png", 8, 11, 0, 0.05],
@@ -202,7 +202,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Up",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runUp],
+				"States": [PacBun.eStates.runUp],
 				"Frames":
 					[
 						["Graphics/Bunny/Pink/RunUp 2.png", 8, 9, 0, 0.05],
@@ -214,7 +214,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Left",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runLeft],
+				"States": [PacBun.eStates.runLeft],
 				"Frames":
 					[
 						["Graphics/Bunny/Pink/RunLeft 1.png", 8, 10, 0, 0.05],
@@ -226,7 +226,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Right",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runRight],
+				"States": [PacBun.eStates.runRight],
 				"Frames":
 					[
 						["Graphics/Bunny/Pink/RunRight 1.png", 8, 10, 0, 0.05],
@@ -247,7 +247,7 @@ graphics = {
 			{
 				"Name": "Bunny Stands",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.stationary],
+				"States": [PacBun.eStates.idle],
 				"Frames":
 					[
 						["Graphics/Bunny/Blue/Idle 1.png", 8, 11, 0, 0.8],
@@ -266,7 +266,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Down",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runDown],
+				"States": [PacBun.eStates.runDown],
 				"Frames":
 					[
 						["Graphics/Bunny/Blue/RunDown 2.png", 8, 11, 0, 0.05],
@@ -278,7 +278,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Up",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runUp],
+				"States": [PacBun.eStates.runUp],
 				"Frames":
 					[
 						["Graphics/Bunny/Blue/RunUp 2.png", 8, 9, 0, 0.05],
@@ -290,7 +290,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Left",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runLeft],
+				"States": [PacBun.eStates.runLeft],
 				"Frames":
 					[
 						["Graphics/Bunny/Blue/RunLeft 1.png", 8, 10, 0, 0.05],
@@ -302,7 +302,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Right",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runRight],
+				"States": [PacBun.eStates.runRight],
 				"Frames":
 					[
 						["Graphics/Bunny/Blue/RunRight 1.png", 8, 10, 0, 0.05],
@@ -323,7 +323,7 @@ graphics = {
 			{
 				"Name": "Fox Stands",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.stationary],
+				"States": [PacBun.eStates.idle],
 				"Frames":
 					[
 						["Graphics/Fox/Pant/Pant_000.png", 11, 15, 0, 0.02],
@@ -452,7 +452,7 @@ graphics = {
 			{
 				"Name": "Fox Runs Down",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runDown],
+				"States": [PacBun.eStates.runDown],
 				"Frames":
 					[
 						["Graphics/Fox/RunD_000.png", 6, 20, 0, 0.02],
@@ -480,7 +480,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Up",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runUp],
+				"States": [PacBun.eStates.runUp],
 				"Frames":
 					[
 						["Graphics/Fox/RunU_000.png", 6, 20, 0, 0.02],
@@ -508,7 +508,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Left",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runLeft],
+				"States": [PacBun.eStates.runLeft],
 				"Frames":
 					[
 						["Graphics/Fox/Left/Run_000.png", 20, 11, 0, 0.02],
@@ -536,7 +536,7 @@ graphics = {
 			{
 				"Name": "Bunny Runs Right",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runRight],
+				"States": [PacBun.eStates.runRight],
 				"Frames":
 					[
 						["Graphics/Fox/Run_000.png", 20, 11, 0, 0.02],

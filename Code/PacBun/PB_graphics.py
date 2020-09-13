@@ -1,6 +1,8 @@
 import px_graphics
 import px_entity
 
+import PacBun
+
 bowie_graphics = {
 		"Name": "Bunny Animations",
 		"Template": px_graphics.MultiAnim,
@@ -9,7 +11,7 @@ bowie_graphics = {
 			{
 				"Name": "Bunny Stands",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.stationary],
+				"States": [PacBun.eStates.idle],
 				"Frames":
 					[
 						["Graphics/Bunny/White/Idle 1.png", 8, 11, 0, 0.8],
@@ -28,7 +30,7 @@ bowie_graphics = {
 			{
 				"Name": "Bunny Runs Down",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runDown],
+				"States": [PacBun.eStates.runDown],
 				"Frames":
 					[
 						["Graphics/Bunny/White/RunDown 2.png", 8, 11, 0, 0.05],
@@ -40,7 +42,7 @@ bowie_graphics = {
 			{
 				"Name": "Bunny Runs Up",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runUp],
+				"States": [PacBun.eStates.runUp],
 				"Frames":
 					[
 						["Graphics/Bunny/White/RunUp 2.png", 8, 11, 0, 0.05],
@@ -52,7 +54,7 @@ bowie_graphics = {
 			{
 				"Name": "Bunny Runs Left",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runLeft],
+				"States": [PacBun.eStates.runLeft],
 				"Frames":
 					[
 						["Graphics/Bunny/White/RunLeft 1.png", 8, 14, 0, 0.05],
@@ -64,7 +66,7 @@ bowie_graphics = {
 			{
 				"Name": "Bunny Runs Right",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [px_entity.eStates.runRight],
+				"States": [PacBun.eStates.runRight],
 				"Frames":
 					[
 						["Graphics/Bunny/White/RunRight 1.png", 8, 14, 0, 0.05],

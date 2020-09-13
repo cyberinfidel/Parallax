@@ -1,7 +1,4 @@
-import sdl2
-
 import px_entity
-# import text
 import px_graphics
 import px_controller
 import px_vector

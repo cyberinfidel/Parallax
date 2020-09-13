@@ -640,8 +640,8 @@ class MultiAnim(px_entity.Component):
 	def initEntity(self, entity, data=False):
 		entity.current_frame = 0
 		entity.current_time = 0
-		entity.current_anim =  px_entity.eStates.stationary
-		entity.current_state = px_entity.eStates.stationary
+		entity.current_anim =  px_entity.eStates.idle
+		entity.current_state = px_entity.eStates.idle
 
 		for anim in self.anims:	# ie every anim in the multiAnim
 			self.anims[anim].initInstance(entity=entity)

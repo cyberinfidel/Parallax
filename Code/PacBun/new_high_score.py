@@ -5,6 +5,7 @@ import px_controller
 import px_graphics
 import px_game_pad
 
+import PacBun
 
 # graphics component for getting initials for new high score
 class NewScore(px_entity.Component):
@@ -113,7 +114,7 @@ class Controller(px_controller.Controller):
 		elif data.game_pad.actions[px_game_pad.eActions.jump]:
 			data.game_pad.actions[px_game_pad.eActions.jump] = False
 			entity.game.addNewHighScore(str(data.initials[0])+str(data.initials[1])+str(data.initials[2]))
-			self.setState(data, entity, px_entity.eStates.dead)
+			self.setState(data, entity, PacBun.eStates.dead)
 
 		data.blink_cool -= dt
 		if data.blink_cool<=0:

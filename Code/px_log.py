@@ -2,6 +2,7 @@ from datetime import datetime
 
 log_data = []
 default_log_file_name = 'log.txt'
+silent=False
 
 # disable to remove logging
 def log(msg, new_line=True, log_time=True):
@@ -12,7 +13,8 @@ def log(msg, new_line=True, log_time=True):
 		entry = msg+eol
 
 	log_data.append(entry)
-	print(entry, end='')
+	if not silent:
+		print(entry, end='')
 
 def flushToFile(file=False):
 	if not file:

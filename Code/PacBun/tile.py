@@ -1,7 +1,5 @@
 # Parallax
 import px_controller
-import px_collision
-from px_vector import Vec3
 
 
 # exits map to binary values
@@ -82,31 +80,3 @@ class Controller(px_controller.Controller):
 	def process(self, entity, command, args=None):
 		if command=='getExits':
 			return entity.exits
-
-# def makeCollider(manager):
-# 	return manager.makeTemplate({"Template": Collider})
-# class Collider(px_collision.Collider):
-# 	class Data(object):
-# 		def __init__(self, entity, init=False):
-# 			if init:
-# 				pass
-# 			else:
-# 				pass
-# 			self.dim = Vec3(16,16,1)
-# 			self.orig = Vec3(0,0,0)
-#
-# 	def __init__(self, game, data):
-# 		super(Collider, self).__init__(game)
-# 		# global static data to all of HeroCollider components
-#
-# 	def getCollisionMessage(self, data, entity):
-# 		message = px_collision.Message(source=entity)
-# 		if entity.state==eTileStates.hedge:
-# 			message.impassable = True
-# 			message.poo = False
-# 		else:
-# 			message.impassable = False
-# 		return message
-
-
-

@@ -1,75 +1,26 @@
 # external lib import
-import enum
 import copy
 
 # Parallax
 from px_vector import Vec3
 import px_log
 
-# note stationary(2)is the default starting state
+# note idle(2)is the default starting state
+# inherit and extend this list in your game and/or components
+# don't refer to it directly: use my_game.eStates.my_fun_state
 class eStates:
-	dead,\
-	hide,\
-	stationary,\
-	runLeft,\
-	runRight,\
-	runUp,\
-	runDown,\
-	fallLeft,\
-	fallRight,\
-	idle,\
-	down,\
-	gettingUp,\
-	attackSmallLeft,\
-	attackSmallRight,\
-	attackBigLeft,\
-	attackBigRight,\
-	blockLeft,\
-	blockRight,\
-	jumpLeft,\
-	jumpRight,\
-	jumpUp,\
-	jumpDown,\
-	jumpStat,\
-	standDown,\
-	standLeft,\
-	standUp,\
-	standRight,\
-	hurtLeft,\
-	hurtRight,\
-	shadow,\
-	appear,\
-	fade,\
-	numStates = range(0,33)
+	dead,	hide,	idle,	numStates = range(0,4)
 
-class eDirections(enum.IntEnum):
-	down = 0
-	left = 1
-	up = 2
-	right = 3
-	num_directions = 4
-
-
-
+class eDirections:
+	down, left, up, right, num_directions = range(0,5)
 
 # Component template root class
 class Component(object):
 	def __init__(self, game):
 		self.game = game
 
-# define a Data class if your component needs
-#  instance specific data. If all the data is
-#  static in the template and will not change
-#  then there is no need to define this class
-#  at all
-	class Data(object):
-		def __init__(self, entity, data):
-			pass
-
-	def makeData(self, entity, data=False):
-		return self.Data(entity, data)
-
 	# called when an entity is created that contains this component
+	# override in the component to initialise entity specific data
 	def initEntity(self, entity, data=False):
 		pass
 
@@ -134,7 +85,7 @@ class Entity(object):
 		self.game = game
 		self.name = name
 		self.pos = Vec3(0, 0, 0)
-		self.state = eStates.stationary
+		self.state = eStates.idle
 		self.new_state = True
 		self.blink = False
 		self.parent = parent
@@ -215,23 +166,8 @@ class Entity(object):
 			if self.hasComponent('graphics'):
 				self.components['graphics'].update(self, dt)
 
-	# def setController(self, controller):
-	# 	self.controller = controller
-	# 	self.controller_data = controller.makeData()
-
 	def setGamePad(self, game_pad):
 		self.game_pad = game_pad
-
-	# def setGraphics(self,graphics):
-	# 	self.graphics = graphics
-	# 	if self.graphics:
-	# 		self.graphics_data = graphics.makeData()
-
-	# def setSounds(self,sounds):
-	# 	self.sounds = sounds
-	# 	if self.sounds:
-	# 		self.sounds_data = sounds.makeData()
-
 
 class EntityTemplate(object):
 
