@@ -112,6 +112,7 @@ class Image(object):
 			right = 0
 			left = w-1
 			pixels = sdl2.ext.PixelView(surface.contents)
+			format = surface.contents.format.contents.format
 			# top
 			for y in range(0,h):
 				for x in range(0,w):
@@ -138,7 +139,7 @@ class Image(object):
 																			new_h,
 																			32,
 																			w*4,
-																			sdl2.SDL_PIXELFORMAT_ABGR8888
+																			format
 																			# 0xff,0xff00,0xff0000,0xff000000
 																			)
 				if not trim_surface:
