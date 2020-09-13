@@ -5,6 +5,7 @@ Code/.DS_Store
 *.exe
 *.zip
 *.png
+.idea/workspace.xml
 venv
 Code/python38.dll
 Code/KnightFight/python38.dll
@@ -19,7 +20,4 @@ Code/PacBun/high_score.py
 Code/PacBun/scores.json
 Code/PacBun/log.txt
 Code/PacBun/scores.json
-.idea/workspace.xml
 .idea/Parallax.iml
-.idea/workspace.xml
-.idea/workspace.xml
