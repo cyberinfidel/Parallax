@@ -38,13 +38,11 @@ class eGameModes:
 class PacBun(px_game.Game):
 
 	def __init__(self):
-		self.game_data = px_utility.getDataFromFile('PB_game.config')['game']
-
-		px_log.log("Setting up window...")
-		super(PacBun, self).__init__("PacBun", res_x= self.game_data['res_x'],
-																 res_y = self.game_data['res_y'],
-																 zoom = self.game_data['zoom'],
-																 fullscreen= self.game_data['fullscreen'])
+		super(PacBun, self).__init__("PB_game.config")
+		# super(PacBun, self).__init__("PacBun", res_x= self.game_data['res_x'],
+		# 														 res_y = self.game_data['res_y'],
+		# 														 zoom = self.game_data['windowed_zoom'],
+		# 														 fullscreen= self.game_data['fullscreen'])
 		sdl2.mouse.SDL_ShowCursor(False)
 		px_log.log("Window set up.")
 

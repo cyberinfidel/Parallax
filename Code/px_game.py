@@ -11,22 +11,27 @@ import px_entity
 import px_game_pad
 import px_vector
 import px_graphics
+import px_utility
 import px_log
 
 class eGameModes:
-	quit,\
-	init,\
-	title,\
-	start,\
-	play,\
-	game_over,\
-	win,\
-	paused,\
+	quit, \
+	init, \
+	title, \
+	start, \
+	play, \
+	game_over, \
+	win, \
+	paused, \
 	numGameModes = range(0,9)
 
 
 class Game(object):
-	def __init__(self, title, res_x, res_y, zoom, fullscreen, clear_color=px_graphics.Color(0, 0, 0)):
+	def __init__(self, config_file):
+		px_log.log("Getting game data...")
+		self.game_data = px_utility.getDataFromFile(config_file)['game']
+
+		px_log.log("Setting up window...")
 		# Initialize the video system - this implicitly initializes some
 		# necessary parts within the SDL2 DLL used by the video module.
 		#
@@ -34,12 +39,12 @@ class Game(object):
 		# classes.
 		sdl2.ext.init()
 
-		self.title = title
-		self.res_x = res_x
-		self.res_y = res_y
-		self.zoom = zoom
-		self.fullscreen = fullscreen
-		self.clear_color =  clear_color
+		self.title = self.game_data['title']
+		self.res_x = self.game_data['res_x']
+		self.res_y = self.game_data['res_y']
+		self.zoom = self.game_data['windowed_zoom']
+		self.fullscreen = self.game_data['fullscreen']
+		self.clear_color =  self.game_data['clear_color']
 
 		sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_JOYSTICK | sdl2.SDL_INIT_GAMECONTROLLER)
 
@@ -49,14 +54,13 @@ class Game(object):
 		# etc.) and give it a meaningful title and size. We definitely need
 		# this, if we want to present something to the user.
 		# todo: calculate resolution more carefully esp for fullscreen
-		if(self.fullscreen):
-			self.window = sdl2.ext.Window(self.title, size=(self.res_x*self.zoom, self.res_y*self.zoom), flags=sdl2.SDL_WINDOW_FULLSCREEN)
-		else:
-			self.window = sdl2.ext.Window(self.title, size=(self.res_x*self.zoom, self.res_y*self.zoom))
 
-		# By default, every Window is hidden, not shown on the screen right
-		# after creation. Thus we need to tell it to be shown now.
-		self.window.show()
+		# create the window (without showing it)
+		self.windowed_width = self.res_x*self.zoom		# keep these for later
+		self.windowed_height = self.res_y*self.zoom
+		self.window = sdl2.ext.Window(self.title, size=(self.windowed_width, self.windowed_height))
+		if(self.fullscreen):
+			self.makeFullscreen()
 
 		# set up a renderer to draw stuff. This is a HW accelerated one.
 		# Switch on VSync to avoid running too fast
@@ -82,22 +86,94 @@ class Game(object):
 		self.entity_manager = px_entity.EntityManager(game=self)
 		self.sound_manager = px_entity.ComponentManager(game=self)
 
+		# By default, every Window is hidden, not shown on the screen right
+		# after creation. Thus we need to tell it to be shown now.
+		self.window.show()
 
-	# todo: choose resolutionfor fullscreen more carefully
+	def makeFullscreen(self):
+		# self.window = sdl2.ext.Window(self.title, size=(self.res_x, self.res_y), flags=sdl2.SDL_WINDOW_FULLSCREEN)
+
+		current_display = sdl2.SDL_GetWindowDisplayIndex(self.window.window)
+		current_display_mode = sdl2.SDL_DisplayMode()
+		res = sdl2.SDL_GetCurrentDisplayMode(current_display,current_display_mode)
+		px_log.log(f"Current display mode: {current_display_mode}")
+
+		display_modes = []
+		display_mode_index = 0  # sdl2.SDL_GetWindowDisplayIndex(self.window.window)
+		for mode_index in range(current_display, sdl2.SDL_GetNumDisplayModes(display_mode_index)):
+			disp_mode = sdl2.SDL_DisplayMode()
+			ret = sdl2.SDL_GetDisplayMode(
+				display_mode_index,
+				mode_index,
+				disp_mode
+			)
+			display_modes.append(disp_mode)
+			px_log.log(f"mode:{mode_index} info:{display_modes[mode_index]}")
+
+		# todo: something more clever than this after testing on more monitors
+		# prob just make a better guess on the window size as a whole fraction of the native display size
+		# without getting too large or too small
+		# e.g. for MacBook Pro, 960 is too small; 1280 isn't great and is more fuzzy than 1920 - which looks fine;
+		# 2880 looks even sharper than as 1920, but will prob be pushing too many pixels
+		# Prob should allow it to be overridden via options/config
+
+		# sdl2.SDL_SetWindowSize(self.window.window,1280,720)
+		# sdl2.SDL_SetWindowSize(self.window.window,1440,810)
+		# sdl2.SDL_SetWindowSize(self.window.window,1920,1080)
+		if self.game_data['fs_force_res']:
+			sdl2.SDL_SetWindowSize(self.window.window, self.game_data['fs_force_res'][0], self.game_data['fs_force_res'][1])
+		else:
+			sdl2.SDL_SetWindowSize(self.window.window,2880,1620)
+		sdl2.SDL_SetWindowFullscreen(self.window.window, sdl2.SDL_WINDOW_FULLSCREEN)
+		return
+		#
+		# # choose a good display mode, zoom combination before re-creating the window
+		# # look for ideal: 60hz that divides by width precisely and is tall enough
+		# for display_mode in display_modes:
+		# 	if display_mode.refresh_rate == 60:
+		# 		if (display_mode.w / self.res_x).is_integer() and display_mode.w<2000:
+		# 			zoom = int(display_mode.w / self.res_x)
+		# 			if display_mode.h >= zoom * self.res_y:
+		# 				# we have a winner
+		# 				# sdl2.SDL_SetWindowFullscreen(self.window.window, sdl2.SDL_WINDOW_FULLSCREEN)
+		# 				# display_mode.h=1080
+		# 				# self.window = sdl2.ext.Window(self.title, size=(display_mode.w, display_mode.h),flags=sdl2.SDL_WINDOW_FULLSCREEN)
+		# 				# self.window = sdl2.ext.Window(self.title, size=(self.res_x * zoom, self.res_y * zoom),flags=sdl2.SDL_WINDOW_FULLSCREEN)
+		# 				# res = sdl2.SDL_SetWindowDisplayMode(self.window.window, display_mode)
+		# 				print(f"Chose mode:{display_mode}. Zoom factor: {zoom}. Result: {res}")
+		# 				return
+		# 			else:
+		# 				px_log.log(f"Not taller than {self.res_y} after zoomed({self.res_y*zoom}) - Display mode {display_mode}")
+		# 		else:
+		# 			px_log.log(f"Too big or Not multiple of {self.res_x} - Display mode {display_mode}")
+		# 	else:
+		# 		px_log.log(f"Not 60hz - Display mode {display_mode}")
+		#
+		#
+		#
+		# px_log.log("Couldn't find ideal display mode for full screen - trying to get next best.")
+
+
 	def toggleFullscreen(self):
 		self.fullscreen = not self.fullscreen
-		sdl2.SDL_SetWindowFullscreen(self.window.window, self.fullscreen)
+		if self.fullscreen:
+			self.makeFullscreen()
+		else:
+			sdl2.SDL_SetWindowSize(self.window.window, self.windowed_width, self.windowed_height)
+			sdl2.SDL_SetWindowFullscreen(self.window.window, False)
+
+		sdl2.SDL_RenderSetLogicalSize(self.ren.renderer, self.res_x, self.res_y)	 # to make sure
 
 	# batch creates templates from provided dict data
 	def makeTemplates(self, templates_data):
 		for name, template in templates_data.items():
 			px_log.log(f"Making {name} template.")
 			self.entity_manager.makeEntityTemplate(name,
-				controller=template['controller'](self.controller_manager) if 'controller' in template else None,
-				collider=template['collider'](self.controller_manager) if 'collider' in template else None,
-				graphics=self.graphics_manager.makeTemplate(template['graphics']['component'],
-																										{'RenderLayer': self.render_layers[template['graphics']['render layer']]}) if 'graphics' in template else None
-			)
+																						 controller=template['controller'](self.controller_manager) if 'controller' in template else None,
+																						 collider=template['collider'](self.controller_manager) if 'collider' in template else None,
+																						 graphics=self.graphics_manager.makeTemplate(template['graphics']['component'],
+																																												 {'RenderLayer': self.render_layers[template['graphics']['render layer']]}) if 'graphics' in template else None
+																						 )
 
 
 	# batch requests entities from provided dict data
@@ -153,8 +229,8 @@ class Game(object):
 		pass
 		if alpha>0.0001:
 			self.interp(alpha)
-#			self.pos_int[0] = self.pos[0]* alpha + self.pos_old[0] * (1.0 - alpha)
-#			self.pos_int[1] = self.pos[1]* alpha + self.pos_old[1] * (1.0 - alpha)
+	#			self.pos_int[0] = self.pos[0]* alpha + self.pos_old[0] * (1.0 - alpha)
+	#			self.pos_int[1] = self.pos[1]* alpha + self.pos_old[1] * (1.0 - alpha)
 
 
 	def run(self):
@@ -221,7 +297,7 @@ class Game(object):
 			self.collision_manager.append(new_entity)
 		return new_entity
 
-# end requestNewEntity()
+	# end requestNewEntity()
 
 	def setClearColor(self, color):
 		self.clear_color = color

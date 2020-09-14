@@ -6,13 +6,7 @@ import sdl2
 
 # my file import
 from px_entity import Component
-
-# disable to remove logging
-def log(msg, new_line=True):
-	if new_line:
-		print(msg)
-	else:
-		print(msg, end='')
+import px_log
 
 class eActions(enum.IntEnum):
 	up = 0
