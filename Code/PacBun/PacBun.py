@@ -25,24 +25,20 @@ class eStates(px_entity.eStates):
 		caughtPacBun, caughtPinkie, caughtBlue, caughtBowie,\
 		=range(px_entity.eStates.numStates+1,px_entity.eStates.numStates+11)
 
-class eGameModes:
-	quit,\
-	init,\
-	title,\
-	start,\
-	play,\
-	game_over,\
-	win,\
-	paused,	escape, high_score, new_high_score, numGameModes = range(0,12)
+# class eGameModes:
+# 	quit,\
+# 	init,\
+# 	title,\
+# 	start,\
+# 	play,\
+# 	game_over,\
+# 	win,\
+# 	paused,	escape, high_score, new_high_score, numGameModes = range(0,12)
 
 class PacBun(px_game.Game):
 
 	def __init__(self):
-		super(PacBun, self).__init__("PB_game.config")
-		# super(PacBun, self).__init__("PacBun", res_x= self.game_data['res_x'],
-		# 														 res_y = self.game_data['res_y'],
-		# 														 zoom = self.game_data['windowed_zoom'],
-		# 														 fullscreen= self.game_data['fullscreen'])
+		super(PacBun, self).__init__()
 		sdl2.mouse.SDL_ShowCursor(False)
 		px_log.log("Window set up.")
 
@@ -111,7 +107,7 @@ class PacBun(px_game.Game):
 	##################################################
 
 	def getNumBunnies(self):
-		return 4
+		return 1
 	##################################################
 
 	def pause(self):
@@ -126,11 +122,6 @@ class PacBun(px_game.Game):
 			self.overlay_renlayer.replaceImageFromString(old_image=self.score_image, string="{0:0=4d}".format(self.current_score), font=self.score_font, color=px_graphics.Color(1, 1, 1, 1))
 			self.old_score = self.current_score
 
-
-	##################################################
-
-	def updateTitle(self, dt): # kill
-		px_log.log("WARNING: in title game mode.")
 	##################################################
 
 	def quit(self): # kill the program
@@ -144,6 +135,12 @@ class PacBun(px_game.Game):
 	def nextScene(self, next_scene=-1, mode=False): # kill
 		gc.enable()
 		gc.collect()
+
+		# reset ready flags
+		self.ready={
+			'escape':False,
+			'next_scene':False,
+		}
 
 		if mode:
 			if mode!=self.current_mode:
@@ -222,25 +219,6 @@ class PacBun(px_game.Game):
 			self.makeEntities(self.scene_data['entities'])
 		px_log.flushToFile()
 
-		# self.num_bunnies = len(self.level_data['Bunnies'])
-		# for bunny, name in enumerate(self.level_data['Bunnies']):
-		# 	self.bunnies.append(
-		# 		self.requestNewEntity(
-		# 			self.templates[name],
-		# 			pos=self.level.getBunnyStarts()[bunny % len(self.level.getBunnyStarts())],
-		# 			parent=self,
-		# 			name=f"Bunny {name}"))
-
-		# if "Map" in self.scene_data:
-		# 	self.foxes = []
-		# 	for fox_start in self.level.getFoxStarts():
-		# 		this_fox = self.requestNewEntity(self.templates['fox'], pos=fox_start.pos, parent=self, name="Fox")
-		# 		this_fox.controller_data.bunny = self.bunnies[0]
-		# 		this_fox.controller_data.level = self.level
-		# 		this_fox.controller_data.type = fox_start.type
-		# 		self.foxes.append(this_fox)
-
-
 		gc.collect()
 		gc.disable()
 		if len(gc.garbage)>0: px_log.log(gc.garbage)
@@ -249,22 +227,8 @@ class PacBun(px_game.Game):
 	#  update #
 	###########
 	def update(self, dt):
-		# (
-		# 	self.updateQuit,
-		# 	self.updateInit,
-		# 	self.updateTitle,
-		# 	self.updateStart,
-		# 	self.updatePlay,
-		# 	self.updateGameOver,
-		# 	self.updateWin,
-		# 	self.updatePaused,
-		# 	self.updateEscape,
-		# 	self.updateHighScore,
-		# 	self.updateNewHighScore
-		# )[self.game_mode](dt)
 
-		# Always do this, unless paused:
-		if self.game_mode!=eGameModes.paused:
+		if True:#self.game_mode!=eGameModes.paused:
 			# for bunny in self.bunnies:
 				# self.collision_manager.doCollisionsWithSingleEntity(bunny)  # collisions between monsters
 			self.collision_manager.doCollisions()  # collisions between monsters
@@ -307,8 +271,24 @@ class PacBun(px_game.Game):
 	def reportScore(self, increment):
 		self.current_score+=increment
 
+	def flagReady(self, for_what):
+		self.ready[for_what] = True
+
+	def checkReady(self, for_what):
+		if self.ready[for_what]:
+			self.ready[for_what]=False
+			return True
+		return False
+
 	# todo: move
-	def message(self, text, pos, color=px_graphics.Color(1, 1, 1, 1), duration=0, align=px_graphics.eAlign.left, fade_speed=0.5):
+	def message(self,
+							text,
+							pos,
+							color=px_graphics.Color(1, 1, 1, 1),
+							duration=-1,	# or forever
+							align=px_graphics.eAlign.left,
+							fade_speed=0.5
+							):
 		message = self.requestNewEntity(template='message',
 																		name= f"message: {text}",
 																		pos=pos,
@@ -344,9 +324,6 @@ class PacBun(px_game.Game):
 				drawable.draw()
 
 		self.render_layers['game'].renderSortedByZThenY()
-
-		if self.game_mode==eGameModes.play:
-			self.render_layers['overlay'].queueImage(self.score_image, 99, 318, 0)
 		self.render_layers['overlay'].render()
 
 

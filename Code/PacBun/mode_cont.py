@@ -79,4 +79,3 @@ class PlayController(px_controller.Controller):
 			print('todo: implement pause') # todo: implement pause instead of quitting
 			entity.game.nextScene(mode='title')
 
-

@@ -203,13 +203,16 @@ class Quit(Event):
 		entity.game.quit()
 
 class WaitFor(Event):
-	def __init__(self, condition):
+	def __init__(self, condition_function, parameter=None):
 		super(Event, self).__init__()
 		# wait for condition
-		self.condition=condition
+		self.condition_function=condition_function
+		self.parameter = parameter
 
 	def update(self, entity, dt):
-		return eEventStates.dead if self.condition() else eEventStates.block
+		if self.parameter:
+			return eEventStates.dead if self.condition_function(self.parameter) else eEventStates.block
+		return eEventStates.dead if self.condition_function() else eEventStates.block
 
 #############################
 # Director controller class #

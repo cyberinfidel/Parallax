@@ -52,19 +52,16 @@ class eFoxTypes(enum.IntEnum):
 def makeController(manager):
 	return manager.makeTemplate({"Template": Controller})
 class Controller(px_controller.Controller):
+	######################################################
+	# initialises this controller class
 	def __init__(self, game, data):
 		super(Controller, self).__init__(game)
 		# values global to all instances
 
+	# end __init
 
-
-
-
-
-	################
-	# end __init__ #
-	################
-
+	#######################################################
+	# Called when an entity with this controller is created
 	def initEntity(self, entity, data=False):
 			# values for each instance
 
@@ -80,15 +77,10 @@ class Controller(px_controller.Controller):
 			entity.AI_cooldown = 1 + px_vector.rand_num(15) / 5.
 			entity.type = data['type']
 			entity.fox_speed = 1
+	# end initEntity
 
-
-	#####################
-	# end data __init__ #
-	#####################
-
-
-
-
+	######################################################
+	# Called each tick to update the entity
 	def update(self, entity, dt):
 		if entity.state in [eFoxStates.caughtBlue,eFoxStates.caughtBowie,eFoxStates.caughtPacbun,eFoxStates.caughtPinkie]:
 			return
@@ -188,7 +180,7 @@ class Controller(px_controller.Controller):
 			)[entity.facing])
 
 		px_controller.basic_physics(entity.pos, entity.vel)
-		entity.pos.clamp(Vec3(0,0,0),Vec3(319,319,0))
+		# entity.pos.clamp(Vec3(0,0,0),Vec3(319,319,0))
 
 
 	def receiveCollision(self, A, message):

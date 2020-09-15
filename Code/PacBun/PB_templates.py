@@ -790,7 +790,7 @@ graphics = {
 					],
 			},
 			{
-				"Name": "Path with Cuscene Hole",
+				"Name": "Path with Cutscene Hole",
 				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.cutscene_hole],
 				"Frames":
@@ -806,6 +806,20 @@ graphics = {
 			# "RenderLayer": renlayer,
 			"Image":
 					["Graphics/Title/Title.png", 10, -24, 0],
+	},
+	'escape': {
+			"Name": "Escape Overlay",
+			"Template": px_graphics.SingleAnim,
+		"Anims": [
+			{
+				"Name": "Path with Cutscene Hole",
+				"AnimType": px_graphics.AnimLoop,
+				"Frames": [
+					["Graphics/Title/Escape.png", 8, 8, 0, 0.8],
+					["Graphics/Title/Escape2.png", 8, 8, 0, 0.8],
+				],
+			},
+		]
 	},
 	'high_score': {
 			"Name": "Scoreboard",
@@ -844,6 +858,7 @@ components = {
 		'fox_graphics': graphics['fox'],
 		'tile_graphics': graphics['tile'],
 		'title_graphics': graphics['title'],
+		'escape_graphics': graphics['escape'],
 		'high_score_graphics': graphics['high_score'],
 		'new_high_score_graphics': graphics['new_high_score'],
 		'message_graphics': graphics['message'],

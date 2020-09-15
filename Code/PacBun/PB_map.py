@@ -3,10 +3,13 @@ import copy
 import px_entity
 import px_controller
 from px_vector import Vec3
+import px_graphics
+import px_log
 
 import tile
 import fox
 import PacBun
+
 
 # container for information about the rabbit holes
 class Hole(object):
@@ -31,17 +34,18 @@ class MapController(px_controller.Controller):
 		super(MapController, self).__init__(game)
 
 	def initEntity(self, entity, data=False):
+		entity.won = False	# keeps track of if the map is complete or not
 		impassables = ['H','#','<','>']
 
 		entity.map = copy.deepcopy(data)	# deepcopy since we're going to flip it upside down
 
 		# flip since we draw from bottom left
 		for i in range(0, 9):
-			entity.map[i], entity.map[17-i] = entity.map[17 - i], entity.map[i]
+			entity.map[i], entity.map[16-i] = entity.map[16 - i], entity.map[i]
 
-		entity.tiles = [None]*18
-		for i in range(0,18):
-			entity.tiles[i] = [None]*20
+		entity.tiles = [None]*17
+		for i in range(0,17):
+			entity.tiles[i] = [None]*30
 
 		entity.holes = []
 		entity.bunnies = []
@@ -50,9 +54,11 @@ class MapController(px_controller.Controller):
 		entity.num_spaces=0
 		entity.num_poos=0
 		bunny_to_place = 0
-		for y in range(0,18):
-			for x in range(0,20):
-				# create tile for each square
+		for y in range(0,17):
+			for x in range(0,30):
+				if entity.map[y][x]=='0':
+					continue
+				# create tile for each square with anything in it
 				this_tile = entity.game.requestNewEntity('tile',
 																							 pos=Vec3(8 + x * 16, 8 + y * 16, 1),
 																							 parent=self,
@@ -67,7 +73,7 @@ class MapController(px_controller.Controller):
 				else:
 					# work out ways out of the space
 					exit_map_value=0
-					if y+1<18:
+					if y+1<17:
 						if entity.map[y + 1][x] not in impassables:
 							this_tile.components['controller'].addExit(this_tile, px_entity.eDirections.up)
 							exit_coord = Vec3(x*16+8,y*16+10,0)
@@ -85,7 +91,7 @@ class MapController(px_controller.Controller):
 							exit_coord = Vec3(x * 16  +6, y * 16+8, 0)
 							exit_direction = px_entity.eDirections.left
 							exit_map_value += 4
-					if x+1<20:
+					if x+1<30:
 						if entity.map[y][x + 1] not in impassables:
 							this_tile.components['controller'].addExit(this_tile, px_entity.eDirections.right)
 							exit_coord = Vec3(x * 16 + 10, y * 16+8, 0)
@@ -94,7 +100,10 @@ class MapController(px_controller.Controller):
 
 					if entity.map[y][x] == "o":
 						this_tile.components['controller'].setState(this_tile, tile.eTileStates.hole)
-						entity.holes.append(Hole(Vec3(x, y, 0), exit_coord, exit_direction))
+						entity.holes.append(Hole(pos=Vec3(x, y, 0),
+																		 exit=exit_coord,
+																		 direction=exit_direction)
+																)
 					elif entity.map[y][x] == "O":
 						this_tile.components['controller'].setState(this_tile, tile.eTileStates.cutscene_hole)
 					elif entity.map[y][x] == "T":
@@ -119,10 +128,8 @@ class MapController(px_controller.Controller):
 						# ][exit_map_value]
 
 						if exit_map_value>15:
-							print(f"warning: exit map value boo boo {exit_map_value}")
+							px_log.log(f"warning: exit map value boo boo {exit_map_value}")
 						this_tile.components['controller'].setState(this_tile, tile.eTileStates.tunnel_no_exit+exit_map_value)
-
-
 					else:
 						if entity.map[y][x] == "B":
 							if bunny_to_place<entity.game.getNumBunnies():
@@ -186,6 +193,7 @@ class MapController(px_controller.Controller):
 		pass
 
 	def getNearestBunny(self, entity, pos):
+		#todo: check which bunny is nearest
 		return entity.bunnies[0]
 
 	def getLocFromCoord(self,entity,x,y):
@@ -201,6 +209,9 @@ class MapController(px_controller.Controller):
 		return entity.tiles[int(pos.y/16)][int(pos.x/16)]
 
 	def getNextHole(self,entity,x,y):
+		if entity.won:
+
+			return False
 		for index,hole in enumerate(entity.holes):
 			if (x==hole.pos.x and y==hole.pos.y):
 				if len(entity.holes)>index+1:
@@ -214,14 +225,15 @@ class MapController(px_controller.Controller):
 	def getFoxStarts(self,entity):
 		return entity.fox_starts
 
-	def poo(self, entity, current_tile, data):
+	def poo(self, entity, current_tile, bunny):
 		# can poo in a clear tile only
 		current_tile.setState(tile.eTileStates.poo)
 		entity.num_poos+=1
-		data.score+=1
+		bunny.score+=1
 		if entity.num_poos>= entity.num_spaces:
-			data.score+=100
-			entity.game.setGameMode(PacBun.eGameModes.escape)
-			print("Win not implemented yet")
-			return True	# signal win
+			bunny.score+=100
+			# todo: spawn an entity saying this
+			entity.game.flagReady('escape')
+			entity.won=True
+			return True	# signal won
 		return False

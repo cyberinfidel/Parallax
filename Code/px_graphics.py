@@ -599,16 +599,16 @@ class MultiImage(px_entity.Component):
 
 # graphics component for a single animation only
 class SingleAnim(px_entity.Component):
-	class Data(object):
-		def __init__(self, entity):
-			self.current_frame = 0
-			self.current_time = 0
-
 	def __init__(self, game, data):
 		super(SingleAnim, self).__init__(game)
 		self.rl = data['RenderLayer']
 		self.anim = data['Anims'][0]['AnimType'](self.rl, data["Anims"][0]["Frames"])
 		self.name = data["Name"]
+
+	def initEntity(self, entity, data=False):
+		entity.current_frame = 0
+		entity.current_time = 0
+		self.anim.initInstance(entity=entity)
 
 	def getAnim(self):
 		return self.anim
@@ -617,7 +617,7 @@ class SingleAnim(px_entity.Component):
 		self.anim.advanceAnim(entity, time)
 
 	def draw(self, entity):
-		frame = self.anim[0]
+		frame = self.anim.getCurrentFrame(entity)
 		return self.rl.queueImage(frame.image, entity.pos.x - frame.origin_x, entity.pos.y + frame.origin_y, entity.pos.z + frame.origin_z)
 
 	def hasShadow(self):

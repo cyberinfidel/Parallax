@@ -97,16 +97,23 @@ class Controller(px_controller.Controller):
 		# decide if bunny is near middle of tile and if we should do womething special with the tile it's in
 		if (6 < x_in_tile < 10) and (6 < y_in_tile <10):
 			if current_tile.state == tile.eTileStates.path:
-				map_controller.poo(map_entity, current_tile, entity)	# returns true if count of poos reaches number of empty spaces
-				entity.game.reportScore(1)
+				map_controller.poo(map_entity, current_tile, entity)
+					# returns true if count of poos reaches number of empty spaces
+					# i.e. won
 			elif current_tile.state == tile.eTileStates.hole:
 				# gone down a hole so find the next hole for the bunny to exit from
 				# and setup the direction for the bunny to run from the entity for that hole
-				if self.game.game_mode == PacBun.eGameModes.escape:
-					self.game.setGameMode(PacBun.eGameModes.win)
-					self.setState(entity, PacBun.eStates.dead)
-					entity.blink = True
+				# if self.game.game_mode == PacBun.eGameModes.escape:
+				# 	print("Escaped!")
 				hole = map_controller.getNextHole(map_entity,x,y)
+				if not hole:
+					# bunny didn't exit hole (end of map)
+					# remove bunny
+					self.setState(entity,PacBun.eStates.dead)
+					# signal scene end
+					entity.game.flagReady('next_scene')
+					return
+
 				entity.pos = copy.deepcopy(hole.exit)
 				entity.facing = hole.direction
 				# avoid any unexpected turns that were already queued
@@ -165,13 +172,13 @@ class Controller(px_controller.Controller):
 
 
 		px_controller.basic_physics(entity.pos, entity.vel)
-		entity.pos.clamp(Vec3(0,0,0),Vec3(319,319,0))
+		# entity.pos.clamp(Vec3(0,0,0),Vec3(319,319,0))
 
 
 	def receiveCollision(self, A, message):
 		if message:
 			if message.damage>0:
-				A.game.setGameMode(PacBun.eGameModes.game_over)
+				# A.game.setGameMode(PacBun.eGameModes.game_over)
 				A.game_pad=False
 				A.setState(PacBun.eStates.dead)
 

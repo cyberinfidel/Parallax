@@ -27,9 +27,12 @@ class eGameModes:
 
 
 class Game(object):
-	def __init__(self, config_file):
+	def __init__(self):
 		px_log.log("Getting game data...")
-		self.game_data = px_utility.getDataFromFile(config_file)['game']
+		self.game_data = px_utility.getDataFromFile('game.config')['game']
+
+		px_log.log("Getting user data...")
+		self.user_data = px_utility.getDataFromFile('user.config')['user']
 
 		px_log.log("Setting up window...")
 		# Initialize the video system - this implicitly initializes some
@@ -42,8 +45,8 @@ class Game(object):
 		self.title = self.game_data['title']
 		self.res_x = self.game_data['res_x']
 		self.res_y = self.game_data['res_y']
-		self.zoom = self.game_data['windowed_zoom']
-		self.fullscreen = self.game_data['fullscreen']
+		self.zoom = self.user_data['zoom']
+		self.fullscreen = self.user_data['fullscreen']
 		self.clear_color =  self.game_data['clear_color']
 
 		sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_JOYSTICK | sdl2.SDL_INIT_GAMECONTROLLER)
@@ -120,10 +123,9 @@ class Game(object):
 		# sdl2.SDL_SetWindowSize(self.window.window,1280,720)
 		# sdl2.SDL_SetWindowSize(self.window.window,1440,810)
 		# sdl2.SDL_SetWindowSize(self.window.window,1920,1080)
-		if self.game_data['fs_force_res']:
-			sdl2.SDL_SetWindowSize(self.window.window, self.game_data['fs_force_res'][0], self.game_data['fs_force_res'][1])
-		else:
-			sdl2.SDL_SetWindowSize(self.window.window,2880,1620)
+		sdl2.SDL_SetWindowSize(self.window.window,
+													 self.res_x*self.zoom,
+													 self.res_y*self.zoom)
 		sdl2.SDL_SetWindowFullscreen(self.window.window, sdl2.SDL_WINDOW_FULLSCREEN)
 		return
 		#
