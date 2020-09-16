@@ -144,7 +144,7 @@ class FadeRenderLayer(Event):
 		entity.game.setColorCast(self.rl, self.step_color * px_graphics.Color(dt, dt, dt, dt) + current_color)
 		return eEventStates.live
 
-class SpawnDirector(Event):
+class MakeDirector(Event):
 	def __init__(self, director, *parameters):
 		super(Event, self).__init__()
 		self.director = director
@@ -162,50 +162,40 @@ class SpawnDirector(Event):
 		# ask the game to generate the director entity
 		entity.game.requestNewEntity(
 			template='director',
-			name=f'Spawned Director:{self.director}',
+			name=f'Made Director:{self.director}',
 			parent=entity.game,
 			init=init_string
 		)
 		return eEventStates.dead
 
-# spawns a list of entities
-# pass it a list of "SpawnEntity"s
-class Spawn(Event):
-	def __init__(self, spawns):
-		super(Event, self).__init__()
-		self.spawns = spawns
-
-	def update(self, entity, dt):
-		# spawn entities in spawns list
-		for spawn in self.spawns:
-			entity.game.requestNewEntity(
-				template= spawn.template,
-				name = spawn.name,
-				pos = spawn.pos,
-				parent = False,
-				init = spawn.init,
-				data = spawn.data
-			)
-		return eEventStates.dead # all done
-
-# data container used by Spawn - not an Event itself
-class SpawnEntity(object):
+class MakeEntity(Event):
 	def __init__(self,
-							template,
-							name = False,
-							pos = Vec3(0, 0, 0),
-							parent = False,
-							init = False,
-							 data = False):
-		self.template=template
+							 template,
+							 name=False,
+							 pos=Vec3(0, 0, 0),
+							 parent=False,
+							 init=False,
+							 data=False):
+		self.template = template
+		self.name = name if name else template
 		self.pos = pos
 		self.parent = parent
-		self.name = name if name else template
 		self.init = init
 		self.data = data
+		super(Event, self).__init__()
+
+	def update(self, director, dt):
+		director.game.requestNewEntity(
+			template= self.template,
+			name = self.name,
+			pos = self.pos,
+			parent = False,
+			init = self.init,
+			data = self.data
+		)
+		return eEventStates.dead # all done
 
 # signals to end the scene
-# todo: set up how to specify the next scene better
 class NextScene(Event):
 	def __init__(self, next_scene=-1, mode=False, cooldown=5):
 		super(NextScene, self).__init__()

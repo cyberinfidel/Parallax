@@ -805,7 +805,7 @@ graphics = {
 			"Template": px_graphics.SingleImage,
 			# "RenderLayer": renlayer,
 			"Image":
-					["Graphics/Title/Title.png", 10, -24, 0],
+					["Graphics/Title/Title.png", 98, 21, 0],
 	},
 	'escape': {
 			"Name": "Escape Overlay",
@@ -913,5 +913,17 @@ game_templates = {
 	'message':{
 		'controller': components['controllers']['message_controller'],
 		'graphics': { 'component': components['graphics']['message_graphics'], 'render layer': 'overlay'},
+	},
+	'pacbun bye': {
+		'graphics': {'component': components['graphics']['pacbun_graphics'], 'render layer': 'game'},
+	},
+	'pinkie bye': {
+		'graphics': {'component': components['graphics']['pinkie_graphics'], 'render layer': 'game'},
+	},
+	'blue bye': {
+		'graphics': {'component': components['graphics']['blue_graphics'], 'render layer': 'game'},
+	},
+	'bowie bye': {
+		'graphics': {'component': components['graphics']['bowie_graphics'], 'render layer': 'game'},
 	},
 }
