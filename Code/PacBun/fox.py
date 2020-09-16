@@ -195,6 +195,8 @@ class Controller(px_controller.Controller):
 					'bowie': eFoxStates.caughtBowie,
 				}[message.source.name]
 											)
+				message.source.setState(PacBun.eStates.dead)
+				A.game.setFlag('bunny_caught')
 				# print(f"col source{message.source.entity.pos.x},{message.source.entity.pos.y}")
 		# 	print(f"Hedge source{message.source.entity.pos.x}{message.source.entity.pos.y}")
 			# 	# A.controller_data.vel = Vec3(0,0,0)

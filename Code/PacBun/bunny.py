@@ -111,7 +111,7 @@ class Controller(px_controller.Controller):
 					# remove bunny
 					self.setState(entity,PacBun.eStates.dead)
 					# signal scene end
-					entity.game.flagReady('next_scene')
+					entity.game.setFlag('next_scene')
 					return
 
 				entity.pos = copy.deepcopy(hole.exit)

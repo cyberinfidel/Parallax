@@ -1,6 +1,5 @@
-from px_entity import eStates
+import px_entity
 from px_controller import Controller
-from px_game import eGameModes
 from px_vector import Vec3
 import px_graphics
 
@@ -145,9 +144,29 @@ class FadeRenderLayer(Event):
 		entity.game.setColorCast(self.rl, self.step_color * px_graphics.Color(dt, dt, dt, dt) + current_color)
 		return eEventStates.live
 
+class SpawnDirector(Event):
+	def __init__(self, director, *parameters):
+		super(Event, self).__init__()
+		self.director = director
+		self.parameters = parameters
 
-# Fades in a RenderLayer held by the game instance
-# via changing alpha of color cast
+	def update(self, entity, dt):
+		# todo: find nicer way
+		# build up string to generate director wanted
+		init_string = f"import PB_directors\n"\
+									f"self.events = PB_directors.director_{self.director}(self.game"
+		for parameter in self.parameters:
+			init_string+=',"'+(parameter)+'"'
+		init_string+=")"
+
+		# ask the game to generate the director entity
+		entity.game.requestNewEntity(
+			template='director',
+			name=f'Spawned Director:{self.director}',
+			parent=entity.game,
+			init=init_string
+		)
+		return eEventStates.dead
 
 # spawns a list of entities
 # pass it a list of "SpawnEntity"s
@@ -188,19 +207,58 @@ class SpawnEntity(object):
 # signals to end the scene
 # todo: set up how to specify the next scene better
 class NextScene(Event):
-	def __init__(self, next_scene=-1, cooldown=5):
+	def __init__(self, next_scene=-1, mode=False, cooldown=5):
 		super(NextScene, self).__init__()
 		self.next_scene = next_scene
+		self.mode = mode
 		self.cooldown=cooldown
 
 	def update(self, entity, dt):
-		entity.game.nextScene(self.next_scene)
+		entity.game.nextScene(next_scene= self.next_scene,
+													mode=self.mode
+													)
 		return eEventStates.dead
 
 # signals to exit the program
 class Quit(Event):
 	def update(self, entity, dt):
 		entity.game.quit()
+
+class WaitForOneOfFlags(Event):
+	def __init__(self, game, flags):
+		super(Event, self).__init__()
+		self.game = game
+		self.flags = flags
+		for flag in self.flags:
+			game.registerFlag(flag)
+
+	def update(self, entity, dt):
+		for flag in self.flags:
+			if self.game.checkFlagAndClear(flag):
+				return  eEventStates.dead
+			return eEventStates.block
+
+class KillEntity(Event):
+	def __init__(self, name):
+		self.name = name
+
+	def update(self, entity, dt):
+		dead = entity.game.getEntityByName(self.name)
+		dead.setState(px_entity.eStates.dead)
+		return eEventStates.dead
+
+class WaitForFlag(Event):
+	def __init__(self, game, flag):
+		super(Event, self).__init__()
+		self.game = game
+		self.flag = flag
+		game.registerFlag(flag)
+
+	def update(self, entity, dt):
+		if self.game.checkFlagAndClear(self.flag):
+			return  eEventStates.dead
+		return eEventStates.block
+
 
 class WaitFor(Event):
 	def __init__(self, condition_function, parameter=None):

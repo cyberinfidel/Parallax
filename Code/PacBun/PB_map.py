@@ -233,7 +233,7 @@ class MapController(px_controller.Controller):
 		if entity.num_poos>= entity.num_spaces:
 			bunny.score+=100
 			# todo: spawn an entity saying this
-			entity.game.flagReady('escape')
+			entity.game.setFlag('escape')
 			entity.won=True
 			return True	# signal won
 		return False

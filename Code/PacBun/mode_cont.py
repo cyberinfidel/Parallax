@@ -61,7 +61,7 @@ class BunnyChoiceController(px_controller.Controller):
 		elif entity.game_pad.getAndClear(px_game_pad.eActions.fullscreen):
 			entity.game.toggleFullscreen()
 		elif entity.game_pad.getAndClear(px_game_pad.eActions.jump):
-			entity.game.nextScene(mode='play')
+			entity.game.setFlag('next_scene')
 
 ########################################
 # controller for play

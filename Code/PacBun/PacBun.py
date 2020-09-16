@@ -60,6 +60,7 @@ class PacBun(px_game.Game):
 		self.scroll = False
 		self.sound_mixer = px_sound.SoundMixer(self)
 		self.collision_manager = CollisionManager(game=self)
+		self.flags={}
 
 		px_log.log("Making game scope templates...")
 		self.templates = self.makeTemplates(self.game_data['templates'])
@@ -114,6 +115,12 @@ class PacBun(px_game.Game):
 		self.game_mode=eGameModes.paused
 	##################################################
 
+	def reportCaught(self, bunny):
+		pass
+
+	##################################################
+
+
 	def updatePlay(self, dt): # kill
 		# draw score
 		self.renlayer.setColorCast(px_graphics.Color(1, 1, 1, 1))
@@ -136,11 +143,9 @@ class PacBun(px_game.Game):
 		gc.enable()
 		gc.collect()
 
-		# reset ready flags
-		self.ready={
-			'escape':False,
-			'next_scene':False,
-		}
+		# clear all the flags
+		for flag in self.flags:
+			self.flags[flag]=False
 
 		if mode:
 			if mode!=self.current_mode:
@@ -197,22 +202,6 @@ class PacBun(px_game.Game):
 		# if "Map" in self.scene_data:
 		# 	self.level = map.Map(self, self.scene_data, self.templates['tile'])
 
-		self.bunnies = []
-
-		if False:#self.playing:
-		# initialise creatures todo: make less bespoke (and work)
-			for bunny in range(0,self.num_bunnies):
-				name = ['blue','pinkie','pacbun','bowie'][bunny]
-				self.bunnies.append(
-					self.requestNewEntity(
-						self.templates[name],
-						pos=self.level.getBunnyStarts()[bunny%len(self.level.getBunnyStarts())],
-						parent=self,
-						name=name))
-				game_pad = self.input.getGamePad(bunny)
-				self.bunnies[bunny].controller_data.level = self.level
-				if game_pad:
-					self.bunnies[bunny].setGamePad(game_pad)
 		if 'templates' in self.scene_data:
 			self.makeTemplates(self.scene_data['templates'])
 		if 'entities' in self.scene_data:
@@ -271,12 +260,15 @@ class PacBun(px_game.Game):
 	def reportScore(self, increment):
 		self.current_score+=increment
 
-	def flagReady(self, for_what):
-		self.ready[for_what] = True
+	def registerFlag(self, flag):
+		self.flags[flag]=False
 
-	def checkReady(self, for_what):
-		if self.ready[for_what]:
-			self.ready[for_what]=False
+	def setFlag(self, flag):
+		self.flags[flag] = True
+
+	def checkFlagAndClear(self, flag):
+		if self.flags[flag]:
+			self.flags[flag]=False
 			return True
 		return False
 
