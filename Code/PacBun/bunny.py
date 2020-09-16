@@ -49,7 +49,7 @@ class Controller(px_controller.Controller):
 		entity.cooldown = -1
 		entity.vel = Vec3(0.0,0.0,0.0)
 		entity.queued_vel = Vec3(0.0,0.0,0.0)
-		entity.facing = False
+		entity.facing = None
 		entity.queued_facing = 4
 		entity.state = PacBun.eStates.idle
 		entity.queued_state = entity.state
@@ -59,6 +59,46 @@ class Controller(px_controller.Controller):
 		bunny_speed = 1
 		map_entity = entity.parent
 		map_controller = map_entity.getComponent('controller')
+
+		if entity.state in (PacBun.eStates.enterHoleUp,PacBun.eStates.enterHoleLeft,
+												PacBun.eStates.enterHoleDown,PacBun.eStates.enterHoleRight):
+			if self.coolDown(entity,dt):
+				return
+			if not entity.hole:
+				# bunny didn't exit hole (end of map)
+				# remove bunny
+				self.setState(entity, PacBun.eStates.dead)
+				# signal scene end
+				entity.game.setFlag('next_scene')
+				return
+			self.setState(entity,(
+				PacBun.eStates.leavesHoleDown,
+				PacBun.eStates.leavesHoleLeft,
+				PacBun.eStates.leavesHoleUp,
+				PacBun.eStates.leavesHoleRight,
+										)[entity.hole.direction],
+										cooldown=0.7)
+			entity.pos = copy.deepcopy(entity.hole.exit)
+			return
+
+		if entity.state in (PacBun.eStates.leavesHoleUp,PacBun.eStates.leavesHoleLeft,
+												PacBun.eStates.leavesHoleDown,PacBun.eStates.leavesHoleRight):
+			if self.coolDown(entity, dt):
+				return
+
+			entity.invulnerable=False
+			entity.facing = entity.hole.direction
+			# avoid any unexpected turns that were already queued
+			entity.queued_facing = entity.hole.direction
+			entity.queued_state = (
+				PacBun.eStates.runDown,
+				PacBun.eStates.runLeft,
+				PacBun.eStates.runUp,
+				PacBun.eStates.runRight
+			)[entity.facing]
+			# actually set the state
+			self.setState(entity, entity.queued_state)
+
 		# get input and set up an action
 		if entity.game_pad:
 			# i.e. this bunny is being controlled by a player with a game_pad
@@ -105,27 +145,15 @@ class Controller(px_controller.Controller):
 				# and setup the direction for the bunny to run from the entity for that hole
 				# if self.game.game_mode == PacBun.eGameModes.escape:
 				# 	print("Escaped!")
-				hole = map_controller.getNextHole(map_entity,x,y)
-				if not hole:
-					# bunny didn't exit hole (end of map)
-					# remove bunny
-					self.setState(entity,PacBun.eStates.dead)
-					# signal scene end
-					entity.game.setFlag('next_scene')
-					return
+				entity.hole = map_controller.getNextHole(map_entity,x,y)
+				self.setState(entity, {
+					px_entity.eDirections.up: PacBun.eStates.enterHoleUp,
+					px_entity.eDirections.down: PacBun.eStates.enterHoleDown,
+					px_entity.eDirections.left: PacBun.eStates.enterHoleLeft,
+					px_entity.eDirections.right: PacBun.eStates.enterHoleRight,
+				}[entity.facing], cooldown=0.2)
+				entity.invulnerable=True
 
-				entity.pos = copy.deepcopy(hole.exit)
-				entity.facing = hole.direction
-				# avoid any unexpected turns that were already queued
-				entity.queued_facing = hole.direction
-				entity.queued_state = (
-					PacBun.eStates.runDown,
-					PacBun.eStates.runLeft,
-					PacBun.eStates.runUp,
-					PacBun.eStates.runRight
-				)[entity.facing]
-				# actually set the state
-				self.setState(entity, entity.queued_state)
 
 		if ((
 				(entity.facing == px_entity.eDirections.left and entity.queued_facing == px_entity.eDirections.right)
@@ -164,20 +192,15 @@ class Controller(px_controller.Controller):
 				or ((entity.facing == px_entity.eDirections.down) and not (px_entity.eDirections.down in exits)):
 					entity.vel.y=0
 
-			if entity.vel.x==0 and entity.vel.y==0:
-				entity.setState(PacBun.eStates.idle)
-
-
-
-
+		if entity.vel.x==0 and entity.vel.y==0:
+			entity.setState(PacBun.eStates.idle)
 
 		px_controller.basic_physics(entity.pos, entity.vel)
-		# entity.pos.clamp(Vec3(0,0,0),Vec3(319,319,0))
 
 
 	def receiveCollision(self, A, message):
 		if message:
-			if message.damage>0:
+			if message.damage>0 and not A.invulnerable:
 				# A.game.setGameMode(PacBun.eGameModes.game_over)
 				A.game_pad=False
 				A.setState(PacBun.eStates.dead)
@@ -195,10 +218,10 @@ class Collider(px_collision.Collider):
 			entity.orig = Vec3(4,4,4)
 
 	def getCollisionMessage(self, entity):
-		if entity.state!=PacBun.eStates.dead:
-			return(px_collision.Message(source=entity, damage_hero=1))
+		if entity.state==PacBun.eStates.dead or entity.invulnerable:
+			return (px_collision.Message(source=entity))
 		else:
-			return(px_collision.Message(source=entity))
+			return(px_collision.Message(source=entity, damage_hero=1))
 
 
 

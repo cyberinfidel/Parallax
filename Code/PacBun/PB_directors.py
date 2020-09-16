@@ -4,6 +4,8 @@ import px_graphics
 
 from px_vector import Vec3
 
+#####################################################################
+# scene directors - actually make a scene happen
 def director_meet(game):
 	bunnies = game.game_data['bunnies']
 	return [
@@ -29,6 +31,14 @@ def director_meet(game):
 		MakeDirector('fade_to_next_scene')
 	]
 
+def director_drake_blue(game):
+	return [
+		Message("Drake Blue Games presents...", Vec3(240, 180, 0), Color(0.8,0.75,1.0,1.0), -1, px_graphics.eAlign.centre),
+		Delay(2),
+		MakeDirector('fade_to_mode','title'),
+	]
+
+
 def director_title(game):
 	bunnies = game.game_data['bunnies']
 	return [
@@ -37,18 +47,18 @@ def director_title(game):
 		FadeToClearColor(Color(0, 0, 0), 1),
 		Delay(1),
 		MakeEntity(template='title',
-															name='title',
-															pos=Vec3(240, 185, 0),
-															parent=game
-															),
+							 name='title',
+							 pos=Vec3(240, 185, 0),
+							 parent=game
+							 ),
 		MakeEntity(template='pacbun bye', name='pacbun',
-									pos=Vec3(230, 138, 1), parent=game),
+							 pos=Vec3(230, 138, 1), parent=game),
 		MakeEntity(template='pinkie bye', name='pinkie',
-									pos=Vec3(210, 138, 1), parent=game),
+							 pos=Vec3(210, 138, 1), parent=game),
 		MakeEntity(template='blue bye', name='blue',
-									pos=Vec3(250, 138, 1), parent=game),
+							 pos=Vec3(250, 138, 1), parent=game),
 		MakeEntity(template='bowie bye', name='bowie',
-									pos=Vec3(270, 138, 1), parent=game),
+							 pos=Vec3(270, 138, 1), parent=game),
 		FadeRenderLayer('overlay', Color(1,1,1,1),1),
 		FadeRenderLayer('game', Color(1,1,1,1),1),
 		Delay(2),
@@ -69,12 +79,12 @@ def director_high_scores(game):
 		Delay(1),
 		Message("Best", Vec3(207, 260, 0), Color(1, 1, 0, 1), -1, px_graphics.eAlign.left),
 		MakeEntity(template='high_scores',
-															name='high scores',
-															pos=Vec3(240, 250, 50),
-															parent=game,
-															init=	"import high_score\n"
-																		 "high_score.init(self)"
-															),
+							 name='high scores',
+							 pos=Vec3(240, 250, 50),
+							 parent=game,
+							 init=	"import high_score\n"
+											"high_score.init(self)"
+							 ),
 		Delay(0.8),
 		Message("est", Vec3(230, 260, 0), Color(0, 1, 1, 1), -1, px_graphics.eAlign.left),
 		Delay(0.8),
@@ -97,17 +107,17 @@ def director_quit(game):
 		Message("Goodbye and thank you for playing", Vec3(240, 165, 0), bunnies['pacbun'].color, 3, px_graphics.eAlign.centre),
 		Message("with me and my friends.", Vec3(240, 150, 0), bunnies['pacbun'].color, 3, px_graphics.eAlign.centre),
 		MakeEntity(template='pacbun bye', name='pacbun',
-									pos=Vec3(240, 115, 1), parent=game),
+							 pos=Vec3(240, 115, 1), parent=game),
 		MakeEntity(template='pinkie bye', name='pinkie',
-									pos=Vec3(221, 89, 1), parent=game),
+							 pos=Vec3(221, 89, 1), parent=game),
 		MakeEntity(template='blue bye', name='blue',
-									pos=Vec3(236, 85, 1), parent=game),
+							 pos=Vec3(236, 85, 1), parent=game),
 		MakeEntity(template='bowie bye', name='bowie',
-									pos=Vec3(252, 86, 1), parent=game),
+							 pos=Vec3(252, 86, 1), parent=game),
 		Delay(2),
 		FadeRenderLayer('game', Color(0,0,0,0),1),
 		FadeRenderLayer('overlay', Color(0,0,0,0),1),
-		Delay(1),
+		Delay(2),
 		Quit()
 	]
 
@@ -144,13 +154,43 @@ def director_bunny_select(game):
 		SetRenderLayerColor('game', Color(0,0,0,0)),
 		SetRenderLayerColor('overlay', Color(0,0,0,0)),
 		FadeToClearColor(Color.fromInts(0, 0, 0), 1),
+		Message("Choose your bunny:", Vec3(240, 260, 0), Color(1,1,1,1), -1, px_graphics.eAlign.centre),
+		MakeEntity('pacbun choose', data={
+			'pos': Vec3(210,200,0),
+			'parent': 'bunny choice',
+			'bun num': 0,
+			'bun name': 'PacBun',
+			'message color': px_graphics.Color(1, 1, 0, 1),
+		}),
+		MakeEntity('pinkie choose', data={
+			'pos': Vec3(230, 200, 0),
+			'parent': 'bunny choice',
+			'bun num': 1,
+			'bun name': 'Pinkie',
+			'message color': px_graphics.Color(1, 0.8, 0.8, 1),
+		}),
+		MakeEntity('blue choose', data={
+			'pos': Vec3(250, 200, 0),
+			'parent': 'bunny choice',
+			'bun num': 2,
+			'bun name': 'Blue',
+			'message color': px_graphics.Color(0.5, 0.5, 1.0, 1),
+		}),
+		MakeEntity('bowie choose', data={
+			'pos': Vec3(270, 200, 0),
+			'parent': 'bunny choice',
+			'bun num': 3,
+			'bun name': 'Bowie',
+			'message color': px_graphics.Color(1, 1, 1.0, 1),
+		}),
 		FadeRenderLayer('overlay', Color(1, 1, 1, 1), 1),
 		FadeRenderLayer('game', Color(1, 1, 1, 1), 1),
-		Message("Choose your bunny:", Vec3(240, 260, 0), Color(1,1,1,1), -1, px_graphics.eAlign.centre),
 		WaitForFlag('next_scene'),
 		MakeDirector('fade_to_mode','play')
 	]
 
+#####################################################################
+# assistant directors - brought in by directors to do specific things
 def director_fade_to_next_scene(game):
 	return [
 		FadeToClearColor(Color(0, 0, 0), 1),

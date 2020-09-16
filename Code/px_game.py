@@ -306,8 +306,7 @@ class Game(object):
 		gc.collect()
 
 		# clear all the flags
-		for flag in self.flags:
-			self.flags[flag]=False
+		self.flags={}
 
 		if mode:
 			if mode!=self.current_mode:

@@ -172,7 +172,7 @@ class MakeEntity(Event):
 	def __init__(self,
 							 template,
 							 name=False,
-							 pos=Vec3(0, 0, 0),
+							 pos=False,
 							 parent=False,
 							 init=False,
 							 data=False):

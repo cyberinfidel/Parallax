@@ -22,7 +22,9 @@ class eStates(px_entity.eStates):
 	runDown,runLeft, runUp, runRight,\
 		cleanLeft, cleanRight,\
 		caughtPacBun, caughtPinkie, caughtBlue, caughtBowie,\
-		=range(px_entity.eStates.numStates+1,px_entity.eStates.numStates+11)
+		enterHoleDown, enterHoleLeft, enterHoleUp, enterHoleRight,\
+		leavesHoleDown, leavesHoleLeft, leavesHoleUp, leavesHoleRight,\
+		=range(px_entity.eStates.numStates+1,px_entity.eStates.numStates+19)
 
 # class eGameModes:
 # 	quit,\

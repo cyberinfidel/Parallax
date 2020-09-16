@@ -83,6 +83,80 @@ graphics = {
 						["Graphics/Bunny/White/RunRight 4.png", 8, 10, 0, 0.075],
 					],
 			},
+			{
+				"Name": "Bunny Enters Hole Right",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.enterHoleRight],
+				"Frames": [
+					["Graphics/Bunny/White/Hole 1.png", 5, 4, 0, 0.1],
+					["Graphics/Bunny/White/Hole 4.png", 1, 2, 0, 0.1],
+				],
+			},
+			{
+				"Name": "Bunny Enters Hole Left",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.enterHoleLeft],
+				"Frames": [
+					["Graphics/Bunny/White/Hole 1.png", 5, 4, 0, 0.1],
+					["Graphics/Bunny/White/Hole 4.png", 1, 2, 0, 0.1],
+				]
+			},
+			{
+				"Name": "Bunny Enters Hole Up",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.enterHoleUp],
+				"Frames":
+					[
+						["Graphics/Bunny/White/Hole 1.png", 5, 4, 0, 0.1],
+						["Graphics/Bunny/White/Hole 4.png", 1, 2, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Enters Hole Down",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.enterHoleDown],
+				"Frames":
+					[
+						["Graphics/Bunny/White/Hole 2.png", 5, 4, 0, 0.1],
+						["Graphics/Bunny/White/Hole 4.png", 1, 2, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Leaves Hole Right",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.leavesHoleRight],
+				"Frames":
+					[
+						["Graphics/Bunny/White/Hole 3.png", 6, 4, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Leaves Hole Left",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.leavesHoleLeft],
+				"Frames":
+					[
+						["Graphics/Bunny/White/Hole 3.png", 2, 4, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Leaves Hole Up",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.leavesHoleUp],
+				"Frames":
+					[
+						["Graphics/Bunny/White/Hole 3.png", 4, 2, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Leaves Hole Down",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.leavesHoleDown],
+				"Frames":
+					[
+						["Graphics/Bunny/White/Hole 3.png", 4, 6, 0, 0.1],
+					],
+			},
 
 		]
 
@@ -157,6 +231,80 @@ graphics = {
 						["Graphics/Bunny/Yellow/RunRight 2.png", 8, 10, 0, 0.05],
 						["Graphics/Bunny/Yellow/RunRight 3.png", 8, 10, 0, 0.05],
 						["Graphics/Bunny/Yellow/RunRight 4.png", 8, 10, 0, 0.075],
+					],
+			},
+			{
+				"Name": "Bunny Enters Hole Right",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.enterHoleRight],
+				"Frames": [
+					["Graphics/Bunny/Yellow/Hole 1.png", 5, 4, 0, 0.1],
+					["Graphics/Bunny/Yellow/Hole 4.png", 1, 2, 0, 0.1],
+				],
+			},
+			{
+				"Name": "Bunny Enters Hole Left",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.enterHoleLeft],
+				"Frames": [
+					["Graphics/Bunny/Yellow/Hole 1.png", 5, 4, 0, 0.1],
+					["Graphics/Bunny/Yellow/Hole 4.png", 1, 2, 0, 0.1],
+				]
+			},
+			{
+				"Name": "Bunny Enters Hole Up",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.enterHoleUp],
+				"Frames":
+					[
+						["Graphics/Bunny/Yellow/Hole 1.png", 5, 4, 0, 0.1],
+						["Graphics/Bunny/Yellow/Hole 4.png", 1, 2, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Enters Hole Down",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.enterHoleDown],
+				"Frames":
+					[
+						["Graphics/Bunny/Yellow/Hole 2.png", 5, 4, 0, 0.1],
+						["Graphics/Bunny/Yellow/Hole 4.png", 1, 2, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Leaves Hole Right",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.leavesHoleRight],
+				"Frames":
+					[
+						["Graphics/Bunny/Yellow/Hole 3.png", 6, 4, 0, 0.5],
+					],
+			},
+			{
+				"Name": "Bunny Leaves Hole Left",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.leavesHoleLeft],
+				"Frames":
+					[
+						["Graphics/Bunny/Yellow/Hole 3.png", 2, 4, 0, 0.5],
+					],
+			},
+			{
+				"Name": "Bunny Leaves Hole Up",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.leavesHoleUp],
+				"Frames":
+					[
+						["Graphics/Bunny/Yellow/Hole 3.png", 4, 2, 0, 0.5],
+					],
+			},
+			{
+				"Name": "Bunny Leaves Hole Down",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.leavesHoleDown],
+				"Frames":
+					[
+						["Graphics/Bunny/Yellow/Hole 3.png", 4, 6, 0, 0.5],
 					],
 			},
 
@@ -235,6 +383,80 @@ graphics = {
 						["Graphics/Bunny/Pink/RunRight 4.png", 8, 10, 0, 0.075],
 					],
 			},
+			{
+				"Name": "Bunny Enters Hole Right",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.enterHoleRight],
+				"Frames": [
+					["Graphics/Bunny/Pink/Hole 1.png", 5, 4, 0, 0.1],
+					["Graphics/Bunny/Pink/Hole 5.png", 1, 2, 0, 0.1],
+				],
+			},
+			{
+				"Name": "Bunny Enters Hole Left",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.enterHoleLeft],
+				"Frames": [
+					["Graphics/Bunny/Pink/Hole 1.png", 5, 4, 0, 0.1],
+					["Graphics/Bunny/Pink/Hole 5.png", 1, 2, 0, 0.1],
+				]
+			},
+			{
+				"Name": "Bunny Enters Hole Up",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.enterHoleUp],
+				"Frames":
+					[
+						["Graphics/Bunny/Pink/Hole 1.png", 5, 4, 0, 0.1],
+						["Graphics/Bunny/Pink/Hole 5.png", 1, 2, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Enters Hole Down",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.enterHoleDown],
+				"Frames":
+					[
+						["Graphics/Bunny/Pink/Hole 2.png", 5, 4, 0, 0.1],
+						["Graphics/Bunny/Pink/Hole 5.png", 1, 2, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Leaves Hole Right",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.leavesHoleRight],
+				"Frames":
+					[
+						["Graphics/Bunny/Pink/Hole 3.png", 6, 4, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Leaves Hole Left",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.leavesHoleLeft],
+				"Frames":
+					[
+						["Graphics/Bunny/Pink/Hole 3.png", 2, 4, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Leaves Hole Up",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.leavesHoleUp],
+				"Frames":
+					[
+						["Graphics/Bunny/Pink/Hole 3.png", 4, 2, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Leaves Hole Down",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.leavesHoleDown],
+				"Frames":
+					[
+						["Graphics/Bunny/Pink/Hole 3.png", 4, 6, 0, 0.1],
+					],
+			},
 
 		]
 
@@ -309,6 +531,80 @@ graphics = {
 						["Graphics/Bunny/Blue/RunRight 2.png", 8, 10, 0, 0.05],
 						["Graphics/Bunny/Blue/RunRight 3.png", 8, 10, 0, 0.05],
 						["Graphics/Bunny/Blue/RunRight 4.png", 8, 10, 0, 0.075],
+					],
+			},
+			{
+				"Name": "Bunny Enters Hole Right",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.enterHoleRight],
+				"Frames": [
+					["Graphics/Bunny/Blue/Hole 1.png", 5, 4, 0, 0.1],
+					["Graphics/Bunny/Blue/Hole 5.png", 1, 2, 0, 0.1],
+				],
+			},
+			{
+				"Name": "Bunny Enters Hole Left",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.enterHoleLeft],
+				"Frames": [
+					["Graphics/Bunny/Blue/Hole 1.png", 5, 4, 0, 0.1],
+					["Graphics/Bunny/Blue/Hole 5.png", 1, 2, 0, 0.1],
+				]
+			},
+			{
+				"Name": "Bunny Enters Hole Up",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.enterHoleUp],
+				"Frames":
+					[
+						["Graphics/Bunny/Blue/Hole 1.png", 5, 4, 0, 0.1],
+						["Graphics/Bunny/Blue/Hole 5.png", 1, 2, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Enters Hole Down",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.enterHoleDown],
+				"Frames":
+					[
+						["Graphics/Bunny/Blue/Hole 2.png", 5, 4, 0, 0.1],
+						["Graphics/Bunny/Blue/Hole 5.png", 1, 2, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Leaves Hole Right",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.leavesHoleRight],
+				"Frames":
+					[
+						["Graphics/Bunny/Blue/Hole 3.png", 7, 4, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Leaves Hole Left",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.leavesHoleLeft],
+				"Frames":
+					[
+						["Graphics/Bunny/Blue/Hole 3.png", 3, 4, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Leaves Hole Up",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.leavesHoleUp],
+				"Frames":
+					[
+						["Graphics/Bunny/Blue/Hole 3.png", 5, 2, 0, 0.1],
+					],
+			},
+			{
+				"Name": "Bunny Leaves Hole Down",
+				"AnimType": px_graphics.AnimNoLoop,
+				"States": [PacBun.eStates.leavesHoleDown],
+				"Frames":
+					[
+						["Graphics/Bunny/Blue/Hole 3.png", 5, 6, 0, 0.1],
 					],
 			},
 
@@ -610,21 +906,21 @@ graphics = {
 				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.path],
 				"Frames":
-						[["Graphics/Path/Path.png", 8, 8, 0, 0.8]],
+					[["Graphics/Path/Path.png", 8, 8, 0, 0.8]],
 			},
 			{
 				"Name": "Path with Poo",
 				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.poo],
 				"Frames":
-						[["Graphics/Path/Path Poo.png", 8, 8, 0, 0.8]],
+					[["Graphics/Path/Path Poo.png", 8, 8, 0, 0.8]],
 			},
 			{
 				"Name": "Path with Hole",
 				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.hole],
 				"Frames":
-						[["Graphics/Path/Path Hole.png", 8, 8, 0, 0.8]],
+					[["Graphics/Path/Path Hole.png", 8, 8, 0, 0.8]],
 			},
 			{
 				"Name": "Hedge",
@@ -794,22 +1090,22 @@ graphics = {
 				"AnimType": px_graphics.AnimRandomStatic,
 				"States": [tile.eTileStates.cutscene_hole],
 				"Frames":
-						[["Graphics/Path/Path Hole.png", 8, 8, 0, 0.8]],
+					[["Graphics/Path/Path Hole.png", 8, 8, 0, 0.8]],
 			},
 
 		]
 
 	},	# end of tile
 	'title': {
-			"Name": "Title Picture",
-			"Template": px_graphics.SingleImage,
-			# "RenderLayer": renlayer,
-			"Image":
-					["Graphics/Title/Title.png", 98, 21, 0],
+		"Name": "Title Picture",
+		"Template": px_graphics.SingleImage,
+		# "RenderLayer": renlayer,
+		"Image":
+			["Graphics/Title/Title.png", 98, 21, 0],
 	},
 	'escape': {
-			"Name": "Escape Overlay",
-			"Template": px_graphics.SingleAnim,
+		"Name": "Escape Overlay",
+		"Template": px_graphics.SingleAnim,
 		"Anims": [
 			{
 				"Name": "Path with Cutscene Hole",
@@ -822,12 +1118,12 @@ graphics = {
 		]
 	},
 	'high_score': {
-			"Name": "Scoreboard",
-			"Template": high_score.ScoreTable,
+		"Name": "Scoreboard",
+		"Template": high_score.ScoreTable,
 	},
 	'new_high_score': {
-			"Name": "Scoreboard",
-			"Template": new_high_score.NewScore,
+		"Name": "Scoreboard",
+		"Template": new_high_score.NewScore,
 	},
 	'message': {
 		"Name": "Message",
