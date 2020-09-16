@@ -1,6 +1,5 @@
 # import python libs
 import sys
-import gc
 
 import sdl2.mouse
 
@@ -43,8 +42,6 @@ class PacBun(px_game.Game):
 		px_log.log("Window set up.")
 
 		px_log.log("Setting up render layers...")
-
-		self.render_layers = {}
 		for rl_name,rl_data in self.game_data['render layers'].items():
 			rl = px_graphics.RenderLayer(self.ren)
 			self.render_layers[rl_name]=rl
@@ -56,12 +53,7 @@ class PacBun(px_game.Game):
 					rl.addFont(font_data['file'],font_data['size'])
 		px_log.log("Render Layers set up.")
 
-		px_log.log("Setting up misc game settings...")
-		self.scroll = False
-		self.sound_mixer = px_sound.SoundMixer(self)
-		self.collision_manager = CollisionManager(game=self)
-		self.flags={}
-
+		# todo: consider moving this into px_game
 		px_log.log("Making game scope templates...")
 		self.templates = self.makeTemplates(self.game_data['templates'])
 		# self.templates.update(self.makeTemplates(overlay_templates_data, self.overlay_renlayer))
@@ -72,9 +64,7 @@ class PacBun(px_game.Game):
 		px_log.log("Game scope entities made.")
 
 		px_log.log("Getting scenes...")
-		self.scenes_data = (px_utility.getDataFromFile('PB_scenes.config'))
-		self.current_scene = 0
-
+		self.getScenesData('PB_scenes.config')
 
 		# put all separate images into texture atlasses for (more) efficient rendering
 		px_log.log("Making texture atlases...")
@@ -136,81 +126,7 @@ class PacBun(px_game.Game):
 			return
 	####################################################
 
-	# ends the scene and by default increments the scene counter for the next scene
-	# can change between modes e.g. playing and title
-	# next scene can be specified by name
-	def nextScene(self, next_scene=-1, mode=False): # kill
-		gc.enable()
-		gc.collect()
 
-		# clear all the flags
-		for flag in self.flags:
-			self.flags[flag]=False
-
-		if mode:
-			if mode!=self.current_mode:
-				px_log.log(f"Switching to mode: {mode}")
-				self.current_mode=mode
-				self.mode_data = self.game_data['modes'][self.current_mode] # convenience
-				# kill old mode
-				self.killEntitiesExceptDicts(
-					[
-						self.game_data['entities'],
-					]
-				)
-
-				# set up next mode
-				px_log.log(f"Making {mode} mode templates.")
-				if 'templates' in self.mode_data:
-					self.makeTemplates(self.mode_data['templates'])
-				px_log.log(f"Making {mode} mode entities.")
-				if 'entities' in self.mode_data:
-					self.makeEntities(self.mode_data['entities'])
-				if next_scene<0:	# no scene specified so revert to 0
-					next_scene = 0
-				px_log.flushToFile()
-
-
-
-		if next_scene>=0:
-			# specified scene rather than following pre-defined order
-			self.current_scene = next_scene
-			specified = "specified "
-		else:
-			self.current_scene+=1
-			if self.current_scene>=len(self.mode_data['scenes']):
-				# todo add check for completing the game instead of just looping?
-				self.current_scene=0
-			specified = ""
-		next_scene = self.mode_data['scenes'][self.current_scene]
-		px_log.log(
-			f"Switching to {specified}scene [{self.current_mode},{self.current_scene}]: {self.mode_data['scenes'][self.current_scene]}")
-
-		# kill old scene
-		self.killEntitiesExceptDicts(
-			[
-				self.game_data['entities'],
-			 	self.mode_data['entities'] if 'entities' in self.mode_data else {}
-			]
-		)
-
-		###################
-		# init next scene #
-		###################
-		self.scene_data = self.scenes_data['scenes'][self.mode_data['scenes'][self.current_scene]]
-		# initialise map todo: make another entity instead of special
-		# if "Map" in self.scene_data:
-		# 	self.level = map.Map(self, self.scene_data, self.templates['tile'])
-
-		if 'templates' in self.scene_data:
-			self.makeTemplates(self.scene_data['templates'])
-		if 'entities' in self.scene_data:
-			self.makeEntities(self.scene_data['entities'])
-		px_log.flushToFile()
-
-		gc.collect()
-		gc.disable()
-		if len(gc.garbage)>0: px_log.log(gc.garbage)
 
 	###########
 	#  update #
@@ -260,42 +176,7 @@ class PacBun(px_game.Game):
 	def reportScore(self, increment):
 		self.current_score+=increment
 
-	def registerFlag(self, flag):
-		self.flags[flag]=False
-
-	def setFlag(self, flag):
-		self.flags[flag] = True
-
-	def checkFlagAndClear(self, flag):
-		if self.flags[flag]:
-			self.flags[flag]=False
-			return True
-		return False
-
 	# todo: move
-	def message(self,
-							text,
-							pos,
-							color=px_graphics.Color(1, 1, 1, 1),
-							duration=-1,	# or forever
-							align=px_graphics.eAlign.left,
-							fade_speed=0.5
-							):
-		message = self.requestNewEntity(template='message',
-																		name= f"message: {text}",
-																		pos=pos,
-																		parent=self,
-																		data={
-																			'ren_layer': self.render_layers['overlay'],
-																			'message': text,
-																			'font': 0,
-																			'color' : color,
-																			'duration' : duration,
-																			'align' : align,
-																			'fade_speed' : fade_speed
-																		}
-		)
-		return message
 
 	###########
 	#  interp #

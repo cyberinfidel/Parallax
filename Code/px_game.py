@@ -1,6 +1,7 @@
 # import python libs
 import time
 import copy
+import gc
 
 # import sdl files
 import sdl2.ext
@@ -11,8 +12,10 @@ import px_entity
 import px_game_pad
 import px_vector
 import px_graphics
+import px_sound
 import px_utility
 import px_log
+import px_collision
 
 class eGameModes:
 	quit, \
@@ -77,8 +80,11 @@ class Game(object):
 		self.running = True
 		self.game_mode = eGameModes.title
 
-
 		self.input = px_game_pad.Input(self)
+
+		self.render_layers = {}
+		self.scroll = False
+		self.flags={}
 
 		self.drawables = px_entity.EntityList()
 		self.audibles = px_entity.EntityList()
@@ -88,10 +94,55 @@ class Game(object):
 		self.controller_manager = px_entity.ComponentManager(game=self)
 		self.entity_manager = px_entity.EntityManager(game=self)
 		self.sound_manager = px_entity.ComponentManager(game=self)
+		self.sound_mixer = px_sound.SoundMixer(self)
+		self.collision_manager = px_collision.CollisionManager(game=self)
 
 		# By default, every Window is hidden, not shown on the screen right
 		# after creation. Thus we need to tell it to be shown now.
 		self.window.show()
+
+	########################################################
+	# Render Layer interface and methods
+
+	def getColorCast(self, rl):
+		return self.render_layers[rl].getColorCast()
+
+	def setColorCast(self, rl, color):
+		self.render_layers[rl].setColorCast(color)
+
+	def render(self):
+		self.ren.color = self.clear_color.toSDLColor()
+		self.ren.clear()
+
+		self.draw()
+		# present graphics and actually display
+		sdl2.SDL_RenderPresent(self.ren.renderer)
+		self.window.refresh()
+
+	# display text on screen - not v sophisticated, but handy
+	def message(self,
+							text,
+							pos,
+							color=px_graphics.Color(1, 1, 1, 1),
+							duration=-1,	# or forever
+							align=px_graphics.eAlign.left,
+							fade_speed=0.5
+							):
+		message = self.requestNewEntity(template='message',
+																		name= f"message: {text}",
+																		pos=pos,
+																		parent=self,
+																		data={
+																			'ren_layer': self.render_layers['overlay'],
+																			'message': text,
+																			'font': 0,
+																			'color' : color,
+																			'duration' : duration,
+																			'align' : align,
+																			'fade_speed' : fade_speed
+																		}
+		)
+		return message
 
 	def makeFullscreen(self):
 		# self.window = sdl2.ext.Window(self.title, size=(self.res_x, self.res_y), flags=sdl2.SDL_WINDOW_FULLSCREEN)
@@ -178,6 +229,9 @@ class Game(object):
 																						 )
 
 
+	########################################################
+	# Entites and Templates interface
+
 	# batch requests entities from provided dict data
 	def makeEntities(self, entities_data):
 		entities = {}
@@ -194,11 +248,49 @@ class Game(object):
 																							 init=init,
 																							 data=data)
 
+	# main method to make a single entity
+	def requestNewEntity(self,
+											 template,
+											 pos=False,
+											 parent=False,
+											 name=False,
+											 init=False,
+											 data=False):
+		new_entity = self.entity_manager.makeEntity(template=template,
+																								name=name,
+																								init=init,
+																								parent=parent,
+																								data=data)
+		# position (and anything else) may be set within the code at runtime
+		# and passed in as a parameter
+		# or it may be set as part of executing the  init routine
+		# in the entity's instance method
+		if pos:
+			new_entity.setPos(copy.deepcopy(pos))
+
+		if new_entity.hasComponent('graphics'):
+			self.drawables.append(new_entity)
+		if new_entity.hasComponent('sounds'):
+			self.audibles.append(new_entity)
+		if new_entity.hasComponent('controller') or new_entity.hasComponent('graphics'):
+			self.updatables.append(new_entity)
+		if new_entity.hasComponent('collider'):
+			self.collision_manager.append(new_entity)
+		return new_entity
+	# end requestNewEntity()
+
 	def getEntityByName(self, name):
 		return self.entity_manager.getEntityByName(name)
 
 	def getTemplateByName(self, name):
 		return self.entity_manager.getTemplateByName(name)
+
+	########################################################
+	# Scenes and Modes interface
+
+	def getScenesData(self, file):
+		self.scenes_data = (px_utility.getDataFromFile(file))
+		self.current_scene = 0
 
 	def getCurrentScene(self):
 		return self.current_scene
@@ -206,20 +298,108 @@ class Game(object):
 	def getCurrentMode(self):
 		return self.current_mode
 
-	def getColorCast(self, rl):
-		return self.render_layers[rl].getColorCast()
+	# ends the scene and by default increments the scene counter for the next scene
+	# can change between modes e.g. playing and title
+	# next scene can be specified by name
+	def nextScene(self, next_scene=-1, mode=False): # kill
+		gc.enable()
+		gc.collect()
 
-	def setColorCast(self, rl, color):
-		self.render_layers[rl].setColorCast(color)
+		# clear all the flags
+		for flag in self.flags:
+			self.flags[flag]=False
 
-	def render(self):
-		self.ren.color = self.clear_color.toSDLColor()
-		self.ren.clear()
+		if mode:
+			if mode!=self.current_mode:
+				px_log.log(f"Switching to mode: {mode}")
+				self.current_mode=mode
+				self.mode_data = self.game_data['modes'][self.current_mode] # convenience
+				# kill old mode
+				self.killEntitiesExceptDicts(
+					[
+						self.game_data['entities'],
+					]
+				)
 
-		self.draw()
-		# present graphics and actually display
-		sdl2.SDL_RenderPresent(self.ren.renderer)
-		self.window.refresh()
+				# set up next mode
+				px_log.log(f"Making {mode} mode templates.")
+				if 'templates' in self.mode_data:
+					self.makeTemplates(self.mode_data['templates'])
+				px_log.log(f"Making {mode} mode entities.")
+				if 'entities' in self.mode_data:
+					self.makeEntities(self.mode_data['entities'])
+				if next_scene<0:	# no scene specified so revert to 0
+					next_scene = 0
+				px_log.flushToFile()
+
+
+
+		if next_scene>=0:
+			# specified scene rather than following pre-defined order
+			self.current_scene = next_scene
+			specified = "specified "
+		else:
+			self.current_scene+=1
+			if self.current_scene>=len(self.mode_data['scenes']):
+				# todo add check for completing the game instead of just looping?
+				self.current_scene=0
+			specified = ""
+		next_scene = self.mode_data['scenes'][self.current_scene]
+		px_log.log(
+			f"Switching to {specified}scene [{self.current_mode},{self.current_scene}]: {self.mode_data['scenes'][self.current_scene]}")
+
+		# kill old scene
+		self.killEntitiesExceptDicts(
+			[
+				self.game_data['entities'],
+			 	self.mode_data['entities'] if 'entities' in self.mode_data else {}
+			]
+		)
+
+		###################
+		# init next scene #
+		###################
+		self.scene_data = self.scenes_data['scenes'][self.mode_data['scenes'][self.current_scene]]
+		# initialise map todo: make another entity instead of special
+		# if "Map" in self.scene_data:
+		# 	self.level = map.Map(self, self.scene_data, self.templates['tile'])
+
+		if 'templates' in self.scene_data:
+			self.makeTemplates(self.scene_data['templates'])
+		if 'entities' in self.scene_data:
+			self.makeEntities(self.scene_data['entities'])
+		px_log.flushToFile()
+
+		gc.collect()
+		gc.disable()
+		if len(gc.garbage)>0: px_log.log(gc.garbage)
+
+	########################################################
+	# Flags interface
+
+	# sets a flag associated with a string identifier
+	# that can be checked on by any entity
+	def setFlag(self, flag):
+		self.flags[flag] = True	# value is arbitrary
+
+	# checks a flag and clears it
+	# so trigger only happens once
+	def checkFlagAndClear(self, flag):
+		if flag in self.flags:
+			self.flags.pop(flag)
+			return True
+		return False
+
+	# checks a flag without clearing it if it's True
+	# use if something else may be checking this flag
+	def checkFlag(self, flag):
+		return flag in self.flags
+
+
+
+	########################################################
+	# update methods used to make game "go"
+
 
 	def tick(self, dt):
 		self.input.update(sdl2.ext.get_events())
@@ -270,36 +450,7 @@ class Game(object):
 		if self.game_mode==eGameModes.title:
 			self.killPlayEntities()
 
-	def requestNewEntity(self,
-											 template,
-											 pos=False,
-											 parent=False,
-											 name=False,
-											 init=False,
-											 data=False):
-		new_entity = self.entity_manager.makeEntity(template=template,
-																								name=name,
-																								init=init,
-																								parent=parent,
-																								data=data)
-		# position (and anything else) may be set within the code at runtime
-		# and passed in as a parameter
-		# or it may be set as part of executing the  init routine
-		# in the entity's instance method
-		if pos:
-			new_entity.setPos(copy.deepcopy(pos))
 
-		if new_entity.hasComponent('graphics'):
-			self.drawables.append(new_entity)
-		if new_entity.hasComponent('sounds'):
-			self.audibles.append(new_entity)
-		if new_entity.hasComponent('controller') or new_entity.hasComponent('graphics'):
-			self.updatables.append(new_entity)
-		if new_entity.hasComponent('collider'):
-			self.collision_manager.append(new_entity)
-		return new_entity
-
-	# end requestNewEntity()
 
 	def setClearColor(self, color):
 		self.clear_color = color

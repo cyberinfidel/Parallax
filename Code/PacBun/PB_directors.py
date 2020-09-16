@@ -118,10 +118,10 @@ def director_play(game, data):
 		FadeToClearColor(Color.fromInts(219, 182, 85), 1),
 		FadeRenderLayer('game', Color(1,1,1,1),1),
 		SpawnDirector('bun_caught'),
-		WaitForFlag(game,'escape'),
+		WaitForFlag('escape'),
 		Spawn(spawns=[SpawnEntity('escape',
 															pos=Vec3(92,200,0))]),
-		WaitForFlag(game,'next_scene'),
+		WaitForFlag('next_scene'),
 		KillEntity('escape'),
 
 		# # fade out at end of scene
@@ -140,7 +140,7 @@ def director_bunny_select(game):
 		FadeRenderLayer('overlay', Color(1, 1, 1, 1), 1),
 		FadeRenderLayer('game', Color(1, 1, 1, 1), 1),
 		Message("Choose your bunny:", Vec3(240, 260, 0), Color(1,1,1,1), -1, px_graphics.eAlign.centre),
-		WaitForFlag(game,'next_scene'),
+		WaitForFlag('next_scene'),
 		SpawnDirector('fade_to_mode','play')
 	]
 
@@ -174,7 +174,7 @@ def director_fade_to_mode(game, mode):
 
 def director_bun_caught(game):
 	return [
-		WaitForFlag(game,'bunny_caught'),
+		WaitForFlag('bunny_caught'),
 		Delay(1),
 		FadeToClearColor(Color(0, 0, 0), 1),
 		FadeRenderLayer('overlay', Color(0, 0, 0, 0), 1),

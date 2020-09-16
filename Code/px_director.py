@@ -225,16 +225,13 @@ class Quit(Event):
 		entity.game.quit()
 
 class WaitForOneOfFlags(Event):
-	def __init__(self, game, flags):
+	def __init__(self, flags):
 		super(Event, self).__init__()
-		self.game = game
 		self.flags = flags
-		for flag in self.flags:
-			game.registerFlag(flag)
 
 	def update(self, entity, dt):
 		for flag in self.flags:
-			if self.game.checkFlagAndClear(flag):
+			if entity.game.checkFlagAndClear(flag):
 				return  eEventStates.dead
 			return eEventStates.block
 
@@ -248,14 +245,12 @@ class KillEntity(Event):
 		return eEventStates.dead
 
 class WaitForFlag(Event):
-	def __init__(self, game, flag):
+	def __init__(self, flag):
 		super(Event, self).__init__()
-		self.game = game
 		self.flag = flag
-		game.registerFlag(flag)
 
 	def update(self, entity, dt):
-		if self.game.checkFlagAndClear(self.flag):
+		if entity.game.checkFlagAndClear(self.flag):
 			return  eEventStates.dead
 		return eEventStates.block
 
