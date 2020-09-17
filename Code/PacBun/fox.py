@@ -9,6 +9,7 @@ import px_collision
 from px_vector import Vec3
 import px_vector
 import px_sound
+import px_log
 
 # Pacbun
 import PacBun
@@ -35,13 +36,6 @@ def makeSounds(manager, mixer):
 			]
 	})
 
-class eFoxStates(enum.IntEnum):
-	cleanLeft = PacBun.eStates.cleanLeft
-	cleanRight = PacBun.eStates.cleanRight
-	caughtPacbun = 33
-	caughtPinkie = 34
-	caughtBlue = 35
-	caughtBowie = 36
 
 class eFoxTypes(enum.IntEnum):
 	direct=1
@@ -82,7 +76,7 @@ class Controller(px_controller.Controller):
 	######################################################
 	# Called each tick to update the entity
 	def update(self, entity, dt):
-		if entity.state in [eFoxStates.caughtBlue,eFoxStates.caughtBowie,eFoxStates.caughtPacbun,eFoxStates.caughtPinkie]:
+		if entity.state in [PacBun.eStates.caughtBlue,PacBun.eStates.caughtBowie,PacBun.eStates.caughtPacBun,PacBun.eStates.caughtPinkie]:
 			return
 
 		# pause foxes every so often
@@ -111,12 +105,13 @@ class Controller(px_controller.Controller):
 
 		if entity.type==eFoxTypes.ahead:
 			# aim at a position ahead of the bunny
-			bunny_pos+= (
-				Vec3(0,-96,0),
-				Vec3(-96,0, 0),
-				Vec3(0, 96, 0),
-				Vec3(96, 0, 0),
-			)[entity.bunny.facing]
+			if entity.bunny.facing:
+				bunny_pos+= (
+					Vec3(0,-96,0),
+					Vec3(-96,0, 0),
+					Vec3(0, 96, 0),
+					Vec3(96, 0, 0),
+				)[entity.bunny.facing]
 
 		current_tile = map_controller.getTileFromPos(entity.parent, entity.pos)
 		exits = current_tile.process('getExits')
@@ -184,22 +179,7 @@ class Controller(px_controller.Controller):
 
 
 	def receiveCollision(self, A, message):
-		if message:
-			if message.damage_hero>0:
-				# caught a bunny
-				# but which bunny?!?!?!?
-				self.setState(A,{
-					'pacbun': eFoxStates.caughtPacbun,
-					'pinkie': eFoxStates.caughtPinkie,
-					'blue': eFoxStates.caughtBlue,
-					'bowie': eFoxStates.caughtBowie,
-				}[message.source.name]
-											)
-				message.source.setState(PacBun.eStates.dead)
-				A.game.setFlag('bunny_caught')
-				# print(f"col source{message.source.entity.pos.x},{message.source.entity.pos.y}")
-		# 	print(f"Hedge source{message.source.entity.pos.x}{message.source.entity.pos.y}")
-			# 	# A.controller_data.vel = Vec3(0,0,0)
+		pass
 
 def makeCollider(manager):
 	return manager.makeTemplate({"Template": Collider})
@@ -212,6 +192,7 @@ class Collider(px_collision.Collider):
 			entity.orig = Vec3(2,2,4)
 
 	def getCollisionMessage(self, entity):
+		# px_log.log(f"Fox {entity.name} sending caught message.")
 		return(px_collision.Message(source=entity, damage=1))
 
 

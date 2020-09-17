@@ -8,6 +8,7 @@ import px_controller
 import px_collision
 from px_vector import Vec3
 import px_sound
+import px_log
 
 import PacBun
 import tile
@@ -54,6 +55,7 @@ class Controller(px_controller.Controller):
 		entity.state = PacBun.eStates.idle
 		entity.queued_state = entity.state
 		entity.score = 0
+		entity.invulnerable=False
 
 	def update(self, entity, dt):
 		bunny_speed = 1
@@ -198,12 +200,22 @@ class Controller(px_controller.Controller):
 		px_controller.basic_physics(entity.pos, entity.vel)
 
 
-	def receiveCollision(self, A, message):
+	def receiveCollision(self, entity, message):
 		if message:
-			if message.damage>0 and not A.invulnerable:
+			if message.damage>0 and not entity.invulnerable and entity.state!=PacBun.eStates.dead:
 				# A.game.setGameMode(PacBun.eGameModes.game_over)
-				A.game_pad=False
-				A.setState(PacBun.eStates.dead)
+				entity.game_pad=False
+				entity.setState(PacBun.eStates.dead)
+				message.source.setState(
+				{
+					'pacbun': PacBun.eStates.caughtPacBun,
+					'pinkie': PacBun.eStates.caughtPinkie,
+					'blue': PacBun.eStates.caughtBlue,
+					'bowie': PacBun.eStates.caughtBowie,
+				}[entity.name]
+																)
+				entity.game.setFlag('bunny_caught')
+				px_log.log(f"Bunny caught by {entity.name}")
 
 
 def makeCollider(manager):
@@ -218,10 +230,7 @@ class Collider(px_collision.Collider):
 			entity.orig = Vec3(4,4,4)
 
 	def getCollisionMessage(self, entity):
-		if entity.state==PacBun.eStates.dead or entity.invulnerable:
-			return (px_collision.Message(source=entity))
-		else:
-			return(px_collision.Message(source=entity, damage_hero=1))
+		pass
 
 
 

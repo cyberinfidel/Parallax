@@ -647,7 +647,7 @@ graphics = {
 			{
 				"Name": "Fox Cleans L",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [fox.eFoxStates.cleanLeft],
+				"States": [PacBun.eStates.cleanLeft],
 				"Frames":
 					[
 						["Graphics/Fox/CleanL/CleanL_000.png", 15, 15, 0, 0.02],
@@ -702,7 +702,7 @@ graphics = {
 			{
 				"Name": "Fox Cleans L",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [fox.eFoxStates.cleanRight],
+				"States": [PacBun.eStates.cleanRight],
 				"Frames":
 					[
 						["Graphics/Fox/CleanR/CleanR_000.png", 15, 15, 0, 0.02],
@@ -860,7 +860,7 @@ graphics = {
 			{
 				"Name": "PacBun Caught",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [fox.eFoxStates.caughtPacbun],
+				"States": [PacBun.eStates.caughtPacBun],
 				"Frames":
 					[
 						["Graphics/Fox/FoxCaught 1.png", 11, 15, 0, 0.02],
@@ -869,7 +869,7 @@ graphics = {
 			{
 				"Name": "Pinkie Caught",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [fox.eFoxStates.caughtPinkie],
+				"States": [PacBun.eStates.caughtPinkie],
 				"Frames":
 					[
 						["Graphics/Fox/FoxCaught 3.png", 11, 15, 0, 0.02],
@@ -878,7 +878,7 @@ graphics = {
 			{
 				"Name": "Blue Caught",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [fox.eFoxStates.caughtBlue],
+				"States": [PacBun.eStates.caughtBlue],
 				"Frames":
 					[
 						["Graphics/Fox/FoxCaught 2.png", 11, 15, 0, 0.02],
@@ -887,7 +887,7 @@ graphics = {
 			{
 				"Name": "Bowie Caught",
 				"AnimType": px_graphics.AnimLoop,
-				"States": [fox.eFoxStates.caughtBowie],
+				"States": [PacBun.eStates.caughtBowie],
 				"Frames":
 					[
 						["Graphics/Fox/FoxCaught 4.png", 11, 15, 0, 0.02],
@@ -1101,7 +1101,7 @@ graphics = {
 		"Template": px_graphics.SingleImage,
 		# "RenderLayer": renlayer,
 		"Image":
-			["Graphics/Title/Title.png", 98, 21, 0],
+			["Graphics/Title/Title.png", 108, 21, 0],
 	},
 	'escape': {
 		"Name": "Escape Overlay",
