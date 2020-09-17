@@ -134,17 +134,13 @@ class PacBun(px_game.Game):
 	#  update #
 	###########
 	def update(self, dt):
+		self.collision_manager.doCollisions()
+		for updatable in self.updatables:
+			updatable.update(dt)
+		for audible in self.audibles:
+			audible.sounds.play(audible.sounds_data, audible)
 
-		if True:#self.game_mode!=eGameModes.paused:
-			# for bunny in self.bunnies:
-				# self.collision_manager.doCollisionsWithSingleEntity(bunny)  # collisions between monsters
-			self.collision_manager.doCollisions()  # collisions between monsters
-			for updatable in self.updatables:
-				updatable.update(dt)
-			for audible in self.audibles:
-				audible.sounds.play(audible.sounds_data, audible)
-
-			self.cleanUpDead()
+		self.cleanUpDead()
 
 
 # end update() #################################################################

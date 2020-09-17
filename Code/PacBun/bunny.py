@@ -61,6 +61,8 @@ class Controller(px_controller.Controller):
 		bunny_speed = 1
 		map_entity = entity.parent
 		map_controller = map_entity.getComponent('controller')
+		if entity.state==PacBun.eStates.dead:
+			return
 
 		if entity.state in (PacBun.eStates.enterHoleUp,PacBun.eStates.enterHoleLeft,
 												PacBun.eStates.enterHoleDown,PacBun.eStates.enterHoleRight):
@@ -215,7 +217,7 @@ class Controller(px_controller.Controller):
 				}[entity.name]
 																)
 				entity.game.setFlag('bunny_caught')
-				px_log.log(f"Bunny caught by {entity.name}")
+				# px_log.log(f"Bunny caught by {message.source.name}")
 
 
 def makeCollider(manager):

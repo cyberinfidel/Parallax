@@ -109,6 +109,8 @@ class Entity(object):
 	def delete(self):
 		pass
 
+	def __str__(self):
+		return f"{self.name} state: {self.state} pos:{self.pos}"
 
 	def hasComponent(self, type):
 		return type in self.components
