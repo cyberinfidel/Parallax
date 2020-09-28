@@ -43,9 +43,9 @@ p8pal=[
   0xffFF9D81, #peach
 ]
 
-p8_image = []
-p8_mismatches = []
-image_pal = []
+p8_image = [] # output image data - indexes into image_pal
+p8_mismatches = [] # colours that don't match ones in p8pal - can't be displayed by pico-8
+image_pal = [] # output image palette
 surface = sdl_image.IMG_Load("LogoCroppedMore.png".encode("utf-8"))
 pixels = sdl2.ext.PixelView(surface.contents)
 
@@ -57,22 +57,25 @@ print("Processing image...")
 for y in range(0,h):
 	for x in range(0,w):
 		col=-1
+		output=0
 		pix=pixels[y][x]
-		# print(f"Pixel: 0x{pix:02x}")
+		# look for pixel value in p8 colours
 		for index, pcol in enumerate(p8pal):
 			if pix==pcol:
 				col=index
 				if col>15:
 					col+=112	# extended palette is from 128 for some reason
+				# check if we've added this to the image palette
 				if col not in image_pal:
+					output_index=len(image_pal) # col will be last in palette so far
 					image_pal.append(col)
-
-				break
+				else:
+					output_index=image_pal.index(col)
 
 		if col==-1 and pix not in p8_mismatches:
 			p8_mismatches.append(pix)
-		else:
-			p8_image.append(col)
+			output_index=0	# set as black for output
+		p8_image.append(output_index)
 
 if len(p8_mismatches)>0:
 	print("Warning: mismatches with pico-8 palette:")
@@ -84,12 +87,15 @@ print(f"Image has {len(image_pal)} colours.")
 if len(image_pal)>16:
 	print("Warning: displaying more than 16 colours on pico-8 may be tricky.")
 
+# output tables for pico-8
 line=0
 print("p8_image={",end='')
-for pix in p8_image:
-	print(f"{pix},",end='')
+for i in range(0,int(len(p8_image)/2)):
+	print(f"0x{p8_image[i*2+1]:01x}{p8_image[i*2]:01x},",end='')
+	if p8_image[i*2+1]>15 or p8_image[i*2]>15:
+		print("-- bad pixel")
 	line+=1
-	if line>=w:
+	if line>=w/2:
 		line=0
 		print("")
 print("}")
