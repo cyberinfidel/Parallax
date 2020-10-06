@@ -71,14 +71,15 @@ class Block(object):
 	@classmethod
 	def fromPixels(cls,pixels,x,y):
 		block=cls()
+		block.blist=[0]*8
 		for by in range(0, 8):
+			val=block.blist[by]
+			pix=pixels[y * 8 + by]
 			for bx in range(0, 8):
-				#					print(f"0x{pixels[y][x]:01x}")
-				if pixels[y * 8 + by][x * 8 + bx] == 0xffffffff:
-					block.blist.append(1)
-				#						print("1", end='')
-				else:
-					block.blist.append(0)
+				val=val<<1
+				if pix[x * 8 + 7-bx] == 0xffffffff:
+					val+=1
+			block.blist[by]=val
 		block.count=1
 		block.calcHash()
 		return block
@@ -86,9 +87,9 @@ class Block(object):
 	def __eq__(self, other):
 		if self.hash!=other.hash:
 			return
-		for pix in self.blist:
-			for other_pix in other.blist:
-				if pix!=other_pix:
+		for row in self.blist:
+			for other_row in other.blist:
+				if row!=other_row:
 					return False
 		return True
 
@@ -97,7 +98,7 @@ class Block(object):
 
 	def diff(self, other):
 		ret=0
-		for index in range(len(self.blist)):
+		for index in range(8):
 			if self.blist[index]!=other.blist[index]:
 				ret+=1
 		return ret
@@ -107,8 +108,9 @@ class Block(object):
 	# 	self.calcHash()
 
 	def calcHash(self):
-		if len(self.blist)!=64:
+		if len(self.blist)!=8:
 			self.hash=-1
+			print("Bad block")
 		else:
 			self.hash=0
 			for pix in self.blist:
@@ -118,25 +120,25 @@ class Block(object):
 	@classmethod
 	def black(cls):
 		ret = cls()
-		ret.blist=[0]*64
+		ret.blist=[0]*8
 		ret.calcHash()
 		return ret
 
 	@classmethod
 	def white(cls):
 		ret = cls()
-		ret.blist=[1]*64
+		ret.blist=[1]*8
 		ret.calcHash()
 		return ret
 
 	# count diff between blocks with tolerance cut off
 	# returns count or tolerance if hit
 	def diffWithTolerance(self,other,tol):
-		ret=0
 		if abs(self.hash-other.hash)>tol:
 			return tol+1 # hash is out by more than tol itself
-		for index,pix in enumerate(self.blist):
-			if pix!=other.blist[index]:
+		ret=0
+		for index in range(8):
+			if self.blist[index]!=other.blist[index]:
 				ret+=1
 				if ret==tol:
 					return ret
@@ -171,7 +173,8 @@ def processImage(file,ren):
 
 			# check if this block has been used already
 			found = False
-			for index in range(len(blocks)):
+			num_blocks=len(blocks)
+			for index in range(num_blocks):
 				# if this_block.diffWithTolerance(blocks[index],5)<5:
 				if this_block==blocks[index]:
 					found = True
@@ -202,19 +205,11 @@ def reprocessImage(file,ren,all_blocks):
 	surface = sdl_image.IMG_Load(file.encode("utf-8"))
 	pixels = sdl2.ext.PixelView(surface.contents)
 	image = Image()
-	# w = surface.contents.w
-	# h = surface.contents.h
-
-	# print(f"Opened image - width:{w}, height:{h}.")
-	# print("Processing image...")
 	texture = sdl2.SDL_CreateTextureFromSurface(ren.sdlrenderer, surface)
-
-	new_block = 0
 	for y in range(0, 12):
 		for x in range(0, 16):
 			this_block = Block.fromPixels(pixels,x,y)
-
-			# check if this block has been used already
+			# find match for block
 			best_match=64
 			match_index=-1
 			for index in range(len(all_blocks)):
@@ -222,7 +217,6 @@ def reprocessImage(file,ren,all_blocks):
 				if match<best_match:	# found best match so far
 					match_index=index
 					best_match=match
-					# store record of which block this is in output
 					if best_match == 0:  # perfect match found so
 						break  # don't look further
 			if match_index>=0:
@@ -233,15 +227,6 @@ def reprocessImage(file,ren,all_blocks):
 
 	# draw source image
 	sdl2.SDL_RenderCopy(ren.sdlrenderer, texture, sdl2.SDL_Rect(0, 0, 128, 96), sdl2.SDL_Rect(0, 0, 128, 96))
-
-	# output
-	# print(f"Image: {file}")
-	# for y in range(0, 12):
-	# 	for x in range(0, 16):
-	# 		print(f" {image[x + y * 16]}", end="")
-	# 	print("")
-
-	# print("Blocks:",len(blocks))
 	return image
 
 # easier on pico8 I suspect
@@ -250,17 +235,20 @@ def renderImage(image,blocks,ren):
 	ren_blocks=[]
 	for block in blocks:
 		pixels=bytearray()
-		for p in range(64):
-			if block[p]==1:
-				pixels.append(0xff)
-				pixels.append(0xff)
-				pixels.append(0xff)
-				pixels.append(0xff)
-			else:
-				pixels.append(0)
-				pixels.append(0)
-				pixels.append(0)
-				pixels.append(0)
+		for row in range(8):
+			val=block[row]
+			for digit in range(8):
+				if val&1==1:
+					pixels.append(0xff)
+					pixels.append(0xff)
+					pixels.append(0xff)
+					pixels.append(0xff)
+				else:
+					pixels.append(0)
+					pixels.append(0)
+					pixels.append(0)
+					pixels.append(0)
+				val=val>>1
 		ren_block = sdl2.SDL_CreateTexture(ren.sdlrenderer, sdl2.SDL_PIXELFORMAT_ABGR8888,
 																			 sdl2.SDL_TEXTUREACCESS_STATIC,
 																			 8, 8)
@@ -297,7 +285,7 @@ def run():
 	max_blocks=0
 	total_blocks=0
 	count=0
-	limit=50000
+	limit=4000
 
 	# pass 1 - gather all the blocks
 	for i in range(0, int(6565 / 2)):
@@ -313,18 +301,10 @@ def run():
 		# add blocks to master list
 		for i,block in enumerate(blocks):
 			found=False
-			best_match=10
-			best_match_index=0
 			for j,b in enumerate(all_blocks):
-				match=block.diffWithTolerance(b,best_match)
-				if match<best_match: # better match found update existing record
+				if block==b: # better match found update existing record
 					all_blocks[j].count+=blocks[i].count
 					found=True # found a match of some sort
-					best_match=match
-
-				if best_match==0: # perfect match found so
-					break # don't look further
-
 			if not found: # totally new block
 				all_blocks.append(block)
 
@@ -347,7 +327,7 @@ def run():
 
 	# 1024 is currently all you're planning to store
 	# todo: choose final number of blocks to use
-	#all_blocks=all_blocks[0:80000]
+	all_blocks=all_blocks[0:1024]
 	for i,b in enumerate(all_blocks):
 		print(f"Block {i}: {b.count}")
 
@@ -358,14 +338,13 @@ def run():
 		count+=1
 		if count>limit: # stop early
 			break
-		events = sdl2.ext.get_events() # otherwise window doesn't update
 		ren.clear()
 		file = f"image-{i*2+1:03}.png"
 		sdl2.SDL_SetWindowTitle(window.window,file.encode('utf-8'))
 		image = reprocessImage(file,ren,all_blocks) # also draws left hand side pre-processed
-
 		all_images.append(image)
 		renderImage(image,all_blocks,ren) # right hand side post-process
+		events = sdl2.ext.get_events() # otherwise window doesn't update
 		sdl2.SDL_RenderPresent(ren.sdlrenderer)
 		window.refresh()
 
@@ -379,7 +358,7 @@ def run():
 		renderImage(all_images[fr],all_blocks,ren)
 		sdl2.SDL_RenderPresent(ren.sdlrenderer)
 		window.refresh()
-		sdl2.SDL_Delay(40)
+		sdl2.SDL_Delay(10)
 
 	# profit - I mean output it all
 
