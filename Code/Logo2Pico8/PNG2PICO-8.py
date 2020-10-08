@@ -89,9 +89,10 @@ if len(image_pal)>16:
 
 # output tables for pico-8
 line=0
-print("p8_image={",end='')
-for i in range(0,int(len(p8_image)/2)):
-	print(f"0x{p8_image[i*2+1]:01x}{p8_image[i*2]:01x},",end='')
+print("p8_image={[0]=",end='')
+for i in range(0,int(len(p8_image)/4)):
+	print(f"0x{p8_image[i*4+1]:01x}{p8_image[i*4]:01x}.",end='')
+	print(f"{p8_image[i*4+3]:01x}{p8_image[i*4+2]:01x},",end='')
 	if p8_image[i*2+1]>15 or p8_image[i*2]>15:
 		print("-- bad pixel")
 	line+=1
