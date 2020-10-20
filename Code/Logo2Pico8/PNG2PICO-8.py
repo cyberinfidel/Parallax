@@ -46,9 +46,9 @@ p8pal=[
 p8_image = [] # output image data - indexes into image_pal
 p8_mismatches = [] # colours that don't match ones in p8pal - can't be displayed by pico-8
 image_pal = [] # output image palette
-surface = sdl_image.IMG_Load("LogoCroppedMore.png".encode("utf-8"))
+surface = sdl_image.IMG_Load("DandyP8.png".encode("utf-8"))
 pixels = sdl2.ext.PixelView(surface.contents)
-
+custom_pal=False
 w=surface.contents.w
 h=surface.contents.h
 
@@ -59,6 +59,7 @@ for y in range(0,h):
 		col=-1
 		output=0
 		pix=pixels[y][x]
+		if pix==0: pix=0xff000000 # transparent pixels all go to black
 		# look for pixel value in p8 colours
 		for index, pcol in enumerate(p8pal):
 			if pix==pcol:
@@ -66,11 +67,14 @@ for y in range(0,h):
 				if col>15:
 					col+=112	# extended palette is from 128 for some reason
 				# check if we've added this to the image palette
-				if col not in image_pal:
-					output_index=len(image_pal) # col will be last in palette so far
-					image_pal.append(col)
+				if custom_pal:
+					if col not in image_pal:
+						output_index=len(image_pal) # col will be last in palette so far
+						image_pal.append(col)
+					else:
+						output_index=image_pal.index(col)
 				else:
-					output_index=image_pal.index(col)
+					output_index=index
 
 		if col==-1 and pix not in p8_mismatches:
 			p8_mismatches.append(pix)
@@ -88,18 +92,12 @@ if len(image_pal)>16:
 	print("Warning: displaying more than 16 colours on pico-8 may be tricky.")
 
 # output tables for pico-8
-line=0
-print("p8_image={[0]=",end='')
-for i in range(0,int(len(p8_image)/4)):
-	print(f"0x{p8_image[i*4+1]:01x}{p8_image[i*4]:01x}.",end='')
-	print(f"{p8_image[i*4+3]:01x}{p8_image[i*4+2]:01x},",end='')
-	if p8_image[i*2+1]>15 or p8_image[i*2]>15:
+print("p8_image='",end='')
+for i in range(0,int(len(p8_image)/2)):
+	print(f"{p8_image[i*2+1]:x}{p8_image[i*2]:x}",end='')
+	if p8_image[i]>15:
 		print("-- bad pixel")
-	line+=1
-	if line>=w/2:
-		line=0
-		print("")
-print("}")
+print("'")
 
 print("p8_image_pal={",end='')
 for col in image_pal:
