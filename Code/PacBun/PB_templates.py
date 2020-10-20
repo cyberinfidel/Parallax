@@ -389,7 +389,7 @@ graphics = {
 				"States": [PacBun.eStates.enterHoleRight],
 				"Frames": [
 					["Graphics/Bunny/Pink/Hole 1.png", 5, 4, 0, 0.1],
-					["Graphics/Bunny/Pink/Hole 5.png", 1, 2, 0, 0.1],
+					["Graphics/Bunny/Pink/Hole 4.png", 1, 2, 0, 0.1],
 				],
 			},
 			{
@@ -398,7 +398,7 @@ graphics = {
 				"States": [PacBun.eStates.enterHoleLeft],
 				"Frames": [
 					["Graphics/Bunny/Pink/Hole 1.png", 5, 4, 0, 0.1],
-					["Graphics/Bunny/Pink/Hole 5.png", 1, 2, 0, 0.1],
+					["Graphics/Bunny/Pink/Hole 4.png", 1, 2, 0, 0.1],
 				]
 			},
 			{
@@ -408,7 +408,7 @@ graphics = {
 				"Frames":
 					[
 						["Graphics/Bunny/Pink/Hole 1.png", 5, 4, 0, 0.1],
-						["Graphics/Bunny/Pink/Hole 5.png", 1, 2, 0, 0.1],
+						["Graphics/Bunny/Pink/Hole 4.png", 1, 2, 0, 0.1],
 					],
 			},
 			{
@@ -418,7 +418,7 @@ graphics = {
 				"Frames":
 					[
 						["Graphics/Bunny/Pink/Hole 2.png", 5, 4, 0, 0.1],
-						["Graphics/Bunny/Pink/Hole 5.png", 1, 2, 0, 0.1],
+						["Graphics/Bunny/Pink/Hole 4.png", 1, 2, 0, 0.1],
 					],
 			},
 			{
@@ -539,7 +539,7 @@ graphics = {
 				"States": [PacBun.eStates.enterHoleRight],
 				"Frames": [
 					["Graphics/Bunny/Blue/Hole 1.png", 5, 4, 0, 0.1],
-					["Graphics/Bunny/Blue/Hole 5.png", 1, 2, 0, 0.1],
+					["Graphics/Bunny/Blue/Hole 4.png", 1, 2, 0, 0.1],
 				],
 			},
 			{
@@ -548,7 +548,7 @@ graphics = {
 				"States": [PacBun.eStates.enterHoleLeft],
 				"Frames": [
 					["Graphics/Bunny/Blue/Hole 1.png", 5, 4, 0, 0.1],
-					["Graphics/Bunny/Blue/Hole 5.png", 1, 2, 0, 0.1],
+					["Graphics/Bunny/Blue/Hole 4.png", 1, 2, 0, 0.1],
 				]
 			},
 			{
@@ -558,7 +558,7 @@ graphics = {
 				"Frames":
 					[
 						["Graphics/Bunny/Blue/Hole 1.png", 5, 4, 0, 0.1],
-						["Graphics/Bunny/Blue/Hole 5.png", 1, 2, 0, 0.1],
+						["Graphics/Bunny/Blue/Hole 4.png", 1, 2, 0, 0.1],
 					],
 			},
 			{
@@ -568,7 +568,7 @@ graphics = {
 				"Frames":
 					[
 						["Graphics/Bunny/Blue/Hole 2.png", 5, 4, 0, 0.1],
-						["Graphics/Bunny/Blue/Hole 5.png", 1, 2, 0, 0.1],
+						["Graphics/Bunny/Blue/Hole 4.png", 1, 2, 0, 0.1],
 					],
 			},
 			{
