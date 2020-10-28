@@ -10,6 +10,7 @@ def runLengthEncode(image, max_bits):
 	accum=-1
 	max_allowed_count = 2**max_bits-1
 	max_count=0
+	pairs=0
 	for i in range(len(image)):
 		if image[i]==last and accum<max_allowed_count:
 			accum+=1
@@ -18,10 +19,11 @@ def runLengthEncode(image, max_bits):
 			last=image[i]
 			max_count=max(accum,max_count)
 			accum = 0
+			pairs+=1
 	if accum>0:
 		output_string += f"{accum}{last}"
-
-	return output_string, max_count
+		pairs+=1
+	return output_string, max_count,pairs
 
 def runLengthDecode(image, max_bits):
 	output_string=""
@@ -233,12 +235,14 @@ def run():
 		print("inflation matches")
 
 	print("Raw image RLE:")
-	RLE_string, max_count = runLengthEncode(custom_palette_image,min_bits)
+	RLE_string, max_count, pairs = runLengthEncode(custom_palette_image,min_bits)
 	# for i in range(len(counts)):
 	#  print(f"Found {counts[i]} of {values[i]}")
 	# print(f"Max count is {max_count}")
 	print(RLE_string)
 	print(f"Length: {len(RLE_string)} characters")
+	print(f"Max count: {max_count} duplicates")
+	print(f"Pairs: {pairs} count/values")
 
 	# verify by decoding
 	decoded,decoded_string=runLengthDecode(RLE_string,min_bits)

@@ -108,10 +108,10 @@ class Block(object):
 	# 	self.calcHash()
 
 	def calcHash(self):
-		if len(self.blist)!=8:
-			self.hash=-1
-			print("Bad block")
-		else:
+		# if len(self.blist)!=8:
+		# 	self.hash=-1
+		# 	print("Bad block")
+		# else:
 			self.hash=0
 			for pix in self.blist:
 				if pix==1:
