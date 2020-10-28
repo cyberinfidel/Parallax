@@ -1,6 +1,68 @@
 import sdl2
 import sdl2.sdlimage as sdl_image
 import sdl2.ext
+import math
+
+
+def runLengthEncode(image, max_bits):
+	output_string=""
+	last=image[0]
+	accum=1
+	max_allowed_count = 2**max_bits-1
+	counts=[]
+	values=[]
+	max_count=0
+	for i in range(len(image)):
+		if image[i]==last and accum<max_allowed_count: # hacked to not exceed 3 bits atm todo: make more generic
+			accum+=1
+		else:
+			values.append(last)
+			values.append(accum)
+			output_string+=f"{accum-1}{last}"	# -1 because never going to have count of 0
+			last=image[i]
+			max_count=max(accum,max_count)
+			accum = 1
+	return values, max_count, output_string
+
+def squeeze1to64(image):
+	# 1 bit to 6 bits (64 values) so 6 values per character
+	pass
+def squeeze2to64(image):
+	# 2 bits to 6 bits (64 values) so 3 values per character
+	pass
+def squeeze3to64(image):
+	# 3 bits to 6 bits (64 values) so 2 values per character
+	output_string=""
+	output_values=[]
+	for i in range(int(len(image)/2)):
+		if image[i*2]>7:
+			print(f"Bad value {i*2} {image[i*2]}")
+		if image[i*2+1]>7:
+			print(f"Bad value {i*2+1} {image[i*2+1]}")
+		output_values.append(image[i*2+1]*8+image[i*2] + 35)
+		output_string+= chr(output_values[-1])
+	return output_values,output_string
+
+def squeeze4to64(image):
+	# 4 bits to 6 bits (64 values) so 1.5 values per character
+	# i.e. do 3 values into 12/2 characters
+	pass
+
+def standardPaletteImage(p8_image):
+	output=""
+	for i in range(0, int(len(p8_image) / 2)):
+		output+=f"{p8_image[i * 2 + 1]:x}{p8_image[i * 2]:x}"
+		if p8_image[i] > 15:
+			print("-- bad pixel")
+	return(output)
+
+def customPaletteImage(p8_custpal_image):
+	output=""
+	for i in range(0, int(len(p8_custpal_image) / 2)):
+		output+=f"{p8_custpal_image[i * 2 + 1]:x}{p8_custpal_image[i * 2]:x}"
+		if p8_custpal_image[i] > 15:
+			print("-- bad pixel")
+	return(output)
 
 sdl_image.IMG_Init(sdl_image.IMG_INIT_PNG)
 
@@ -43,12 +105,13 @@ p8pal=[
   0xffFF9D81, #peach
 ]
 
-p8_image = [] # output image data - indexes into image_pal
+p8_image = [] # output image data for palette using standard 16 colours
+p8_custpal_image = [] # output image data for only palette used - indexes into image_pal
 p8_mismatches = [] # colours that don't match ones in p8pal - can't be displayed by pico-8
 image_pal = [] # output image palette
+standard_colours=True
 surface = sdl_image.IMG_Load("DandyP8.png".encode("utf-8"))
 pixels = sdl2.ext.PixelView(surface.contents)
-custom_pal=False
 w=surface.contents.w
 h=surface.contents.h
 
@@ -66,20 +129,20 @@ for y in range(0,h):
 				col=index
 				if col>15:
 					col+=112	# extended palette is from 128 for some reason
-				# check if we've added this to the image palette
-				if custom_pal:
-					if col not in image_pal:
-						output_index=len(image_pal) # col will be last in palette so far
-						image_pal.append(col)
-					else:
-						output_index=image_pal.index(col)
+					standard_colours=False
+				# check if we've added this to the image custom palette
+				if col not in image_pal:
+					output_index=len(image_pal) # col will be last in palette so far
+					image_pal.append(col)
 				else:
-					output_index=index
+					output_index=image_pal.index(col)
+				output_index_standard=index # standard palette
 
 		if col==-1 and pix not in p8_mismatches:
 			p8_mismatches.append(pix)
 			output_index=0	# set as black for output
-		p8_image.append(output_index)
+		p8_image.append(output_index_standard)
+		p8_custpal_image.append(output_index)
 
 if len(p8_mismatches)>0:
 	print("Warning: mismatches with pico-8 palette:")
@@ -87,19 +150,60 @@ if len(p8_mismatches)>0:
 		print(f"0x{col:02x}")
 else:
 	print("No colour mismatches with pico-8 palette (this is good).")
+if standard_colours:
+	print("Image uses only standard colours.")
+else:
+	print("Image uses extended palette")
+
 print(f"Image has {len(image_pal)} colours.")
 if len(image_pal)>16:
 	print("Warning: displaying more than 16 colours on pico-8 may be tricky.")
 
-# output tables for pico-8
-print("p8_image='",end='')
-for i in range(0,int(len(p8_image)/2)):
-	print(f"{p8_image[i*2+1]:x}{p8_image[i*2]:x}",end='')
-	if p8_image[i]>15:
-		print("-- bad pixel")
-print("'")
+print("= Standard palette image =")
+standard_palette_image = standardPaletteImage(p8_image)
+print(standard_palette_image)
+print(f"Length: {len(standard_palette_image)} characters")
 
-print("p8_image_pal={",end='')
+# output tables for pico-8
+print("= Custom palette image =")
+custom_palette_image = standardPaletteImage(p8_custpal_image)
+print(custom_palette_image)
+print(f"Length: {len(custom_palette_image)} characters")
+
+print("Custom palette")
+print("{",end="")
 for col in image_pal:
 	print(f"{col},",end='')
 print("}")
+
+# squeeze image
+length=len(image_pal)
+min_bits=0
+while length>0:
+	min_bits+=1
+	length=math.floor(length/2)
+
+print(f"Could be squeezed to {min_bits} bits per pixel")
+
+image_64,image_64_string=[None,squeeze1to64,squeeze2to64,squeeze3to64,squeeze4to64][min_bits](p8_custpal_image)
+print("= Squeezed to base64 ascii from character 35: =")
+print(image_64_string)
+print(f"Length: {len(image_64_string)} characters")
+
+print("Unencoded to base64 RLE:")
+RLE_values, max_count, RLEraw = runLengthEncode(p8_custpal_image,min_bits)
+# for i in range(len(counts)):
+#  print(f"Found {counts[i]} of {values[i]}")
+# print(f"Max count is {max_count}")
+print(RLEraw)
+print(f"Length: {len(RLEraw)} characters")
+
+print("= RLE squeezed to base64 ascii from character 35: =")
+RLE_64,RLE_64_string=[None,squeeze1to64,squeeze2to64,squeeze3to64,squeeze4to64][min_bits](RLE_values)
+# for i in range(len(counts)):
+#  print(f"Found {counts[i]} of {values[i]}")
+# print(f"Max count is {max_count}")
+print(RLE_64_string)
+print(f"Length: {len(RLE_64_string)} characters")
+print(f"Squeezing vs raw: {len(image_64_string)/len(p8_custpal_image)*100}%")
+print(f"RLE and squeezing size vs raw: {len(RLE_64_string)/len(p8_custpal_image)*100}%")
