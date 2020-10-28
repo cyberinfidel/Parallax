@@ -7,22 +7,31 @@ import math
 def runLengthEncode(image, max_bits):
 	output_string=""
 	last=image[0]
-	accum=1
+	accum=-1
 	max_allowed_count = 2**max_bits-1
-	counts=[]
-	values=[]
 	max_count=0
 	for i in range(len(image)):
-		if image[i]==last and accum<max_allowed_count: # hacked to not exceed 3 bits atm todo: make more generic
+		if image[i]==last and accum<max_allowed_count:
 			accum+=1
 		else:
-			values.append(last)
-			values.append(accum)
-			output_string+=f"{accum}{last}"	# -1 because never going to have count of 0
+			output_string+=f"{accum}{last}"
 			last=image[i]
 			max_count=max(accum,max_count)
-			accum = 1
-	return values, max_count, output_string
+			accum = 0
+	if accum>0:
+		output_string += f"{accum}{last}"
+
+	return output_string, max_count
+
+def runLengthDecode(image, max_bits):
+	output_string=""
+	output_values=[]
+	for i in range(int(len(image)/2)):
+		for j in range(int(image[i*2])+1):
+			output_string+=image[i*2+1]
+	# 		print(f"{int(image[i*2])+1}{image[i*2+1]},",end="")
+	# print("")
+	return output_values, output_string
 
 def squeeze1to64(image):
 	# 1 bit to 6 bits (64 values) so 6 values per character
@@ -33,20 +42,26 @@ def squeeze2to64(image):
 def squeeze3to64(image):
 	# 3 bits to 6 bits (64 values) so 2 values per character
 	output_string=""
-	output_values=[]
 	for i in range(int(len(image)/2)):
-		if image[i*2]>7:
+		if int(image[i*2])>7:
 			print(f"Bad value {i*2} {image[i*2]}")
-		if image[i*2+1]>7:
+		if int(image[i*2+1])>7:
 			print(f"Bad value {i*2+1} {image[i*2+1]}")
-		output_values.append(image[i*2+1]*8+image[i*2] + 35)
-		output_string+= chr(output_values[-1])
-	return output_values,output_string
+		output_string+= chr(int(image[i*2+1])*8+int(image[i*2]) + 35)
+	return output_string
 
 def squeeze4to64(image):
 	# 4 bits to 6 bits (64 values) so 1.5 values per character
 	# i.e. do 3 values into 12/2 characters
 	pass
+
+def inflate64to3(image):
+	output_string=""
+	for i in range(len(image)):
+		raw=ord(image[i])-35
+		output_string += str(raw % 8)
+		output_string += str(int(raw / 8))
+	return output_string
 
 def standardPaletteImage(p8_image):
 	output=""
@@ -111,7 +126,7 @@ def run():
 	p8_mismatches = [] # colours that don't match ones in p8pal - can't be displayed by pico-8
 	image_pal = [] # output image palette
 	standard_colours=True
-	surface = sdl_image.IMG_Load("BowieP8.png".encode("utf-8"))
+	surface = sdl_image.IMG_Load("DandyP8.png".encode("utf-8"))
 	pixels = sdl2.ext.PixelView(surface.contents)
 	w=surface.contents.w
 	h=surface.contents.h
@@ -184,17 +199,17 @@ def run():
 
 	# output tables for pico-8
 	print("= Custom palette image =")
-	custom_palette_image = standardPaletteImage(p8_custpal_image)
+	custom_palette_image = customPaletteImage(p8_custpal_image)
 	print(custom_palette_image)
 	print(f"Length: {len(custom_palette_image)} characters")
 
-	print("Custom palette")
+	print(f"Custom palette ({len(image_pal)} colours)")
 	print("{",end="")
 	for col in image_pal:
 		print(f"{col},",end='')
 	print("}")
 
-	# squeeze image
+	# try to make image data smaller
 	length=len(image_pal)-1
 	min_bits=0
 	while length>0:
@@ -203,26 +218,64 @@ def run():
 
 	print(f"Could be squeezed to {min_bits} bits per pixel")
 
-	image_64,image_64_string=[None,squeeze1to64,squeeze2to64,squeeze3to64,squeeze4to64][min_bits](p8_custpal_image)
+	image_64_string=[None,squeeze1to64,squeeze2to64,squeeze3to64,squeeze4to64][min_bits](custom_palette_image)
 	print("= Squeezed to base64 ascii from character 35: =")
 	print(image_64_string)
 	print(f"Length: {len(image_64_string)} characters")
 
-	print("Unencoded to base64 RLE:")
-	RLE_values, max_count, RLEraw = runLengthEncode(p8_custpal_image,min_bits)
+	# verify by inflating again
+	infl_string=inflate64to3(image_64_string)
+	if infl_string!=custom_palette_image:
+		print("Warning: problem with base64 encoding of non-RLE image.")
+		print(infl_string)
+		print(custom_palette_image)
+	else:
+		print("inflation matches")
+
+	print("Raw image RLE:")
+	RLE_string, max_count = runLengthEncode(custom_palette_image,min_bits)
 	# for i in range(len(counts)):
 	#  print(f"Found {counts[i]} of {values[i]}")
 	# print(f"Max count is {max_count}")
-	print(RLEraw)
-	print(f"Length: {len(RLEraw)} characters")
+	print(RLE_string)
+	print(f"Length: {len(RLE_string)} characters")
+
+	# verify by decoding
+	decoded,decoded_string=runLengthDecode(RLE_string,min_bits)
+	if decoded_string!=custom_palette_image:
+		print("Warning: problem with RLE.")
+		print(decoded_string)
+		print(custom_palette_image)
+	else:
+		print("decode matches")
+	# for i in range(int(len(RLE_string)/2)):
+		# 	print(f"{RLE_string[i*2]}{RLE_string[i*2+1]},", end="")
+
 
 	print("= RLE squeezed to base64 ascii from character 35: =")
-	RLE_64,RLE_64_string=[None,squeeze1to64,squeeze2to64,squeeze3to64,squeeze4to64][min_bits](RLE_values)
+	RLE_64_string=[None,squeeze1to64,squeeze2to64,squeeze3to64,squeeze4to64][min_bits](RLE_string)
+	print(RLE_64_string)
+	print(f"Length: {len(RLE_64_string)} characters")
+
+	# verify by inflating again
+	infl_string=inflate64to3(RLE_64_string)
+	if infl_string!=RLE_string:
+		print("Warning: problem with base64 encoding.")
+		print(infl_string)
+		print(RLE_string)
+	else:
+		print("inflation matches")
+
+	decoded,decoded_string=runLengthDecode(infl_string,min_bits)
+	if decoded_string!=custom_palette_image:
+		print("Warning: problem with RLE.")
+		print(decoded_string)
+	else:
+		print("decode matches")
+
 	# for i in range(len(counts)):
 	#  print(f"Found {counts[i]} of {values[i]}")
 	# print(f"Max count is {max_count}")
-	print(RLE_64_string)
-	print(f"Length: {len(RLE_64_string)} characters")
 	print(f"Squeezing vs raw: {len(image_64_string)/len(p8_custpal_image)*100}%")
 	print(f"RLE and squeezing size vs raw: {len(RLE_64_string)/len(p8_custpal_image)*100}%")
 
