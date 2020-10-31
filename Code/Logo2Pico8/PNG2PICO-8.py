@@ -40,7 +40,23 @@ def squeeze1to64(image):
 	pass
 def squeeze2to64(image):
 	# 2 bits to 6 bits (64 values) so 3 values per character
-	pass
+	output_string=""
+	for i in range(len(image)):
+		if i%3==0:
+			out=int(image[i])
+		elif i%3==1:
+			out+=int(image[i])*4
+		else:
+			output_string+=chr(out+int(image[i])*16 + 35)
+	if out>0:	# add any leftovers from non-multiples of 3 input
+		output_string += chr(out+ 35)
+		# pad with zeros for anything still missing (happens when last values were 0)
+		# todo: consider trimming 0 values routinely and pad on expand to save data (why not?)
+	while(len(output_string)*3<len(image)):
+		output_string+=chr(35)
+
+	return output_string
+
 def squeeze3to64(image):
 	# 3 bits to 6 bits (64 values) so 2 values per character
 	output_string=""
@@ -57,20 +73,43 @@ def squeeze4to64(image):
 	# i.e. do 3 values into 12/2 characters
 	pass
 
-def inflate64to3(image):
+def inflate64to1(image):
+	pass
+
+def inflate64to2(image,length):
+	output_string=""
+	for i in range(len(image)):
+		raw=ord(image[i])-35
+		output_string += str(raw % 4)
+		output_string += str(int(raw / 4)%4)
+		output_string += str(int(raw / 16) % 4)
+	# remove any extra 0s from the end due to image not being multiple of 3 in length
+	while(len(output_string)>length):
+		output_string=output_string[:-1]
+	return output_string
+
+def inflate64to3(image,length):
 	output_string=""
 	for i in range(len(image)):
 		raw=ord(image[i])-35
 		output_string += str(raw % 8)
 		output_string += str(int(raw / 8))
+	while(len(output_string)>length):
+		output_string=output_string[:-1]
 	return output_string
+
+def inflate64to4(image):
+	pass
+
 
 def standardPaletteImage(p8_image):
 	output=""
+	bad=False
 	for i in range(0, int(len(p8_image) / 2)):
 		output+=f"{p8_image[i * 2 + 1]:x}{p8_image[i * 2]:x}"
-		if p8_image[i] > 15:
-			print("-- bad pixel")
+		if p8_image[i] > 15 and not bad:
+			print("-- found at least one bad pixel")
+			bad=True
 	return(output)
 
 def customPaletteImage(p8_custpal_image):
@@ -128,7 +167,7 @@ def run():
 	p8_mismatches = [] # colours that don't match ones in p8pal - can't be displayed by pico-8
 	image_pal = [] # output image palette
 	standard_colours=True
-	surface = sdl_image.IMG_Load("DandyP8.png".encode("utf-8"))
+	surface = sdl_image.IMG_Load("64x64Monster.png".encode("utf-8"))
 	pixels = sdl2.ext.PixelView(surface.contents)
 	w=surface.contents.w
 	h=surface.contents.h
@@ -224,13 +263,12 @@ def run():
 	print("= Squeezed to base64 ascii from character 35: =")
 	print(image_64_string)
 	print(f"Length: {len(image_64_string)} characters")
-
 	# verify by inflating again
-	infl_string=inflate64to3(image_64_string)
+	infl_string=[None,inflate64to1,inflate64to2,inflate64to3,inflate64to4,][min_bits](image_64_string,w*h)
 	if infl_string!=custom_palette_image:
 		print("Warning: problem with base64 encoding of non-RLE image.")
-		print(infl_string)
-		print(custom_palette_image)
+		print("org:"+custom_palette_image)
+		print("out:"+infl_string)
 	else:
 		print("inflation matches")
 
@@ -248,8 +286,8 @@ def run():
 	decoded,decoded_string=runLengthDecode(RLE_string,min_bits)
 	if decoded_string!=custom_palette_image:
 		print("Warning: problem with RLE.")
-		print(decoded_string)
-		print(custom_palette_image)
+		print("org:"+custom_palette_image)
+		print("out:"+decoded_string)
 	else:
 		print("decode matches")
 	# for i in range(int(len(RLE_string)/2)):
@@ -262,18 +300,19 @@ def run():
 	print(f"Length: {len(RLE_64_string)} characters")
 
 	# verify by inflating again
-	infl_string=inflate64to3(RLE_64_string)
+	infl_string=[None,inflate64to1,inflate64to2,inflate64to3,inflate64to4,][min_bits](RLE_64_string,len(RLE_string))
 	if infl_string!=RLE_string:
 		print("Warning: problem with base64 encoding.")
-		print(infl_string)
-		print(RLE_string)
+		print("org:"+RLE_string)
+		print("out:"+infl_string)
 	else:
 		print("inflation matches")
 
 	decoded,decoded_string=runLengthDecode(infl_string,min_bits)
 	if decoded_string!=custom_palette_image:
 		print("Warning: problem with RLE.")
-		print(decoded_string)
+		print("org:"+custom_palette_image)
+		print("out:"+decoded_string)
 	else:
 		print("decode matches")
 
