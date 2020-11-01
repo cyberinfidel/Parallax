@@ -285,16 +285,16 @@ def run():
 	max_blocks=0
 	total_blocks=0
 	count=0
-	limit=4000
+	limit=100
 
 	# pass 1 - gather all the blocks
-	for i in range(0, int(6565 / 2)):
+	for i in range(0, int(6565 / 4)):
 		count+=1
 		if count>limit: # stop early
 			break
 		events = sdl2.ext.get_events() # otherwise window doesn't update
 		ren.clear()
-		file = f"image-{i*2+1:03}.png"
+		file = f"image-{i*4+1:03}.png"
 		sdl2.SDL_SetWindowTitle(window.window,file.encode('utf-8'))
 		image, blocks = processImage(file,ren) # also draws left hand side pre-processed
 
@@ -327,14 +327,14 @@ def run():
 
 	# 1024 is currently all you're planning to store
 	# todo: choose final number of blocks to use
-	all_blocks=all_blocks[0:1024]
+	# all_blocks=all_blocks[0:1024]
 	for i,b in enumerate(all_blocks):
 		print(f"Block {i}: {b.count}")
 
 	# pass 2 - build new images with top blocks
 	all_images=[]
 	count=0
-	for i in range(0, int(6565 / 2)):
+	for i in range(43, int(6509 / 2)):
 		count+=1
 		if count>limit: # stop early
 			break

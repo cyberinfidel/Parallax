@@ -25,15 +25,14 @@ def runLengthEncode(image, max_bits):
 		pairs+=1
 	return output_string, max_count,pairs
 
-def runLengthDecode(image, max_bits):
+def runLengthDecode(image):
 	output_string=""
-	output_values=[]
 	for i in range(int(len(image)/2)):
 		for j in range(int(image[i*2])+1):
 			output_string+=image[i*2+1]
 	# 		print(f"{int(image[i*2])+1}{image[i*2+1]},",end="")
 	# print("")
-	return output_values, output_string
+	return output_string
 
 def squeeze1to64(image):
 	# 1 bit to 6 bits (64 values) so 6 values per character
@@ -47,7 +46,10 @@ def squeeze2to64(image):
 		elif i%3==1:
 			out+=int(image[i])*4
 		else:
-			output_string+=chr(out+int(image[i])*16 + 35)
+			out+=int(image[i])*16 + 35
+			if out>=92:
+				out+=1 # skip \ character
+			output_string+=chr(out)
 	if out>0:	# add any leftovers from non-multiples of 3 input
 		output_string += chr(out+ 35)
 		# pad with zeros for anything still missing (happens when last values were 0)
@@ -65,7 +67,10 @@ def squeeze3to64(image):
 			print(f"Bad value {i*2} {image[i*2]}")
 		if int(image[i*2+1])>7:
 			print(f"Bad value {i*2+1} {image[i*2+1]}")
-		output_string+= chr(int(image[i*2+1])*8+int(image[i*2]) + 35)
+		out=int(image[i*2+1])*8+int(image[i*2]) + 35
+		if out>=92:
+			out+=1 # skip \ character
+		output_string+= chr(out)
 	return output_string
 
 def squeeze4to64(image):
@@ -79,7 +84,10 @@ def inflate64to1(image):
 def inflate64to2(image,length):
 	output_string=""
 	for i in range(len(image)):
-		raw=ord(image[i])-35
+		val=ord(image[i])
+		if val>92:
+			val-=1 # unskip \ character
+		raw=val-35
 		output_string += str(raw % 4)
 		output_string += str(int(raw / 4)%4)
 		output_string += str(int(raw / 16) % 4)
@@ -91,7 +99,10 @@ def inflate64to2(image,length):
 def inflate64to3(image,length):
 	output_string=""
 	for i in range(len(image)):
-		raw=ord(image[i])-35
+		val=ord(image[i])
+		if val>92:
+			val-=1 # unskip \ character
+		raw=val-35
 		output_string += str(raw % 8)
 		output_string += str(int(raw / 8))
 	while(len(output_string)>length):
@@ -283,7 +294,7 @@ def run():
 	print(f"Pairs: {pairs} count/values")
 
 	# verify by decoding
-	decoded,decoded_string=runLengthDecode(RLE_string,min_bits)
+	decoded_string=runLengthDecode(RLE_string)
 	if decoded_string!=custom_palette_image:
 		print("Warning: problem with RLE.")
 		print("org:"+custom_palette_image)
@@ -308,7 +319,7 @@ def run():
 	else:
 		print("inflation matches")
 
-	decoded,decoded_string=runLengthDecode(infl_string,min_bits)
+	decoded_string=runLengthDecode(infl_string)
 	if decoded_string!=custom_palette_image:
 		print("Warning: problem with RLE.")
 		print("org:"+custom_palette_image)
