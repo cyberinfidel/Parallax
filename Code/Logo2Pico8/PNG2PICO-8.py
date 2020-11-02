@@ -15,20 +15,22 @@ def runLengthEncode(image, max_bits):
 		if image[i]==last and accum<max_allowed_count:
 			accum+=1
 		else:
-			output_string+=f"{accum}{last}"
+			output_string+=f"{hex(accum)[2:]}{last}"
 			last=image[i]
 			max_count=max(accum,max_count)
 			accum = 0
 			pairs+=1
 	if accum>0:
-		output_string += f"{accum}{last}"
-		pairs+=1
+		output_string += f"{hex(accum)[2:]}{last}"
+	else:
+		output_string+=f"0{image[-1]}"
+	pairs += 1
 	return output_string, max_count,pairs
 
 def runLengthDecode(image):
 	output_string=""
 	for i in range(int(len(image)/2)):
-		for j in range(int(image[i*2])+1):
+		for j in range(int(image[i*2],16)+1):
 			output_string+=image[i*2+1]
 	# 		print(f"{int(image[i*2])+1}{image[i*2+1]},",end="")
 	# print("")
@@ -46,12 +48,10 @@ def squeeze2to64(image):
 		elif i%3==1:
 			out+=int(image[i])*4
 		else:
-			out+=int(image[i])*16 + 35
-			if out>=92:
-				out+=1 # skip \ character
-			output_string+=chr(out)
+			out+=int(image[i])*16
+			output_string+=encodeChar(out)
 	if out>0:	# add any leftovers from non-multiples of 3 input
-		output_string += chr(out+ 35)
+		output_string += encodeChar(out)
 		# pad with zeros for anything still missing (happens when last values were 0)
 		# todo: consider trimming 0 values routinely and pad on expand to save data (why not?)
 	while(len(output_string)*3<len(image)):
@@ -63,20 +63,54 @@ def squeeze3to64(image):
 	# 3 bits to 6 bits (64 values) so 2 values per character
 	output_string=""
 	for i in range(int(len(image)/2)):
-		if int(image[i*2])>7:
-			print(f"Bad value {i*2} {image[i*2]}")
-		if int(image[i*2+1])>7:
-			print(f"Bad value {i*2+1} {image[i*2+1]}")
-		out=int(image[i*2+1])*8+int(image[i*2]) + 35
-		if out>=92:
-			out+=1 # skip \ character
-		output_string+= chr(out)
+		# if int(image[i*2])>7:
+		# 	print(f"Bad value {i*2} {image[i*2]}")
+		# if int(image[i*2+1])>7:
+		# 	print(f"Bad value {i*2+1} {image[i*2+1]}")
+		out=int(image[i*2+1])*8+int(image[i*2])
+		output_string+= encodeChar(out)
 	return output_string
+
+# encodes a value as an ASCII character
+# skipping the awkward \ character (92)
+def encodeChar(val):
+	val+=35
+	if val>=92:	# skip \
+		val+=1
+	return chr(val)
+
+# decodes a value stored as an ASCII character
+# skipping the awkward \ character (92)
+def decodeChar(c):
+	v=ord(c)
+	return v - (35 if v<92 else 36)
 
 def squeeze4to64(image):
 	# 4 bits to 6 bits (64 values) so 1.5 values per character
 	# i.e. do 3 values into 12/2 characters
-	pass
+	# 001122334455 i
+	# 000111222333 out
+	# 001122001122 i%3
+	output_string=''
+	for i in range(len(image)):
+		if (i%3)==0:
+			out=int(image[i],16)<<2 # store this pixel in upper bits, but don't output
+		elif (i%3)==1:
+			# add half of this pixel to stored value from last and output
+			out+=int(int(image[i],16)>>2)
+			output_string+=encodeChar(out)
+			# store other half ready for next
+			out=int((int(image[i],16)&0x3)<<4)
+		else: # 2
+			out+=int(image[i],16)
+			output_string += encodeChar(out)
+
+	# dump out last value if length of image isn't multiple of 3
+	if len(image)%3==1 or len(image)%3==2:
+		output_string+=encodeChar(out)
+
+
+	return output_string
 
 def inflate64to1(image):
 	pass
@@ -109,9 +143,27 @@ def inflate64to3(image,length):
 		output_string=output_string[:-1]
 	return output_string
 
-def inflate64to4(image):
-	pass
+def inflate64to4(image,length):
+	output_string=""
+	for i in range(len(image)):
+		val=ord(image[i])
+		if val>92:
+			val-=1 # unskip \ character
+		val-=35
+		if (i%2)==0:
+			# output upper 4 bits
+			output_string+=hex((val>>2)&0xf)[2:]
+			# store lower 2 bits for next output
+			store= (val&0x3)<<2
+		else:
+			# add upper 2 bits to stored and output
+			output_string+=hex(store+(val>>4))[2:]
+			# output lower 4 bits
+			output_string+=hex(val&0xf)[2:]
 
+	while(len(output_string)>length):
+		output_string=output_string[:-1]
+	return output_string
 
 def standardPaletteImage(p8_image):
 	output=""
@@ -130,6 +182,14 @@ def customPaletteImage(p8_custpal_image):
 		if p8_custpal_image[i] > 15:
 			print("-- bad pixel")
 	return(output)
+
+def countColours(surface,x,y,w,h):
+	p8_image = [] # output image data for palette using standard 16 colours
+	p8_custpal_image = [] # output image data for only palette used - indexes into image_pal
+	p8_mismatches = [] # colours that don't match ones in p8pal - can't be displayed by pico-8
+	image_pal = [] # output image palette
+	standard_colours=True
+
 
 def run():
 	sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_EVERYTHING)
@@ -173,12 +233,7 @@ def run():
 		0xffFF9D81, #peach
 	]
 
-	p8_image = [] # output image data for palette using standard 16 colours
-	p8_custpal_image = [] # output image data for only palette used - indexes into image_pal
-	p8_mismatches = [] # colours that don't match ones in p8pal - can't be displayed by pico-8
-	image_pal = [] # output image palette
-	standard_colours=True
-	surface = sdl_image.IMG_Load("64x64Monster.png".encode("utf-8"))
+	surface = sdl_image.IMG_Load("p8c-bun_sprites.png".encode("utf-8"))
 	pixels = sdl2.ext.PixelView(surface.contents)
 	w=surface.contents.w
 	h=surface.contents.h
@@ -199,6 +254,11 @@ def run():
 	sdl2.SDL_RenderCopy(ren.sdlrenderer, texture, sdl2.SDL_Rect(0, 0, w*2, h), sdl2.SDL_Rect(0, 0, w, h))
 
 
+	p8_image = [] # output image data for palette using standard 16 colours
+	p8_custpal_image = [] # output image data for only palette used - indexes into image_pal
+	p8_mismatches = [] # colours that don't match ones in p8pal - can't be displayed by pico-8
+	image_pal = [] # output image palette
+	standard_colours=True
 
 	print(f"Opened image - width:{w}, height:{h}.")
 	print("Processing image...")
@@ -268,7 +328,23 @@ def run():
 		min_bits+=1
 		length=math.floor(length/2)
 
-	print(f"Could be squeezed to {min_bits} bits per pixel")
+	print(f"{len(image_pal)} colours could be encoded in {min_bits} bits per pixel")
+
+	# encode to base64 as standard colours if possible
+	if min_bits==4 and standard_colours:
+		image_64_standard_string = squeeze4to64(standard_palette_image)
+		print("= Squeezed to base64 ascii from character 35 with standard palette: =")
+		print(image_64_standard_string)
+		print(f"Length: {len(image_64_standard_string)} characters")
+
+		# verify by inflating again
+		infl_string=inflate64to4(image_64_standard_string,w*h)
+		if infl_string!=standard_palette_image:
+			print("Warning: problem with base64 encoding of non-RLE image.")
+			print("org:"+standard_palette_image)
+			print("out:"+infl_string)
+		else:
+			print("	(inflation matches)")
 
 	image_64_string=[None,squeeze1to64,squeeze2to64,squeeze3to64,squeeze4to64][min_bits](custom_palette_image)
 	print("= Squeezed to base64 ascii from character 35: =")
@@ -281,7 +357,7 @@ def run():
 		print("org:"+custom_palette_image)
 		print("out:"+infl_string)
 	else:
-		print("inflation matches")
+		print("	(inflation matches)")
 
 	print("Raw image RLE:")
 	RLE_string, max_count, pairs = runLengthEncode(custom_palette_image,min_bits)
@@ -300,7 +376,7 @@ def run():
 		print("org:"+custom_palette_image)
 		print("out:"+decoded_string)
 	else:
-		print("decode matches")
+		print("	(decode matches)")
 	# for i in range(int(len(RLE_string)/2)):
 		# 	print(f"{RLE_string[i*2]}{RLE_string[i*2+1]},", end="")
 
@@ -317,7 +393,7 @@ def run():
 		print("org:"+RLE_string)
 		print("out:"+infl_string)
 	else:
-		print("inflation matches")
+		print("	(inflation matches)")
 
 	decoded_string=runLengthDecode(infl_string)
 	if decoded_string!=custom_palette_image:
@@ -325,7 +401,7 @@ def run():
 		print("org:"+custom_palette_image)
 		print("out:"+decoded_string)
 	else:
-		print("decode matches")
+		print("	(decode matches)")
 
 	# for i in range(len(counts)):
 	#  print(f"Found {counts[i]} of {values[i]}")
@@ -333,14 +409,18 @@ def run():
 	print(f"Squeezing vs raw: {len(image_64_string)/len(p8_custpal_image)*100}%")
 	print(f"RLE and squeezing size vs raw: {len(RLE_64_string)/len(p8_custpal_image)*100}%")
 
-	while True:
-		events = sdl2.ext.get_events()
-		for event in events:
-			if event.type == sdl2.SDL_QUIT:
-				exit(0)
 
-		sdl2.SDL_RenderPresent(ren.sdlrenderer)
-		window.refresh()
+
+
+	# todo: cycle through outputs rendered so can eyeball it's def working
+	# while True:
+	# 	events = sdl2.ext.get_events()
+	# 	for event in events:
+	# 		if event.type == sdl2.SDL_QUIT:
+	# 			exit(0)
+	#
+	# 	sdl2.SDL_RenderPresent(ren.sdlrenderer)
+	# 	window.refresh()
 
 
 
