@@ -1,7 +1,74 @@
+# -*- coding: UTF-8 -*-
 import sdl2
 import sdl2.sdlimage as sdl_image
 import sdl2.ext
 import math
+
+char_table=["\\0","¹","²","³","⁴","⁵","⁶","⁷","⁸","\\t","\\n","ᵇ","ᶜ","\\r","ᵉ","ᶠ","▮","■","□","⁙","⁘","‖","◀","▶","「","」","¥","•","、","。","゛","゜"," ","!","\\\"","#","$","%","&","'","(",")","*","+",",","-",".","/","0","1","2","3","4","5","6","7","8","9",":",";","<","=",">","?","@","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","[","\\\\","]","^","_","`","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","{","|","}","~","○","█","▒","🐱","⬇️","░","✽","●","♥","☉","웃","⌂","⬅️","😐","♪","🅾️","◆","…","➡️","★","⧗","⬆️","ˇ","∧","❎","▤","▥","あ","い","う","え","お","か","き","く","け","こ","さ","し","す","せ","そ","た","ち","つ","て","と","な","に","ぬ","ね","の","は","ひ","ふ","へ","ほ","ま","み","む","め","も","や","ゆ","よ","ら","り","る","れ","ろ","わ","を","ん","っ","ゃ","ゅ","ょ","ア","イ","ウ","エ","オ","カ","キ","ク","ケ","コ","サ","シ","ス","セ","ソ","タ","チ","ツ","テ","ト","ナ","ニ","ヌ","ネ","ノ","ハ","ヒ","フ","ヘ","ホ","マ","ミ","ム","メ","モ","ヤ","ユ","ヨ","ラ","リ","ル","レ","ロ","ワ","ヲ","ン","ッ","ャ","ュ","ョ","◜","◝",]
+
+# uses the above table to encode a list of int values between 0 and 255 inclusive
+# into a string from which a value with index can be retrieved on PICO-8 via a
+# simple ord(str,index) command
+# Only thing to remember is lua's dumb count from 1 for tables
+def encode8bitDataAsPICO8String(data):
+	str=''
+	for d in data:
+		str+=char_table[d]
+	return str
+
+disable_slash_workaround = True
+# zep's own pico-8 code for binary strings
+# function escape_binary_str(s)
+#  local out=""
+#  for i=1,#s do
+#   local c  = sub(s,i,i)
+#   local nc = ord(s,i+1)
+#   local pr = (nc and nc>=48 and nc<=57) and "00" or ""
+#   local v=c
+#   if(c=="\"") v="\\\""
+#   if(c=="\\") v="\\\\"
+#   if(ord(c)==0) v="\\"..pr.."0"
+#   if(ord(c)==10) v="\\n"
+#   if(ord(c)==13) v="\\r"
+#   out..= v
+#  end
+#  return out
+# end
+
+# my version
+def escape_binary_str(s):
+	out=""
+	for i in range(len(s)):
+		c=s[i]
+		if i+1<len(s):
+			nc=ord(s[i+1])
+			if nc>=48 and nc<=57:
+				pr='00'
+			else:
+				pr=''
+		v=c
+		if(c=='\"'): v='\\\"'
+		if(c=="\\"): v="\\\\"
+		if(ord(c)==0): v="\\"+pr+"0"
+		if(ord(c)==10): v="\\n"
+		if(ord(c)==13): v="\\r"
+		out+=v
+	return out
+
+def escape_binary_char(c):
+	nc=ord(c)
+	if nc and nc>=48 and nc<=57:
+		pr='00'
+	else:
+		pr=''
+	v=c
+	if(c=='\"'): v='\\\"'
+	if(c=="\\"): v="\\\\"
+	if(ord(c)==0): v="\\"+pr+"0"
+	if(ord(c)==10): v="\\n"
+	if(ord(c)==13): v="\\r"
+	return v
+
 
 
 def runLengthEncode(image, max_bits):
@@ -36,6 +103,59 @@ def runLengthDecode(image):
 	# print("")
 	return output_string
 
+##################################################################
+# 64 value 6 bit conversions
+def squeeze1to8bit(image):
+	pass
+
+def squeeze2to8bit(image):
+	pass
+
+def squeeze3to8bit(image):
+	# 3 bits to 6 bits (64 values) so 2 values per character
+	#000111222333444555666777
+	#000000001111111122222222
+	out=bytearray()
+	val=0
+	for i in range(len(image)):
+		val=val+int(image[i])<<3	# shove away 3 bits of value
+		if i % 8 == 7:  # dump 24 bits into 3 bytes
+			out.append(val & 0xff)
+			out.append((val >> 8) & 0xff)
+			out.append((val >> 16) & 0xff)
+			val = 0
+	while val>0: # dump out any remaining values
+		out.append(val & 0xff)
+		val=(val>>8)&0xff
+
+	return out
+
+def squeeze4to8bit(image,length):
+	pass
+
+
+def inflate8bitto1(image,length):
+	pass
+
+def inflate8bitto2(image,length):
+	pass
+
+def inflate8bitto3(image,length):
+	out=''
+	val=0
+	for i in range(len(image)):
+		val=val+ord(image[i])<<8
+		if i%3==2:
+			for j in range(8):
+				out+=str(val&0x7)
+				val=val>>3
+	return out
+def inflate8bitto4(image):
+	pass
+
+
+##################################################################
+# 64 value 6 bit conversions
 def squeeze1to64(image):
 	# 1 bit to 6 bits (64 values) so 6 values per character
 	pass
@@ -75,6 +195,8 @@ def squeeze3to64(image):
 # skipping the awkward \ character (92)
 def encodeChar(val):
 	val+=35
+	if disable_slash_workaround:
+		return chr(val)
 	if val>=92:	# skip \
 		val+=1
 	return chr(val)
@@ -171,7 +293,7 @@ def standardPaletteImage(p8_image):
 	for i in range(0, int(len(p8_image) / 2)):
 		output+=f"{p8_image[i * 2 + 1]:x}{p8_image[i * 2]:x}"
 		if p8_image[i] > 15 and not bad:
-			print("-- found at least one bad pixel")
+			print("-- found at least one pixel with non-standard colours")
 			bad=True
 	return(output)
 
@@ -180,22 +302,10 @@ def customPaletteImage(p8_custpal_image):
 	for i in range(0, int(len(p8_custpal_image) / 2)):
 		output+=f"{p8_custpal_image[i * 2 + 1]:x}{p8_custpal_image[i * 2]:x}"
 		if p8_custpal_image[i] > 15:
-			print("-- bad pixel")
+			print("-- pixel outside 16 colour palette")
 	return(output)
 
-def countColours(surface,x,y,w,h):
-	p8_image = [] # output image data for palette using standard 16 colours
-	p8_custpal_image = [] # output image data for only palette used - indexes into image_pal
-	p8_mismatches = [] # colours that don't match ones in p8pal - can't be displayed by pico-8
-	image_pal = [] # output image palette
-	standard_colours=True
-
-
-def run():
-	sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_EVERYTHING)
-	sdl_image.IMG_Init(sdl_image.IMG_INIT_PNG)
-
-
+def analyseRect(pixels,ox,oy,w,h):
 	p8pal=[
 		# basic
 		0xff000000,  # black
@@ -233,37 +343,14 @@ def run():
 		0xffFF9D81, #peach
 	]
 
-	surface = sdl_image.IMG_Load("p8c-bun_sprites.png".encode("utf-8"))
-	pixels = sdl2.ext.PixelView(surface.contents)
-	w=surface.contents.w
-	h=surface.contents.h
-
-	window = sdl2.ext.Window("PNG2PICO-8", size=(w*16, h*8))
-	window.show()
-	ren = sdl2.ext.Renderer(window, flags=sdl2.SDL_RENDERER_ACCELERATED)
-	# makes zoomed graphics blocky (for retro effect)
-	sdl2.SDL_SetHint(sdl2.SDL_HINT_RENDER_SCALE_QUALITY, b"nearest")
-	# makes the graphics look and act like the desired screen size, even though they may be rendered at a different one
-	sdl2.SDL_RenderSetLogicalSize(ren.sdlrenderer, w*2, h)
-	ren.clear()
-
-
-	texture = sdl2.SDL_CreateTextureFromSurface(ren.sdlrenderer, surface)
-
-	# draw source image
-	sdl2.SDL_RenderCopy(ren.sdlrenderer, texture, sdl2.SDL_Rect(0, 0, w*2, h), sdl2.SDL_Rect(0, 0, w, h))
-
-
 	p8_image = [] # output image data for palette using standard 16 colours
 	p8_custpal_image = [] # output image data for only palette used - indexes into image_pal
 	p8_mismatches = [] # colours that don't match ones in p8pal - can't be displayed by pico-8
 	image_pal = [] # output image palette
 	standard_colours=True
 
-	print(f"Opened image - width:{w}, height:{h}.")
-	print("Processing image...")
-	for y in range(0,h):
-		for x in range(0,w):
+	for y in range(oy,h):
+		for x in range(ox,w):
 			col=-1
 			output=0
 			pix=pixels[y][x]
@@ -286,17 +373,47 @@ def run():
 			if col==-1 and pix not in p8_mismatches:
 				p8_mismatches.append(pix)
 				output_index=0	# set as black for output
+				output_index_standard=0
 			p8_image.append(output_index_standard)
 			p8_custpal_image.append(output_index)
 
+	return p8_image, p8_custpal_image, image_pal, standard_colours, p8_mismatches
+
+
+def run():
+	sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_EVERYTHING)
+	sdl_image.IMG_Init(sdl_image.IMG_INIT_PNG)
+
+	surface = sdl_image.IMG_Load("starpoo_title.png".encode("utf-8"))
+	pixels = sdl2.ext.PixelView(surface.contents)
+	w=surface.contents.w
+	h=surface.contents.h
+
+	# rect to analyse
+	start_x=0	# note: inclusive
+	start_y=0
+	end_x=w	# note: not inclusive
+	end_y=h
+
+	num_pixels=(end_y-start_y)*(end_x-start_x)
+	print(f"Opened image - width:{w}, height:{h}.")
+	print("Processing image...")
+
+	p8_standpal_image, p8_custpal_image, image_pal, standard_colours, p8_mismatches = analyseRect(pixels,start_x,start_y,end_x,end_y)
+
+	standard_colours_override = True
 	if len(p8_mismatches)>0:
 		print("Warning: mismatches with pico-8 palette:")
 		for col in p8_mismatches:
 			print(f"0x{col:02x}")
 	else:
 		print("No colour mismatches with pico-8 palette (this is good).")
-	if standard_colours:
+	if standard_colours or standard_colours_override:
 		print("Image uses only standard colours.")
+		print("= Standard palette image =")
+		standard_palette_image = standardPaletteImage(p8_standpal_image)
+		print(standard_palette_image)
+		print(f"Length: {len(standard_palette_image)} characters")
 	else:
 		print("Image uses extended palette")
 
@@ -304,10 +421,6 @@ def run():
 	if len(image_pal)>16:
 		print("Warning: displaying more than 16 colours on pico-8 may be tricky.")
 
-	print("= Standard palette image =")
-	standard_palette_image = standardPaletteImage(p8_image)
-	print(standard_palette_image)
-	print(f"Length: {len(standard_palette_image)} characters")
 
 	# output tables for pico-8
 	print("= Custom palette image =")
@@ -331,14 +444,14 @@ def run():
 	print(f"{len(image_pal)} colours could be encoded in {min_bits} bits per pixel")
 
 	# encode to base64 as standard colours if possible
-	if min_bits==4 and standard_colours:
+	if min_bits==4 and standard_colours or standard_colours_override:
 		image_64_standard_string = squeeze4to64(standard_palette_image)
 		print("= Squeezed to base64 ascii from character 35 with standard palette: =")
 		print(image_64_standard_string)
 		print(f"Length: {len(image_64_standard_string)} characters")
 
 		# verify by inflating again
-		infl_string=inflate64to4(image_64_standard_string,w*h)
+		infl_string=inflate64to4(image_64_standard_string,num_pixels)
 		if infl_string!=standard_palette_image:
 			print("Warning: problem with base64 encoding of non-RLE image.")
 			print("org:"+standard_palette_image)
@@ -351,7 +464,7 @@ def run():
 	print(image_64_string)
 	print(f"Length: {len(image_64_string)} characters")
 	# verify by inflating again
-	infl_string=[None,inflate64to1,inflate64to2,inflate64to3,inflate64to4,][min_bits](image_64_string,w*h)
+	infl_string=[None,inflate64to1,inflate64to2,inflate64to3,inflate64to4,][min_bits](image_64_string,num_pixels)
 	if infl_string!=custom_palette_image:
 		print("Warning: problem with base64 encoding of non-RLE image.")
 		print("org:"+custom_palette_image)
@@ -406,13 +519,64 @@ def run():
 	# for i in range(len(counts)):
 	#  print(f"Found {counts[i]} of {values[i]}")
 	# print(f"Max count is {max_count}")
-	print(f"Squeezing vs raw: {len(image_64_string)/len(p8_custpal_image)*100}%")
-	print(f"RLE and squeezing size vs raw: {len(RLE_64_string)/len(p8_custpal_image)*100}%")
+	print(f"Squeezing vs raw: {len(image_64_string)/num_pixels*100}%")
+	print(f"RLE and squeezing size vs raw: {len(RLE_64_string)/num_pixels*100}%")
+
+	esc_string = escape_binary_str(RLE_64_string)
+	print(f"Escaped string (length {len(esc_string)}):")
+	print(esc_string)
+
+	print("###################################################")
+	print("# 8 bits                                          #")
+	print("###################################################")
+
+	print("= Raw squeezed to 8bit (base 256) ascii from character 35: =")
+	raw_8bit_data=[None,squeeze1to8bit,squeeze2to8bit,squeeze3to8bit,squeeze4to8bit][min_bits](custom_palette_image)
+
+
+	# verify by inflating again
+	infl_string=[None,inflate8bitto1,inflate8bitto2,inflate8bitto3,inflate8bitto4,][min_bits](raw_8bit_data,len(custom_palette_image))
+	if infl_string!=RLE_string:
+		print("Warning: problem with 8bit encoding.")
+		print("org:"+RLE_string)
+		print("out:"+infl_string)
+	else:
+		print("	(inflation matches)")
 
 
 
+	print("= RLE squeezed to 8bit (base 256) ascii from character 35: =")
+	RLE_8bit_string=[None,squeeze1to8bit,squeeze2to8bit,squeeze3to8bit,squeeze4to8bit][min_bits](RLE_string)
+	print(RLE_8bit_string)
+	print(f"Length: {len(RLE_8bit_string)} characters")
 
-	# todo: cycle through outputs rendered so can eyeball it's def working
+	# verify by inflating again
+	infl_string=[None,inflate8bitto1,inflate8bitto2,inflate8bitto3,inflate8bitto4,][min_bits](RLE_8bit_string,len(RLE_string))
+	if infl_string!=RLE_string:
+		print("Warning: problem with 8bit encoding.")
+		print("org:"+RLE_string)
+		print("out:"+infl_string)
+	else:
+		print("	(inflation matches)")
+
+
+	# window = sdl2.ext.Window("PNG2PICO-8", size=(w*16, h*8))
+	# window.show()
+	# ren = sdl2.ext.Renderer(window, flags=sdl2.SDL_RENDERER_ACCELERATED)
+	# # makes zoomed graphics blocky (for retro effect)
+	# sdl2.SDL_SetHint(sdl2.SDL_HINT_RENDER_SCALE_QUALITY, b"nearest")
+	# # makes the graphics look and act like the desired screen size, even though they may be rendered at a different one
+	# sdl2.SDL_RenderSetLogicalSize(ren.sdlrenderer, w*2, h)
+	# ren.clear()
+	#
+	#
+	# texture = sdl2.SDL_CreateTextureFromSurface(ren.sdlrenderer, surface)
+	#
+	# # draw source image
+	# sdl2.SDL_RenderCopy(ren.sdlrenderer, texture, sdl2.SDL_Rect(0, 0, w*2, h), sdl2.SDL_Rect(0, 0, w, h))
+	#
+	#
+	# # todo: cycle through outputs rendered so can eyeball it's def working
 	# while True:
 	# 	events = sdl2.ext.get_events()
 	# 	for event in events:
@@ -422,7 +586,50 @@ def run():
 	# 	sdl2.SDL_RenderPresent(ren.sdlrenderer)
 	# 	window.refresh()
 
+def dumpFile(data,filename):
+
+	print(f"Dumping {len(data)} characters to file {filename}")
+	with open(filename,'w') as file:
+		file.write(data)
+
+
+def test():
+	escstr='''pico-8 cartridge // http://www.pico-8.com
+version 29
+__lua__
+data="'''
+	binstr=[]
+	for i in range(0,256):
+		binstr.append(i)
+
+	escstr+=encode8bitDataAsPICO8String(binstr)
+
+	escstr+='''"
+	printh("start")
+matches=0
+for i=1,#data do
+ v=ord(data,i)
+ if v!=i-1 then
+  printh(i..":"..ord(data,i))
+ else
+  matches+=1
+ end
+end
+printh("data length:"..#data)
+printh("matches:"..matches)
+printh("end")'''
+
+	dumpFile(escstr,"test.p8")
+
+	# for i in range(1,257):
+	# 	v = ord(escstr[i])
+	# 	if (v != i): print(f"mismatch {i}:{v}")
 
 
 if __name__ == "__main__":
+	# outputs a pico8 program that includes a binary string with all 256 values (0-255) and checks they can be read
+	# i.e. checks encode8bitDataAsPICO8String() works as expected
+	test()
+	exit(0)
+
 	run()
