@@ -12,11 +12,17 @@ char_table=["\\0","¹","²","³","⁴","⁵","⁶","⁷","⁸","\\t","\\n","ᵇ"
 # Only thing to remember is lua's dumb count from 1 for tables
 def encode8bitDataAsPICO8String(data):
 	str=''
-	for d in data:
-		str+=char_table[d]
+	for i,d in enumerate(data):
+		if 255-d==0:
+			if i+1<len(data) and 255-data[i+1]>=48 and 255-data[i+1]<=57:
+				str+='\\000'
+			else:
+				str+='\\0'
+		else:
+			str+=char_table[255-d]
 	return str
 
-disable_slash_workaround = True
+disable_slash_workaround = False # only needed for 6 bit
 # zep's own pico-8 code for binary strings
 # function escape_binary_str(s)
 #  local out=""
@@ -72,7 +78,7 @@ def escape_binary_char(c):
 
 
 def runLengthEncode(image, max_bits):
-	output_string=""
+	output=[]
 	last=image[0]
 	accum=-1
 	max_allowed_count = 2**max_bits-1
@@ -82,26 +88,29 @@ def runLengthEncode(image, max_bits):
 		if image[i]==last and accum<max_allowed_count:
 			accum+=1
 		else:
-			output_string+=f"{hex(accum)[2:]}{last}"
+			output.append(accum)
+			output.append(last)
 			last=image[i]
 			max_count=max(accum,max_count)
 			accum = 0
 			pairs+=1
 	if accum>0:
-		output_string += f"{hex(accum)[2:]}{last}"
+		output.append(accum)
+		output.append(last)
 	else:
-		output_string+=f"0{image[-1]}"
+		output.append(0)
+		output.append(image[-1])
 	pairs += 1
-	return output_string, max_count,pairs
+	return output, max_count,pairs
 
 def runLengthDecode(image):
-	output_string=""
+	output=[]
 	for i in range(int(len(image)/2)):
-		for j in range(int(image[i*2],16)+1):
-			output_string+=image[i*2+1]
+		for j in range(int(image[i*2])+1):
+			output.append(image[i*2+1])
 	# 		print(f"{int(image[i*2])+1}{image[i*2+1]},",end="")
 	# print("")
-	return output_string
+	return output
 
 ##################################################################
 # 64 value 6 bit conversions
@@ -115,18 +124,18 @@ def squeeze3to8bit(image):
 	# 3 bits to 6 bits (64 values) so 2 values per character
 	#000111222333444555666777
 	#000000001111111122222222
-	out=bytearray()
+	out=[]
 	val=0
 	for i in range(len(image)):
-		val=val+int(image[i])<<3	# shove away 3 bits of value
+		val=(val<<3)+image[i]	# shove away 3 bits of value 8 times for 24 bits of data
 		if i % 8 == 7:  # dump 24 bits into 3 bytes
-			out.append(val & 0xff)
-			out.append((val >> 8) & 0xff)
 			out.append((val >> 16) & 0xff)
-			val = 0
+			out.append((val >> 8) & 0xff)
+			out.append(val & 0xff)
+			val = 0 # reset
 	while val>0: # dump out any remaining values
 		out.append(val & 0xff)
-		val=(val>>8)&0xff
+		val=val>>8
 
 	return out
 
@@ -141,14 +150,14 @@ def inflate8bitto2(image,length):
 	pass
 
 def inflate8bitto3(image,length):
-	out=''
+	out=[]
 	val=0
 	for i in range(len(image)):
-		val=val+ord(image[i])<<8
+		val=(val<<8)+image[i] # collect 3*8bit=24bits of data
 		if i%3==2:
-			for j in range(8):
-				out+=str(val&0x7)
-				val=val>>3
+			for j in range(8): # dump out 8*3bit=24bits of data
+				out.append((val>>((7-j)*3))&0x7)
+			if out[-1]>15:print("bad value decoding 8bit data")
 	return out
 def inflate8bitto4(image):
 	pass
@@ -206,6 +215,18 @@ def encodeChar(val):
 def decodeChar(c):
 	v=ord(c)
 	return v - (35 if v<92 else 36)
+
+def listToString(list):
+	out=''
+	for l in list:
+		out+=str(l)
+	return out
+
+def stringToList(string):
+	list=[]
+	for i in range(len(string)):
+		list.append(int(string[i]))
+	return list
 
 def squeeze4to64(image):
 	# 4 bits to 6 bits (64 values) so 1.5 values per character
@@ -401,7 +422,7 @@ def run():
 
 	p8_standpal_image, p8_custpal_image, image_pal, standard_colours, p8_mismatches = analyseRect(pixels,start_x,start_y,end_x,end_y)
 
-	standard_colours_override = True
+	standard_colours_override = False
 	if len(p8_mismatches)>0:
 		print("Warning: mismatches with pico-8 palette:")
 		for col in p8_mismatches:
@@ -424,9 +445,8 @@ def run():
 
 	# output tables for pico-8
 	print("= Custom palette image =")
-	custom_palette_image = customPaletteImage(p8_custpal_image)
-	print(custom_palette_image)
-	print(f"Length: {len(custom_palette_image)} characters")
+	print(listToString(p8_custpal_image))
+	print(f"Length: {len(p8_custpal_image)} characters")
 
 	print(f"Custom palette ({len(image_pal)} colours)")
 	print("{",end="")
@@ -459,35 +479,35 @@ def run():
 		else:
 			print("	(inflation matches)")
 
-	image_64_string=[None,squeeze1to64,squeeze2to64,squeeze3to64,squeeze4to64][min_bits](custom_palette_image)
+	image_64_data=[None,squeeze1to64,squeeze2to64,squeeze3to64,squeeze4to64][min_bits](p8_custpal_image)
 	print("= Squeezed to base64 ascii from character 35: =")
-	print(image_64_string)
-	print(f"Length: {len(image_64_string)} characters")
+	print(listToString(image_64_data))
+	print(f"Length: {len(image_64_data)} characters")
 	# verify by inflating again
-	infl_string=[None,inflate64to1,inflate64to2,inflate64to3,inflate64to4,][min_bits](image_64_string,num_pixels)
-	if infl_string!=custom_palette_image:
+	infl_data=[None,inflate64to1,inflate64to2,inflate64to3,inflate64to4,][min_bits](image_64_data,num_pixels)
+	if listToString(infl_data)!=listToString(p8_custpal_image):
 		print("Warning: problem with base64 encoding of non-RLE image.")
-		print("org:"+custom_palette_image)
-		print("out:"+infl_string)
+		print("org:"+listToString(p8_custpal_image))
+		print("out:"+listToString(infl_data))
 	else:
 		print("	(inflation matches)")
 
 	print("Raw image RLE:")
-	RLE_string, max_count, pairs = runLengthEncode(custom_palette_image,min_bits)
+	RLE_data, max_count, pairs = runLengthEncode(p8_custpal_image,min_bits)
 	# for i in range(len(counts)):
 	#  print(f"Found {counts[i]} of {values[i]}")
 	# print(f"Max count is {max_count}")
-	print(RLE_string)
-	print(f"Length: {len(RLE_string)} characters")
+	print(listToString(RLE_data))
+	print(f"Length: {len(RLE_data)} characters")
 	print(f"Max count: {max_count} duplicates")
 	print(f"Pairs: {pairs} count/values")
 
 	# verify by decoding
-	decoded_string=runLengthDecode(RLE_string)
-	if decoded_string!=custom_palette_image:
+	decoded_data=listToString(runLengthDecode(RLE_data))
+	if listToString(decoded_data)!=listToString(p8_custpal_image):
 		print("Warning: problem with RLE.")
-		print("org:"+custom_palette_image)
-		print("out:"+decoded_string)
+		print("org:"+listToString(p8_custpal_image))
+		print("out:"+listToString(decoded_data))
 	else:
 		print("	(decode matches)")
 	# for i in range(int(len(RLE_string)/2)):
@@ -495,31 +515,31 @@ def run():
 
 
 	print("= RLE squeezed to base64 ascii from character 35: =")
-	RLE_64_string=[None,squeeze1to64,squeeze2to64,squeeze3to64,squeeze4to64][min_bits](RLE_string)
+	RLE_64_string=[None,squeeze1to64,squeeze2to64,squeeze3to64,squeeze4to64][min_bits](RLE_data)
 	print(RLE_64_string)
 	print(f"Length: {len(RLE_64_string)} characters")
 
 	# verify by inflating again
-	infl_string=[None,inflate64to1,inflate64to2,inflate64to3,inflate64to4,][min_bits](RLE_64_string,len(RLE_string))
-	if infl_string!=RLE_string:
+	infl_data=[None,inflate64to1,inflate64to2,inflate64to3,inflate64to4,][min_bits](RLE_64_string,len(RLE_data))
+	if listToString(infl_data)!=listToString(RLE_data):
 		print("Warning: problem with base64 encoding.")
-		print("org:"+RLE_string)
-		print("out:"+infl_string)
+		print("org:"+listToString(RLE_data))
+		print("out:"+listToString(infl_data))
 	else:
 		print("	(inflation matches)")
 
-	decoded_string=runLengthDecode(infl_string)
-	if decoded_string!=custom_palette_image:
+	decoded_data=runLengthDecode(infl_data)
+	if listToString(decoded_data)!=listToString(p8_custpal_image):
 		print("Warning: problem with RLE.")
-		print("org:"+custom_palette_image)
-		print("out:"+decoded_string)
+		print("org:"+listToString(p8_custpal_image))
+		print("out:"+listToString(decoded_data))
 	else:
 		print("	(decode matches)")
 
 	# for i in range(len(counts)):
 	#  print(f"Found {counts[i]} of {values[i]}")
 	# print(f"Max count is {max_count}")
-	print(f"Squeezing vs raw: {len(image_64_string)/num_pixels*100}%")
+	print(f"Squeezing vs raw: {len(image_64_data)/num_pixels*100}%")
 	print(f"RLE and squeezing size vs raw: {len(RLE_64_string)/num_pixels*100}%")
 
 	esc_string = escape_binary_str(RLE_64_string)
@@ -527,35 +547,34 @@ def run():
 	print(esc_string)
 
 	print("###################################################")
-	print("# 8 bits                                          #")
+	print("# 8 bit                                           #")
 	print("###################################################")
 
-	print("= Raw squeezed to 8bit (base 256) ascii from character 35: =")
-	raw_8bit_data=[None,squeeze1to8bit,squeeze2to8bit,squeeze3to8bit,squeeze4to8bit][min_bits](custom_palette_image)
-
+	print("= Raw squeezed to 8bit (base 256) characters: =")
+	raw_8bit_data=[None,squeeze1to8bit,squeeze2to8bit,squeeze3to8bit,squeeze4to8bit][min_bits](p8_custpal_image)
+	dumpP8File(encode8bitDataAsPICO8String(raw_8bit_data),"raw8bit")
 
 	# verify by inflating again
-	infl_string=[None,inflate8bitto1,inflate8bitto2,inflate8bitto3,inflate8bitto4,][min_bits](raw_8bit_data,len(custom_palette_image))
-	if infl_string!=RLE_string:
+	infl_data=[None,inflate8bitto1,inflate8bitto2,inflate8bitto3,inflate8bitto4,][min_bits](raw_8bit_data,len(p8_custpal_image))
+	if listToString(infl_data)!=listToString(p8_custpal_image):
 		print("Warning: problem with 8bit encoding.")
-		print("org:"+RLE_string)
-		print("out:"+infl_string)
+		print("org:"+listToString(p8_custpal_image))
+		print("out:"+listToString(infl_data))
 	else:
 		print("	(inflation matches)")
 
 
 
-	print("= RLE squeezed to 8bit (base 256) ascii from character 35: =")
-	RLE_8bit_string=[None,squeeze1to8bit,squeeze2to8bit,squeeze3to8bit,squeeze4to8bit][min_bits](RLE_string)
-	print(RLE_8bit_string)
-	print(f"Length: {len(RLE_8bit_string)} characters")
+	print("= RLE squeezed to 8bit (base 256) characters: =")
+	RLE_8bit_data=[None,squeeze1to8bit,squeeze2to8bit,squeeze3to8bit,squeeze4to8bit][min_bits](RLE_data)
+	dumpP8File(encode8bitDataAsPICO8String(RLE_8bit_data),"RLE8bit")
 
 	# verify by inflating again
-	infl_string=[None,inflate8bitto1,inflate8bitto2,inflate8bitto3,inflate8bitto4,][min_bits](RLE_8bit_string,len(RLE_string))
-	if infl_string!=RLE_string:
+	infl_data=[None,inflate8bitto1,inflate8bitto2,inflate8bitto3,inflate8bitto4,][min_bits](RLE_8bit_data,len(RLE_data))
+	if listToString(infl_data)!=listToString(RLE_data):
 		print("Warning: problem with 8bit encoding.")
-		print("org:"+RLE_string)
-		print("out:"+infl_string)
+		print("org:"+listToString(RLE_data))
+		print("out:"+listToString(infl_data))
 	else:
 		print("	(inflation matches)")
 
@@ -576,7 +595,7 @@ def run():
 	# sdl2.SDL_RenderCopy(ren.sdlrenderer, texture, sdl2.SDL_Rect(0, 0, w*2, h), sdl2.SDL_Rect(0, 0, w, h))
 	#
 	#
-	# # todo: cycle through outputs rendered so can eyeball it's def working
+	# # todo: cycle through outputs rendered so can eyeball it's def working/quality etc.
 	# while True:
 	# 	events = sdl2.ext.get_events()
 	# 	for event in events:
@@ -587,10 +606,18 @@ def run():
 	# 	window.refresh()
 
 def dumpFile(data,filename):
-
 	print(f"Dumping {len(data)} characters to file {filename}")
 	with open(filename,'w') as file:
 		file.write(data)
+
+def dumpP8File(data,filename):
+	print(f"Dumping {len(data)} characters to file {filename}.p8")
+	p8data='''pico-8 cartridge // http://www.pico-8.com
+version 29
+__lua__
+data="'''+data+'"'
+	with open(filename+'.p8','w') as file:
+		file.write(p8data)
 
 
 def test():
@@ -629,7 +656,7 @@ printh("end")'''
 if __name__ == "__main__":
 	# outputs a pico8 program that includes a binary string with all 256 values (0-255) and checks they can be read
 	# i.e. checks encode8bitDataAsPICO8String() works as expected
-	test()
-	exit(0)
+	# test()
+	# exit(0)
 
 	run()
