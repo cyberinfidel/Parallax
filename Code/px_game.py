@@ -17,6 +17,10 @@ import px_utility
 import px_log
 import px_collision
 
+# need to be imported somewhere for deployment
+import px_message_box
+import px_director
+
 class eGameModes:
 	quit, \
 	init, \
