@@ -17,6 +17,11 @@ import px_utility
 import px_log
 
 #import PacBun files
+import PB_templates
+import mode_cont
+import PB_map
+import PB_directors
+import scene_select_bunnies
 
 class eStates(px_entity.eStates):
 	runDown,runLeft, runUp, runRight,\
